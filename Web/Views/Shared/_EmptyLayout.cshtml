@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Platform</title>
+
+    <partial name="_StylePartial" />
+</head>
+<body class="bg-light">
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <partial name="_ScriptPartial" />
+    <partial name="_ValidationScriptsPartial" />
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

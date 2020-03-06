@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Companies";
+    ViewData["Subtitle"] = "Organize and keep track of your companies by adding, deleting, merging, or restoring them in the system.";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="toolbar" role="toolbar">
+                <a asp-controller="Company" asp-action="Create" class="btn btn-outline-secondary"><i class="fa fa-plus mr-1"></i> Create</a>
+            </div>
+            <table id="datatable" data-toggle="table" data-url="/api/company"
+                   data-total-field="totalItems"
+                   data-data-field="items">
+                <thead>
+                    <tr>
+                        <th data-field="no" data-sortable="true">No</th>
+                        <th data-field="name" data-sortable="true">Company</th>
+                        <th data-field="address">Address</th>
+                        <th data-field="updatedDate" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
+                        <th data-formatter="actionFormatter" class="text-nowrap text-right">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function actionFormatter(value, row) {
+            return `<a href='/company/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+        }
+    </script>
+}

@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Customers";
+    ViewData["Subtitle"] = "Organize and keep track of your customers by adding, deleting, merging, or restoring them in the system. This boosts efficiency knowing your customer list is clean and there are no duplicates.";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="toolbar" role="toolbar">
+                <a asp-controller="Customer" asp-action="Create" class="btn btn-outline-secondary"><i class="fa fa-plus mr-1"></i> Create</a>
+            </div>
+            <table id="datatable" data-toggle="table" data-url="/api/customer"
+                   data-total-field="totalItems"
+                   data-data-field="items">
+                <thead>
+                    <tr>
+                        <th data-field="no" data-sortable="true">No</th>
+                        <th data-field="isActive" data-formatter="activityFormatter" data-sortable="true">Activity</th>
+                        <th data-field="name" data-formatter="nameFormatter">Customer</th>
+                        <th data-field="phoneNumber">Phone</th>
+                        <th data-field="creditLimit" data-sortable="true">Credit limit</th>
+                        <th data-field="creditUtilized">High credit utilized</th>
+                        <th data-field="address">Address</th>
+                        <th data-formatter="actionFormatter" class="text-nowrap text-right">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function nameFormatter(value, row) {
+            return `${value} <p class='text-muted'>${row.company}</p>`;
+        }
+
+        function activityFormatter(value, row) {
+            return `<i class='mr-1 fa ${row.isActive ? 'fa-check-circle' : 'fa-times-circle'}'></i>`;
+        }
+
+        function actionFormatter(value, row) {
+            return `<a href='/customer/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+        }
+    </script>
+}

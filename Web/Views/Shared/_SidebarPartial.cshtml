@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Core.Data.Entities
+
+@inject SignInManager<ApplicationUserEntity> SignInManager
+@inject UserManager<ApplicationUserEntity> UserManager
+
+@{
+    var url = Context.Request.Path.ToString().ToLower();
+}
+
+<div class="sidebar-sticky">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
+                Companies
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/customer") ? "active" : "")" asp-controller="Customer" asp-action="Index">
+                Customers
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/invoice") ? "active" : "")" asp-controller="Invoice" asp-action="Index">
+                Invoices
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/payment") ? "active" : "")" asp-controller="Payment" asp-action="Index">
+                Payments
+            </a>
+        </li>
+    </ul>
+
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span><i class="fa fa-table mr-1"></i> Reports</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link  @(url.Contains("/report") ? "active" : "")" asp-controller="Report" asp-action="Index">Aging Summary Report</a>
+        </li>
+
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+        <span><i class="fa fa-cogs mr-1"></i> Settings</span>
+    </h6>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/exportSettings") ? "active" : "")" asp-controller="Settings" asp-action="ExportField">
+                Export Settings
+            </a>
+        </li>
+
+    </ul>
+</div>

@@ -1,0 +1,16 @@
+﻿@model Web.ViewModels.InvoiceViewModel
+@{
+    ViewData["Title"] = "Edit Invoice";
+    ViewData["SubTitle"] = "Please provide all required details to edit invoice";
+}
+
+@section Toolbar  {
+<div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+        <form method="POST" asp-action="Delete">
+            <input asp-for="Id" type="hidden" />
+            <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
+        </form>
+    </div>
+</div>
+}

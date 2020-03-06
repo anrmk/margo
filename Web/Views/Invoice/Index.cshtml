@@ -1,0 +1,42 @@
+﻿@model Web.ViewModels.InvoiceFilterViewModel
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="bootstrap-table">
+            <div class="fixed-table-toolbar buttons-toolbar"></div>
+        </div>
+
+        <div id="toolbar" class="btn-toolbar" role="toolbar">
+            <div class="btn-group mr-2" role="group" aria-label="Invoice active button group">
+                <a asp-controller="Invoice" asp-action="Create" class="btn btn-outline-secondary"><i class="fa fa-plus mr-1"></i> Create</a>
+                <a asp-controller="Invoice" asp-action="Bulk" class="btn btn-outline-secondary"><i class="fa fa-mail-bulk mr-1"></i> Bulk</a>
+            </div>
+            <div class="btn-group mr-1" role="group" aria-label="Payment active button group">
+                <button id="bulkPaymentBtn" class="btn btn-outline-secondary" disabled>Create payment</button>
+            </div>
+        </div>
+
+
+        <table id="datatable" data-toggle="table" data-url="/api/invoice"
+               data-query-params="queryParams"
+               data-total-field="totalItems"
+               data-data-field="items"
+               data-select-item-name="Invoices[]"
+               data-buttons-toolbar=".buttons-toolbar">
+            <thead>
+                <tr>
+                    <th data-checkbox="true"></th>
+                    <th data-field="no" data-sortable="true">Invoice</th>
+                    <th data-field="customerName" data-formatter="nameFormatter">Customer</th>
+                    <th data-field="date" data-formatter="$.fn.bootstrapTable.formatDate">Date</th>
+                    <th data-field="dueDate" data-formatter="$.fn.bootstrapTable.formatDate">Due Date</th>
+
+                    <th data-formatter="actionFormatter" class="text-nowrap text-right">Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>

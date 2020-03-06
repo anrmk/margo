@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Platform</title>
+
+    <partial name="_StylePartial" />
+</head>
+<body class="bg-light">
+    <partial name="_HeaderPartial" />
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-white sidebar">
+                <partial name="_SidebarPartial" />
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div>
+                        <h3 class="mb-0">@ViewData["Title"]</h3>
+                        <p class="lead mb-0">@ViewData["SubTitle"]</p>
+                    </div>
+                    @RenderSection("Toolbar", required: false)
+                </div>
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <partial name="_ModalPartial" />
+    @*<partial name="_FooterPartial" />*@
+    <partial name="_ScriptPartial" />
+    <partial name="_ValidationScriptsPartial" />
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

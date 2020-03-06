@@ -1,0 +1,123 @@
+﻿@model Web.ViewModels.CompanyViewModel
+
+@{
+    ViewData["Title"] = "Edit Company";
+    ViewData["SubTitle"] = "Please provide all required details to edit company info";
+}
+
+@section Toolbar  {
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <form method="POST" asp-action="Delete">
+                <input asp-for="Id" type="hidden" />
+                <button type="submit" class="btn btn-outline-danger" hidden><i class="fa fa-trash-alt mr-1"></i> Remove</button>
+            </form>
+        </div>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <ul id="companyTab" class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" id="general-tab" href="#general">General</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" id="address-tab" href="#address">Address</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" id="summary-tab" href="#summary">Summary Range</a>
+            </li>
+            @*<li class="nav-item">
+                <a class="nav-link" data-toggle="tab" id="supplier-tab" href="#customers">Customers</a>
+            </li>*@
+         
+        </ul>
+    </div>
+    <div class="card-body">
+        <form class="tab-content" id="submitForm" method="POST" asp-action="Edit">
+            <input asp-for="Id" type="hidden" />
+            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                <div class="form-group row mb-3">
+                    <div class="col-3">
+                        <label asp-for="No">Company Id</label>
+                        <input asp-for="No" type="text" class="form-control">
+                        <span asp-validation-for="No" class="text-danger" required></span>
+                    </div>
+                    <div class="col-5">
+                        <label asp-for="Name">Business Name</label>
+                        <input asp-for="Name" type="text" class="form-control">
+                        <span asp-validation-for="Name" class="text-danger" required></span>
+                    </div>
+                    <div class="col-4">
+                        <label asp-for="PhoneNumber">Phone Number</label>
+                        <input asp-for="PhoneNumber" type="text" class="form-control">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                <input asp-for="AddressId" type="hidden" />
+                <div class="form-group row mb-3">
+                    <div class="col-8">
+                        <label asp-for="Address">Address</label>
+                        <input asp-for="Address" type="text" class="form-control">
+                        <span asp-validation-for="Address" class="form-text text-danger"></span>
+                    </div>
+                    <div class="col-4">
+                        <label asp-for="City">City</label>
+                        <input asp-for="City" type="text" class="form-control">
+                        <span asp-validation-for="City" class="form-text text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <div class="col">
+                        <label asp-for="Address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                        <input asp-for="Address2" type="text" class="form-control" placeholder="Appartment or suite">
+                        <span asp-validation-for="Address2" class="form-text text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <div class="col">
+                        <label asp-for="Country">Country</label>
+                        <input asp-for="Country" type="text" class="form-control">
+                        <span asp-validation-for="Country" class="form-text text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="State">State</label>
+                        <input asp-for="State" type="text" class="form-control">
+                        <span asp-validation-for="State" class="form-text text-danger"></span>
+                    </div>
+
+                    <div class="col">
+                        <label asp-for="ZipCode">Zip Code</label>
+                        <input asp-for="ZipCode" type="text" class="form-control">
+                        <span asp-validation-for="ZipCode" class="form-text text-danger"></span>
+                    </div>
+                </div>
+            </div>
+          
+            @*<div class="tab-pane fade" id="customers" role="tabpanel" aria-labelledby="supplier-tab" >
+                <table id="datatable" data-toggle="table" data-url="/api/supplier/company/@Model.Id"
+                       data-side-pagination="true">
+                    <thead>
+                        <tr>
+                            <th data-field="no" data-sortable="true">No</th>
+                            <th data-field="name" data-sortable="true">Customer</th>
+                            <th data-field="phone">Phone</th>
+                            <th data-field="address">Address</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>*@
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="" role="toolbar" aria-label="Toolbar with button groups">
+            <button type="submit" class="btn btn-outline-primary" form="submitForm">Save</button>
+            <a asp-action="index" class="btn btn-link">Cancel</a>
+        </div>
+    </div>
+</div>
+
