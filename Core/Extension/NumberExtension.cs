@@ -5,5 +5,9 @@
             if(value >= Min && value <= Max) return true;
             else return false;
         }
+
+        public static string ToCurrency(this decimal value) {
+            return $"{value:C}".Trim(new char[] { '(', ')' });
+        }
     }
 }

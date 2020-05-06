@@ -98,7 +98,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> EditAddress(long supplierId, VendorAddressViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdateSupplierAddress(supplierId, _mapper.Map<VendorAddressDto>(model));
+                    var item = await _crudBusinessManager.UpdateVendorAddress(supplierId, _mapper.Map<VendorAddressDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }

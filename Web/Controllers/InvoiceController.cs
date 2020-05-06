@@ -20,65 +20,21 @@ using Web.ViewModels;
 namespace Web.Controllers.Mvc {
     public class InvoiceController: BaseController<InvoiceController> {
         private readonly INsiBusinessManager _nsiBusinessManager;
-        private readonly ICrudBusinessManager _businessManager;
+        private readonly ICrudBusinessManager _crudBusinessManager;
 
         public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper, ApplicationContext context,
-            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager businessManager) : base(logger, mapper, context) {
+            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager crudBusinessManager) : base(logger, mapper, context) {
             _nsiBusinessManager = nsiBusinessManager;
-            _businessManager = businessManager;
+            _crudBusinessManager = crudBusinessManager;
         }
 
-        // GET: Invoice
-        public async Task<ActionResult> Index() {
-            var companies = await _businessManager.GetCompanies();
-            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() }).ToList();
-
+        public ActionResult Index() {
             var model = new InvoiceFilterViewModel();
             return View(model);
         }
 
-        // GET: Invoice/Details/5
         public async Task<ActionResult> Details(long id) {
-            var item = await _businessManager.GetInvoice(id);
-            if(item == null) {
-                return NotFound();
-            }
-
-            var model = _mapper.Map<InvoiceViewModel>(item);
-
-            return View(model);
-        }
-
-        // GET: Invoice/Create
-        public ActionResult Create() {
-            var model = new InvoiceViewModel();
-
-            return View(model);
-        }
-
-        // POST: Invoice/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(InvoiceViewModel model) {
-            try {
-                if(ModelState.IsValid) {
-                    var item = await _businessManager.CreateInvoice(_mapper.Map<InvoiceDto>(model));
-                    if(item == null) {
-                        return BadRequest();
-                    }
-
-                    return RedirectToAction(nameof(Index));
-                }
-            } catch(Exception er) {
-                _logger.LogError(er, er.Message);
-            }
-
-            return View(model);
-        }
-
-        // GET: Invoice/Edit/5
-        public async Task<ActionResult> Edit(long id) {
-            var item = await _businessManager.GetInvoice(id);
+            var item = await _crudBusinessManager.GetInvoice(id);
             if(item == null) {
                 return NotFound();
             }
@@ -86,31 +42,75 @@ namespace Web.Controllers.Mvc {
             return View(_mapper.Map<InvoiceViewModel>(item));
         }
 
-        // POST: Invoice/Edit/5
+        public async Task<ActionResult> Create() {
+            var accounts = await _crudBusinessManager.GetVaccounts();
+            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+
+            return View(new InvoiceViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(InvoiceViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var item = await _crudBusinessManager.CreateInvoice(_mapper.Map<InvoiceDto>(model));
+                    if(item == null) {
+                        return BadRequest();
+                    }
+
+                    return RedirectToAction(nameof(Edit), new { Id = item.Id });
+                }
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                return BadRequest(er);
+            }
+
+            var accounts = await _crudBusinessManager.GetVaccounts();
+            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+
+            return View(model);
+        }
+
+        public async Task<ActionResult> Edit(long id) {
+            var item = await _crudBusinessManager.GetInvoice(id);
+            if(item == null) {
+                return NotFound();
+            }
+
+            var accounts = await _crudBusinessManager.GetVaccounts();
+            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+
+            return View(_mapper.Map<InvoiceViewModel>(item));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(long id, InvoiceViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _businessManager.UpdateInvoice(id, _mapper.Map<InvoiceDto>(model));
+                    var item = await _crudBusinessManager.UpdateInvoice(id, _mapper.Map<InvoiceDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Edit), new { Id = id });
                 }
             } catch(Exception er) {
                 _logger.LogError(er, er.Message);
+                BadRequest(er);
             }
+
+            var accounts = await _crudBusinessManager.GetVaccounts();
+            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
             return View(model);
         }
 
-        // GET: Invoice/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id) {
             try {
-                var item = await _businessManager.DeleteInvoice(id);
+                var item = await _crudBusinessManager.DeleteInvoice(id);
                 if(item == false) {
                     return NotFound();
                 }
@@ -126,7 +126,7 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class InvoiceController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;
@@ -138,7 +138,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet]
-        public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
+        public async Task<Pager<InvoiceListViewModel>> GetInvoices(InvoiceFilterViewModel model) {
             var result = await _businessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
             return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }

@@ -18,16 +18,13 @@ namespace Core.Services.Managers {
         public InvoiceManager(IApplicationContext context) : base(context) { }
         public async Task<InvoiceEntity> FindInclude(long id) {
             return await DbSet
-                .Include(x => x.Company)
-                .Include(x => x.Supplier)
+                .Include(x => x.Account)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<List<InvoiceEntity>> FindAll() {
-            return await DbSet.Include(x => x.Company)
-                .Include(x => x.Supplier)
-                .ToListAsync();
+            return await DbSet.Include(x => x.Account).ToListAsync();
         }
     }
 }

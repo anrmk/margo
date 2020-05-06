@@ -30,8 +30,7 @@ namespace Core {
 
             #region INVOICE
             CreateMap<InvoiceDto, InvoiceEntity>()
-                .ForMember(d => d.Company, o => o.Ignore())
-                .ForMember(d => d.Supplier, o => o.Ignore())
+                .ForMember(d => d.Account, o => o.Ignore())
                 .ReverseMap();
 
             #endregion

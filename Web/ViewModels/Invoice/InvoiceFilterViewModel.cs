@@ -6,7 +6,10 @@ namespace Web.ViewModels {
         [Display(Name = "Company")]
         public long? CompanyId { get; set; }
 
-        [Display(Name = "Period Date")]
+        [Display(Name = "Vendor")]
+        public long? VendorId { get; set; }
+
+        [Display(Name = "Date")]
         [DataType(DataType.Date)]
         public DateTime? Date { get; set; }
     }

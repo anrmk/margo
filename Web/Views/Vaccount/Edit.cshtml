@@ -26,12 +26,12 @@
                 <div class="form-group row mb-3">
                     <div class="col-4">
                         <label asp-for="UserName"></label>
-                        <input asp-for="UserName" class="form-control" autocomplete="off" required />
+                        <input asp-for="UserName" class="form-control" autocomplete="new-username" required />
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                     <div class="col-8">
                         <label asp-for="Password"></label>
-                        <input asp-for="Password" value="@Model.Password" class="form-control" autocomplete="off" required />
+                        <input asp-for="Password" value="@Model.Password" class="form-control" autocomplete="new-password" required />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                 </div>

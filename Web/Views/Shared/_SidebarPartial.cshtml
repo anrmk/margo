@@ -15,10 +15,11 @@
                 <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item nav-item ">
             <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
                 <i class="far fa-circle mr-1"></i> Companies
             </a>
+            @*<a class="d-flex align-items-center text-white-50" asp-controller="Company" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>*@
         </li>
         <li class="nav-item">
             <a class="nav-link @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
@@ -26,8 +27,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @(url.Contains("/account") ? "active" : "")" asp-controller="Vaccount" asp-action="Index">
+            <a class="nav-link @(url.Contains("/vaccount") ? "active" : "")" asp-controller="Vaccount" asp-action="Index">
                 <i class="fas fa-user-friends mr-1"></i> Accounts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(url.Contains("/invoices") ? "active" : "")" asp-controller="Invoice" asp-action="Index">
+                <i class="fas fa-file-invoice mr-1"></i> Invoices
             </a>
         </li>
         <li class="nav-item">

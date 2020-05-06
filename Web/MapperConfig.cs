@@ -91,16 +91,12 @@ namespace Web {
             #region INVOICE
             CreateMap<InvoiceListViewModel, InvoiceDto>()
                .ReverseMap()
-               .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.General.Name))
-               .ForMember(d => d.Amount, o => o.MapFrom(s => (s.Subtotal * (1 + s.TaxRate / 100)).ToString("0.##")));
-
-            CreateMap<InvoiceViewModel, InvoiceDto>()
-                .ForMember(d => d.Supplier, o => o.Ignore())
-                .ForMember(d => d.Company, o => o.Ignore())
-                .ReverseMap();
-
+               .ForMember(d => d.AccountName, o => o.MapFrom(s => s.Account.UserName))
+               .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Account.Company.General.Name))
+               .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Account.Vendor.General.Name))
+               .ForMember(d => d.Amount, o => o.MapFrom(s => s.Amount.ToCurrency()));
+            CreateMap<InvoiceViewModel, InvoiceDto>().ReverseMap();
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
-
             #endregion
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();

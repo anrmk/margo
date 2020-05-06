@@ -4,61 +4,56 @@
     ViewData["SubTitle"] = "Please provide all required details to create invoice";
 }
 
-<form method="POST" asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="card">
-        <div class="card-body">
-            <div class="form-row mb-3">
-                <div class="col-4">
-                    <label asp-for="CompanyId"></label>
-                    <select id="companies" asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker"
-                            required
-                            data-live-search="true">
-                        <option>Chose a company</option>
-                    </select>
-                    <span asp-validation-for="CompanyId" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="SupplierId"></label>
-                    <select id="customers" asp-for="SupplierId" asp-items="@ViewBag.Suppliers" class="form-control selectpicker"
-                            required
-                            data-live-search="true">
-                        <option>Chose a customer</option>
-                    </select>
-                    <span asp-validation-for="SupplierId" class="text-danger"></span>
-                </div>
-            </div>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Invoices</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-body">
+        <form id="submitForm" method="POST" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-row mb-3">
                 <div class="col-4">
                     <label asp-for="No"></label>
-                    <input asp-for="No" type="text" class="form-control" required>
+                    <input asp-for="No" class="form-control" required />
                     <span asp-validation-for="No" class="text-danger"></span>
                 </div>
-                <div class="col-4">
-                    <label asp-for="Date"></label>
-                    <div class="input-group date" data-provide="datepicker">
-                        <input asp-for="Date" type="text" class="form-control" readonly required>
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar-alt"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <label asp-for="DueDate"></label>
-                    <div class="input-group date" data-provide="datepicker">
-                        <input asp-for="DueDate" type="text" class="form-control" readonly required>
-                        <div class="input-group-append">
-                            <span class="input-group-text"><i class="fa fa-calendar-alt"></i></span>
-                        </div>
-                    </div>
+                <div class="col-8">
+                    <label asp-for="AccountId"></label>
+                    <select asp-for="AccountId" asp-items="@ViewBag.Accounts" class="form-control selectpicker"
+                            required
+                            data-live-search="true">
+                        <option>Chose an account</option>
+                    </select>
+                    <span asp-validation-for="AccountId" class="text-danger"></span>
                 </div>
             </div>
-
-        </div>
-        <div class="card-footer" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a asp-action="index" class="btn btn-link">Cancel</a>
-        </div>
+            <div class="form-row mb-3">
+                <div class="col-3">
+                    <label asp-for="Amount"></label>
+                    <input asp-for="Amount" type="number" class="form-control" required />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                <div class="col-3">
+                    <label asp-for="Date"></label>
+                    <input asp-for="Date" type="date" class="form-control" required />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="col-3">
+                    <label asp-for="DueDate"></label>
+                    <input asp-for="DueDate" type="date" class="form-control" required />
+                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+    <div class="card-footer" role="toolbar" aria-label="Toolbar with button groups">
+        <button type="submit" class="btn btn-outline-primary" form="submitForm">Save</button>
+        <a asp-action="index" class="btn btn-link">Cancel</a>
+    </div>
+</div>
+
 

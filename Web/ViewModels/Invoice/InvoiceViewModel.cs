@@ -11,30 +11,25 @@ namespace Web.ViewModels {
         public string No { get; set; }
 
         [Required]
-        [Display(Name = "Subtotal")]
+        [Display(Name = "Amount")]
         public decimal Amount { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Tax Rate")]
+        public decimal TaxRate { get; set; }
+
+        [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Due date")]
         public DateTime DueDate { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:#.##}", ApplyFormatInEditMode = true)]
-        public decimal PaymentAmount { get; set; }
+        [Display(Name = "Account")]
+        public long? AccountId { get; set; }
+        public VaccountViewModel Account { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? PaymentDate { get; set; }
-
-        [Display(Name = "Business name")]
-        public long? SupplierId { get; set; }
-        public VendorViewModel Supplier { get; set; }
-
-        [Display(Name = "Company")]
-        public long? CompanyId { get; set; }
-        public CompanyViewModel Company { get; set; }
+        public bool IsDraft { get; set; }
     }
 }

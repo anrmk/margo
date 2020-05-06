@@ -1,28 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class InvoiceListViewModel {
         public long Id { get; set; }
         public string No { get; set; }
-        public double Subtotal { get; set; }
+        public string Amount { get; set; }
         public double TaxRate { get; set; }
-        public string Amount => (Subtotal * (1 + TaxRate / 100)).ToString("0.##");
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime DueDate { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public string DueDate { get; set; }
+        public long AccountId { get; set; }
+        public string AccountName { get; set; }
+
+        public string CompanyName { get; set; }
+        public string VendorName { get; set; }
+
+        public bool IsDraft { get; set; }
 
         public double PaymentAmount { get; set; }
         public string PaymentDate { get; set; }
-
-        public long CompanyId { get; set; }
-        public string CompanyName { get; set; }
-
-        public long CustomerId { get; set; }
-        public string CustomerName { get; set; }
     }
 }

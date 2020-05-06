@@ -29,6 +29,10 @@ namespace Web.Controllers.Mvc {
 
         public async Task<ActionResult> Details(long id) {
             var item = await _crudBusinessManager.GetCompany(id);
+            if(item == null) {
+                return NotFound();
+            }
+
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
@@ -49,10 +53,9 @@ namespace Web.Controllers.Mvc {
 
                     return RedirectToAction(nameof(Edit), new { Id = item.Id });
                 }
-            } catch(Exception e) {
-                _logger.LogError(e, e.Message);
-                ModelState.AddModelError("All", e.Message);
-                BadRequest(e);
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
             }
 
             return View(model);
@@ -77,9 +80,9 @@ namespace Web.Controllers.Mvc {
                         return NotFound();
                     }
                 }
-            } catch(Exception e) {
-                _logger.LogError(e, e.Message);
-                BadRequest(e);
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
             }
             return RedirectToAction(nameof(Edit), new { Id = id });
         }
@@ -94,9 +97,9 @@ namespace Web.Controllers.Mvc {
                         return BadRequest();
                     }
                 }
-            } catch(Exception e) {
-                _logger.LogError(e, e.Message);
-                BadRequest(e);
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
             }
 
             return RedirectToAction(nameof(Edit), new { Id = companyId });
