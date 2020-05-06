@@ -8,7 +8,10 @@
     };
     $.validator.setDefaults(settings);
     $.validator.unobtrusive.options = settings;
-
+}).ajaxStart(() => {
+    $('form fieldset').attr('disabled', 'disabled');
+}).ajaxStop(() => {
+    $('form fieldset').removeAttr('disabled')
 });
 
 $.fn.dialog = function (header, callback) {

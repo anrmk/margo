@@ -11,14 +11,19 @@
 <div class="sidebar-sticky">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
-                Companies
+            <a class="nav-link @(url.Contains("/home") ? "active" : "")" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-tachometer-alt nav-icon"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @(url.Contains("/customer") ? "active" : "")" asp-controller="Customer" asp-action="Index">
-                Customers
+            <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
+                <i class="far fa-circle nav-icon"></i> Companies
             </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link @(url.Contains("/supplier") ? "active" : "")" asp-controller="Supplier" asp-action="Index">
+            <i class="far fa-user-circle nav-icon"></i> Suppliers
+        </a>
         </li>
         <li class="nav-item">
             <a class="nav-link @(url.Contains("/invoice") ? "active" : "")" asp-controller="Invoice" asp-action="Index">
@@ -33,23 +38,13 @@
     </ul>
 
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-        <span><i class="fa fa-table mr-1"></i> Reports</span>
-    </h6>
-    <ul class="nav flex-column mb-2">
-        <li class="nav-item">
-            <a class="nav-link  @(url.Contains("/report") ? "active" : "")" asp-controller="Report" asp-action="Index">Aging Summary Report</a>
-        </li>
-
-    </ul>
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
         <span><i class="fa fa-cogs mr-1"></i> Settings</span>
     </h6>
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link @(url.Contains("/exportSettings") ? "active" : "")" asp-controller="Settings" asp-action="ExportField">
-                Export Settings
+                General
             </a>
         </li>
-
     </ul>
 </div>

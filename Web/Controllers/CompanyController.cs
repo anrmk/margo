@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -9,19 +8,19 @@ using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class CompanyController: BaseController<CompanyController> {
-        private readonly ICrudBusinessManager _businessManager;
+        private readonly ICrudBusinessManager _crudBusinessManager;
 
         public CompanyController(ILogger<CompanyController> logger, IMapper mapper, ApplicationContext context,
-            ICrudBusinessManager businessManager) : base(logger, mapper, context) {
-            _businessManager = businessManager;
+            ICrudBusinessManager crudBusinessManager) : base(logger, mapper, context) {
+            this._crudBusinessManager = crudBusinessManager;
         }
 
         // GET: Company
@@ -31,40 +30,40 @@ namespace Web.Controllers.Mvc {
 
         // GET: Company/Details/5
         public async Task<ActionResult> Details(long id) {
-            var item = await _businessManager.GetCompany(id);
+            var item = await _crudBusinessManager.GetCompany(id);
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
         // GET: Company/Create
         public ActionResult Create() {
-            var model = new CompanyViewModel();
+            var model = new CompanyGeneralViewModel();
             return View(model);
         }
 
         // POST: Company/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CompanyViewModel model) {
+        public async Task<ActionResult> Create(CompanyGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _businessManager.CreateCompany(_mapper.Map<CompanyDto>(model));
+                    var item = await _crudBusinessManager.CreateCompany(_mapper.Map<CompanyGeneralDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Edit), new { Id = item.Id });
                 }
             } catch(Exception e) {
                 _logger.LogError(e, e.Message);
+                ModelState.AddModelError("All", e.Message);
                 BadRequest(e);
             }
-
             return View(model);
         }
 
         // GET: Company/Edit/5
         public async Task<ActionResult> Edit(long id) {
-            var item = await _businessManager.GetCompany(id);
+            var item = await _crudBusinessManager.GetCompany(id);
             if(item == null) {
                 return NotFound();
             }
@@ -75,21 +74,37 @@ namespace Web.Controllers.Mvc {
         // POST: Company/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(long id, CompanyViewModel model) {
+        public async Task<ActionResult> Edit(long id, CompanyGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _businessManager.UpdateCompany(id, _mapper.Map<CompanyDto>(model));
+                    var item = await _crudBusinessManager.UpdateCompany(id, _mapper.Map<CompanyGeneralDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
-                    model = _mapper.Map<CompanyViewModel>(item);
+                }
+            } catch(Exception e) {
+                _logger.LogError(e, e.Message);
+                BadRequest(e);
+            }
+            return RedirectToAction(nameof(Edit), new { Id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditAddress(long companyId, CompanyAddressViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var item = await _crudBusinessManager.UpdateCompanyAddress(companyId, _mapper.Map<CompanyAddressDto>(model));
+                    if(item == null) {
+                        return BadRequest();
+                    }
                 }
             } catch(Exception e) {
                 _logger.LogError(e, e.Message);
                 BadRequest(e);
             }
 
-            return View(model);
+            return RedirectToAction(nameof(Edit), new { Id = companyId });
         }
 
         // POST: Company/Delete/5
@@ -97,7 +112,7 @@ namespace Web.Controllers.Mvc {
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id) {
             try {
-                var item = await _businessManager.DeleteCompany(id);
+                var item = await _crudBusinessManager.DeleteCompany(id);
                 if(item == false) {
                     return NotFound();
                 }
@@ -113,7 +128,7 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class CompanyController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;
@@ -129,5 +144,12 @@ namespace Web.Controllers.Api {
             var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
             return pager;
         }
+
+        //[HttpGet]
+        //[Route("{id}/suppliers")]
+        //public async Task<List<SupplierListViewModel>> GetSuppliers(long companyId) {
+        //    var result = await _businessManager.GetSuppliers(companyId);
+        //    return _mapper.Map<List<SupplierListViewModel>>(result);
+        //}
     }
 }

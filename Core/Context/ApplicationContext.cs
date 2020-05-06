@@ -30,10 +30,10 @@ namespace Core.Context {
         #region DbSet
 
         public DbSet<CompanyEntity> Companies { get; set; }
-        public DbSet<CompanyAddressEntity> CompanyAdresses { get; set; }
+        public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
 
-        public DbSet<SupplierEntity> Customers { get; set; }
-        public DbSet<SupplierAddressEntity> CustomerAdresses { get; set; }
+        public DbSet<SupplierEntity> Suppliers { get; set; }
+        public DbSet<SupplierAddressEntity> SupplierAddresses { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
         #endregion

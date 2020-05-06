@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -13,20 +12,35 @@ using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface ICrudBusinessManager {
+        #region COMPANY
         Task<CompanyDto> GetCompany(long id);
         Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter);
         Task<List<CompanyDto>> GetCompanies();
-        Task<CompanyDto> CreateCompany(CompanyDto dto);
-        Task<CompanyDto> UpdateCompany(long id, CompanyDto dto);
+        Task<CompanyDto> CreateCompany(CompanyGeneralDto dto);
+        Task<CompanyDto> UpdateCompany(long id, CompanyGeneralDto dto);
         Task<bool> DeleteCompany(long id);
+        #endregion
 
+        #region COMPANY ADDRESS
+        Task<CompanyAddressDto> GetCompanyAddress(long id);
+        Task<CompanyAddressDto> CreateCompanyAddress(CompanyAddressDto dto);
+        Task<CompanyAddressDto> UpdateCompanyAddress(long companyId, CompanyAddressDto dto);
+        #endregion
+
+        #region SUPPLIER
         Task<SupplierDto> GetSupplier(long id);
         Task<Pager<SupplierDto>> GetSupplierPager(PagerFilter filter);
         Task<List<SupplierDto>> GetSuppliers();
-        Task<List<SupplierDto>> GetSuppliers(long companyId);
-        Task<SupplierDto> CreateSupplier(SupplierDto dto);
-        Task<SupplierDto> UpdateSupplier(long id, SupplierDto dto);
+        Task<SupplierDto> CreateSupplier(SupplierGeneralDto dto);
+        Task<SupplierDto> UpdateSupplier(long id, SupplierGeneralDto dto);
         Task<bool> DeleteSupplier(long id);
+        #endregion
+
+        #region SUPPLIER ADDRESS
+        Task<SupplierAddressDto> GetSupplierAddress(long id);
+        Task<SupplierAddressDto> CreateSupplierAddress(SupplierAddressDto dto);
+        Task<SupplierAddressDto> UpdateSupplierAddress(long companyId, SupplierAddressDto dto);
+        #endregion
 
         Task<InvoiceDto> GetInvoice(long id);
         Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
@@ -38,15 +52,24 @@ namespace Core.Services.Business {
     public class CrudBusinessManager: BaseBusinessManager, ICrudBusinessManager {
         private readonly IMapper _mapper;
         private readonly ICompanyManager _companyManager;
+        private readonly ICompanyAddressManager _companyAddressManager;
+
         private readonly ISupplierManager _supplierManager;
+        private readonly ISupplierAddressManager _supplierAddressManager;
+
         private readonly IInvoiceManager _invoiceManager;
 
         //private readonly INsiBusinessManager _nsiBusinessManager;
 
-        public CrudBusinessManager(IMapper mapper, ICompanyManager companyManager, ISupplierManager supplierManager, IInvoiceManager invoiceManager) {
+        public CrudBusinessManager(IMapper mapper, 
+            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, 
+            ISupplierManager supplierManager, ISupplierAddressManager supplierAddressManager,
+            IInvoiceManager invoiceManager) {
             _mapper = mapper;
             _companyManager = companyManager;
+            _companyAddressManager = companyAddressManager;
             _supplierManager = supplierManager;
+            _supplierAddressManager = supplierAddressManager;
             _invoiceManager = invoiceManager;
         }
 
@@ -58,16 +81,16 @@ namespace Core.Services.Business {
 
         public async Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter) {
             #region Sort/Filter
-            Expression<Func<CompanyEntity, string>> orderPredicate = filter.RandomSort ? x => Guid.NewGuid().ToString() : GetExpression<CompanyEntity>(filter.Sort ?? "No");
+            var sortby = filter.Sort ?? "Name";
 
-            Expression<Func<CompanyEntity, bool>> wherePredicate = x =>
+            Expression<Func<CompanyEntity, bool>> where = x =>
                    (true)
                    && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
             #endregion
 
             string[] include = new string[] { "Address" };
 
-            var tuple = await _companyManager.Pager<CompanyEntity>(wherePredicate, orderPredicate, filter.Offset, filter.Limit, include);
+            var tuple = await _companyManager.Pager<CompanyEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
@@ -85,13 +108,13 @@ namespace Core.Services.Business {
             return _mapper.Map<List<CompanyDto>>(result);
         }
 
-        public async Task<CompanyDto> CreateCompany(CompanyDto dto) {
+        public async Task<CompanyDto> CreateCompany(CompanyGeneralDto dto) {
             var entity = await _companyManager.Create(_mapper.Map<CompanyEntity>(dto));
             return _mapper.Map<CompanyDto>(entity);
         }
 
-        public async Task<CompanyDto> UpdateCompany(long id, CompanyDto dto) {
-            var entity = await _companyManager.FindInclude(id);
+        public async Task<CompanyDto> UpdateCompany(long id, CompanyGeneralDto dto) {
+            var entity = await _companyManager.Find(id);
             if(entity == null) {
                 return null;
             }
@@ -102,12 +125,54 @@ namespace Core.Services.Business {
         }
 
         public async Task<bool> DeleteCompany(long id) {
-            var entity = await _companyManager.FindInclude(id);
-            if(entity == null) {
-                return false;
+            var result = 0;
+            var entity = await _companyManager.Find(id);
+
+            if(entity != null) {
+                result = await _companyManager.Delete(entity);
             }
-            int result = await _companyManager.Delete(entity);
+
+            var address = await _companyAddressManager.Find(entity.AddressId);
+            if(address != null) {
+                result = await _companyAddressManager.Delete(address);
+            }
+
             return result != 0;
+        }
+        #endregion
+
+        #region CUSTOMER ADRESS
+        public async Task<CompanyAddressDto> GetCompanyAddress(long id) {
+            var result = await _companyAddressManager.Find(id);
+            return _mapper.Map<CompanyAddressDto>(result);
+        }
+
+        public async Task<CompanyAddressDto> CreateCompanyAddress(CompanyAddressDto dto) {
+            var settings = await _companyAddressManager.Find(dto.Id);
+            if(settings == null) {
+                return null;
+            }
+
+            var newEntity = _mapper.Map<CompanyAddressEntity>(dto);
+            var entity = await _companyAddressManager.Create(newEntity);
+            return _mapper.Map<CompanyAddressDto>(entity);
+        }
+
+        public async Task<CompanyAddressDto> UpdateCompanyAddress(long companyId, CompanyAddressDto dto) {
+            var entity = await _companyAddressManager.Find(dto.Id);
+
+            if(entity == null) {
+                entity = await _companyAddressManager.Create(_mapper.Map<CompanyAddressEntity>(dto));
+
+                var company = await _companyManager.Find(companyId);
+                company.AddressId = entity.Id;
+                await _companyManager.Update(company);
+            } else {
+                var updateEntity = _mapper.Map(dto, entity);
+                entity = await _companyAddressManager.Update(updateEntity);
+            }
+
+            return _mapper.Map<CompanyAddressDto>(entity);
         }
         #endregion
 
@@ -119,9 +184,9 @@ namespace Core.Services.Business {
 
         public async Task<Pager<SupplierDto>> GetSupplierPager(PagerFilter filter) {
             #region Sort/Filter
-            Expression<Func<SupplierEntity, string>> orderPredicate = filter.RandomSort ? x => Guid.NewGuid().ToString() : GetExpression<SupplierEntity>(filter.Sort ?? "No");
+            var sortby = filter.Sort ?? "No";
 
-            Expression<Func<SupplierEntity, bool>> wherePredicate = x =>
+            Expression<Func<SupplierEntity, bool>> where = x =>
                    (true)
                 && (string.IsNullOrEmpty(filter.Search)
                     || x.Name.ToLower().Contains(filter.Search.ToLower())
@@ -129,9 +194,9 @@ namespace Core.Services.Business {
                     || x.Description.ToLower().Contains(filter.Search.ToLower()));
             #endregion
 
-            string[] include = new string[] { "Company", "Address", "Activities" };
+            string[] include = new string[] { "Address" };
 
-            var tuple = await _supplierManager.Pager<SupplierEntity>(wherePredicate, orderPredicate, filter.Offset, filter.Limit, include);
+            var tuple = await _supplierManager.Pager<SupplierEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
@@ -149,23 +214,13 @@ namespace Core.Services.Business {
             return _mapper.Map<List<SupplierDto>>(result);
         }
 
-        public async Task<List<SupplierDto>> GetSuppliers(long companyId) {
-            var result = await _supplierManager.FindAll(companyId);
-            return _mapper.Map<List<SupplierDto>>(result);
-        }
-
-        public async Task<SupplierDto> CreateSupplier(SupplierDto dto) {
-            var entity = _mapper.Map<SupplierEntity>(dto);
-            entity = await _supplierManager.Create(entity);
-
+        public async Task<SupplierDto> CreateSupplier(SupplierGeneralDto dto) {
+            var entity = await _supplierManager.Create(_mapper.Map<SupplierEntity>(dto));
             return _mapper.Map<SupplierDto>(entity);
         }
 
-        public async Task<SupplierDto> UpdateSupplier(long id, SupplierDto dto) {
-            if(id != dto.Id) {
-                return null;
-            }
-            var entity = await _supplierManager.FindInclude(id);
+        public async Task<SupplierDto> UpdateSupplier(long id, SupplierGeneralDto dto) {
+            var entity = await _supplierManager.Find(id);
             if(entity == null) {
                 return null;
             }
@@ -177,12 +232,54 @@ namespace Core.Services.Business {
         }
 
         public async Task<bool> DeleteSupplier(long id) {
-            var entity = await _supplierManager.FindInclude(id);
+            var result = 0;
+            var entity = await _supplierManager.Find(id);
+
             if(entity == null) {
-                return false;
+                result = await _supplierManager.Delete(entity);
             }
-            int result = await _supplierManager.Delete(entity);
+
+            var address = await _supplierAddressManager.Find(entity.AddressId);
+            if(address != null) {
+                result = await _supplierAddressManager.Delete(address);
+            }
+
             return result != 0;
+        }
+        #endregion
+
+        #region SUPPLIER ADRESS
+        public async Task<SupplierAddressDto> GetSupplierAddress(long id) {
+            var result = await _supplierAddressManager.Find(id);
+            return _mapper.Map<SupplierAddressDto>(result);
+        }
+
+        public async Task<SupplierAddressDto> CreateSupplierAddress(SupplierAddressDto dto) {
+            var settings = await _supplierAddressManager.Find(dto.Id);
+            if(settings == null) {
+                return null;
+            }
+
+            var newEntity = _mapper.Map<SupplierAddressEntity>(dto);
+            var entity = await _supplierAddressManager.Create(newEntity);
+            return _mapper.Map<SupplierAddressDto>(entity);
+        }
+
+        public async Task<SupplierAddressDto> UpdateSupplierAddress(long supplierId, SupplierAddressDto dto) {
+            var entity = await _supplierAddressManager.Find(dto.Id);
+
+            if(entity == null) {
+                entity = await _supplierAddressManager.Create(_mapper.Map<SupplierAddressEntity>(dto));
+
+                var supplier = await _supplierManager.Find(supplierId);
+                supplier.AddressId = entity.Id;
+                await _supplierManager.Update(supplier);
+            } else {
+                var updateEntity = _mapper.Map(dto, entity);
+                entity = await _supplierAddressManager.Update(updateEntity);
+            }
+
+            return _mapper.Map<SupplierAddressDto>(entity);
         }
         #endregion
 
@@ -194,9 +291,9 @@ namespace Core.Services.Business {
 
         public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
             #region Sort/Filter
-            Expression<Func<InvoiceEntity, string>> orderPredicate = filter.RandomSort ? x => Guid.NewGuid().ToString() : GetExpression<InvoiceEntity>(filter.Sort ?? "No");
+            var sortby = filter.Sort ?? "No";
 
-            Expression<Func<InvoiceEntity, bool>> wherePredicate = x =>
+            Expression<Func<InvoiceEntity, bool>> where = x =>
                   (true)
                && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Supplier.Name.ToLower().Contains(filter.Search.ToLower())))
                && ((filter.CompanyId == null) || filter.CompanyId == x.CompanyId);
@@ -204,7 +301,7 @@ namespace Core.Services.Business {
 
             string[] include = new string[] { "Company", "Supplier" };
 
-            var tuple = await _invoiceManager.Pager<InvoiceEntity>(wherePredicate, orderPredicate, filter.Offset, filter.Limit, include);
+            var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 

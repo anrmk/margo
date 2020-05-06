@@ -1,5 +1,4 @@
-﻿using System.Linq;
-
+﻿
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -22,48 +21,68 @@ namespace Web {
         }
 
         public MapperConfig() {
+            CreateMap<PagerFilterViewModel, PagerFilter>();
+
             #region COMPANY
-            CreateMap<CompanyViewModel, CompanyDto>()
-                .ForMember(d => d.Address, o => o.MapFrom(s => new CompanyAddressDto() { Id = s.AddressId, Address = s.Address, Address2 = s.Address2, City = s.City, State = s.State, ZipCode = s.ZipCode, Country = s.Country }))
+            CreateMap<CompanyViewModel, CompanyDto>().ReverseMap();
+            CreateMap<CompanyViewModel, CompanyGeneralViewModel>()
                 .ReverseMap()
-                .ForMember(d => d.AddressId, o => o.MapFrom(s => (s.Address != null) ? s.Address.Id : 0))
-                .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.Address : ""))
-                .ForMember(d => d.Address2, o => o.MapFrom(s => (s.Address != null) ? s.Address.Address2 : ""))
-                .ForMember(d => d.City, o => o.MapFrom(s => (s.Address != null) ? s.Address.City : ""))
-                .ForMember(d => d.State, o => o.MapFrom(s => (s.Address != null) ? s.Address.State : ""))
-                .ForMember(d => d.Country, o => o.MapFrom(s => (s.Address != null) ? s.Address.Country : ""))
-                .ForMember(d => d.ZipCode, o => o.MapFrom(s => (s.Address != null) ? s.Address.ZipCode : ""));
+                .ForMember(d => d.General, o => o.MapFrom(s => new CompanyGeneralViewModel() {
+                    Id = s.Id,
+                    Name = s.Name,
+                    No = s.No,
+                    PhoneNumber = s.PhoneNumber,
+                    Website = s.Website,
+                    Email = s.Email,
+                    CEO = s.CEO,
+                    DB = s.DB,
+                    EIN = s.EIN,
+                    Founded = s.Founded
+                }));
+
+            CreateMap<CompanyGeneralViewModel, CompanyGeneralDto>().ReverseMap();
+            CreateMap<CompanyAddressViewModel, CompanyAddressDto>().ReverseMap();
 
             CreateMap<CompanyListViewModel, CompanyDto>()
                 .ReverseMap()
+                .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))
+                .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.General.PhoneNumber))
                 .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
+
             #endregion
 
             #region SUPPLIER
+            CreateMap<SupplierViewModel, SupplierDto>().ReverseMap();
+            CreateMap<SupplierViewModel, SupplierGeneralDto>().ReverseMap()
+                .ForMember(d => d.General, o => o.MapFrom(s => new SupplierGeneralViewModel() {
+                    Id = s.Id,
+                    Name = s.Name,
+                    No = s.No,
+                    PhoneNumber = s.PhoneNumber,
+                    Website = s.Website,
+                    Email = s.Email,
+                    Description = s.Description
+                }));
+
+            CreateMap<SupplierGeneralViewModel, SupplierGeneralDto>().ReverseMap();
+            CreateMap<SupplierAddressViewModel, SupplierAddressDto>().ReverseMap();
+
             CreateMap<SupplierListViewModel, SupplierDto>()
-                .ForMember(d => d.Invoices, o => o.Ignore())
                 .ReverseMap()
-                .ForMember(d => d.Company, o => o.MapFrom(s => (s.Company != null) ? s.Company.Name : ""))
+                .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))
+                .ForMember(d => d.Description, o => o.MapFrom(s => s.General.Description))
+                .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.General.PhoneNumber))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.General.Email))
+                .ForMember(d => d.Website, o => o.MapFrom(s => s.General.Website))
                 .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
-
-            CreateMap<SupplierViewModel, SupplierDto>()
-               .ForMember(d => d.Address, o => o.MapFrom(s => new SupplierAddressDto() { Id = s.AddressId, Address = s.Address, Address2 = s.Address2, City = s.City, State = s.State, ZipCode = s.ZipCode, Country = s.Country }))
-               .ReverseMap()
-               .ForMember(d => d.AddressId, o => o.MapFrom(s => (s.Address != null) ? s.Address.Id : (long?)null))
-               .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.Address : ""))
-               .ForMember(d => d.Address2, o => o.MapFrom(s => (s.Address != null) ? s.Address.Address2 : ""))
-               .ForMember(d => d.City, o => o.MapFrom(s => (s.Address != null) ? s.Address.City : ""))
-               .ForMember(d => d.State, o => o.MapFrom(s => (s.Address != null) ? s.Address.State : ""))
-               .ForMember(d => d.ZipCode, o => o.MapFrom(s => (s.Address != null) ? s.Address.ZipCode : ""))
-               .ForMember(d => d.Country, o => o.MapFrom(s => (s.Address != null) ? s.Address.Country : ""));
-
             #endregion
 
             #region INVOICE
             CreateMap<InvoiceListViewModel, InvoiceDto>()
                .ReverseMap()
-               .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.Name))
-               .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Supplier.Name))
+               .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.General.Name))
                .ForMember(d => d.Amount, o => o.MapFrom(s => (s.Subtotal * (1 + s.TaxRate / 100)).ToString("0.##")));
 
             CreateMap<InvoiceViewModel, InvoiceDto>()
@@ -72,6 +91,7 @@ namespace Web {
                 .ReverseMap();
 
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
+
             #endregion
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();

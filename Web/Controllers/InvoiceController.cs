@@ -10,6 +10,7 @@ using Core.Data.Dto;
 using Core.Extension;
 using Core.Extensions;
 using Core.Services.Business;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace Web.Controllers.Mvc {
         // GET: Invoice
         public async Task<ActionResult> Index() {
             var companies = await _businessManager.GetCompanies();
-            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() }).ToList();
 
             var model = new InvoiceFilterViewModel();
             return View(model);

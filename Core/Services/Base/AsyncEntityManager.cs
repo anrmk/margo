@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Core.Context;
+using Core.Extension;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -128,25 +129,24 @@ namespace Core.Services.Base {
             return (await query.ToListAsync()).AsQueryable();
         }
 
-        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, Expression<Func<T, string>> order, bool descSort, int? offset, int? limit, params string[] properties) {
+        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, bool descSort, int offset, int limit, params string[] properties) {
             var query = where is null ? DbSet.AsQueryable() : DbSet.Where(where).AsQueryable();
             int count = await query.CountAsync();
 
-            if(order is null) {
-                query = query.Skip(offset ?? 0);
-            } else {
-                query = descSort ? query.OrderByDescending(order).Skip(offset ?? 0) : query.OrderBy(order).Skip(offset ?? 0);
-            }
+            query = string.IsNullOrEmpty(order) ?
+               query.OrderBy(x => Guid.NewGuid().ToString()).Skip(offset) :
+               SortExtension.OrderByDynamic(query, order, descSort).Skip(offset);
 
             foreach(var prop in properties)
                 query = query.Include(prop);
 
-            query = limit.HasValue ? query.Take(limit.Value) : query;
+            query = query.Take(limit);
+
             var result = await query.ToListAsync();
             return new Tuple<List<T>, int>(result, count);
         }
 
-        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, Expression<Func<T, string>> order, int? offset, int? limit, params string[] properties) {
+        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, int offset, int limit, params string[] properties) {
             return await Pager<Key>(where, order, false, offset, limit, properties);
         }
     }

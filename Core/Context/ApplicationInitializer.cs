@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Core.Data.Entities;
-using Core.Extension;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json;
 
 namespace Core.Context {
     public class ApplicationInitializer {
@@ -49,11 +44,11 @@ namespace Core.Context {
         private void ApplicationUser() {
             var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUserEntity>>();
 
-            if(userManager.FindByEmailAsync("test@test.kz").Result == null) {
+            if(userManager.FindByEmailAsync("test@test.com").Result == null) {
                 var user = new ApplicationUserEntity() {
-                    UserName = "test@test.kz",
-                    NormalizedUserName = "Тестовый пользователь",
-                    Email = "test@test.kz",
+                    UserName = "test@test.com",
+                    NormalizedUserName = "ADMINISTRATOR",
+                    Email = "test@test.com",
                     EmailConfirmed = true
                 };
 

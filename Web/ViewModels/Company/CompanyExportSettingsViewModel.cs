@@ -47,6 +47,6 @@ namespace Web.ViewModels {
 
     public enum CompanyExportSettingsSortBy {
         ACCOUNT_NUMBER = 0,
-        BUSINESS_NAME =  1
+        BUSINESS_NAME = 1
     }
 }

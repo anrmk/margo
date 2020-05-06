@@ -3,9 +3,10 @@ using Core.Data.Entities;
 using Core.Services.Base;
 
 namespace Core.Services.Managers {
-    public interface ICompanyAddressMananger: IEntityManager<CompanyAddressEntity> {
+    public interface ICompanyAddressManager: IEntityManager<CompanyAddressEntity> {
     }
-    public class CompanyAddressManager: AsyncEntityManager<CompanyAddressEntity>, ICompanyAddressMananger {
+
+    public class CompanyAddressManager: AsyncEntityManager<CompanyAddressEntity>, ICompanyAddressManager {
         public CompanyAddressManager(IApplicationContext context) : base(context) { }
     }
 }

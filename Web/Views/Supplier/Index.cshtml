@@ -1,27 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Customers";
-    ViewData["Subtitle"] = "Organize and keep track of your customers by adding, deleting, merging, or restoring them in the system. This boosts efficiency knowing your customer list is clean and there are no duplicates.";
+    ViewData["Title"] = "Suppliers";
+    ViewData["Subtitle"] = "Organize and keep track of your supplier by adding, deleting, merging, or restoring them in the system.";
 }
 
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
             <div id="toolbar" role="toolbar">
-                <a asp-controller="Customer" asp-action="Create" class="btn btn-outline-secondary"><i class="fa fa-plus mr-1"></i> Create</a>
+                <a asp-controller="Supplier" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
             </div>
-            <table id="datatable" data-toggle="table" data-url="/api/customer"
+            <table id="datatable" data-toggle="table" data-url="/api/supplier"
                    data-total-field="totalItems"
                    data-data-field="items">
                 <thead>
                     <tr>
-                        <th data-field="no" data-sortable="true">No</th>
-                        <th data-field="isActive" data-formatter="activityFormatter" data-sortable="true">Activity</th>
-                        <th data-field="name" data-formatter="nameFormatter">Customer</th>
-                        <th data-field="phoneNumber">Phone</th>
-                        <th data-field="creditLimit" data-sortable="true">Credit limit</th>
-                        <th data-field="creditUtilized">High credit utilized</th>
+                        <th data-field="no" data-sortable="true">Supplier no</th>
+                        <th data-field="name" data-sortable="true">Supplier</th>
+                        <th data-field="phoneNumber" data-sortable="true">Phone</th>
                         <th data-field="address">Address</th>
-                        <th data-formatter="actionFormatter" class="text-nowrap text-right">Actions</th>
+                        <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
+                        <th data-formatter="actionFormatter" class="text-nowrap text-right table-active">Actions</th>
                     </tr>
                 </thead>
             </table>
@@ -40,7 +38,7 @@
         }
 
         function actionFormatter(value, row) {
-            return `<a href='/customer/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+            return `<a href='/supplier/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
         }
     </script>
 }

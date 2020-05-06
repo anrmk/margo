@@ -62,7 +62,7 @@ namespace Web {
             });
 
             services.ConfigureApplicationCookie(options => {
-                options.ExpireTimeSpan = TimeSpan.FromHours(24);
+                options.ExpireTimeSpan = TimeSpan.FromHours(4);
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
 

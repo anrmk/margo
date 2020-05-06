@@ -3,10 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
-    <Product>Platform</Product>
+    <Product>Margo</Product>
     <PackageIcon>logo.png</PackageIcon>
     <PackageIconUrl />
     <Authors>Aziz Nurmukhamedov</Authors>
+    <StartupObject>Web.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

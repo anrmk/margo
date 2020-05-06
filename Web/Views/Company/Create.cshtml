@@ -1,9 +1,16 @@
-﻿@model Web.ViewModels.CompanyViewModel
+﻿@model Web.ViewModels.CompanyGeneralViewModel
 
 @{
     ViewData["Title"] = "Create Company";
     ViewData["SubTitle"] = "Please provide all required details to register new company";
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Companies</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New</li>
+    </ol>
+</nav>
 
 <div class="card">
     <div class="card-header">
@@ -11,72 +18,59 @@
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" id="general-tab" href="#general">General</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" id="address-tab" href="#address">Address</a>
-            </li>
-            @*<li class="nav-item">
-                <a class="nav-link" data-toggle="tab" id="summary-tab" href="#summary">Summary Range</a>
-            </li>*@
         </ul>
     </div>
     <div class="card-body">
-        <form id="createForm" class="tab-content" method="POST" asp-action="Create">
+        <form id="submitForm" class="tab-content" method="POST" asp-action="Create">
             <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-                <div class="form-row mb-3">
-                    <div class="col-3">
-                        <label asp-for="No">Company Id</label>
-                        <input asp-for="No" type="text" class="form-control" required>
-                        <span asp-validation-for="No" class="text-danger"></span>
+                <div class="form-group row mb-3">
+                    <div class="col-4">
+                        <label asp-for="No"></label>
+                        <input asp-for="No" type="text" name="No" class="form-control">
+                        <span asp-validation-for="No" class="text-danger" required></span>
                     </div>
-                    <div class="col-5">
-                        <label asp-for="Name">Business Name</label>
-                        <input asp-for="Name" type="text" class="form-control" required>
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="col-8">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" type="text" name="Name" class="form-control">
+                        <span asp-validation-for="Name" class="text-danger" required></span>
+                    </div>
+
+                </div>
+                
+                <div class="form-group row mb-3">
+                    <div class="col-4">
+                        <label asp-for="Website"></label>
+                        <input asp-for="Website" type="text" name="Website" class="form-control" placeholder="http://">
                     </div>
                     <div class="col-4">
-                        <label asp-for="PhoneNumber">Phone Number</label>
-                        <input asp-for="PhoneNumber" type="tel" class="form-control">
+                        <label asp-for="PhoneNumber"></label>
+                        <input asp-for="PhoneNumber" type="text" name="PhoneNumber" class="form-control">
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                <div class="form-row mb-3">
-                    <div class="col-8">
-                        <label asp-for="Address">Address</label>
-                        <input asp-for="Address" type="text" class="form-control">
-                        <span asp-validation-for="Address" class="form-text text-danger"></span>
-                    </div>
                     <div class="col-4">
-                        <label asp-for="City">City</label>
-                        <input asp-for="City" type="text" class="form-control">
-                        <span asp-validation-for="City" class="form-text text-danger"></span>
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" type="text" name="Email" class="form-control">
+                        <span asp-validation-for="Email" class="text-danger" required></span>
                     </div>
                 </div>
-                <div class="form-row mb-3">
-                    <div class="col">
-                        <label asp-for="Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                        <input asp-for="Address2" type="text" class="form-control" placeholder="Appartment or suite">
-                        <span asp-validation-for="Address2" class="form-text text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row mb-3">
-                    <div class="col">
-                        <label asp-for="Country">Country</label>
-                        <input asp-for="Country" type="text" class="form-control">
-                        <span asp-validation-for="Country" class="form-text text-danger"></span>
-                    </div>
 
-                    <div class="col">
-                        <label asp-for="State">State</label>
-                        <input asp-for="State" type="text" class="form-control">
-                        <span asp-validation-for="State" class="form-text text-danger"></span>
+                <div class="form-group row mb-3">
+                    <div class="col-4">
+                        <label asp-for="CEO"></label>
+                        <input asp-for="CEO" type="text" name="CEO" class="form-control">
                     </div>
-
-                    <div class="col">
-                        <label asp-for="ZipCode">Zip Code</label>
-                        <input asp-for="ZipCode" type="text" class="form-control">
-                        <span asp-validation-for="ZipCode" class="form-text text-danger"></span>
+                    <div class="col-3">
+                        <label asp-for="EIN"></label>
+                        <input asp-for="EIN" type="text" name="EIN" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <label asp-for="DB"></label>
+                        <input asp-for="DB" type="text" name="DB" class="form-control">
+                        <span asp-validation-for="DB" class="text-danger" required></span>
+                    </div>
+                    <div class="col-2">
+                        <label asp-for="Founded"></label>
+                        <input asp-for="Founded" type="date" name="Founded" class="form-control">
                     </div>
                 </div>
             </div>
@@ -84,7 +78,7 @@
     </div>
     <div class="card-footer">
         <div class="" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" class="btn btn-outline-primary" form="createForm">Save</button>
+            <button type="submit" class="btn btn-outline-primary" form="submitForm">Save</button>
             <a asp-action="index" class="btn btn-link">Cancel</a>
         </div>
     </div>

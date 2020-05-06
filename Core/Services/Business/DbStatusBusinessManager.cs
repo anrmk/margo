@@ -12,7 +12,7 @@ namespace Core.Services.Business {
     }
     public class DbStatusBusinessService: IDbStatusBusinessService {
         private readonly IConfiguration _configuration;
-        
+
         public DbStatusBusinessService(IConfiguration configuration) {
             _configuration = configuration;
         }

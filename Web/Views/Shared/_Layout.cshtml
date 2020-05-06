@@ -11,17 +11,22 @@
     <partial name="_HeaderPartial" />
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-white sidebar">
+            <nav class="col-lg-2 col-md-3 d-none d-md-block bg-dark sidebar">
                 <partial name="_SidebarPartial" />
             </nav>
 
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <main role="main" class="col-lg-10 col-md-9 ml-sm-auto px-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <div>
-                        <h3 class="mb-0">@ViewData["Title"]</h3>
+                        <h4 class="mb-0">@ViewData["Title"]</h4>
                         <p class="lead mb-0">@ViewData["SubTitle"]</p>
                     </div>
                     @RenderSection("Toolbar", required: false)
+                </div>
+
+                <div class="">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="All"></div>
                 </div>
 
                 @RenderBody()

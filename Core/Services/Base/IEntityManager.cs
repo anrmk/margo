@@ -20,7 +20,7 @@ namespace Core.Services.Base {
         Task<int> Count { get; }
         Task<IQueryable<T>> Filter(Expression<Func<T, bool>> where);
         Task<IQueryable<T>> Filter<Key>(Expression<Func<T, bool>> where, int index, int limit);
-        Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, Expression<Func<T, string>> sort, int? offset, int? limit, params string[] properties);
-        Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, Expression<Func<T, string>> sort, bool descSort, int? offset, int? limit, params string[] properties);
+        Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string sort, int offset, int limit, params string[] properties);
+        Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string sort, bool descSort, int offset, int limit, params string[] properties);
     }
 }

@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <RuntimeFrameworkVersion>3.*</RuntimeFrameworkVersion>
+    <Authors>Aziz Nurmukhamedov</Authors>
+    <Product>Margo Core</Product>
   </PropertyGroup>
 
   <ItemGroup>

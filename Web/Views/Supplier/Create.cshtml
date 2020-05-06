@@ -1,36 +1,31 @@
-﻿@model Web.ViewModels.SupplierViewModel
+﻿@model Web.ViewModels.SupplierGeneralViewModel
 
 @{
-    ViewData["Title"] = "Create Customer";
-    ViewData["SubTitle"] = "Please provide all required details to register new customer";
+    ViewData["Title"] = "Create Supplier";
+    ViewData["SubTitle"] = "Please provide all required details to register new supplier";
 }
 
-<form method="POST" asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Suppliers</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New</li>
+    </ol>
+</nav>
+
+<form asp-action="Create" method="POST">
     <div class="card">
         <div class="card-body">
             <div class="form-row mb-3">
                 <div class="col-4">
-                    <label asp-for="No">Account Number</label>
+                    <label asp-for="No"></label>
                     <input asp-for="No" type="text" class="form-control" required>
                     <span asp-validation-for="No" class="text-danger"></span>
                 </div>
-                <div class="col-4">
+                <div class="col-8">
                     <label asp-for="Name">Business Name</label>
                     <input asp-for="Name" type="text" class="form-control" required>
                     <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="CompanyId"></label>
-                    <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-live-search="true"></select>
-                    <span asp-validation-for="CompanyId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-row mb-3">
-                <div class="col-4">
-                    <label asp-for="PhoneNumber"></label>
-                    <input asp-for="PhoneNumber" type="text" class="form-control">
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-row mb-3">
@@ -40,50 +35,28 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
-
-            <h4 class="mb-3">Address</h4>
             <div class="form-row mb-3">
-                <div class="col-8">
-                    <label asp-for="Address">Address</label>
-                    <input asp-for="Address" type="text" class="form-control">
-                    <span asp-validation-for="Address" class="form-text text-danger"></span>
+                <div class="col-4">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" type="text" class="form-control">
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
                 <div class="col-4">
-                    <label asp-for="City">City</label>
-                    <input asp-for="City" type="text" class="form-control">
-                    <span asp-validation-for="City" class="form-text text-danger"></span>
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" type="text" class="form-control">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-4">
+                    <label asp-for="Website"></label>
+                    <input asp-for="Website" type="text" class="form-control">
+                    <span asp-validation-for="Website" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-row mb-3">
-                <div class="col">
-                    <label asp-for="Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                    <input asp-for="Address2" type="text" class="form-control" placeholder="Appartment or suite">
-                    <span asp-validation-for="Address2" class="form-text text-danger"></span>
-                </div>
-            </div>
-            <div class="form-row mb-3">
-                <div class="col">
-                    <label asp-for="Country">Country</label>
-                    <input asp-for="Country" type="text" class="form-control">
-                    <span asp-validation-for="Country" class="form-text text-danger"></span>
-                </div>
 
-                <div class="col">
-                    <label asp-for="State">State</label>
-                    <input asp-for="State" type="text" class="form-control">
-                    <span asp-validation-for="State" class="form-text text-danger"></span>
-                </div>
-
-                <div class="col">
-                    <label asp-for="ZipCode">Zip Code</label>
-                    <input asp-for="ZipCode" type="text" class="form-control">
-                    <span asp-validation-for="ZipCode" class="form-text text-danger"></span>
-                </div>
-            </div>
         </div>
         <div class="card-footer">
             <div class="" role="toolbar" aria-label="Toolbar with button groups">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-outline-primary">Save</button>
                 <a asp-action="index" class="btn btn-link">Cancel</a>
             </div>
         </div>
