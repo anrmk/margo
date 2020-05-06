@@ -20,27 +20,23 @@ namespace Web.Controllers.Mvc {
 
         public CompanyController(ILogger<CompanyController> logger, IMapper mapper, ApplicationContext context,
             ICrudBusinessManager crudBusinessManager) : base(logger, mapper, context) {
-            this._crudBusinessManager = crudBusinessManager;
+            _crudBusinessManager = crudBusinessManager;
         }
 
-        // GET: Company
         public ActionResult Index() {
             return View();
         }
 
-        // GET: Company/Details/5
         public async Task<ActionResult> Details(long id) {
             var item = await _crudBusinessManager.GetCompany(id);
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
-        // GET: Company/Create
         public ActionResult Create() {
             var model = new CompanyGeneralViewModel();
             return View(model);
         }
 
-        // POST: Company/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CompanyGeneralViewModel model) {
@@ -58,10 +54,10 @@ namespace Web.Controllers.Mvc {
                 ModelState.AddModelError("All", e.Message);
                 BadRequest(e);
             }
+
             return View(model);
         }
 
-        // GET: Company/Edit/5
         public async Task<ActionResult> Edit(long id) {
             var item = await _crudBusinessManager.GetCompany(id);
             if(item == null) {
@@ -71,7 +67,6 @@ namespace Web.Controllers.Mvc {
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
-        // POST: Company/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(long id, CompanyGeneralViewModel model) {
@@ -107,7 +102,6 @@ namespace Web.Controllers.Mvc {
             return RedirectToAction(nameof(Edit), new { Id = companyId });
         }
 
-        // POST: Company/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id) {
@@ -144,12 +138,5 @@ namespace Web.Controllers.Api {
             var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
             return pager;
         }
-
-        //[HttpGet]
-        //[Route("{id}/suppliers")]
-        //public async Task<List<SupplierListViewModel>> GetSuppliers(long companyId) {
-        //    var result = await _businessManager.GetSuppliers(companyId);
-        //    return _mapper.Map<List<SupplierListViewModel>>(result);
-        //}
     }
 }

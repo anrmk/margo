@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
-    public class SupplierGeneralViewModel {
+    public class VendorGeneralViewModel {
         public long Id { get; set; }
 
         [Required]

@@ -31,7 +31,7 @@ namespace Web.ViewModels {
 
         [Display(Name = "Business name")]
         public long? SupplierId { get; set; }
-        public SupplierViewModel Supplier { get; set; }
+        public VendorViewModel Supplier { get; set; }
 
         [Display(Name = "Company")]
         public long? CompanyId { get; set; }

@@ -44,7 +44,8 @@ $.fn.dialog = function (header, callback) {
  * formatting Date
  */
 $.fn.bootstrapTable.formatDate = function (value, row, index) {
-    return value == null ? "" : new Date(value).toLocaleDateString();
+    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return value == null ? "" : new Date(value).toLocaleDateString("en-US", options);
     //return value == null ? "" : moment(value, 'MM-DD-YYYY').format('MM-DD-YYYY');
 };
 

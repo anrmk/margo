@@ -12,22 +12,22 @@
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link @(url.Contains("/home") ? "active" : "")" asp-controller="Home" asp-action="Index">
-                <i class="fas fa-tachometer-alt nav-icon"></i> Dashboard
+                <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
-                <i class="far fa-circle nav-icon"></i> Companies
+                <i class="far fa-circle mr-1"></i> Companies
             </a>
         </li>
         <li class="nav-item">
-        <a class="nav-link @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
-            <i class="far fa-user-circle nav-icon"></i> Vendors
-        </a>
+            <a class="nav-link @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
+                <i class="far fa-user-circle mr-1"></i> Vendors
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @(url.Contains("/invoice") ? "active" : "")" asp-controller="Invoice" asp-action="Index">
-                Invoices
+            <a class="nav-link @(url.Contains("/account") ? "active" : "")" asp-controller="Vaccount" asp-action="Index">
+                <i class="fas fa-user-friends mr-1"></i> Accounts
             </a>
         </li>
         <li class="nav-item">

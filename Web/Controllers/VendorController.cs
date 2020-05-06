@@ -31,23 +31,23 @@ namespace Web.Controllers.Mvc {
 
         // GET: Supplier/Details/5
         public async Task<ActionResult> Details(long id) {
-            var item = await _crudBusinessManager.GetSupplier(id);
+            var item = await _crudBusinessManager.GetVendor(id);
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
         // GET: Supplier/Create
         public ActionResult Create() {
-            var model = new SupplierGeneralViewModel();
+            var model = new VendorGeneralViewModel();
             return View(model);
         }
 
         // POST: Supplier/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(SupplierGeneralViewModel model) {
+        public async Task<ActionResult> Create(VendorGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.CreateSupplier(_mapper.Map<VendorGeneralDto>(model));
+                    var item = await _crudBusinessManager.CreateVendor(_mapper.Map<VendorGeneralDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
@@ -64,7 +64,7 @@ namespace Web.Controllers.Mvc {
 
         // GET: Supplier/Edit/5
         public async Task<ActionResult> Edit(long id) {
-            var item = await _crudBusinessManager.GetSupplier(id);
+            var item = await _crudBusinessManager.GetVendor(id);
             if(item == null) {
                 return NotFound();
             }
@@ -72,16 +72,16 @@ namespace Web.Controllers.Mvc {
             var companies = await _crudBusinessManager.GetCompanies();
             ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() }).ToList();
 
-            return View(_mapper.Map<SupplierViewModel>(item));
+            return View(_mapper.Map<VendorViewModel>(item));
         }
 
         // POST: Supplier/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(long id, SupplierGeneralViewModel model) {
+        public async Task<ActionResult> Edit(long id, VendorGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdateSupplier(id, _mapper.Map<VendorGeneralDto>(model));
+                    var item = await _crudBusinessManager.UpdateVendor(id, _mapper.Map<VendorGeneralDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
@@ -95,7 +95,7 @@ namespace Web.Controllers.Mvc {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAddress(long supplierId, SupplierAddressViewModel model) {
+        public async Task<ActionResult> EditAddress(long supplierId, VendorAddressViewModel model) {
             try {
                 if(ModelState.IsValid) {
                     var item = await _crudBusinessManager.UpdateSupplierAddress(supplierId, _mapper.Map<VendorAddressDto>(model));
@@ -116,7 +116,7 @@ namespace Web.Controllers.Mvc {
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id) {
             try {
-                var item = await _crudBusinessManager.DeleteSupplier(id);
+                var item = await _crudBusinessManager.DeleteVendor(id);
                 if(item == false) {
                     return NotFound();
                 }
@@ -143,9 +143,9 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet]
-        public async Task<Pager<SupplierListViewModel>> GetSuppliers(PagerFilterViewModel model) {
-            var result = await _businessManager.GetSupplierPager(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<SupplierListViewModel>(_mapper.Map<List<SupplierListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+        public async Task<Pager<VendorListViewModel>> GetSuppliers(PagerFilterViewModel model) {
+            var result = await _businessManager.GetVendorPager(_mapper.Map<PagerFilter>(model));
+            var pager = new Pager<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
             return pager;
         }
     }

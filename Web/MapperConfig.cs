@@ -52,10 +52,10 @@ namespace Web {
 
             #endregion
 
-            #region SUPPLIER
-            CreateMap<SupplierViewModel, VendorDto>().ReverseMap();
-            CreateMap<SupplierViewModel, VendorGeneralDto>().ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new SupplierGeneralViewModel() {
+            #region VENDOR
+            CreateMap<VendorViewModel, VendorDto>().ReverseMap();
+            CreateMap<VendorViewModel, VendorGeneralDto>().ReverseMap()
+                .ForMember(d => d.General, o => o.MapFrom(s => new VendorGeneralViewModel() {
                     Id = s.Id,
                     Name = s.Name,
                     No = s.No,
@@ -65,10 +65,10 @@ namespace Web {
                     Description = s.Description
                 }));
 
-            CreateMap<SupplierGeneralViewModel, VendorGeneralDto>().ReverseMap();
-            CreateMap<SupplierAddressViewModel, VendorAddressDto>().ReverseMap();
+            CreateMap<VendorGeneralViewModel, VendorGeneralDto>().ReverseMap();
+            CreateMap<VendorAddressViewModel, VendorAddressDto>().ReverseMap();
 
-            CreateMap<SupplierListViewModel, VendorDto>()
+            CreateMap<VendorListViewModel, VendorDto>()
                 .ReverseMap()
                 .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))
@@ -77,6 +77,15 @@ namespace Web {
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.General.Email))
                 .ForMember(d => d.Website, o => o.MapFrom(s => s.General.Website))
                 .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
+            #endregion
+
+            #region VACCOUNT
+            CreateMap<VaccountViewModel, VaccountDto>().ReverseMap();
+            CreateMap<VaccountListViewModel, VaccountDto>().ReverseMap()
+                .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Vendor.General.Name))
+                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.General.Name));
+            CreateMap<VaccountFilterViewModel, VaccountFilterDto>();
+
             #endregion
 
             #region INVOICE

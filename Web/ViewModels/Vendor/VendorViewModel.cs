@@ -1,12 +1,12 @@
 ﻿using System;
 
 namespace Web.ViewModels {
-    public class SupplierViewModel {
+    public class VendorViewModel {
         public long Id { get; set; }
 
-        public SupplierGeneralViewModel General { get; set; }
+        public VendorGeneralViewModel General { get; set; }
 
-        public SupplierAddressViewModel Address { get; set; }
+        public VendorAddressViewModel Address { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

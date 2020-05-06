@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Web.ViewModels {
-    public class SupplierListViewModel {
+    public class VendorListViewModel {
         public long Id { get; set; }
 
         public string No { get; set; }

@@ -28,9 +28,11 @@ namespace Core.Services {
             ///Managers
             services.AddTransient<ICompanyManager, CompanyManager>();
             services.AddTransient<ICompanyAddressManager, CompanyAddressManager>();
+
             services.AddTransient<IVendorManager, VendorManager>();
             services.AddTransient<IVendorAddressManager, VendorAddressManager>();
 
+            services.AddTransient<IVaccountManager, VaccountManager>();
             services.AddTransient<IInvoiceManager, InvoiceManager>();
 
             ///Business

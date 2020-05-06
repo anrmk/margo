@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
-    public class SupplierAddressViewModel {
+    public class VendorAddressViewModel {
         public long Id { get; set; }
 
         [MaxLength(60)]

@@ -36,7 +36,7 @@ namespace Core {
 
             #endregion
 
-            #region SUPPLIER
+            #region VENDOR
             CreateMap<VendorDto, VendorEntity>()
                 .ReverseMap()
                 .ForMember(d => d.General, o => o.MapFrom(s => new VendorGeneralDto() {
@@ -51,6 +51,10 @@ namespace Core {
             ;
             CreateMap<VendorGeneralDto, VendorEntity>().ReverseMap();
             CreateMap<VendorAddressDto, VendorAddressEntity>().ReverseMap();
+            #endregion
+
+            #region VACCOUNT
+            CreateMap<VaccountDto, VaccountEntity>().ReverseMap();
             #endregion
 
             #region NSI
