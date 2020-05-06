@@ -10,45 +10,48 @@
 
 <div class="sidebar-sticky">
     <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/home") ? "active" : "")" asp-controller="Home" asp-action="Index">
+        <li class="nav-item @(url.Contains("/home") || url.Equals("/") ? "active" : "")">
+            <a class="nav-link" asp-controller="Home" asp-action="Index">
                 <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
             </a>
         </li>
-        <li class="nav-item nav-item ">
-            <a class="nav-link @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/company") ? "active" : "")">
+            <a class="nav-link" asp-controller="Company" asp-action="Index">
                 <i class="far fa-circle mr-1"></i> Companies
             </a>
-            @*<a class="d-flex align-items-center text-white-50" asp-controller="Company" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>*@
+            <a class="nav-link text-white-50" asp-controller="Company" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/vendor") ? "active" : "")">
+            <a class="nav-link" asp-controller="Vendor" asp-action="Index">
                 <i class="far fa-user-circle mr-1"></i> Vendors
             </a>
+            <a class="nav-link text-white-50" asp-controller="Vendor" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/vaccount") ? "active" : "")" asp-controller="Vaccount" asp-action="Index">
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/vaccount") ? "active" : "")">
+            <a class="nav-link" asp-controller="Vaccount" asp-action="Index">
                 <i class="fas fa-user-friends mr-1"></i> Accounts
             </a>
+            <a class="nav-link text-white-50" asp-controller="Vaccount" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/invoices") ? "active" : "")" asp-controller="Invoice" asp-action="Index">
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/invoice") ? "active" : "")">
+            <a class="nav-link" asp-controller="Invoice" asp-action="Index">
                 <i class="fas fa-file-invoice mr-1"></i> Invoices
             </a>
+            <a class="nav-link text-white-50" asp-controller="Invoice" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/payment") ? "active" : "")" asp-controller="Payment" asp-action="Index">
+        @*<li class="nav-item @(url.Contains("/payment") ? "active" : "")">
+            <a class="nav-link" asp-controller="Payment" asp-action="Index">
                 Payments
             </a>
-        </li>
+        </li>*@
     </ul>
 
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
         <span><i class="fa fa-cogs mr-1"></i> Settings</span>
     </h6>
     <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link @(url.Contains("/exportSettings") ? "active" : "")" asp-controller="Settings" asp-action="ExportField">
+        <li class="nav-item @(url.Contains("/exportSettings") ? "active" : "")">
+            <a class="nav-link" asp-controller="Settings" asp-action="ExportField">
                 General
             </a>
         </li>
