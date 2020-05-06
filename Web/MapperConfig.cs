@@ -53,8 +53,8 @@ namespace Web {
             #endregion
 
             #region SUPPLIER
-            CreateMap<SupplierViewModel, SupplierDto>().ReverseMap();
-            CreateMap<SupplierViewModel, SupplierGeneralDto>().ReverseMap()
+            CreateMap<SupplierViewModel, VendorDto>().ReverseMap();
+            CreateMap<SupplierViewModel, VendorGeneralDto>().ReverseMap()
                 .ForMember(d => d.General, o => o.MapFrom(s => new SupplierGeneralViewModel() {
                     Id = s.Id,
                     Name = s.Name,
@@ -65,10 +65,10 @@ namespace Web {
                     Description = s.Description
                 }));
 
-            CreateMap<SupplierGeneralViewModel, SupplierGeneralDto>().ReverseMap();
-            CreateMap<SupplierAddressViewModel, SupplierAddressDto>().ReverseMap();
+            CreateMap<SupplierGeneralViewModel, VendorGeneralDto>().ReverseMap();
+            CreateMap<SupplierAddressViewModel, VendorAddressDto>().ReverseMap();
 
-            CreateMap<SupplierListViewModel, SupplierDto>()
+            CreateMap<SupplierListViewModel, VendorDto>()
                 .ReverseMap()
                 .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))

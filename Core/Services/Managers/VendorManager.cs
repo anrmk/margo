@@ -9,22 +9,22 @@ using Core.Services.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
-    public interface ISupplierManager: IEntityManager<SupplierEntity> {
-        Task<SupplierEntity> FindInclude(long id);
-        Task<List<SupplierEntity>> FindAll();
+    public interface IVendorManager: IEntityManager<VendorEntity> {
+        Task<VendorEntity> FindInclude(long id);
+        Task<List<VendorEntity>> FindAll();
     }
 
-    public class SupplierManager: AsyncEntityManager<SupplierEntity>, ISupplierManager {
-        public SupplierManager(IApplicationContext context) : base(context) { }
+    public class VendorManager: AsyncEntityManager<VendorEntity>, IVendorManager {
+        public VendorManager(IApplicationContext context) : base(context) { }
 
-        public async Task<SupplierEntity> FindInclude(long id) {
+        public async Task<VendorEntity> FindInclude(long id) {
             return await DbSet
                 .Include(x => x.Address)
                .Where(x => x.Id == id)
                .FirstOrDefaultAsync();
         }
 
-        public async Task<List<SupplierEntity>> FindAll() {
+        public async Task<List<VendorEntity>> FindAll() {
             return await DbSet
                 .Include(x => x.Address)
                 .ToListAsync();

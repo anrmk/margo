@@ -28,8 +28,8 @@ namespace Core.Services {
             ///Managers
             services.AddTransient<ICompanyManager, CompanyManager>();
             services.AddTransient<ICompanyAddressManager, CompanyAddressManager>();
-            services.AddTransient<ISupplierManager, SupplierManager>();
-            services.AddTransient<ISupplierAddressManager, SupplierAddressManager>();
+            services.AddTransient<IVendorManager, VendorManager>();
+            services.AddTransient<IVendorAddressManager, VendorAddressManager>();
 
             services.AddTransient<IInvoiceManager, InvoiceManager>();
 

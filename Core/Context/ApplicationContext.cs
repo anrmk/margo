@@ -32,8 +32,8 @@ namespace Core.Context {
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
 
-        public DbSet<SupplierEntity> Suppliers { get; set; }
-        public DbSet<SupplierAddressEntity> SupplierAddresses { get; set; }
+        public DbSet<VendorEntity> Suppliers { get; set; }
+        public DbSet<VendorAddressEntity> SupplierAddresses { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
         #endregion

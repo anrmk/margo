@@ -1,8 +1,8 @@
 ﻿@model Web.ViewModels.SupplierViewModel
 
 @{
-    ViewData["Title"] = "Edit Supplier";
-    ViewData["SubTitle"] = "Please provide all required details to edit supplier info";
+    ViewData["Title"] = "Edit Vendor";
+    ViewData["SubTitle"] = "Please provide all required details to edit vendors info";
 }
 
 @section Toolbar  {
@@ -18,7 +18,7 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Suppliers</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Vendors</a></li>
         <li class="breadcrumb-item active" aria-current="page">@Model.General.Name</li>
     </ol>
 </nav>

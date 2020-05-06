@@ -1,21 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Suppliers";
-    ViewData["Subtitle"] = "Organize and keep track of your supplier by adding, deleting, merging, or restoring them in the system.";
+    ViewData["Title"] = "Vendors";
+    ViewData["Subtitle"] = "Organize and keep track of your vendor by adding, deleting, merging, or restoring them in the system.";
 }
 
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
             <div id="toolbar" role="toolbar">
-                <a asp-controller="Supplier" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
+                <a asp-controller="Vendor" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
             </div>
-            <table id="datatable" data-toggle="table" data-url="/api/supplier"
+            <table id="datatable" data-toggle="table" data-url="/api/vendor"
                    data-total-field="totalItems"
                    data-data-field="items">
                 <thead>
                     <tr>
-                        <th data-field="no" data-sortable="true">Supplier no</th>
-                        <th data-field="name" data-sortable="true">Supplier</th>
+                        <th data-field="no" data-sortable="true">Vendor no</th>
+                        <th data-field="name" data-sortable="true">Name</th>
                         <th data-field="phoneNumber" data-sortable="true">Phone</th>
                         <th data-field="address">Address</th>
                         <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
@@ -38,7 +38,7 @@
         }
 
         function actionFormatter(value, row) {
-            return `<a href='/supplier/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+            return `<a href='/vendor/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
         }
     </script>
 }

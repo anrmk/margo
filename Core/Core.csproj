@@ -10,6 +10,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200305234950_init.cs" />
     <Compile Remove="Migrations\20200305234950_init.Designer.cs" />
+    <Compile Remove="Migrations\20200506010735_update-supplier-to-vendor.cs" />
+    <Compile Remove="Migrations\20200506010735_update-supplier-to-vendor.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

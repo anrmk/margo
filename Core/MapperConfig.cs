@@ -37,9 +37,9 @@ namespace Core {
             #endregion
 
             #region SUPPLIER
-            CreateMap<SupplierDto, SupplierEntity>()
+            CreateMap<VendorDto, VendorEntity>()
                 .ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new SupplierGeneralDto() {
+                .ForMember(d => d.General, o => o.MapFrom(s => new VendorGeneralDto() {
                     Id = s.Id,
                     No = s.No,
                     Name = s.Name,
@@ -49,8 +49,8 @@ namespace Core {
                     Website = s.Website
                 }));
             ;
-            CreateMap<SupplierGeneralDto, SupplierEntity>().ReverseMap();
-            CreateMap<SupplierAddressDto, SupplierAddressEntity>().ReverseMap();
+            CreateMap<VendorGeneralDto, VendorEntity>().ReverseMap();
+            CreateMap<VendorAddressDto, VendorAddressEntity>().ReverseMap();
             #endregion
 
             #region NSI

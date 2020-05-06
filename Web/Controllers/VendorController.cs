@@ -17,10 +17,10 @@ using Microsoft.Extensions.Logging;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
-    public class SupplierController: BaseController<SupplierController> {
+    public class VendorController: BaseController<VendorController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public SupplierController(ILogger<SupplierController> logger, IMapper mapper, ApplicationContext context, ICrudBusinessManager businessManager) : base(logger, mapper, context) {
+        public VendorController(ILogger<VendorController> logger, IMapper mapper, ApplicationContext context, ICrudBusinessManager businessManager) : base(logger, mapper, context) {
             _crudBusinessManager = businessManager;
         }
 
@@ -47,7 +47,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Create(SupplierGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.CreateSupplier(_mapper.Map<SupplierGeneralDto>(model));
+                    var item = await _crudBusinessManager.CreateSupplier(_mapper.Map<VendorGeneralDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
@@ -81,7 +81,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Edit(long id, SupplierGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdateSupplier(id, _mapper.Map<SupplierGeneralDto>(model));
+                    var item = await _crudBusinessManager.UpdateSupplier(id, _mapper.Map<VendorGeneralDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
@@ -98,7 +98,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> EditAddress(long supplierId, SupplierAddressViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdateSupplierAddress(supplierId, _mapper.Map<SupplierAddressDto>(model));
+                    var item = await _crudBusinessManager.UpdateSupplierAddress(supplierId, _mapper.Map<VendorAddressDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
@@ -133,11 +133,11 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     // [ApiController]
-    public class SupplierController: ControllerBase {
+    public class VendorController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;
 
-        public SupplierController(IMapper mapper, ICrudBusinessManager businessManager) {
+        public VendorController(IMapper mapper, ICrudBusinessManager businessManager) {
             _mapper = mapper;
             _businessManager = businessManager;
         }

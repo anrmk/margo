@@ -27,19 +27,19 @@ namespace Core.Services.Business {
         Task<CompanyAddressDto> UpdateCompanyAddress(long companyId, CompanyAddressDto dto);
         #endregion
 
-        #region SUPPLIER
-        Task<SupplierDto> GetSupplier(long id);
-        Task<Pager<SupplierDto>> GetSupplierPager(PagerFilter filter);
-        Task<List<SupplierDto>> GetSuppliers();
-        Task<SupplierDto> CreateSupplier(SupplierGeneralDto dto);
-        Task<SupplierDto> UpdateSupplier(long id, SupplierGeneralDto dto);
+        #region VENDOR
+        Task<VendorDto> GetSupplier(long id);
+        Task<Pager<VendorDto>> GetSupplierPager(PagerFilter filter);
+        Task<List<VendorDto>> GetSuppliers();
+        Task<VendorDto> CreateSupplier(VendorGeneralDto dto);
+        Task<VendorDto> UpdateSupplier(long id, VendorGeneralDto dto);
         Task<bool> DeleteSupplier(long id);
         #endregion
 
-        #region SUPPLIER ADDRESS
-        Task<SupplierAddressDto> GetSupplierAddress(long id);
-        Task<SupplierAddressDto> CreateSupplierAddress(SupplierAddressDto dto);
-        Task<SupplierAddressDto> UpdateSupplierAddress(long companyId, SupplierAddressDto dto);
+        #region VENDOR ADDRESS
+        Task<VendorAddressDto> GetSupplierAddress(long id);
+        Task<VendorAddressDto> CreateSupplierAddress(VendorAddressDto dto);
+        Task<VendorAddressDto> UpdateSupplierAddress(long companyId, VendorAddressDto dto);
         #endregion
 
         Task<InvoiceDto> GetInvoice(long id);
@@ -54,16 +54,16 @@ namespace Core.Services.Business {
         private readonly ICompanyManager _companyManager;
         private readonly ICompanyAddressManager _companyAddressManager;
 
-        private readonly ISupplierManager _supplierManager;
-        private readonly ISupplierAddressManager _supplierAddressManager;
+        private readonly IVendorManager _supplierManager;
+        private readonly IVendorAddressManager _supplierAddressManager;
 
         private readonly IInvoiceManager _invoiceManager;
 
         //private readonly INsiBusinessManager _nsiBusinessManager;
 
-        public CrudBusinessManager(IMapper mapper, 
-            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, 
-            ISupplierManager supplierManager, ISupplierAddressManager supplierAddressManager,
+        public CrudBusinessManager(IMapper mapper,
+            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager,
+            IVendorManager supplierManager, IVendorAddressManager supplierAddressManager,
             IInvoiceManager invoiceManager) {
             _mapper = mapper;
             _companyManager = companyManager;
@@ -177,16 +177,16 @@ namespace Core.Services.Business {
         #endregion
 
         #region SUPPLIER
-        public async Task<SupplierDto> GetSupplier(long id) {
+        public async Task<VendorDto> GetSupplier(long id) {
             var result = await _supplierManager.FindInclude(id);
-            return _mapper.Map<SupplierDto>(result);
+            return _mapper.Map<VendorDto>(result);
         }
 
-        public async Task<Pager<SupplierDto>> GetSupplierPager(PagerFilter filter) {
+        public async Task<Pager<VendorDto>> GetSupplierPager(PagerFilter filter) {
             #region Sort/Filter
             var sortby = filter.Sort ?? "No";
 
-            Expression<Func<SupplierEntity, bool>> where = x =>
+            Expression<Func<VendorEntity, bool>> where = x =>
                    (true)
                 && (string.IsNullOrEmpty(filter.Search)
                     || x.Name.ToLower().Contains(filter.Search.ToLower())
@@ -196,30 +196,30 @@ namespace Core.Services.Business {
 
             string[] include = new string[] { "Address" };
 
-            var tuple = await _supplierManager.Pager<SupplierEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var tuple = await _supplierManager.Pager<VendorEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SupplierDto>(new List<SupplierDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Offset, filter.Limit);
 
             var page = (filter.Offset + filter.Limit) / filter.Limit;
 
-            var result = _mapper.Map<List<SupplierDto>>(list);
-            return new Pager<SupplierDto>(result, count, page, filter.Limit);
+            var result = _mapper.Map<List<VendorDto>>(list);
+            return new Pager<VendorDto>(result, count, page, filter.Limit);
         }
 
-        public async Task<List<SupplierDto>> GetSuppliers() {
+        public async Task<List<VendorDto>> GetSuppliers() {
             var result = await _supplierManager.FindAll();
-            return _mapper.Map<List<SupplierDto>>(result);
+            return _mapper.Map<List<VendorDto>>(result);
         }
 
-        public async Task<SupplierDto> CreateSupplier(SupplierGeneralDto dto) {
-            var entity = await _supplierManager.Create(_mapper.Map<SupplierEntity>(dto));
-            return _mapper.Map<SupplierDto>(entity);
+        public async Task<VendorDto> CreateSupplier(VendorGeneralDto dto) {
+            var entity = await _supplierManager.Create(_mapper.Map<VendorEntity>(dto));
+            return _mapper.Map<VendorDto>(entity);
         }
 
-        public async Task<SupplierDto> UpdateSupplier(long id, SupplierGeneralDto dto) {
+        public async Task<VendorDto> UpdateSupplier(long id, VendorGeneralDto dto) {
             var entity = await _supplierManager.Find(id);
             if(entity == null) {
                 return null;
@@ -228,7 +228,7 @@ namespace Core.Services.Business {
             var newEntity = _mapper.Map(dto, entity);
             entity = await _supplierManager.Update(newEntity);
 
-            return _mapper.Map<SupplierDto>(entity);
+            return _mapper.Map<VendorDto>(entity);
         }
 
         public async Task<bool> DeleteSupplier(long id) {
@@ -249,27 +249,27 @@ namespace Core.Services.Business {
         #endregion
 
         #region SUPPLIER ADRESS
-        public async Task<SupplierAddressDto> GetSupplierAddress(long id) {
+        public async Task<VendorAddressDto> GetSupplierAddress(long id) {
             var result = await _supplierAddressManager.Find(id);
-            return _mapper.Map<SupplierAddressDto>(result);
+            return _mapper.Map<VendorAddressDto>(result);
         }
 
-        public async Task<SupplierAddressDto> CreateSupplierAddress(SupplierAddressDto dto) {
+        public async Task<VendorAddressDto> CreateSupplierAddress(VendorAddressDto dto) {
             var settings = await _supplierAddressManager.Find(dto.Id);
             if(settings == null) {
                 return null;
             }
 
-            var newEntity = _mapper.Map<SupplierAddressEntity>(dto);
+            var newEntity = _mapper.Map<VendorAddressEntity>(dto);
             var entity = await _supplierAddressManager.Create(newEntity);
-            return _mapper.Map<SupplierAddressDto>(entity);
+            return _mapper.Map<VendorAddressDto>(entity);
         }
 
-        public async Task<SupplierAddressDto> UpdateSupplierAddress(long supplierId, SupplierAddressDto dto) {
+        public async Task<VendorAddressDto> UpdateSupplierAddress(long supplierId, VendorAddressDto dto) {
             var entity = await _supplierAddressManager.Find(dto.Id);
 
             if(entity == null) {
-                entity = await _supplierAddressManager.Create(_mapper.Map<SupplierAddressEntity>(dto));
+                entity = await _supplierAddressManager.Create(_mapper.Map<VendorAddressEntity>(dto));
 
                 var supplier = await _supplierManager.Find(supplierId);
                 supplier.AddressId = entity.Id;
@@ -279,7 +279,7 @@ namespace Core.Services.Business {
                 entity = await _supplierAddressManager.Update(updateEntity);
             }
 
-            return _mapper.Map<SupplierAddressDto>(entity);
+            return _mapper.Map<VendorAddressDto>(entity);
         }
         #endregion
 
