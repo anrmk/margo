@@ -33,7 +33,7 @@ namespace Core.Context {
 
         public DbSet<VendorEntity> Suppliers { get; set; }
         public DbSet<VendorAddressEntity> SupplierAddresses { get; set; }
-        
+
         public DbSet<VaccountEntity> Vaccounts { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
