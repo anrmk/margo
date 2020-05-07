@@ -52,6 +52,7 @@ namespace Core.Services.Business {
         #endregion
 
         Task<InvoiceDto> GetInvoice(long id);
+        Task<List<InvoiceDto>> GetInvoices();
         Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
@@ -300,6 +301,11 @@ namespace Core.Services.Business {
         public async Task<InvoiceDto> GetInvoice(long id) {
             var result = await _invoiceManager.FindInclude(id);
             return _mapper.Map<InvoiceDto>(result);
+        }
+
+        public async Task<List<InvoiceDto>> GetInvoices() {
+            var result = await _invoiceManager.FindAll();
+            return _mapper.Map<List<InvoiceDto>>(result);
         }
 
         public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {

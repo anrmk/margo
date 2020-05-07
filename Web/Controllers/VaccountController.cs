@@ -12,8 +12,9 @@ using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
+using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -21,7 +22,7 @@ namespace Web.Controllers.Mvc {
 
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public VaccountController(ILogger<VaccountController> logger, IMapper mapper, ApplicationContext context, ICrudBusinessManager businessManager) : base(logger, mapper, context) {
+        public VaccountController(ILogger<VaccountController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context, ICrudBusinessManager businessManager) : base(logger, mapper, notificationHub, context) {
             _crudBusinessManager = businessManager;
         }
 

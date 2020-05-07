@@ -2,12 +2,16 @@
     $.fn.datepicker.defaults.format = "mm/dd/yyyy";
     window.modal = $('#modalBackdrop');
 
+    if (window.notificationHub === undefined)
+        window.notificationHub = new NotificationHub();
+
     var settings = {
         validClass: "is-valid",
         errorClass: "is-invalid"
     };
     $.validator.setDefaults(settings);
     $.validator.unobtrusive.options = settings;
+
 }).ajaxStart(() => {
     $('form fieldset').attr('disabled', 'disabled');
 }).ajaxStop(() => {
@@ -39,6 +43,14 @@ $.fn.dialog = function (header, callback) {
     return window.modal;
 }
 
+$.fn.alert = function (content, callback = function () { }) {
+    var $message = $(`<div class="alert alert-warning alert-dismissible fade show" role="alert">${content} <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`);
+    $message.appendTo('div.alert-container').delay(2500).fadeOut(500, function () {
+        $(this).remove();
+    });
+
+    callback('alert.on.load', $message, this);
+}
 /**
  * Extension for bootstrapTable 
  * formatting Date

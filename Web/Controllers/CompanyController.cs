@@ -10,16 +10,17 @@ using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
+using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class CompanyController: BaseController<CompanyController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, ApplicationContext context,
-            ICrudBusinessManager crudBusinessManager) : base(logger, mapper, context) {
+        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
+            ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
             _crudBusinessManager = crudBusinessManager;
         }
 
@@ -79,6 +80,7 @@ namespace Web.Controllers.Mvc {
                     if(item == null) {
                         return NotFound();
                     }
+                    await ClientNotify($"Company Id: {item.Id}: This record was modified by {item.UpdatedBy} on {item.UpdatedDate.ToString()}");
                 }
             } catch(Exception er) {
                 _logger.LogError(er, er.Message);

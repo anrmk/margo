@@ -13,8 +13,9 @@ using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
+using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -22,8 +23,8 @@ namespace Web.Controllers.Mvc {
         private readonly INsiBusinessManager _nsiBusinessManager;
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper, ApplicationContext context,
-            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager crudBusinessManager) : base(logger, mapper, context) {
+        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
+            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
             _nsiBusinessManager = nsiBusinessManager;
             _crudBusinessManager = crudBusinessManager;
         }

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Web.Extension;
+using Web.Hubs;
 
 namespace Web {
     public class Startup {
@@ -77,18 +78,19 @@ namespace Web {
             });
             #endregion
 
+            services.AddSignalR();
+
             services.Configure<FormOptions>(options => {
                 options.ValueCountLimit = int.MaxValue;
             });
 
             ServicesConfig.Configuration(services);
-            JobConfig.Configuration(services);
+            JobSchedulerConfig.Configuration(services);
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
             services.AddDbContext<Core.Context.ApplicationContext>();
 
             MapperConfig.Register(services);
-
 
             services.AddControllersWithViews();
         }
@@ -103,8 +105,6 @@ namespace Web {
                 app.UseHsts();
             }
 
-            //loggerFactory..AddFile("Logs/log-{Date}.txt");
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -114,6 +114,8 @@ namespace Web {
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
+                endpoints.MapHub<NotificationHub>("/notificationHub");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

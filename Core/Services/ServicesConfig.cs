@@ -12,15 +12,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Core.Services {
     public class ServicesConfig {
         public static void Configuration(IServiceCollection services) {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddSingleton<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
+            services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
 
             ///Context
             services.AddTransient<IApplicationContext, ApplicationContext>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
-            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             ///Extension Service
             services.AddTransient<IViewRenderService, ViewRenderService>();
@@ -39,6 +38,8 @@ namespace Core.Services {
             services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
             services.AddTransient<ICrudBusinessManager, CrudBusinessManager>();
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
+
+            services.AddSingleton<INotifyManager, NotifyManager>();
         }
     }
 }

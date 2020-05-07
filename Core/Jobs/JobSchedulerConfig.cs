@@ -8,7 +8,7 @@ using Quartz.Impl;
 using Quartz.Spi;
 
 namespace Core.Jobs {
-    public class JobConfig {
+    public class JobSchedulerConfig {
         public static void Configuration(IServiceCollection services) {
             // Add Quartz services
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
@@ -21,8 +21,7 @@ namespace Core.Jobs {
                 cronExpression: "0/5 * * * * ?")); // run every 5 seconds
 
             // Add Hosted Service
-            services.AddHostedService<QuartzHostedService>();
-
+            //services.AddHostedService<QuartzHostedService>();
         }
     }
 }

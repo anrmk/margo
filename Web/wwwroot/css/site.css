@@ -148,3 +148,12 @@ div.document {
 #toolbar {
   padding: 0 0.5rem;
 }
+
+.alert-container {
+  z-index: 10001;
+  position: absolute;
+  width: 20%;
+  min-width: 380px;
+  top: 10%;
+  right: 1%;
+}

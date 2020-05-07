@@ -11,16 +11,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
+using Web.Controllers.Mvc;
+using Web.Hubs;
 using Web.Models.AccountViewModel;
 
 namespace Web.Controllers {
     public class AccountController: BaseController<AccountController> {
         private readonly IAccountBusinessService _accountBusinessService;
 
-        public AccountController(ILogger<AccountController> logger, IMapper mapper, ApplicationContext context,
-         IAccountBusinessService accountBusinessService) : base(logger, mapper, context) {
+        public AccountController(ILogger<AccountController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
+         IAccountBusinessService accountBusinessService) : base(logger, mapper, notificationHub, context) {
             _accountBusinessService = accountBusinessService;
         }
 
