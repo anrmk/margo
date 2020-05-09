@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -10,8 +11,10 @@ using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+
 using Web.Hubs;
 using Web.ViewModels;
 
@@ -68,6 +71,9 @@ namespace Web.Controllers.Mvc {
                 return NotFound();
             }
 
+            var sections = await _crudBusinessManager.GetCompanySections(item.Id);
+            ViewBag.Sections = _mapper.Map<List<CompanySectionViewModel>>(sections).ToList();
+
             return View(_mapper.Map<CompanyViewModel>(item));
         }
 
@@ -121,6 +127,41 @@ namespace Web.Controllers.Mvc {
                 _logger.LogError(er, er.Message);
                 return BadRequest(er);
             }
+        }
+
+        public async Task<ActionResult> AddSection(long id) {
+            var item = await _crudBusinessManager.GetCompany(id);
+            if(item == null) {
+                return NotFound();
+            }
+
+            var sections = await _crudBusinessManager.GetSections();
+            var companySection = await _crudBusinessManager.GetCompanySections(item.Id);
+            var exist = sections.Where(x => !companySection.Any(y => y.SectionId == x.Id));
+
+            ViewBag.Sections = exist.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+
+            return View("_AddSectionPartial",new CompanySectionViewModel() { CompanyId = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddSection(CompanySectionViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var item = await _crudBusinessManager.CreateCompanySection(_mapper.Map<CompanySectionDto>(model));
+                    if(item == null) {
+                        return BadRequest();
+                    }
+
+                    return RedirectToAction(nameof(Edit), new { Id = item.CompanyId });
+                }
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
+            }
+
+            return View(model);
         }
     }
 }

@@ -1,6 +1,56 @@
 ﻿@model Web.ViewModels.CompanyViewModel
 
 @{
-    ViewData["Title"] = $"Detail: {Model.General.Name}";
-    ViewData["SubTitle"] = "";
+    ViewData["Title"] = Model.General.Name;
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Companies</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.General.Name</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="row no-gutters bg-light position-relative">
+        <div class="col-md-6 mb-md-0 p-md-4">
+            <img src="..." class="w-100" alt="...">
+        </div>
+        <div class="col-md-6 position-static p-4 pl-md-0">
+            <h5 class="mt-0">General</h5>
+            <dl>
+                <dt><label asp-for="General.No"></label></dt>
+                <dd>@Model.General.No</dd>
+
+                <dt><label asp-for="General.Name"></label></dt>
+                <dd>@Model.General.Name</dd>
+
+                <dt><label asp-for="General.Website"></label></dt>
+                <dd>@Model.General.Website</dd>
+
+                <dt><label asp-for="General.PhoneNumber"></label></dt>
+                <dd>@Model.General.PhoneNumber</dd>
+
+                <dt><label asp-for="General.Email"></label></dt>
+                <dd>@Model.General.Email</dd>
+
+                <dt><label asp-for="General.CEO"></label></dt>
+                <dd>@Model.General.CEO</dd>
+
+                <dt><label asp-for="General.EIN"></label></dt>
+                <dd>@Model.General.EIN</dd>
+
+                <dt><label asp-for="General.DB"></label></dt>
+                <dd>@Model.General.DB</dd>
+
+                <dt><label asp-for="General.Founded"></label></dt>
+                <dd>@Model.General.Founded</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <h3>General</h3>
+        
+    </div>
+</div>

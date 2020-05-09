@@ -2,6 +2,7 @@
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Data.Entities.Vaccount;
 
 namespace Core {
     public class MapperConfig: Profile {
@@ -26,6 +27,12 @@ namespace Core {
                 }));
             CreateMap<CompanyGeneralDto, CompanyEntity>().ReverseMap();
             CreateMap<CompanyAddressDto, CompanyAddressEntity>().ReverseMap();
+            CreateMap<CompanySectionDto, CompanySectionEntity>()
+                .ForMember(d => d.Company, o => o.Ignore())
+                .ForMember(d => d.Section, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.Name))
+                .ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name));
             #endregion
 
             #region INVOICE
@@ -54,9 +61,12 @@ namespace Core {
 
             #region VACCOUNT
             CreateMap<VaccountDto, VaccountEntity>().ReverseMap();
+            CreateMap<VaccountSecurityDto, VaccountSecurityEntity>().ReverseMap();
+            CreateMap<VaccountSecurityQuestionDto, VaccountSecurityQuestionEntity>().ReverseMap();
             #endregion
 
-            #region NSI
+            #region SECTIONS
+            CreateMap<SectionDto, SectionEntity>().ReverseMap();
             #endregion
         }
     }

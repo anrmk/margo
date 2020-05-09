@@ -32,6 +32,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" id="address-tab" href="#address" data-form="submitAddressForm">Address</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" id="image-tab" href="#image" data-form="submitImageForm">Address</a>
+            </li>
         </ul>
     </div>
     <div class="card-body">
@@ -116,6 +119,17 @@
                             <label asp-for="Address.ZipCode"></label>
                             <input asp-for="Address.ZipCode" type="text" name="ZipCode" class="form-control">
                             <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-pane fase" id="image" role="tabpanel" arial-labelledby="image-tab">
+                <form id="sumbitImageForm" method="POST" asp-action="EditImage">
+                    <button id="uploadImageBtn" type="button" class="btn btn-secondary">Add image</button>
+                    <div class="form-group row mb-3">
+                        <div class="col">
+                            
                         </div>
                     </div>
                 </form>

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Managers {
     public interface IVaccountManager: IEntityManager<VaccountEntity> {
         Task<VaccountEntity> FindInclude(long id);
+        Task<VaccountEntity> FindBySecurityId(long id);
         Task<List<VaccountEntity>> FindAll();
     }
 
@@ -28,7 +29,17 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
+                .Include(x => x.Security)
                 .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<VaccountEntity> FindBySecurityId(long id) {
+            return await DbSet
+                .Include(x => x.Company)
+                .Include(x => x.Vendor)
+                .Include(x => x.Security)
+                .Where(x => x.SecurityId == id)
                 .FirstOrDefaultAsync();
         }
     }

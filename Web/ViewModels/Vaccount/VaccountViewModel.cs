@@ -22,6 +22,9 @@ namespace Web.ViewModels {
         public long? VendorId { get; set; }
         public VendorViewModel Vendor { get; set; }
 
+        public long? SecurityId { get; set; }
+        public VaccountSecurityViewModel Security { get; set; }
+
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime UpdatedDate { get; set; }

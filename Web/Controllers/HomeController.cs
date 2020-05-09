@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
 using AutoMapper;
 
 using Core.Context;
@@ -8,6 +9,7 @@ using Core.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+
 using Web.Hubs;
 using Web.Models;
 
@@ -33,7 +35,7 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-   // [ApiController]
+    // [ApiController]
     public class HomeController: ControllerBase {
         private readonly IHubContext<NotificationHub> _notificationHub;
 

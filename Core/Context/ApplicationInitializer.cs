@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Core.Data.Entities;
 
@@ -19,6 +21,7 @@ namespace Core.Context {
             RoleManager();
             ApplicationUser();
 
+            Section();
 
             string rootPath = System.IO.Directory.GetCurrentDirectory();
         }
@@ -56,6 +59,22 @@ namespace Core.Context {
                 if(result.Succeeded) {
                     userManager.AddToRoleAsync(user, "Administrator").Wait();
                 }
+            }
+        }
+
+        private void Section() {
+            var _context = _serviceProvider.GetRequiredService<ApplicationContext>();
+            var sections = _context.Sections.ToList();
+
+            if(sections.Count == 0) {
+                var newSections = new List<SectionEntity>() {
+                    new SectionEntity() { IsDefault = true, Sort = 1, Name = "Addresses", Description = "" },
+                    new SectionEntity() { IsDefault = true, Sort = 2, Name = "Phones", Description = "" },
+                    new SectionEntity() { IsDefault = true, Sort = 3, Name = "Emails", Description = "An email list is a collection of email addresses of business."},
+                    new SectionEntity() { IsDefault = true, Sort = 4, Name = "Social Media", Description = "" }
+                };
+                _context.Sections.AddRange(newSections);
+                _context.SaveChanges();
             }
         }
     }

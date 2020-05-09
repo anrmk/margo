@@ -50,6 +50,7 @@ namespace Web {
                 .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.General.PhoneNumber))
                 .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
 
+            CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
             #endregion
 
             #region VENDOR
@@ -84,6 +85,10 @@ namespace Web {
             CreateMap<VaccountListViewModel, VaccountDto>().ReverseMap()
                 .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Vendor.General.Name))
                 .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.General.Name));
+
+            CreateMap<VaccountSecurityViewModel, VaccountSecurityDto>().ReverseMap();
+            CreateMap<VaccountSecurityQuestionViewModel, VaccountSecurityQuestionDto>().ReverseMap();
+
             CreateMap<VaccountFilterViewModel, VaccountFilterDto>();
 
             #endregion
@@ -97,6 +102,12 @@ namespace Web {
                .ForMember(d => d.Amount, o => o.MapFrom(s => s.Amount.ToCurrency()));
             CreateMap<InvoiceViewModel, InvoiceDto>().ReverseMap();
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
+            #endregion
+
+            #region SECTIONS
+            CreateMap<SectionViewModel, SectionDto>().ReverseMap();
+            CreateMap<SectionListViewModel, SectionDto>().ReverseMap();
+
             #endregion
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();

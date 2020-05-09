@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+
 using AutoMapper;
 
 using Core.Context;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Web.Controllers.Mvc;
+
 using Web.Hubs;
 
 namespace Web.Controllers {

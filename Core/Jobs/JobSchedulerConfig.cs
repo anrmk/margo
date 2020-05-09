@@ -1,5 +1,4 @@
-﻿using Core.HostedService;
-using Core.JobFactory;
+﻿using Core.JobFactory;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,9 +15,9 @@ namespace Core.Jobs {
 
             // Add our job
             services.AddSingleton<NotifyJob>();
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(NotifyJob),
-                cronExpression: "0/5 * * * * ?")); // run every 5 seconds
+            services.AddSingleton<CollectorJob>();
+            services.AddSingleton(new JobSchedule(jobType: typeof(NotifyJob), cronExpression: "0/5 * * * * ?")); // run every 5 seconds
+            services.AddSingleton(new JobSchedule(jobType: typeof(CollectorJob), cronExpression: "0/10 * * * * ?")); // run every 5 seconds
 
             // Add Hosted Service
             //services.AddHostedService<QuartzHostedService>();

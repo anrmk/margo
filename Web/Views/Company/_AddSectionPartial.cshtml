@@ -1,0 +1,21 @@
+﻿@model Web.ViewModels.CompanySectionViewModel
+
+@{
+    ViewData["Title"] = "Create Company";
+    ViewData["SubTitle"] = "Please provide all required details to register new company";
+    Layout = null;
+}
+
+
+<form id="submitModalForm" asp-action="AddSection">
+    <input type="hidden" asp-for="CompanyId" />
+    <div class="form-group row mb-3">
+        <div class="col">
+            <label asp-for="SectionId"></label>
+            <select asp-for="SectionId" asp-items="@ViewBag.Sections" class="form-control" required>
+                <option value="">Select customer type</option>
+            </select>
+            <span asp-validation-for="SectionId" class="text-danger"></span>
+        </div>
+    </div>
+</form>

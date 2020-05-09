@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Data.Entities.Vaccount;
 using Core.Extension;
 using Core.Services.Managers;
 
@@ -38,17 +39,29 @@ namespace Core.Services.Business {
 
         #region VENDOR ADDRESS
         Task<VendorAddressDto> GetVendorAddress(long id);
-        Task<VendorAddressDto> CreateVendorAddress(VendorAddressDto dto);
         Task<VendorAddressDto> UpdateVendorAddress(long companyId, VendorAddressDto dto);
         #endregion
 
         #region VACCOUNT
         Task<VaccountDto> GetVaccount(long id);
+        Task<VaccountDto> GetVaccountBySecurityId(long id);
         Task<List<VaccountDto>> GetVaccounts();
         Task<Pager<VaccountDto>> GetVaccountPager(VaccountFilterDto filter);
         Task<VaccountDto> CreateVaccount(VaccountDto dto);
         Task<VaccountDto> UpdateVaccount(long id, VaccountDto dto);
         Task<bool> DeleteVaccount(long id);
+        #endregion
+
+        #region VACCOUNT SECURITY
+        Task<VaccountSecurityDto> GetVaccountSecurity(long id);
+        Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto);
+        #endregion
+
+        #region VACCOUNT SECURITY QUESTION
+        Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id);
+        Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId);
+        Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto);
+        Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto);
         #endregion
 
         Task<InvoiceDto> GetInvoice(long id);
@@ -57,33 +70,66 @@ namespace Core.Services.Business {
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
         Task<bool> DeleteInvoice(long id);
+
+        #region COMPANY SECTIONS
+        Task<CompanySectionDto> GetCompanySection(long id);
+        Task<List<CompanySectionDto>> GetCompanySections(long companyId);
+        Task<CompanySectionDto> CreateCompanySection(CompanySectionDto dto);
+        Task<CompanySectionDto> UpdateCompanySection(long id, CompanySectionDto dto);
+        Task<bool> DeleteCompanySection(long id);
+        #endregion
+
+        #region SECTION
+        Task<SectionDto> GetSection(long id);
+        Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter);
+        Task<List<SectionDto>> GetSections();
+        Task<SectionDto> CreateSection(SectionDto dto);
+        Task<SectionDto> UpdateSection(long id, SectionDto dto);
+        Task<bool> DeleteSection(long id);
+        #endregion
     }
 
     public class CrudBusinessManager: BaseBusinessManager, ICrudBusinessManager {
         private readonly IMapper _mapper;
         private readonly ICompanyManager _companyManager;
         private readonly ICompanyAddressManager _companyAddressManager;
+        private readonly ICompanySectionManager _companySectionManager;
 
         private readonly IVendorManager _vendorManager;
         private readonly IVendorAddressManager _vendorAddressManager;
 
         private readonly IVaccountManager _vaccountManager;
+        private readonly IVaccountSecurityManager _vaccountSecurityManager;
+        private readonly IVaccountSecurityQuestionManager _vaccountSecurityQuestionManager;
 
         private readonly IInvoiceManager _invoiceManager;
 
         //private readonly INsiBusinessManager _nsiBusinessManager;
 
+        private readonly ISectionManager _sectionManager;
+
+
         public CrudBusinessManager(IMapper mapper,
-            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager,
+            ISectionManager sectionManager,
+            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager,
             IVendorManager supplierManager, IVendorAddressManager vendorAddressManager,
-            IVaccountManager vaccountManager,
+            IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
             IInvoiceManager invoiceManager) {
             _mapper = mapper;
+
+            _sectionManager = sectionManager;
+
             _companyManager = companyManager;
             _companyAddressManager = companyAddressManager;
+            _companySectionManager = companySectionManager;
+
             _vendorManager = supplierManager;
             _vendorAddressManager = vendorAddressManager;
+
             _vaccountManager = vaccountManager;
+            _vaccountSecurityManager = vaccountSecurityManager;
+            _vaccountSecurityQuestionManager = vaccountSecurityQuestionManager;
+
             _invoiceManager = invoiceManager;
         }
 
@@ -155,7 +201,7 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        #region CUSTOMER ADRESS
+        #region COMPANY ADRESS
         public async Task<CompanyAddressDto> GetCompanyAddress(long id) {
             var result = await _companyAddressManager.Find(id);
             return _mapper.Map<CompanyAddressDto>(result);
@@ -268,17 +314,6 @@ namespace Core.Services.Business {
             return _mapper.Map<VendorAddressDto>(result);
         }
 
-        public async Task<VendorAddressDto> CreateVendorAddress(VendorAddressDto dto) {
-            var settings = await _vendorAddressManager.Find(dto.Id);
-            if(settings == null) {
-                return null;
-            }
-
-            var newEntity = _mapper.Map<VendorAddressEntity>(dto);
-            var entity = await _vendorAddressManager.Create(newEntity);
-            return _mapper.Map<VendorAddressDto>(entity);
-        }
-
         public async Task<VendorAddressDto> UpdateVendorAddress(long supplierId, VendorAddressDto dto) {
             var entity = await _vendorAddressManager.Find(dto.Id);
 
@@ -363,7 +398,12 @@ namespace Core.Services.Business {
 
         #region VACCOUNT
         public async Task<VaccountDto> GetVaccount(long id) {
-            var result = await _vaccountManager.Find(id);
+            var result = await _vaccountManager.FindInclude(id);
+            return _mapper.Map<VaccountDto>(result);
+        }
+
+        public async Task<VaccountDto> GetVaccountBySecurityId(long id) {
+            var result = await _vaccountManager.FindBySecurityId(id);
             return _mapper.Map<VaccountDto>(result);
         }
 
@@ -426,5 +466,175 @@ namespace Core.Services.Business {
         }
         #endregion
 
+        #region VACCOUNT SECURITY
+        public async Task<VaccountSecurityDto> GetVaccountSecurity(long id) {
+            var result = await _vaccountSecurityManager.FindInclude(id);
+            return _mapper.Map<VaccountSecurityDto>(result);
+        }
+
+        //public async Task<VaccountSecurityDto> CreateVaccountSecurity(VaccountSecurityDto dto) {
+        //    var accountEntity = await _vaccountManager.Find(dto.AccountId);
+        //    if(accountEntity == null) {
+        //        return null;
+        //    }
+
+        //    var newEntity = _mapper.Map<VaccountSecurityEntity>(dto);
+        //    var entity = await _vaccountSecurityManager.Create(newEntity);
+        //    return _mapper.Map<VaccountSecurityDto>(entity);
+        //}
+
+        public async Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto) {
+            var entity = await _vaccountSecurityManager.Find(dto.Id);
+
+            if(entity == null) {
+                entity = await _vaccountSecurityManager.Create(_mapper.Map<VaccountSecurityEntity>(dto));
+
+                var account = await _vaccountManager.Find(accountId);
+                account.SecurityId = entity.Id;
+                await _vaccountManager.Update(account);
+            } else {
+                var updateEntity = _mapper.Map(dto, entity);
+                entity = await _vaccountSecurityManager.Update(updateEntity);
+            }
+
+            return _mapper.Map<VaccountSecurityDto>(entity);
+        }
+        #endregion
+
+        #region VACCOUNT SECURITY QUESTION
+        public async Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id) {
+            var result = await _vaccountSecurityQuestionManager.Find(id);
+            return _mapper.Map<VaccountSecurityQuestionDto>(result);
+        }
+
+        public async Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId) {
+            var result = await _vaccountSecurityQuestionManager.FindBySecurityId(securityId);
+            return _mapper.Map<List<VaccountSecurityQuestionDto>>(result);
+        }
+
+        public async Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto) {
+            var securityEntity = await _vaccountSecurityManager.Find(dto.SecurityId);
+            if(securityEntity == null) {
+                return null;
+            }
+
+            var newEntity = _mapper.Map<VaccountSecurityQuestionEntity>(dto);
+            var entity = await _vaccountSecurityQuestionManager.Create(newEntity);
+            return _mapper.Map<VaccountSecurityQuestionDto>(entity);
+        }
+
+        public async Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto) {
+            var entity = await _vaccountSecurityQuestionManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+
+            var updateEntity = _mapper.Map(dto, entity);
+            entity = await _vaccountSecurityQuestionManager.Update(updateEntity);
+
+            return _mapper.Map<VaccountSecurityQuestionDto>(entity);
+        }
+        #endregion
+
+
+        #region COMPANY SECTIONS
+        public async Task<CompanySectionDto> GetCompanySection(long id) {
+            var result = await _companySectionManager.FindInclude(id);
+            return _mapper.Map<CompanySectionDto>(result);
+        }
+
+        public async Task<List<CompanySectionDto>> GetCompanySections(long companyId) {
+            var result = await _companySectionManager.FindAll(companyId);
+            return _mapper.Map<List<CompanySectionDto>>(result);
+        }
+
+        public async Task<CompanySectionDto> CreateCompanySection(CompanySectionDto dto) {
+            var entity = await _companySectionManager.Create(_mapper.Map<CompanySectionEntity>(dto));
+            return _mapper.Map<CompanySectionDto>(entity);
+        }
+        
+        public async Task<CompanySectionDto> UpdateCompanySection(long id, CompanySectionDto dto) {
+            var entity = await _companySectionManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+            var newEntity = _mapper.Map(dto, entity);
+            entity = await _companySectionManager.Update(newEntity);
+
+            return _mapper.Map<CompanySectionDto>(entity);
+        }
+        
+        public async Task<bool> DeleteCompanySection(long id) {
+            var entity = await _companySectionManager.Find(id);
+
+            if(entity != null) {
+                var result = await _companySectionManager.Delete(entity);
+                return result != 0;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region SECTION
+        public async Task<SectionDto> GetSection(long id) {
+            var result = await _sectionManager.Find(id);
+            return _mapper.Map<SectionDto>(result);
+        }
+
+        public async Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter) {
+            #region Sort/Filter
+            var sortby = filter.Sort ?? "Name";
+
+            Expression<Func<SectionEntity, bool>> where = x =>
+                   (true)
+                   && (string.IsNullOrEmpty(filter.Search) || x.Name.ToLower().Contains(filter.Search.ToLower()));
+            #endregion
+
+            var tuple = await _sectionManager.Pager<SectionEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit);
+            var list = tuple.Item1;
+            var count = tuple.Item2;
+
+            if(count == 0)
+                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Offset, filter.Limit);
+
+            var page = (filter.Offset + filter.Limit) / filter.Limit;
+
+            var result = _mapper.Map<List<SectionDto>>(list);
+            return new Pager<SectionDto>(result, count, page, filter.Limit);
+        }
+
+        public async Task<List<SectionDto>> GetSections() {
+            var result = await _sectionManager.All();
+            return _mapper.Map<List<SectionDto>>(result);
+        }
+
+        public async Task<SectionDto> CreateSection(SectionDto dto) {
+            var entity = await _sectionManager.Create(_mapper.Map<SectionEntity>(dto));
+            return _mapper.Map<SectionDto>(entity);
+        }
+
+        public async Task<SectionDto> UpdateSection(long id, SectionDto dto) {
+            var entity = await _sectionManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+            var newEntity = _mapper.Map(dto, entity);
+            entity = await _sectionManager.Update(newEntity);
+
+            return _mapper.Map<SectionDto>(entity);
+        }
+
+        public async Task<bool> DeleteSection(long id) {
+            var entity = await _sectionManager.Find(id);
+
+            if(entity != null) {
+                var result = await _sectionManager.Delete(entity);
+                return result != 0;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

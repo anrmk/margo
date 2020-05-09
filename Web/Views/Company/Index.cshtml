@@ -30,7 +30,8 @@
 @section Scripts {
     <script type="text/javascript">
         function actionFormatter(value, row) {
-            return `<a href='/company/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+            return `<a href='/company/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>` + 
+                   `<a href='/company/details/${row.id}' class='btn btn-outline-secondary mr-1' >Detail</a>`;
         }
     </script>
 }

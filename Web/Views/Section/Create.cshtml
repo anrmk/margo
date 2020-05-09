@@ -1,0 +1,38 @@
+﻿@model Web.ViewModels.SectionViewModel
+
+@{
+    ViewData["Title"] = "Create Section";
+    ViewData["SubTitle"] = "";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Sections</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New</li>
+    </ol>
+</nav>
+
+<div class="card">
+    <div class="card-body">
+        <form id="submitForm" asp-action="Create">
+            <div class="form-group row mb-3">
+                <div class="col-4">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-8">
+                    <label asp-for="Description"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="" role="toolbar" aria-label="Toolbar with button groups">
+            <button type="submit" class="btn btn-outline-primary" form="submitForm">Save</button>
+            <a asp-action="index" class="btn btn-link">Cancel</a>
+        </div>
+    </div>
+</div>
