@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
@@ -35,6 +37,7 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Section)
+                .Include(x => x.Fields)
                 .Where(x => x.CompanyId == companyId)
                 .ToListAsync();
         }

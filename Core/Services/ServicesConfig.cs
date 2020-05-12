@@ -28,6 +28,7 @@ namespace Core.Services {
             services.AddTransient<ICompanyManager, CompanyManager>();
             services.AddTransient<ICompanyAddressManager, CompanyAddressManager>();
             services.AddTransient<ICompanySectionManager, CompanySectionManager>();
+            services.AddTransient<ICompanySectionFieldManager, CompanySectionFieldManager>();
 
             services.AddTransient<ISectionManager, SectionManager>();
 

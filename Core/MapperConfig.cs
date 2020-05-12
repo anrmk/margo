@@ -33,6 +33,9 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.Name))
                 .ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name));
+
+            CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
+
             #endregion
 
             #region INVOICE

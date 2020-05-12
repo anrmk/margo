@@ -24,6 +24,8 @@ namespace Web.Controllers {
 
         public string CurrentLanguage => "en";
 
+        public bool IsAjaxRequest => HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
         public string CurrentUser => User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
         public async Task ClientNotify(string msg) {

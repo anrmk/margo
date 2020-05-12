@@ -33,6 +33,7 @@ namespace Core.Context {
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
         public DbSet<CompanySectionEntity> CompanySections { get; set; }
+        public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 
         public DbSet<SectionEntity> Sections { get; set; }
 

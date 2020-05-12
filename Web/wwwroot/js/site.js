@@ -5,6 +5,17 @@
     if (window.notificationHub === undefined)
         window.notificationHub = new NotificationHub();
 
+    $('a[data-target=modal]').on('click', e => {
+        e.preventDefault();
+        var opt = {
+            'url': $(e.currentTarget).attr('href')
+        }
+
+        $.ajax(opt).done((data, status, jqXHR) => {
+            $(data).dialog('Your action is required', (action, e, content) => { });
+        })
+    });
+
     var settings = {
         validClass: "is-valid",
         errorClass: "is-invalid"
@@ -25,7 +36,7 @@ $.fn.dialog = function (header, callback) {
         $('.modal .modal-body').empty().html(this),
 
         window.modal.modal('show').off('shown.bs.modal').on('shown.bs.modal', (e) => {
-            var form = $('.modal .modal-content form');
+            var form = $('.modal .modal-content form[id]');
             var submitBtn = $('.modal .modal-footer #modalSubmitBtn');
             if (form.length == 1) {
                 submitBtn.attr('form', form.attr('id')).removeAttr('hidden');

@@ -17,7 +17,7 @@
         </li>
         <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/company") ? "active" : "")">
             <a class="nav-link" asp-controller="Company" asp-action="Index">
-                <i class="far fa-circle mr-1"></i> Companies
+                <i class="fas fa-database mr-1"></i> Database
             </a>
             <a class="nav-link text-white-50" asp-controller="Company" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
@@ -50,11 +50,6 @@
         <span><i class="fa fa-cogs mr-1"></i> Settings</span>
     </h6>
     <ul class="nav flex-column">
-        <li class="nav-item @(url.Contains("/exportSettings") ? "active" : "")">
-            <a class="nav-link" asp-controller="Settings" asp-action="ExportField">
-                General
-            </a>
-        </li>
         <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/section") ? "active" : "")">
             <a class="nav-link" asp-controller="Section" asp-action="Index">
                 <i class="fas fa-list mr-1"></i> Section

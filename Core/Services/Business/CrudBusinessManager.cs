@@ -79,6 +79,13 @@ namespace Core.Services.Business {
         Task<bool> DeleteCompanySection(long id);
         #endregion
 
+        #region COMPANY SECTION FIELDS
+        Task<CompanySectionFieldDto> GetCompanySectionField(long id);
+        Task<CompanySectionFieldDto> CreateCompanySectionField(CompanySectionFieldDto dto);
+        Task<CompanySectionFieldDto> UpdateCompanySectionField(long id, CompanySectionFieldDto dto);
+        Task<bool> DeleteCompanySectionField(long id);
+        #endregion
+
         #region SECTION
         Task<SectionDto> GetSection(long id);
         Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter);
@@ -94,6 +101,7 @@ namespace Core.Services.Business {
         private readonly ICompanyManager _companyManager;
         private readonly ICompanyAddressManager _companyAddressManager;
         private readonly ICompanySectionManager _companySectionManager;
+        private readonly ICompanySectionFieldManager _companySectionFieldManager;
 
         private readonly IVendorManager _vendorManager;
         private readonly IVendorAddressManager _vendorAddressManager;
@@ -111,7 +119,7 @@ namespace Core.Services.Business {
 
         public CrudBusinessManager(IMapper mapper,
             ISectionManager sectionManager,
-            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager,
+            ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager, ICompanySectionFieldManager companySectionFieldManager,
             IVendorManager supplierManager, IVendorAddressManager vendorAddressManager,
             IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
             IInvoiceManager invoiceManager) {
@@ -122,6 +130,7 @@ namespace Core.Services.Business {
             _companyManager = companyManager;
             _companyAddressManager = companyAddressManager;
             _companySectionManager = companySectionManager;
+            _companySectionFieldManager = companySectionFieldManager;
 
             _vendorManager = supplierManager;
             _vendorAddressManager = vendorAddressManager;
@@ -536,7 +545,6 @@ namespace Core.Services.Business {
         }
         #endregion
 
-
         #region COMPANY SECTIONS
         public async Task<CompanySectionDto> GetCompanySection(long id) {
             var result = await _companySectionManager.FindInclude(id);
@@ -552,7 +560,7 @@ namespace Core.Services.Business {
             var entity = await _companySectionManager.Create(_mapper.Map<CompanySectionEntity>(dto));
             return _mapper.Map<CompanySectionDto>(entity);
         }
-        
+
         public async Task<CompanySectionDto> UpdateCompanySection(long id, CompanySectionDto dto) {
             var entity = await _companySectionManager.Find(id);
             if(entity == null) {
@@ -563,12 +571,46 @@ namespace Core.Services.Business {
 
             return _mapper.Map<CompanySectionDto>(entity);
         }
-        
+
         public async Task<bool> DeleteCompanySection(long id) {
             var entity = await _companySectionManager.Find(id);
 
             if(entity != null) {
                 var result = await _companySectionManager.Delete(entity);
+                return result != 0;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region COMPANY SECTION FIELDS
+        public async Task<CompanySectionFieldDto> GetCompanySectionField(long id) {
+            var result = await _companySectionFieldManager.Find(id);
+            return _mapper.Map<CompanySectionFieldDto>(result);
+        }
+
+        public async Task<CompanySectionFieldDto> CreateCompanySectionField(CompanySectionFieldDto dto) {
+            var entity = await _companySectionFieldManager.Create(_mapper.Map<CompanySectionFieldEntity>(dto));
+            return _mapper.Map<CompanySectionFieldDto>(entity);
+        }
+
+        public async Task<CompanySectionFieldDto> UpdateCompanySectionField(long id, CompanySectionFieldDto dto) {
+            var entity = await _companySectionFieldManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+            var newEntity = _mapper.Map(dto, entity);
+            entity = await _companySectionFieldManager.Update(newEntity);
+
+            return _mapper.Map<CompanySectionFieldDto>(entity);
+        }
+
+        public async Task<bool> DeleteCompanySectionField(long id) {
+            var entity = await _companySectionFieldManager.Find(id);
+
+            if(entity != null) {
+                var result = await _companySectionFieldManager.Delete(entity);
                 return result != 0;
             }
 

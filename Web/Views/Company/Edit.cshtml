@@ -6,7 +6,7 @@
 }
 
 @section Toolbar  {
-    <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-toolbar mb-md-0">
         <div class="btn-group mr-2">
             <form method="POST" asp-action="Delete">
                 <input asp-for="Id" type="hidden" />
@@ -26,18 +26,19 @@
 <div class="row">
     <div class="col-md-12 col-lg-3">
         <div class="card">
-
             <div class="list-group list-group-flush" id="list-tab" role="tablist">
                 <a class="list-group-item list-group-item-action active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">General</a>
                 <a class="list-group-item list-group-item-action" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a>
                 @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                    <a class="list-group-item list-group-item-action" id="@(section.SectionId)-item" data-toggle="list" href="#@(section.SectionName)" role="tab" aria-controls="@(section.SectionName)">
+                    <a class="list-group-item list-group-item-action" id="@(section.Id)-item" data-toggle="list" href="#pane-@(section.Id)" role="tab" aria-controls="pane-@(section.Id)">
                         @(section.SectionName)
                     </a>
                 }
             </div>
             <div class="card-footer">
-                <a class="card-link" asp-action="AddSection" asp-route-id="@Model.Id">Add new section</a>
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-sm btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="fa fa-plus-circle mr-1"></i> Add new section</a>
+                </div>
             </div>
         </div>
 
@@ -111,8 +112,8 @@
                     </div>
                     <div class="card-body">
                         <form id="submitAddressForm" method="POST" asp-action="EditAddress">
-                            <input name="CompanyId" type="hidden" value="@Model.Id" />
-                            <input name="Id" type="hidden" value="@Model.Address.Id" />
+                            <input type="hidden" name="CompanyId" value="@Model.Id" />
+                            <input type="hidden" name="Id" value="@Model.Address.Id" />
                             <div class="form-group row mb-3">
                                 <div class="col-8">
                                     <label asp-for="Address.Address"></label>
@@ -155,6 +156,54 @@
                     </div>
                 </div>
             </div>
+            @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
+                <div class="tab-pane fade" id="pane-@(section.Id)" role="tabpanel" aria-labelledby="@(section.Id)-item">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="btn-toolbar d-flex justify-content-between">    
+                                <a class="btn btn-sm btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="fa fa-plus-circle mr-1"></i> Add new field</a>
+                                
+                                <form method="POST" asp-action="DeleteSection">
+                                    <input asp-for="@(section.Id)" type="hidden" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive-md">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Link</th>
+                                            <th>Note</th>
+                                            <th class="text-nowrap text-right table-active">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach(var field in section.Fields) {
+                                            <tr>
+                                                <td>@(field.Name)</td>
+                                                <td>@(field.Value)</td>
+                                                <td class="text-nowrap">
+                                                    @if(!string.IsNullOrEmpty(field.Link)) {
+                                                        <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
+                                                    }
+                                                </td>
+                                                <td>@(field.Note)</td>
+                                                <td class="text-nowrap text-right table-active">
+                                                    <a asp-action="EditSectionField" asp-route-id="@(field.Id)" class='btn btn-outline-secondary' data-target="modal">Edit</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -174,7 +223,7 @@
         }
 
         $(document).ready(function () {
-          
+
         });
     </script>
 }

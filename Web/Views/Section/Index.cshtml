@@ -14,9 +14,9 @@
                    data-data-field="items">
                 <thead>
                     <tr>
+                        <th data-field="isDefault" data-formatter="isDefaultFormatter"></th>
                         <th data-field="name" data-sortable="true">Name</th>
                         <th data-field="description" data-sortable="true">Description</th>
-                        <th data-field="isDefault" data-sortable="true">Is Default</th>
                         <th data-formatter="actionFormatter" class="text-nowrap text-right table-active">Actions</th>
                     </tr>
                 </thead>
@@ -27,6 +27,9 @@
 
 @section Scripts {
     <script type="text/javascript">
+        function isDefaultFormatter(value, row) {
+            return value == null || value == false ? '' : `<i class='fa fa-check-circle'></i>`;
+        }
         function actionFormatter(value, row) {
             return `<a href='/section/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
         }

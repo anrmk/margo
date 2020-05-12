@@ -129,6 +129,7 @@ namespace Web.Controllers.Mvc {
             }
         }
 
+        #region COMPANY SECTIONS
         public async Task<ActionResult> AddSection(long id) {
             var item = await _crudBusinessManager.GetCompany(id);
             if(item == null) {
@@ -140,8 +141,9 @@ namespace Web.Controllers.Mvc {
             var exist = sections.Where(x => !companySection.Any(y => y.SectionId == x.Id));
 
             ViewBag.Sections = exist.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+            var modal = new CompanySectionViewModel() { CompanyId = id };
 
-            return View("_AddSectionPartial",new CompanySectionViewModel() { CompanyId = id });
+            return View("_AddSectionPartial", modal);
         }
 
         [HttpPost]
@@ -153,8 +155,11 @@ namespace Web.Controllers.Mvc {
                     if(item == null) {
                         return BadRequest();
                     }
-
-                    return RedirectToAction(nameof(Edit), new { Id = item.CompanyId });
+                    if(IsAjaxRequest) {
+                        return Ok(_mapper.Map<CompanySectionViewModel>(item));
+                    } else {
+                        return RedirectToAction(nameof(Edit), new { Id = item.CompanyId });
+                    }
                 }
             } catch(Exception er) {
                 _logger.LogError(er, er.Message);
@@ -163,6 +168,141 @@ namespace Web.Controllers.Mvc {
 
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteSection(long id) {
+            try {
+                var section = await _crudBusinessManager.GetCompanySection(id);
+                if(section == null) {
+                    return NotFound();
+                }
+
+                if(section.Fields.Count > 0) {
+                    return BadRequest("Delete all fields before ");
+                }
+
+                var item = await _crudBusinessManager.DeleteCompanySection(id);
+                if(item == false) {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(Edit), new { Id = section.CompanyId });
+
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                return BadRequest(er);
+            }
+        }
+        #endregion
+
+        #region COMPANY SECTION FIELD
+        public async Task<ActionResult> AddSectionField(long companySectionId) {
+            var item = await _crudBusinessManager.GetCompanySection(companySectionId);
+            if(item == null) {
+                return NotFound();
+            }
+
+            ViewBag.SectionName = item.SectionName;
+
+            var model = new CompanySectionFieldViewModel() {
+                CompanySectionId = item.Id
+            };
+
+            return View("_AddSectionFieldPartial", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddSectionField(CompanySectionFieldViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var companySection = await _crudBusinessManager.GetCompanySection(model.CompanySectionId);
+                    if(companySection == null) {
+                        return BadRequest();
+                    }
+
+                    var item = await _crudBusinessManager.CreateCompanySectionField(_mapper.Map<CompanySectionFieldDto>(model));
+                    if(item == null) {
+                        return BadRequest();
+                    }
+                    if(IsAjaxRequest) {
+                        return Ok(_mapper.Map<CompanySectionFieldViewModel>(item));
+                    } else {
+                        return RedirectToAction(nameof(Edit), new { Id = companySection.CompanyId });
+                    }
+                }
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
+            }
+
+            return View(model);
+        }
+
+        public async Task<ActionResult> EditSectionField(long id) {
+            var item = await _crudBusinessManager.GetCompanySectionField(id);
+            if(item == null) {
+                return NotFound();
+            }
+
+            return View("_AddSectionFieldPartial", _mapper.Map<CompanySectionFieldViewModel>(item));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditSectionField(long id, CompanySectionFieldViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var item = await _crudBusinessManager.UpdateCompanySectionField(id, _mapper.Map<CompanySectionFieldDto>(model));
+                    if(item == null) {
+                        return BadRequest();
+                    }
+
+                    var companySection = await _crudBusinessManager.GetCompanySection(model.CompanySectionId);
+                    if(companySection == null) {
+                        return BadRequest();
+                    }
+
+                    if(IsAjaxRequest) {
+                        return Ok(_mapper.Map<CompanySectionFieldViewModel>(item));
+                    } else {
+                        return RedirectToAction(nameof(Edit), new { Id = companySection.CompanyId });
+                    }
+                }
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                BadRequest(er);
+            }
+            return RedirectToAction(nameof(Edit), new { Id = id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteSectionField(long id) {
+            try {
+                var sectionField = await _crudBusinessManager.GetCompanySectionField(id);
+                if(sectionField == null) {
+                    return NotFound();
+                }
+
+                var companySection = await _crudBusinessManager.GetCompanySection(sectionField.CompanySectionId);
+                if(companySection == null) {
+                    return NotFound();
+                }
+
+                var item = await _crudBusinessManager.DeleteCompanySectionField(id);
+                if(item == false) {
+                    return NotFound();
+                }
+                return RedirectToAction(nameof(Edit), new { Id = companySection.CompanyId});
+
+            } catch(Exception er) {
+                _logger.LogError(er, er.Message);
+                return BadRequest(er);
+            }
+        }
+        #endregion
     }
 }
 
@@ -184,5 +324,11 @@ namespace Web.Controllers.Api {
             var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
             return pager;
         }
+
+        //[HttpGet]
+        //[Route("section/{sectionId}/fields")]
+        //public async Task<List<CompanySectionFieldViewModel>> GetFields(long sectionId) {
+        //    return null;
+        //}
     }
 }

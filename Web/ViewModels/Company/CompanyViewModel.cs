@@ -4,6 +4,8 @@ namespace Web.ViewModels {
     public class CompanyViewModel {
         public long Id { get; set; }
 
+        public string IsStarred { get; set; }
+
         public CompanyGeneralViewModel General { get; set; }
 
         public CompanyAddressViewModel Address { get; set; }

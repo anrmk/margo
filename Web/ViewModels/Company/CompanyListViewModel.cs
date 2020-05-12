@@ -3,6 +3,9 @@
 namespace Web.ViewModels {
     public class CompanyListViewModel {
         public long Id { get; set; }
+
+        public string IsStarred { get; set; }
+
         public string No { get; set; }
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
