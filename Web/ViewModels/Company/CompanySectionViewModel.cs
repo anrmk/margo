@@ -1,6 +1,4 @@
-﻿
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
@@ -18,6 +16,10 @@ namespace Web.ViewModels {
         public long SectionId { get; set; }
 
         public string SectionName { get; set; }
+
+        public string SectionCode { get; set; }
+
+        public string SectionDescription { get; set; }
 
         public List<CompanySectionFieldViewModel> Fields { get; set; }
     }

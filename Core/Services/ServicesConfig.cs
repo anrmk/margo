@@ -36,10 +36,9 @@ namespace Core.Services {
             services.AddTransient<IVendorAddressManager, VendorAddressManager>();
             services.AddTransient<IVendorMediaManager, VendorMediaManager>();
 
-            services.AddTransient<IVaccountManager, VaccountManager>();
-            services.AddTransient<IVaccountSecurityManager, VaccountSecurityManager>();
-            services.AddTransient<IVaccountSecurityQuestionManager, VaccountSecurityQuestionManager>();
-
+            //services.AddTransient<IVaccountManager, VaccountManager>();
+            //services.AddTransient<IVaccountSecurityManager, VaccountSecurityManager>();
+            //services.AddTransient<IVaccountSecurityQuestionManager, VaccountSecurityQuestionManager>();
 
             services.AddTransient<IInvoiceManager, InvoiceManager>();
 

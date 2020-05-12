@@ -21,25 +21,21 @@
             </a>
             <a class="nav-link text-white-50" asp-controller="Company" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/vendor") ? "active" : "")">
-            <a class="nav-link" asp-controller="Vendor" asp-action="Index">
-                <i class="far fa-user-circle mr-1"></i> Vendors
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/invoice") ? "active" : "")">
+            <a class="nav-link" asp-controller="Invoice" asp-action="Index">
+                <i class="fas fa-file-invoice mr-1"></i> Payments
             </a>
-            <a class="nav-link text-white-50" asp-controller="Vendor" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
+            <a class="nav-link text-white-50" asp-controller="Invoice" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
+        @*
         <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/vaccount") ? "active" : "")">
             <a class="nav-link" asp-controller="Vaccount" asp-action="Index">
                 <i class="fas fa-user-friends mr-1"></i> Accounts
             </a>
             <a class="nav-link text-white-50" asp-controller="Vaccount" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
-        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/invoice") ? "active" : "")">
-            <a class="nav-link" asp-controller="Invoice" asp-action="Index">
-                <i class="fas fa-file-invoice mr-1"></i> Invoices
-            </a>
-            <a class="nav-link text-white-50" asp-controller="Invoice" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
-        </li>
-        @*<li class="nav-item @(url.Contains("/payment") ? "active" : "")">
+
+        <li class="nav-item @(url.Contains("/payment") ? "active" : "")">
             <a class="nav-link" asp-controller="Payment" asp-action="Index">
                 Payments
             </a>
@@ -55,6 +51,12 @@
                 <i class="fas fa-list mr-1"></i> Section
             </a>
             <a class="nav-link text-white-50" asp-controller="Section" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
+        </li>
+        <li class="nav-item d-flex justify-content-between align-items-center @(url.Contains("/vendor") ? "active" : "")">
+            <a class="nav-link" asp-controller="Vendor" asp-action="Index">
+                <i class="far fa-user-circle mr-1"></i> Vendors
+            </a>
+            <a class="nav-link text-white-50" asp-controller="Vendor" asp-action="Create"><i class="fas fa-plus-circle mr-1"></i></a>
         </li>
     </ul>
 </div>

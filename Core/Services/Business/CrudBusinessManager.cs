@@ -7,7 +7,6 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Data.Entities.Vaccount;
 using Core.Extension;
 using Core.Services.Managers;
 
@@ -42,27 +41,27 @@ namespace Core.Services.Business {
         Task<VendorAddressDto> UpdateVendorAddress(long companyId, VendorAddressDto dto);
         #endregion
 
-        #region VACCOUNT
-        Task<VaccountDto> GetVaccount(long id);
-        Task<VaccountDto> GetVaccountBySecurityId(long id);
-        Task<List<VaccountDto>> GetVaccounts();
-        Task<Pager<VaccountDto>> GetVaccountPager(VaccountFilterDto filter);
-        Task<VaccountDto> CreateVaccount(VaccountDto dto);
-        Task<VaccountDto> UpdateVaccount(long id, VaccountDto dto);
-        Task<bool> DeleteVaccount(long id);
-        #endregion
+        //#region VACCOUNT
+        //Task<VaccountDto> GetVaccount(long id);
+        //Task<VaccountDto> GetVaccountBySecurityId(long id);
+        //Task<List<VaccountDto>> GetVaccounts();
+        //Task<Pager<VaccountDto>> GetVaccountPager(VaccountFilterDto filter);
+        //Task<VaccountDto> CreateVaccount(VaccountDto dto);
+        //Task<VaccountDto> UpdateVaccount(long id, VaccountDto dto);
+        //Task<bool> DeleteVaccount(long id);
+        //#endregion
 
-        #region VACCOUNT SECURITY
-        Task<VaccountSecurityDto> GetVaccountSecurity(long id);
-        Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto);
-        #endregion
+        //#region VACCOUNT SECURITY
+        //Task<VaccountSecurityDto> GetVaccountSecurity(long id);
+        //Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto);
+        //#endregion
 
-        #region VACCOUNT SECURITY QUESTION
-        Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id);
-        Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId);
-        Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto);
-        Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto);
-        #endregion
+        //#region VACCOUNT SECURITY QUESTION
+        //Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id);
+        //Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId);
+        //Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto);
+        //Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto);
+        //#endregion
 
         Task<InvoiceDto> GetInvoice(long id);
         Task<List<InvoiceDto>> GetInvoices();
@@ -106,9 +105,9 @@ namespace Core.Services.Business {
         private readonly IVendorManager _vendorManager;
         private readonly IVendorAddressManager _vendorAddressManager;
 
-        private readonly IVaccountManager _vaccountManager;
-        private readonly IVaccountSecurityManager _vaccountSecurityManager;
-        private readonly IVaccountSecurityQuestionManager _vaccountSecurityQuestionManager;
+        //private readonly IVaccountManager _vaccountManager;
+        //private readonly IVaccountSecurityManager _vaccountSecurityManager;
+        //private readonly IVaccountSecurityQuestionManager _vaccountSecurityQuestionManager;
 
         private readonly IInvoiceManager _invoiceManager;
 
@@ -121,7 +120,7 @@ namespace Core.Services.Business {
             ISectionManager sectionManager,
             ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager, ICompanySectionFieldManager companySectionFieldManager,
             IVendorManager supplierManager, IVendorAddressManager vendorAddressManager,
-            IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
+            //IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
             IInvoiceManager invoiceManager) {
             _mapper = mapper;
 
@@ -135,9 +134,9 @@ namespace Core.Services.Business {
             _vendorManager = supplierManager;
             _vendorAddressManager = vendorAddressManager;
 
-            _vaccountManager = vaccountManager;
-            _vaccountSecurityManager = vaccountSecurityManager;
-            _vaccountSecurityQuestionManager = vaccountSecurityQuestionManager;
+            //_vaccountManager = vaccountManager;
+            //_vaccountSecurityManager = vaccountSecurityManager;
+            //_vaccountSecurityQuestionManager = vaccountSecurityQuestionManager;
 
             _invoiceManager = invoiceManager;
         }
@@ -358,13 +357,11 @@ namespace Core.Services.Business {
 
             Expression<Func<InvoiceEntity, bool>> where = x =>
                   (true)
-               && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Account.UserName.ToLower().Contains(filter.Search.ToLower())))
-               && ((filter.CompanyId == null) || filter.CompanyId == x.Account.CompanyId)
-               && ((filter.VendorId == null) || filter.VendorId == x.Account.VendorId)
+               && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) ))
                ;
             #endregion
 
-            string[] include = new string[] { "Account", "Account.Company", "Account.Vendor" };
+            string[] include = new string[] { };
 
             var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
@@ -406,80 +403,80 @@ namespace Core.Services.Business {
         #endregion
 
         #region VACCOUNT
-        public async Task<VaccountDto> GetVaccount(long id) {
-            var result = await _vaccountManager.FindInclude(id);
-            return _mapper.Map<VaccountDto>(result);
-        }
+        //public async Task<VaccountDto> GetVaccount(long id) {
+        //    var result = await _vaccountManager.FindInclude(id);
+        //    return _mapper.Map<VaccountDto>(result);
+        //}
 
-        public async Task<VaccountDto> GetVaccountBySecurityId(long id) {
-            var result = await _vaccountManager.FindBySecurityId(id);
-            return _mapper.Map<VaccountDto>(result);
-        }
+        //public async Task<VaccountDto> GetVaccountBySecurityId(long id) {
+        //    var result = await _vaccountManager.FindBySecurityId(id);
+        //    return _mapper.Map<VaccountDto>(result);
+        //}
 
-        public async Task<Pager<VaccountDto>> GetVaccountPager(VaccountFilterDto filter) {
-            var sortby = filter.Sort ?? "Id";
+        //public async Task<Pager<VaccountDto>> GetVaccountPager(VaccountFilterDto filter) {
+        //    var sortby = filter.Sort ?? "Id";
 
-            Expression<Func<VaccountEntity, bool>> where = x =>
-                  (true)
-               && (string.IsNullOrEmpty(filter.Search) || (x.UserName.ToLower().Contains(filter.Search.ToLower())))
-               && ((filter.CompanyId == null) || filter.CompanyId == x.CompanyId)
-               && ((filter.VendorId == null) || filter.VendorId == x.VendorId)
-               ;
+        //    Expression<Func<VaccountEntity, bool>> where = x =>
+        //          (true)
+        //       && (string.IsNullOrEmpty(filter.Search) || (x.UserName.ToLower().Contains(filter.Search.ToLower())))
+        //       && ((filter.CompanyId == null) || filter.CompanyId == x.CompanyId)
+        //       && ((filter.VendorId == null) || filter.VendorId == x.VendorId)
+        //       ;
 
-            string[] include = new string[] { "Company", "Vendor" };
+        //    string[] include = new string[] { "Company", "Vendor" };
 
-            var tuple = await _vaccountManager.Pager<VaccountEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
-            var list = tuple.Item1;
-            var count = tuple.Item2;
+        //    var tuple = await _vaccountManager.Pager<VaccountEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+        //    var list = tuple.Item1;
+        //    var count = tuple.Item2;
 
-            if(count == 0)
-                return new Pager<VaccountDto>(new List<VaccountDto>(), 0, filter.Offset, filter.Limit);
+        //    if(count == 0)
+        //        return new Pager<VaccountDto>(new List<VaccountDto>(), 0, filter.Offset, filter.Limit);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+        //    var page = (filter.Offset + filter.Limit) / filter.Limit;
 
-            var result = _mapper.Map<List<VaccountDto>>(list);
-            return new Pager<VaccountDto>(result, count, page, filter.Limit);
-        }
+        //    var result = _mapper.Map<List<VaccountDto>>(list);
+        //    return new Pager<VaccountDto>(result, count, page, filter.Limit);
+        //}
 
-        public async Task<List<VaccountDto>> GetVaccounts() {
-            var result = await _vaccountManager.FindAll();
-            return _mapper.Map<List<VaccountDto>>(result);
-        }
+        //public async Task<List<VaccountDto>> GetVaccounts() {
+        //    var result = await _vaccountManager.FindAll();
+        //    return _mapper.Map<List<VaccountDto>>(result);
+        //}
 
-        public async Task<VaccountDto> CreateVaccount(VaccountDto dto) {
-            var entity = _mapper.Map<VaccountEntity>(dto);
-            entity = await _vaccountManager.Create(entity);
-            return _mapper.Map<VaccountDto>(entity);
-        }
+        //public async Task<VaccountDto> CreateVaccount(VaccountDto dto) {
+        //    var entity = _mapper.Map<VaccountEntity>(dto);
+        //    entity = await _vaccountManager.Create(entity);
+        //    return _mapper.Map<VaccountDto>(entity);
+        //}
 
-        public async Task<VaccountDto> UpdateVaccount(long id, VaccountDto dto) {
-            var entity = await _vaccountManager.Find(id);
-            if(entity == null) {
-                return null;
-            }
-            var newEntity = _mapper.Map(dto, entity);
-            entity = await _vaccountManager.Update(newEntity);
+        //public async Task<VaccountDto> UpdateVaccount(long id, VaccountDto dto) {
+        //    var entity = await _vaccountManager.Find(id);
+        //    if(entity == null) {
+        //        return null;
+        //    }
+        //    var newEntity = _mapper.Map(dto, entity);
+        //    entity = await _vaccountManager.Update(newEntity);
 
-            return _mapper.Map<VaccountDto>(entity);
-        }
+        //    return _mapper.Map<VaccountDto>(entity);
+        //}
 
-        public async Task<bool> DeleteVaccount(long id) {
-            var result = 0;
-            var entity = await _vaccountManager.Find(id);
+        //public async Task<bool> DeleteVaccount(long id) {
+        //    var result = 0;
+        //    var entity = await _vaccountManager.Find(id);
 
-            if(entity != null) {
-                result = await _vaccountManager.Delete(entity);
-            }
+        //    if(entity != null) {
+        //        result = await _vaccountManager.Delete(entity);
+        //    }
 
-            return result != 0;
-        }
+        //    return result != 0;
+        //}
         #endregion
 
         #region VACCOUNT SECURITY
-        public async Task<VaccountSecurityDto> GetVaccountSecurity(long id) {
-            var result = await _vaccountSecurityManager.FindInclude(id);
-            return _mapper.Map<VaccountSecurityDto>(result);
-        }
+        //public async Task<VaccountSecurityDto> GetVaccountSecurity(long id) {
+        //    var result = await _vaccountSecurityManager.FindInclude(id);
+        //    return _mapper.Map<VaccountSecurityDto>(result);
+        //}
 
         //public async Task<VaccountSecurityDto> CreateVaccountSecurity(VaccountSecurityDto dto) {
         //    var accountEntity = await _vaccountManager.Find(dto.AccountId);
@@ -492,57 +489,57 @@ namespace Core.Services.Business {
         //    return _mapper.Map<VaccountSecurityDto>(entity);
         //}
 
-        public async Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto) {
-            var entity = await _vaccountSecurityManager.Find(dto.Id);
+        //public async Task<VaccountSecurityDto> UpdateVaccountSecurity(long accountId, VaccountSecurityDto dto) {
+        //    var entity = await _vaccountSecurityManager.Find(dto.Id);
 
-            if(entity == null) {
-                entity = await _vaccountSecurityManager.Create(_mapper.Map<VaccountSecurityEntity>(dto));
+        //    if(entity == null) {
+        //        entity = await _vaccountSecurityManager.Create(_mapper.Map<VaccountSecurityEntity>(dto));
 
-                var account = await _vaccountManager.Find(accountId);
-                account.SecurityId = entity.Id;
-                await _vaccountManager.Update(account);
-            } else {
-                var updateEntity = _mapper.Map(dto, entity);
-                entity = await _vaccountSecurityManager.Update(updateEntity);
-            }
+        //        var account = await _vaccountManager.Find(accountId);
+        //        account.SecurityId = entity.Id;
+        //        await _vaccountManager.Update(account);
+        //    } else {
+        //        var updateEntity = _mapper.Map(dto, entity);
+        //        entity = await _vaccountSecurityManager.Update(updateEntity);
+        //    }
 
-            return _mapper.Map<VaccountSecurityDto>(entity);
-        }
+        //    return _mapper.Map<VaccountSecurityDto>(entity);
+        //}
         #endregion
 
         #region VACCOUNT SECURITY QUESTION
-        public async Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id) {
-            var result = await _vaccountSecurityQuestionManager.Find(id);
-            return _mapper.Map<VaccountSecurityQuestionDto>(result);
-        }
+        //public async Task<VaccountSecurityQuestionDto> GetVaccountSecurityQuestion(long id) {
+        //    var result = await _vaccountSecurityQuestionManager.Find(id);
+        //    return _mapper.Map<VaccountSecurityQuestionDto>(result);
+        //}
 
-        public async Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId) {
-            var result = await _vaccountSecurityQuestionManager.FindBySecurityId(securityId);
-            return _mapper.Map<List<VaccountSecurityQuestionDto>>(result);
-        }
+        //public async Task<List<VaccountSecurityQuestionDto>> GetVaccountSecurityQuestions(long securityId) {
+        //    var result = await _vaccountSecurityQuestionManager.FindBySecurityId(securityId);
+        //    return _mapper.Map<List<VaccountSecurityQuestionDto>>(result);
+        //}
 
-        public async Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto) {
-            var securityEntity = await _vaccountSecurityManager.Find(dto.SecurityId);
-            if(securityEntity == null) {
-                return null;
-            }
+        //public async Task<VaccountSecurityQuestionDto> CreateVaccountSecurityQuestion(VaccountSecurityQuestionDto dto) {
+        //    var securityEntity = await _vaccountSecurityManager.Find(dto.SecurityId);
+        //    if(securityEntity == null) {
+        //        return null;
+        //    }
 
-            var newEntity = _mapper.Map<VaccountSecurityQuestionEntity>(dto);
-            var entity = await _vaccountSecurityQuestionManager.Create(newEntity);
-            return _mapper.Map<VaccountSecurityQuestionDto>(entity);
-        }
+        //    var newEntity = _mapper.Map<VaccountSecurityQuestionEntity>(dto);
+        //    var entity = await _vaccountSecurityQuestionManager.Create(newEntity);
+        //    return _mapper.Map<VaccountSecurityQuestionDto>(entity);
+        //}
 
-        public async Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto) {
-            var entity = await _vaccountSecurityQuestionManager.Find(id);
-            if(entity == null) {
-                return null;
-            }
+        //public async Task<VaccountSecurityQuestionDto> UpdateVaccountSecurityQuestion(long id, VaccountSecurityQuestionDto dto) {
+        //    var entity = await _vaccountSecurityQuestionManager.Find(id);
+        //    if(entity == null) {
+        //        return null;
+        //    }
 
-            var updateEntity = _mapper.Map(dto, entity);
-            entity = await _vaccountSecurityQuestionManager.Update(updateEntity);
+        //    var updateEntity = _mapper.Map(dto, entity);
+        //    entity = await _vaccountSecurityQuestionManager.Update(updateEntity);
 
-            return _mapper.Map<VaccountSecurityQuestionDto>(entity);
-        }
+        //    return _mapper.Map<VaccountSecurityQuestionDto>(entity);
+        //}
         #endregion
 
         #region COMPANY SECTIONS
@@ -652,7 +649,8 @@ namespace Core.Services.Business {
         }
 
         public async Task<SectionDto> CreateSection(SectionDto dto) {
-            var entity = await _sectionManager.Create(_mapper.Map<SectionEntity>(dto));
+            var entity = _mapper.Map<SectionEntity>(dto);
+            entity = await _sectionManager.Create(entity);
             return _mapper.Map<SectionDto>(entity);
         }
 

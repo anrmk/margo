@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using Telegram.Bot;
 using Web.Extension;
 using Web.Hubs;
 
@@ -88,7 +88,13 @@ namespace Web {
             JobSchedulerConfig.Configuration(services);
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
-            services.AddDbContext<Core.Context.ApplicationContext>();
+            services.AddScoped<ITelegramBotClient>((ctx) => {
+                var token = Configuration.GetConnectionString("TelegramConnection");
+
+                return new TelegramBotClient(token);
+            });
+
+            services.AddDbContext<ApplicationContext>();
 
             MapperConfig.Register(services);
 

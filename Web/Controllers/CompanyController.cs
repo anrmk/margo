@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
+using Telegram.Bot;
+using Telegram.Bot.Types;
 using Web.Hubs;
 using Web.ViewModels;
 
@@ -86,6 +87,7 @@ namespace Web.Controllers.Mvc {
                     if(item == null) {
                         return NotFound();
                     }
+       
                     await ClientNotify($"Company Id: {item.Id}: This record was modified by {item.UpdatedBy} on {item.UpdatedDate.ToString()}");
                 }
             } catch(Exception er) {
@@ -179,7 +181,7 @@ namespace Web.Controllers.Mvc {
                 }
 
                 if(section.Fields.Count > 0) {
-                    return BadRequest("Delete all fields before ");
+                    return BadRequest($"Delete all fields before remove section: {section.SectionName}");
                 }
 
                 var item = await _crudBusinessManager.DeleteCompanySection(id);
@@ -295,7 +297,7 @@ namespace Web.Controllers.Mvc {
                 if(item == false) {
                     return NotFound();
                 }
-                return RedirectToAction(nameof(Edit), new { Id = companySection.CompanyId});
+                return RedirectToAction(nameof(Edit), new { Id = companySection.CompanyId });
 
             } catch(Exception er) {
                 _logger.LogError(er, er.Message);

@@ -81,25 +81,9 @@ namespace Web {
                 .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
             #endregion
 
-            #region VACCOUNT
-            CreateMap<VaccountViewModel, VaccountDto>().ReverseMap();
-            CreateMap<VaccountListViewModel, VaccountDto>().ReverseMap()
-                .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Vendor.General.Name))
-                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.General.Name));
-
-            CreateMap<VaccountSecurityViewModel, VaccountSecurityDto>().ReverseMap();
-            CreateMap<VaccountSecurityQuestionViewModel, VaccountSecurityQuestionDto>().ReverseMap();
-
-            CreateMap<VaccountFilterViewModel, VaccountFilterDto>();
-
-            #endregion
-
             #region INVOICE
             CreateMap<InvoiceListViewModel, InvoiceDto>()
                .ReverseMap()
-               .ForMember(d => d.AccountName, o => o.MapFrom(s => s.Account.UserName))
-               .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Account.Company.General.Name))
-               .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Account.Vendor.General.Name))
                .ForMember(d => d.Amount, o => o.MapFrom(s => s.Amount.ToCurrency()));
             CreateMap<InvoiceViewModel, InvoiceDto>().ReverseMap();
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();

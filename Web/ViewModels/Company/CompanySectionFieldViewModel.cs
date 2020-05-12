@@ -24,6 +24,10 @@ namespace Web.ViewModels {
         [MaxLength(256)]
         public string Value { get; set; }
 
+        [Display(Name = "Secret Value")]
+        [MaxLength(128)]
+        public string Secret { get; set; }
+
         [Url]
         public string Link { get; set; }
 

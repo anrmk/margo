@@ -22,6 +22,7 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Section)
+                .Include(x => x.Fields)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -39,6 +40,7 @@ namespace Core.Services.Managers {
                 .Include(x => x.Section)
                 .Include(x => x.Fields)
                 .Where(x => x.CompanyId == companyId)
+                .OrderBy(x => x.Section.Sort)
                 .ToListAsync();
         }
     }

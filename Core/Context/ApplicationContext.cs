@@ -5,7 +5,6 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 
 using Core.Data.Entities;
-using Core.Data.Entities.Vaccount;
 using Core.Data.Entities.Vendor;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -41,9 +40,9 @@ namespace Core.Context {
         public DbSet<VendorAddressEntity> VendorAddress { get; set; }
         public DbSet<VendorMediaEntity> VendorMedias { get; set; }
 
-        public DbSet<VaccountEntity> Vaccounts { get; set; }
-        public DbSet<VaccountSecurityEntity> VaccountSecurities { get; set; }
-        public DbSet<VaccountSecurityQuestionEntity> VaccountSecurityQuestion { get; set; }
+        //public DbSet<VaccountEntity> Vaccounts { get; set; }
+        //public DbSet<VaccountSecurityEntity> VaccountSecurities { get; set; }
+        //public DbSet<VaccountSecurityQuestionEntity> VaccountSecurityQuestion { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
         #endregion

@@ -20,7 +20,7 @@
                         <th data-field="phoneNumber" data-sortable="true">Phone</th>
                         <th data-field="address">Address</th>
                         <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
-                        <th data-formatter="actionFormatter" class="text-nowrap text-right table-active">Actions</th>
+                        <th data-formatter="actionFormatter" class="text-right"></th>
                     </tr>
                 </thead>
             </table>
@@ -35,8 +35,13 @@
         }
 
         function actionFormatter(value, row) {
-            return `<a href='/company/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>` + 
-                   `<a href='/company/details/${row.id}' class='btn btn-outline-secondary mr-1' >Detail</a>`;
+            return `<a href='/company/edit/${row.id}'><i class="fa fa-chevron-right"></i></a>`;
         }
+
+        $(document).ready(function () {
+            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
+                location.href = `/company/edit/${row.id}`;
+            });
+        });
     </script>
 }

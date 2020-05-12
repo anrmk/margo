@@ -10,9 +10,6 @@ namespace Web.ViewModels {
         public DateTime Date { get; set; }
         public DateTime DueDate { get; set; }
 
-        public long AccountId { get; set; }
-        public string AccountName { get; set; }
-
         public string CompanyName { get; set; }
         public string VendorName { get; set; }
 

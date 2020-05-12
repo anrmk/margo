@@ -2,6 +2,7 @@
     public interface INotifyManager {
 
     }
+
     public class NotifyManager: INotifyManager {
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -12,10 +12,12 @@ using Core.Extensions;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Web.Hubs;
 using Web.ViewModels;
 
@@ -45,10 +47,10 @@ namespace Web.Controllers.Mvc {
         }
 
         public async Task<ActionResult> Create() {
-            var accounts = await _crudBusinessManager.GetVaccounts();
-            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            //var accounts = await _crudBusinessManager.GetVaccounts();
+            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
-            return View(new InvoiceViewModel());
+            return View();
         }
 
         [HttpPost]
@@ -68,8 +70,8 @@ namespace Web.Controllers.Mvc {
                 return BadRequest(er);
             }
 
-            var accounts = await _crudBusinessManager.GetVaccounts();
-            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            //var accounts = await _crudBusinessManager.GetVaccounts();
+            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
             return View(model);
         }
@@ -80,8 +82,8 @@ namespace Web.Controllers.Mvc {
                 return NotFound();
             }
 
-            var accounts = await _crudBusinessManager.GetVaccounts();
-            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            //var accounts = await _crudBusinessManager.GetVaccounts();
+            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
             return View(_mapper.Map<InvoiceViewModel>(item));
         }
@@ -102,8 +104,8 @@ namespace Web.Controllers.Mvc {
                 BadRequest(er);
             }
 
-            var accounts = await _crudBusinessManager.GetVaccounts();
-            ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            //var accounts = await _crudBusinessManager.GetVaccounts();
+            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
             return View(model);
         }
@@ -130,19 +132,37 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     //[ApiController]
     public class InvoiceController: ControllerBase {
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;
+        private readonly ITelegramBotClient _telegramBotClient;
 
-        public InvoiceController(IMapper mapper, IViewRenderService viewRenderService,
+        public InvoiceController(IConfiguration configuration, IMapper mapper, IViewRenderService viewRenderService, ITelegramBotClient telegramBotClient,
             ICrudBusinessManager businessManager) {
+            _configuration = configuration;
             _mapper = mapper;
             _businessManager = businessManager;
+            _telegramBotClient = telegramBotClient;
         }
 
         [HttpGet]
         public async Task<Pager<InvoiceListViewModel>> GetInvoices(InvoiceFilterViewModel model) {
             var result = await _businessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
             return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+        }
+
+        [HttpGet("SendNotification", Name = "ApiSendNotification")]
+        public async Task<ActionResult> SendNotification() {
+            var me = _telegramBotClient.GetMeAsync().Result;
+
+            var message = "Hello Margo *world* \n lalala";
+
+            var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
+
+            var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
+            //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");
+            
+            return Ok(result.From);
         }
     }
 }

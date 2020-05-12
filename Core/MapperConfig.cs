@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+
+using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Data.Entities.Vaccount;
 
 namespace Core {
     public class MapperConfig: Profile {
@@ -32,16 +33,16 @@ namespace Core {
                 .ForMember(d => d.Section, o => o.Ignore())
                 .ReverseMap()
                 .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.Name))
-                .ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name));
+                .ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name))
+                .ForMember(d => d.SectionCode, o => o.MapFrom(s => s.Section.Code))
+                .ForMember(d => d.SectionDescription, o => o.MapFrom(s => s.Section.Description));
 
             CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
 
             #endregion
 
             #region INVOICE
-            CreateMap<InvoiceDto, InvoiceEntity>()
-                .ForMember(d => d.Account, o => o.Ignore())
-                .ReverseMap();
+            CreateMap<InvoiceDto, InvoiceEntity>().ReverseMap();
 
             #endregion
 
@@ -62,15 +63,12 @@ namespace Core {
             CreateMap<VendorAddressDto, VendorAddressEntity>().ReverseMap();
             #endregion
 
-            #region VACCOUNT
-            CreateMap<VaccountDto, VaccountEntity>().ReverseMap();
-            CreateMap<VaccountSecurityDto, VaccountSecurityEntity>().ReverseMap();
-            CreateMap<VaccountSecurityQuestionDto, VaccountSecurityQuestionEntity>().ReverseMap();
+            #region SECTIONS
+            CreateMap<SectionDto, SectionEntity>()
+                .ForMember(d => d.Code, o => o.MapFrom(s => Regex.Replace(s.Name, @"\s", "").ToLower()))
+                .ReverseMap();
             #endregion
 
-            #region SECTIONS
-            CreateMap<SectionDto, SectionEntity>().ReverseMap();
-            #endregion
         }
     }
 }

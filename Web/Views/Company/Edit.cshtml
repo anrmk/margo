@@ -30,7 +30,7 @@
                 <a class="list-group-item list-group-item-action active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">General</a>
                 <a class="list-group-item list-group-item-action" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a>
                 @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                    <a class="list-group-item list-group-item-action" id="@(section.Id)-item" data-toggle="list" href="#pane-@(section.Id)" role="tab" aria-controls="pane-@(section.Id)">
+                    <a class="list-group-item list-group-item-action" id="@(section.SectionCode)-item" data-toggle="list" href="#@(section.SectionCode)" role="tab" aria-controls="@(section.SectionCode)">
                         @(section.SectionName)
                     </a>
                 }
@@ -41,14 +41,14 @@
                 </div>
             </div>
         </div>
-
     </div>
+
     <div class="col-md-12 col-lg-9">
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-item">
                 <div class="card">
                     <div class="card-header">
-                        <button type="submit" id="saveBtn" class="btn btn-outline-primary" form="submitGeneralForm">Save</button>
+                        <button type="submit" id="saveBtn" class="btn btn-sm btn-primary" form="submitGeneralForm">Save</button>
                     </div>
                     <div class="card-body">
                         <form id="submitGeneralForm" method="POST" asp-action="Edit">
@@ -108,7 +108,7 @@
             <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-item">
                 <div class="card">
                     <div class="card-header">
-                        <button type="submit" id="saveBtn" class="btn btn-outline-primary" form="submitAddressForm">Save</button>
+                        <button type="submit" id="saveBtn" class="btn btn-sm btn-primary" form="submitAddressForm">Save</button>
                     </div>
                     <div class="card-body">
                         <form id="submitAddressForm" method="POST" asp-action="EditAddress">
@@ -157,19 +157,21 @@
                 </div>
             </div>
             @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                <div class="tab-pane fade" id="pane-@(section.Id)" role="tabpanel" aria-labelledby="@(section.Id)-item">
+                <div class="tab-pane fade" id="@(section.SectionCode)" role="tabpanel" aria-labelledby="@(section.SectionCode)-item">
                     <div class="card">
                         <div class="card-header">
-                            <div class="btn-toolbar d-flex justify-content-between">    
+                            <div class="btn-toolbar d-flex justify-content-between">
                                 <a class="btn btn-sm btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="fa fa-plus-circle mr-1"></i> Add new field</a>
-                                
+
                                 <form method="POST" asp-action="DeleteSection">
-                                    <input asp-for="@(section.Id)" type="hidden" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
+                                    <input name="Id" value="@(section.Id)" type="hidden" />
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
                                 </form>
                             </div>
                         </div>
                         <div class="card-body">
+                            <p>@(section.SectionDescription)</p>
+
                             <div class="table-responsive-md">
                                 <table class="table table-bordered table-striped">
                                     <thead>
@@ -218,12 +220,15 @@
             return $.extend({ 'companyId': @Model.Id }, params);
         }
 
-        function actionFormatter(value, row) {
-            return `<a href='/vaccount/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
-        }
-
         $(document).ready(function () {
+            var url = document.location.toString();
+            if (url.match('#')) {
+                $('#list-tab a[href="#' + url.split('#')[1] + '"]').tab('show');
+            }
 
+            $('#list-tab a').on('shown.bs.tab', function (e) {
+                window.location.hash = e.target.hash;
+            })
         });
     </script>
 }
