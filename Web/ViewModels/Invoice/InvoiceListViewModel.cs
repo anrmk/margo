@@ -10,7 +10,10 @@ namespace Web.ViewModels {
         public DateTime Date { get; set; }
         public DateTime DueDate { get; set; }
 
+        public long CompanyId { get; set; }
         public string CompanyName { get; set; }
+
+        public long VendorId { get; set; }
         public string VendorName { get; set; }
 
         public bool IsDraft { get; set; }

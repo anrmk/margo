@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -12,12 +12,15 @@ using Core.Extensions;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+
 using Web.Hubs;
 using Web.ViewModels;
 
@@ -32,8 +35,14 @@ namespace Web.Controllers.Mvc {
             _crudBusinessManager = crudBusinessManager;
         }
 
-        public ActionResult Index() {
-            var model = new InvoiceFilterViewModel();
+        public async Task<ActionResult> Index() {
+            var companies = await _crudBusinessManager.GetCompanies();
+            ViewBag.Companies = _mapper.Map<List<CompanyListViewModel>>(companies).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+
+            var model = new InvoiceFilterViewModel() {
+                CompanyId = null
+            };
+
             return View(model);
         }
 
@@ -46,7 +55,7 @@ namespace Web.Controllers.Mvc {
             return View(_mapper.Map<InvoiceViewModel>(item));
         }
 
-        public async Task<ActionResult> Create() {
+        public ActionResult Create() {
             //var accounts = await _crudBusinessManager.GetVaccounts();
             //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
 
@@ -161,7 +170,7 @@ namespace Web.Controllers.Api {
 
             var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
             //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");
-            
+
             return Ok(result.From);
         }
     }

@@ -357,11 +357,12 @@ namespace Core.Services.Business {
 
             Expression<Func<InvoiceEntity, bool>> where = x =>
                   (true)
-               && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) ))
+               && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower())))
+               && (!filter.CompanyId.HasValue || x.CompanyId == filter.CompanyId)
                ;
             #endregion
 
-            string[] include = new string[] { };
+            string[] include = new string[] { "Company", "Vendor" };
 
             var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
