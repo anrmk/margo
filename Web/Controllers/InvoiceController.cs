@@ -37,7 +37,10 @@ namespace Web.Controllers.Mvc {
 
         public async Task<ActionResult> Index() {
             var companies = await _crudBusinessManager.GetCompanies();
-            ViewBag.Companies = _mapper.Map<List<CompanyListViewModel>>(companies).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
+
+            var vendors = await _crudBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
 
             var model = new InvoiceFilterViewModel() {
                 CompanyId = null

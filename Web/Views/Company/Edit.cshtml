@@ -5,16 +5,6 @@
     ViewData["SubTitle"] = "Please provide all required details to edit company info";
 }
 
-
-<div class="btn-toolbar mb-md-0">
-    <div class="btn-group mr-2">
-        <form method="POST" asp-action="Delete">
-            <input asp-for="Id" type="hidden" />
-            <button type="submit" class="btn btn-outline-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
-        </form>
-    </div>
-</div>
-
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Companies</a></li>
@@ -24,21 +14,23 @@
 
 <div class="row">
     <div class="col-md-12 col-lg-3">
-
         <div class="card">
-            <div class="list-group list-group-flush" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">General</a>
-                <a class="list-group-item list-group-item-action" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a>
-                @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                    <a class="list-group-item list-group-item-action" id="@(section.SectionCode)-item" data-toggle="list" href="#@(section.SectionCode)" role="tab" aria-controls="@(section.SectionCode)">
-                        @(section.SectionName)
-                    </a>
-                }
+            <div class="card-body">
+                <ul class="nav nav-pills nav-pills-primary flex-column">
+                    <li class="nav-item"><a class="nav-link active" d="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">General</a></li>
+                    <li class="nav-item"><a class="nav-link" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a></li>
+
+                    @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
+                        <li class="nav-item">
+                            <a class="nav-link" id="@(section.SectionCode)-item" data-toggle="list" href="#@(section.SectionCode)" role="tab" aria-controls="@(section.SectionCode)">
+                                @(section.SectionName)
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
-            <div class="card-footer">
-                <div class="d-flex justify-content-end">
-                    <a class="btn btn-sm btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="fa fa-plus-circle mr-1"></i> Add new section</a>
-                </div>
+            <div class="card-footer ml-auto mr-auto">
+                <a class="btn btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="material-icons">add_circle_outline</i> Add new section</a>
             </div>
         </div>
     </div>
@@ -47,13 +39,14 @@
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-item">
                 <div class="card">
-                    <div class="card-header">
-                        <button type="submit" id="saveBtn" class="btn btn-sm btn-primary" form="submitGeneralForm">Save</button>
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon"><i class="material-icons">info</i></div>
+                        <h4 class="card-title">General</h4>
                     </div>
                     <div class="card-body">
                         <form id="submitGeneralForm" method="POST" asp-action="Edit">
                             <input type="hidden" name="Id" value="@Model.Id" />
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col-4">
                                     <label asp-for="General.No"></label>
                                     <input asp-for="General.No" name="No" class="form-control" required />
@@ -65,7 +58,7 @@
                                     <span asp-validation-for="General.Name" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col-4">
                                     <label asp-for="General.Website"></label>
                                     <input asp-for="General.Website" name="Website" class="form-control" placeholder="http://" />
@@ -82,7 +75,7 @@
                                     <span asp-validation-for="General.Email" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col-4">
                                     <label asp-for="General.CEO"></label>
                                     <input asp-for="General.CEO" name="CEO" class="form-control" />
@@ -103,18 +96,24 @@
                             </div>
                         </form>
                     </div>
+                    <div class="card-footer">
+                        <button type="submit" id="saveBtn" class="btn btn-rose" form="submitGeneralForm">Save</button>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-item">
                 <div class="card">
-                    <div class="card-header">
-                        <button type="submit" id="saveBtn" class="btn btn-sm btn-primary" form="submitAddressForm">Save</button>
+                    <div class="card-header card-header-rose card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">home</i>
+                        </div>
+                        <h4 class="card-title">Address Form</h4>
                     </div>
                     <div class="card-body">
                         <form id="submitAddressForm" method="POST" asp-action="EditAddress">
                             <input type="hidden" name="CompanyId" value="@Model.Id" />
                             <input type="hidden" name="Id" value="@Model.Address.Id" />
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col-8">
                                     <label asp-for="Address.Address"></label>
                                     <input asp-for="Address.Address" type="text" name="Address" class="form-control" />
@@ -126,14 +125,14 @@
                                     <span asp-validation-for="Address.City" class="form-text text-danger"></span>
                                 </div>
                             </div>
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col">
                                     <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
                                     <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite" />
                                     <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
                                 </div>
                             </div>
-                            <div class="form-group row mb-3">
+                            <div class="form-row mb-3">
                                 <div class="col">
                                     <label asp-for="Address.Country"></label>
                                     <input asp-for="Address.Country" type="text" name="Country" class="form-control" />
@@ -154,51 +153,52 @@
                             </div>
                         </form>
                     </div>
+                    <div class="card-footer">
+                        <button type="submit" id="saveBtn" class="btn btn-rose" form="submitAddressForm">Save</button>
+                    </div>
                 </div>
             </div>
             @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
                 <div class="tab-pane fade" id="@(section.SectionCode)" role="tabpanel" aria-labelledby="@(section.SectionCode)-item">
                     <div class="card">
-                        <div class="card-header">
-                            <div class="btn-toolbar d-flex justify-content-between">
-                                <a class="btn btn-sm btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="fa fa-plus-circle mr-1"></i> Add new field</a>
-
-                                <form method="POST" asp-action="DeleteSection">
-                                    <input name="Id" value="@(section.Id)" type="hidden" />
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
-                                </form>
-                            </div>
+                        <div class="card-header card-header-primary d-flex justify-content-between">
+                            <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="fa fa-plus-circle mr-1"></i> Add new field</a>
+                            <form method="POST" asp-action="DeleteSection">
+                                <input name="Id" value="@(section.Id)" type="hidden" />
+                                <button type="submit" class="btn btn-rose" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+                            </form>
                         </div>
+
                         <div class="card-body">
                             <p>@(section.SectionDescription)</p>
 
-                            <div class="table-responsive-md">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead class="text-primary">
                                         <tr>
                                             <th>Name</th>
                                             <th>Value</th>
                                             <th>Link</th>
                                             <th>Note</th>
-                                            <th class="text-nowrap text-right table-active">Action</th>
+                                            <th class="text-right"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach(var field in section.Fields) {
-                                            <tr>
-                                                <td>@(field.Name)</td>
-                                                <td>@(field.Value)</td>
-                                                <td class="text-nowrap">
-                                                    @if(!string.IsNullOrEmpty(field.Link)) {
-                                                        <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
-                                                    }
-                                                </td>
-                                                <td>@(field.Note)</td>
-                                                <td class="text-nowrap text-right table-active">
-                                                    <a asp-action="EditSectionField" asp-route-id="@(field.Id)" class='btn btn-outline-secondary' data-target="modal">Edit</a>
-                                                </td>
-                                            </tr>
-                                        }
+                                    @foreach(var field in section.Fields) {
+                                        <tr>
+                                            <td>@(field.Name)</td>
+                                            <td>@(field.Value)</td>
+                                            <td class="text-nowrap">
+                                                @if(!string.IsNullOrEmpty(field.Link)) {
+                                                    <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
+                                                }
+                                            </td>
+                                            <td>@(field.Note)</td>
+                                            <td class="text-right">
+                                                <a asp-action="EditSectionField" asp-route-id="@(field.Id)" data-target="modal"><i class="material-icons">keyboard_arrow_right</i></a>
+                                            </td>
+                                        </tr>
+                                    }
                                     </tbody>
                                 </table>
                             </div>
@@ -213,10 +213,6 @@
 @section Scripts {
     <script type="text/javascript">
         function queryParams(params) {
-            //if (!params.search) {
-            //    params.search = $('div.search input').val();
-            //}
-
             return $.extend({ 'companyId': @Model.Id }, params);
         }
 

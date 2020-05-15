@@ -3,15 +3,15 @@
 }
 
 <div class="card">
-    <div class="card-header card-header-primary">
-        <div class="card-title"><h4>Company List</h4></div>
-        <p class="card-category">Organize and keep track of your companies by adding, deleting, merging, or restoring them in the system.</p>
+    <div class="card-header card-header-primary d-flex justify-content-between">
+        <div class="card-title">
+            <h4 class="m-0">Company List</h4>
+            <p class="card-category">Organize and keep track of your companies by adding, deleting, merging, or restoring them in the system.</p>
+        </div>
+        <a asp-controller="Company" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <div id="toolbar" role="toolbar">
-                <a asp-controller="Company" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
-            </div>
             <table id="datatable" data-toggle="table" data-url="/api/company"
                    data-total-field="totalItems"
                    data-data-field="items">

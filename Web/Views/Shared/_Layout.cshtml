@@ -17,24 +17,23 @@
                 <div class="container-fluid">
                     <div class="row">
                         <main role="main" class="col-md-12">
-
                             @RenderBody()
                         </main>
                     </div>
                 </div>
             </div>
+            <partial name="_FooterPartial" />
         </div>
     </div>
     @*@RenderSection("Toolbar", required: false)*@
 
-    @*<div class="">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div asp-validation-summary="All"></div>
-        </div>*@
+    <div class="">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div asp-validation-summary="All"></div>
+    </div>
 
     <partial name="_ModalPartial" />
-    <partial name="_AlertPartial" />
-    @*<partial name="_FooterPartial" />*@
+
     <partial name="_ScriptPartial" />
     <partial name="_ValidationScriptsPartial" />
     @RenderSection("Scripts", required: false)

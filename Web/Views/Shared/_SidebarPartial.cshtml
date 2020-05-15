@@ -10,9 +10,7 @@
 
 <div class="sidebar" data-color="purple" data-background-color="white">
     <div class="logo">
-        <a href="#" class="simple-text logo-normal">
-            Margo
-        </a>
+        <a href="#" class="simple-text logo-normal text-center">Margo Assistant</a>
     </div>
     <div class="sidebar-wrapper">
         <ul class="nav">
@@ -34,21 +32,20 @@
             </li>
         </ul>
 
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span><i class="fa fa-cogs mr-1"></i> Settings</span>
+        <h6 class="sidebar-heading d-flex justify-content-between px-3 mt-4 mb-1 text-muted">
+            Settings
         </h6>
         <ul class="nav flex-column">
             <li class="nav-item @(url.Contains("/section") ? "active" : "")">
                 <a class="nav-link" asp-controller="Section" asp-action="Index">
-                    <i class="fas fa-list mr-1"></i> Section
+                    <i class="material-icons">view_list</i> Section
                 </a>
             </li>
             <li class="nav-item @(url.Contains("/vendor") ? "active" : "")">
                 <a class="nav-link" asp-controller="Vendor" asp-action="Index">
-                    <i class="far fa-user-circle mr-1"></i> Vendors
+                    <i class="material-icons">supervisor_account</i> Vendors
                 </a>
             </li>
         </ul>
     </div>
-
 </div>

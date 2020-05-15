@@ -4,35 +4,39 @@
 }
 
 <div class="card">
+    <div class="card-header card-header-primary d-flex justify-content-between">
+        <div class="card-title">
+            <h4 class="card-title m-0">Payment List</h4>
+            <p class="card-category"></p>
+        </div>
+        <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
+    </div>
+
     <div class="card-body">
-        <div class="">
-            <form id="filterForm">
-                <fieldset>
-                    <div class="form-group row mb-3">
-                        <div class="col">
-                            <label asp-for="CompanyId"></label>
-                            <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control">
-                                <option>Select Company</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label asp-for="VendorId"></label>
-                            <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control">
-                                <option>Select Vendor</option>
-                            </select>
-                        </div>
+        <form id="filterForm">
+            <fieldset>
+                <div class="form-group row mb-3">
+                    <div class="col">
+                        <label asp-for="CompanyId" class="control-label"></label>
+                        <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-style="btn btn-link">
+                            <option>Select Company</option>
+                        </select>
                     </div>
-                </fieldset>
-            </form>
-        </div>
+                    <div class="col">
+                        <label asp-for="VendorId"></label>
+                        <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker" data-style="btn btn-link">
+                            <option>Select Vendor</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
 
-        <div id="toolbar" class="btn-toolbar" role="toolbar">
-            <div class="btn-group mr-2" role="group" aria-label="Invoice active button group">
-                <a asp-controller="Invoice" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
-                <a asp-route="ApiSendNotification" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Send Notification</a>
-
-            </div>
-        </div>
+        @*<div id="toolbar" class="btn-toolbar" role="toolbar">
+                <div class="btn-group mr-2" role="group" aria-label="Invoice active button group">
+                    <a asp-route="ApiSendNotification" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Send Notification</a>
+                </div>
+            </div>*@
         <table id="datatable" data-toggle="table" data-url="/api/invoice"
                data-query-params="queryParams"
                data-total-field="totalItems"
