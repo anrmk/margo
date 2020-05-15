@@ -161,12 +161,12 @@ namespace Web.Controllers.Api {
         private readonly ICrudBusinessManager _businessManager;
         private readonly ITelegramBotClient _telegramBotClient;
 
-        public InvoiceController(IConfiguration configuration, IMapper mapper, IViewRenderService viewRenderService, ITelegramBotClient telegramBotClient,
+        public InvoiceController(IConfiguration configuration, IMapper mapper, IViewRenderService viewRenderService,
             ICrudBusinessManager businessManager) {
             _configuration = configuration;
             _mapper = mapper;
             _businessManager = businessManager;
-            _telegramBotClient = telegramBotClient;
+            //_telegramBotClient = telegramBotClient;
         }
 
         [HttpGet]
@@ -183,10 +183,10 @@ namespace Web.Controllers.Api {
 
             var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
 
-            var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
+            //var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
             //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");
 
-            return Ok(result.From);
+            return Ok();
         }
 
         [HttpGet("{id}/pay", Name = "Pay")]

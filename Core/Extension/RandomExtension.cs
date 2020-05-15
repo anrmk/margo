@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Core.Extension {
-    public static class RandomExtansion {
+    public static class RandomExtension {
         public static DateTime NextDate(this Random random, DateTime from, DateTime to) {
             var range = to - from;
             var randTimeSpan = new TimeSpan((long)(random.NextDouble() * range.Ticks));

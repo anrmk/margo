@@ -4,7 +4,7 @@ using Core.Context;
 using Core.Data.Entities;
 using Core.Jobs;
 using Core.Services;
-
+using Core.Services.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -90,10 +90,11 @@ namespace Web {
             JobSchedulerConfig.Configuration(services);
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
-            services.AddScoped<ITelegramBotClient>((ctx) => {
+            services.AddTransient<INotifyService>(ctx => {
                 var token = Configuration.GetConnectionString("TelegramConnection");
-
-                return new TelegramBotClient(token);
+                var chatId = Configuration.GetConnectionString("TelegramChatId");
+                var notify = new NotifyService(token, chatId);
+                return notify;
             });
 
             services.AddDbContext<ApplicationContext>();

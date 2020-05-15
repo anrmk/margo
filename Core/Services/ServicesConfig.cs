@@ -46,8 +46,6 @@ namespace Core.Services {
             services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
             services.AddTransient<ICrudBusinessManager, CrudBusinessManager>();
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
-
-            services.AddSingleton<INotifyManager, NotifyManager>();
         }
     }
 }
