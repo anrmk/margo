@@ -69,6 +69,7 @@ namespace Core.Services.Business {
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
         Task<bool> DeleteInvoice(long id);
+        Task<InvoiceDto> PayInvoice(long id);
 
         #region COMPANY SECTIONS
         Task<CompanySectionDto> GetCompanySection(long id);
@@ -400,6 +401,19 @@ namespace Core.Services.Business {
             var entity1 = _mapper.Map(dto, entity);
             entity = await _invoiceManager.Update(entity1);
             return _mapper.Map<InvoiceDto>(entity);
+        }
+
+        public async Task<InvoiceDto> PayInvoice(long id) {
+            var item = await _invoiceManager.FindInclude(id);
+            if(item == null) {
+                return null;
+            }
+
+            item.IsPayd = true;
+            item.PaymentDate = DateTime.Now;
+            item = await _invoiceManager.Update(item);
+
+            return _mapper.Map<InvoiceDto>(item);
         }
         #endregion
 

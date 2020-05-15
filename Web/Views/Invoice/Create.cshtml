@@ -22,13 +22,13 @@
                     <span asp-validation-for="No" class="text-danger"></span>
                 </div>
                 <div class="col-8">
-                    <label asp-for="AccountId"></label>
-                    <select asp-for="AccountId" asp-items="@ViewBag.Accounts" class="form-control selectpicker"
+                    <label asp-for="VendorId"></label>
+                    <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker"
                             required
                             data-live-search="true">
                         <option>Chose an account</option>
                     </select>
-                    <span asp-validation-for="AccountId" class="text-danger"></span>
+                    <span asp-validation-for="VendorId" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-row mb-3">

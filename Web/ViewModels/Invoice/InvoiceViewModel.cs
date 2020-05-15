@@ -26,9 +26,17 @@ namespace Web.ViewModels {
         [Display(Name = "Due date")]
         public DateTime DueDate { get; set; }
 
-        [Display(Name = "Account")]
-        public long? AccountId { get; set; }
-        public VaccountViewModel Account { get; set; }
+        public bool IsPayd { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Payment date")]
+        public DateTime? PaymentDate { get; set; }
+
+        [Display(Name = "Vendor")]
+        public long? VendorId { get; set; }
+
+        [Display(Name = "Company")]
+        public long? CompanyId { get; set; }
 
         public bool IsDraft { get; set; }
     }

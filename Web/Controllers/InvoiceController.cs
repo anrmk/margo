@@ -58,9 +58,12 @@ namespace Web.Controllers.Mvc {
             return View(_mapper.Map<InvoiceViewModel>(item));
         }
 
-        public ActionResult Create() {
-            //var accounts = await _crudBusinessManager.GetVaccounts();
-            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+        public async Task<ActionResult> Create() {
+            var vendors = await _crudBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
+
+            var companies = await _crudBusinessManager.GetCompanies();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
 
             return View();
         }
@@ -82,8 +85,11 @@ namespace Web.Controllers.Mvc {
                 return BadRequest(er);
             }
 
-            //var accounts = await _crudBusinessManager.GetVaccounts();
-            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            var vendors = await _crudBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
+
+            var companies = await _crudBusinessManager.GetCompanies();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
 
             return View(model);
         }
@@ -94,8 +100,11 @@ namespace Web.Controllers.Mvc {
                 return NotFound();
             }
 
-            //var accounts = await _crudBusinessManager.GetVaccounts();
-            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            var vendors = await _crudBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
+
+            var companies = await _crudBusinessManager.GetCompanies();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
 
             return View(_mapper.Map<InvoiceViewModel>(item));
         }
@@ -116,8 +125,11 @@ namespace Web.Controllers.Mvc {
                 BadRequest(er);
             }
 
-            //var accounts = await _crudBusinessManager.GetVaccounts();
-            //ViewBag.Accounts = accounts.Select(x => new SelectListItem() { Text = x.UserName, Value = x.Id.ToString() }).ToList(); ;
+            var vendors = await _crudBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
+
+            var companies = await _crudBusinessManager.GetCompanies();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() });
 
             return View(model);
         }
@@ -175,6 +187,12 @@ namespace Web.Controllers.Api {
             //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");
 
             return Ok(result.From);
+        }
+
+        [HttpGet("{id}/pay", Name = "Pay")]
+        public async Task<ActionResult> Pay(long id) {
+            var result = await _businessManager.PayInvoice(id);
+            return Ok(_mapper.Map<InvoiceViewModel>(result));
         }
     }
 }

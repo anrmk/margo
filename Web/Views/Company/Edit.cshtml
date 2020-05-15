@@ -30,7 +30,7 @@
                 </ul>
             </div>
             <div class="card-footer ml-auto mr-auto">
-                <a class="btn btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="material-icons">add_circle_outline</i> Add new section</a>
+                <a class="btn btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="material-icons">add</i> Add new section</a>
             </div>
         </div>
     </div>
@@ -162,7 +162,7 @@
                 <div class="tab-pane fade" id="@(section.SectionCode)" role="tabpanel" aria-labelledby="@(section.SectionCode)-item">
                     <div class="card">
                         <div class="card-header card-header-primary d-flex justify-content-between">
-                            <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="fa fa-plus-circle mr-1"></i> Add new field</a>
+                            <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="material-icons mr-1">add</i> Add new field</a>
                             <form method="POST" asp-action="DeleteSection">
                                 <input name="Id" value="@(section.Id)" type="hidden" />
                                 <button type="submit" class="btn btn-rose" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>

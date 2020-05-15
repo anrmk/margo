@@ -18,7 +18,7 @@ namespace Web.ViewModels {
 
         public bool IsDraft { get; set; }
 
-        public double PaymentAmount { get; set; }
-        public string PaymentDate { get; set; }
+        public bool IsPayd { get; set; }
+        public DateTime? PaymentDate { get; set; }
     }
 }
