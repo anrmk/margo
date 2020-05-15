@@ -93,17 +93,21 @@ namespace Web.Controllers {
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null) {
             ViewData["ReturnUrl"] = returnUrl;
             if(ModelState.IsValid) {
-                var user = new ApplicationUserDto { UserName = model.Email, Email = model.Email };
-                var result = await _accountBusinessService.CreateUser(user, model.Password);
-                if(result != null) {
-                    _logger.LogInformation("User created a new account with password.");
-                    var code = await _accountBusinessService.GenerateEmailConfirmationTokenAsync(result);
-                    //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                try {
+                    var user = new ApplicationUserDto { UserName = model.Email, Email = model.Email };
+                    var result = await _accountBusinessService.CreateUser(user, model.Password);
+                    if(result != null) {
+                        _logger.LogInformation("User created a new account with password.");
+                        var code = await _accountBusinessService.GenerateEmailConfirmationTokenAsync(result);
+                        //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+                        //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    await _accountBusinessService.SignInAsync(result, isPersistent: false);
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                        await _accountBusinessService.SignInAsync(result, isPersistent: false);
+                        _logger.LogInformation("User created a new account with password.");
+                        return RedirectToLocal(returnUrl);
+                    }
+                } catch(Exception e) {
+                    ModelState.AddModelError("All", e.Message);
                 }
             }
             return View(model);

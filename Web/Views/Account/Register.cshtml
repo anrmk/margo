@@ -4,38 +4,65 @@
     Layout = "~/Views/Shared/_EmptyLayout.cshtml";
 }
 
-<form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form-signin" novalidate>
-    <div class="text-center mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto" role="img" viewBox="0 0 24 24" focusable="false"><title>Platform</title><circle cx="12" cy="12" r="10"></circle><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"></path></svg>
-        <h1 class="h3 mb-3 font-weight-normal">Platform</h1>
-        <p>Create an account.</p>
-        <p>Works in latest Chrome, Safari, and Firefox</p>
+<div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto mt-lg-5">
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="form" novalidate>
+            <div class="card card-login">
+                <div class="card-header card-header-rose text-center">
+                    <h4 class="card-title"><i class="material-icons">fingerprint</i> Register</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-description text-center">
+                        Create an account. <br />
+                        Works in latest Chrome, Safari, and Firefox
+                    </p>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="material-icons">face</i>
+                                </span>
+                            </div>
+                            <input asp-for="Email" placeholder="Email" class="form-control" required autofocus />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="material-icons">email</i>
+                                </span>
+                            </div>
+                            <input asp-for="Password" placeholder="Password" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="material-icons">email</i>
+                                </span>
+                            </div>
+                            <input asp-for="ConfirmPassword" placeholder="Confirm Password" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer justify-content-center">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <p class="mt-5 mb-3 text-muted text-center">
+                    By clicking Sign In with Email, you agree to our Terms and have read and acknowledge our US Privacy Statement. <br />
+                    Already have an account? <a asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">Login!</a>
+                </p>
+            </div>
+        </form>
+
     </div>
-
-    <div class="input-group-lg form-label-group">
-        <input asp-for="Email" placeholder="E-mail address" class="form-control" required autofocus />
-        <span asp-validation-for="Email"></span>
-    </div>
-
-    <div class="input-group-lg form-label-group">
-        <input asp-for="Password" placeholder="Password" class="form-control" required/>
-        <span asp-validation-for="Password"></span>
-        <small class="form-text text-muted">Use 8 or more characters with a mix of letters, numbers & symbols</small>
-    </div>
-
-    <div class="input-group-lg form-label-group">
-        <input asp-for="ConfirmPassword" placeholder="Confirm Password" class="form-control" />
-        <span asp-validation-for="ConfirmPassword"></span>
-    </div>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted text-center">By clicking Sign In with Email, you agree to our Terms and have read and acknowledge our US Privacy Statement.</p>
+</div>
 
 
-    <div class="ui message">
-        New to <strong>Platform</strong>? <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Sign Up!</a>
-    </div>
-    <p>
-        New to us? <a asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">Login</a>
-    </p>
-</form>
