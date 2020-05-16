@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Core.Context;
 using Core.Data.Entities;
 using Core.Extension;
-using Core.Services.Managers;
-using Microsoft.AspNetCore.Builder;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Quartz;
-using Telegram.Bot;
-using Telegram.Bot.Types.Payments;
 
 namespace Core.Jobs {
     [DisallowConcurrentExecution]

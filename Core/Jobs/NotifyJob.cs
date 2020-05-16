@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Context;
 using Core.Data.Entities;
-using Core.Services.Managers;
+using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -16,9 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using Telegram.Bot;
-
-using Web.Extension;
 using Web.Hubs;
 
 namespace Web {

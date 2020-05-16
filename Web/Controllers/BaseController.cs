@@ -7,6 +7,7 @@ using Core.Context;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -32,6 +33,29 @@ namespace Web.Controllers {
             if(_notificationHub != null)
                 await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
         }
+
+
+        [Microsoft.AspNetCore.Mvc.NonAction]
+        public override void OnActionExecuting(ActionExecutingContext context) {
+            var user = context.HttpContext.User;
+            var controller = context.Controller;
+            var modelState = context.ModelState;
+
+            var path = Request.Path;
+            var host = Request.Host.Value;
+            var userName = user.Identity.Name;
+            var userIsAuthenticated = user.Identity.IsAuthenticated;
+
+
+
+            _logger.LogInformation("OnActionExecuting");
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext context) {
+            _logger.LogInformation("OnActionExecuted");
+        }
+
+
 
         public BaseController(ILogger<IController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) {
             _logger = logger;

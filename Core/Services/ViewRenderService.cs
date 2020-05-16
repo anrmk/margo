@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 
-namespace Core.Extensions {
+namespace Core.Services {
     public interface IViewRenderService {
         Task<string> RenderToStringAsync(string viewName, object model);
     }

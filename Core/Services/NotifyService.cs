@@ -3,7 +3,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Core.Services.Managers {
+namespace Core.Services {
     public interface INotifyService {
         public Task<Message> SendTextMessage(string message);
     }

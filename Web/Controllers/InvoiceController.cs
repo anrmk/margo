@@ -8,7 +8,7 @@ using AutoMapper;
 using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
-using Core.Extensions;
+using Core.Services;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
@@ -176,7 +176,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("SendNotification", Name = "ApiSendNotification")]
-        public async Task<ActionResult> SendNotification() {
+        public ActionResult SendNotification() {
             var me = _telegramBotClient.GetMeAsync().Result;
 
             var message = "Hello Margo *world* \n lalala";
