@@ -1,7 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Policy;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Telegram.Bot;
+using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Core.Services {
     public interface INotifyService {
@@ -11,17 +16,36 @@ namespace Core.Services {
     public class NotifyService: INotifyService {
         private readonly string _token;
         private readonly string _chatId;
-
-        public TelegramBotClient Client { get; set; }
+        private readonly TelegramBotClient _client;
 
         public NotifyService(string token, string chatId) {
             _token = token;
             _chatId = chatId;
-            Client = new TelegramBotClient(_token);
+            _client = new TelegramBotClient(_token);
+            //_client.OnMessage += Client_OnMessage;
+            //_client.StartReceiving();
         }
 
+        //private async void Client_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e) {
+        //    if(e.Message.Text != null) {
+        //        await _client.SendTextMessageAsync(
+        //            chatId: e.Message.Chat,
+        //            text: "You said:\n" + e.Message.Text
+        //        );
+        //    }
+        //}
+
         public async Task<Message> SendTextMessage(string message) {
-            return await Client.SendTextMessageAsync(new ChatId(_chatId), message, ParseMode.Markdown);
+            return await _client.SendTextMessageAsync(
+                chatId: new ChatId(_chatId), 
+                text: message,
+                parseMode: ParseMode.Markdown,
+                disableNotification: true,
+                replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl(
+                    "Unpaid invoices",
+                    "http://89.108.99.44/Invoice?unpaid=true"
+
+                )));// "https://"
         }
     }
 }

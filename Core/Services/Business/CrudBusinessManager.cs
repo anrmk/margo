@@ -360,6 +360,7 @@ namespace Core.Services.Business {
                   (true)
                && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower())))
                && (!filter.CompanyId.HasValue || x.CompanyId == filter.CompanyId)
+               && (!filter.Unpaid || x.IsPayd != filter.Unpaid)
                ;
             #endregion
 

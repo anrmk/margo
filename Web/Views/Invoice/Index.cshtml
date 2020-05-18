@@ -28,6 +28,15 @@
                             <option>Select Vendor</option>
                         </select>
                     </div>
+                    <div class="col">
+                        <label asp-for="Unpaid"></label>
+                        <div class="togglebutton">
+                            <label>
+                                <input type="checkbox" @(Model.Unpaid ? "checked" : "") name="Unpaid:boolean" id="Unpaid" data-val="true" data-value-type="boolean" />
+                                <span class="toggle"></span> Unpaid Status
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </fieldset>
         </form>

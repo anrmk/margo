@@ -170,7 +170,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet]
-        public async Task<Pager<InvoiceListViewModel>> GetInvoices(InvoiceFilterViewModel model) {
+        public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
             var result = await _businessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
             return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }

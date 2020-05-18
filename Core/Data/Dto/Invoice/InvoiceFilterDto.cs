@@ -8,5 +8,6 @@ namespace Core.Data.Dto {
         public long? CompanyId { get; set; }
         public long? VendorId { get; set; }
         public DateTime? Date { get; set; }
+        public bool Unpaid { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace Web {
             JobSchedulerConfig.Configuration(services);
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
-            services.AddTransient<INotifyService>(ctx => {
+            services.AddSingleton<INotifyService>(ctx => {
                 var token = Configuration.GetConnectionString("TelegramConnection");
                 var chatId = Configuration.GetConnectionString("TelegramChatId");
                 var notify = new NotifyService(token, chatId);

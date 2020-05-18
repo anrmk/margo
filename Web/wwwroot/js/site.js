@@ -121,13 +121,15 @@ $.fn.dialog = function (header, callback) {
         $('.modal .modal-body').empty().html(this),
 
         window.modal.modal('show').off('shown.bs.modal').on('shown.bs.modal', (e) => {
-            var form = $('.modal .modal-content form[id]');
+            var form = $('.modal .modal-content form[id=submitModalForm]');
+            var removeform = $('.modal .modal-content form[id=submitModalRemoveForm]');
+
             var submitBtn = $('.modal .modal-footer #modalSubmitBtn');
-            if (form.length == 1) {
-                submitBtn.attr('form', form.attr('id')).removeAttr('hidden');
-            } else {
-                submitBtn.attr('hidden', 'hidden');
-            }
+            var submitRemoveBtn = $('.modal .modal-footer #modalSubmitRemoveBtn');
+
+            (form.length == 1) ?  submitBtn.attr('form', form.attr('id')).removeAttr('hidden') : submitBtn.attr('hidden', 'hidden');
+            (removeform.length == 1) ? submitRemoveBtn.removeAttr('hidden') : submitRemoveBtn.attr('hidden', 'hidden');
+            
             callback("shown.bs.modal", e, this);
         }).off('hidden.bs.modal').on('hidden.bs.modal', (e) => {
             this.empty();
