@@ -5,17 +5,6 @@
     ViewData["SubTitle"] = "Please provide all required details to edit vendors info";
 }
 
-@section Toolbar  {
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-            <form method="POST" asp-action="Delete">
-                <input asp-for="Id" type="hidden" />
-                <button type="submit" class="btn btn-outline-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
-            </form>
-        </div>
-    </div>
-}
-
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Vendors</a></li>
@@ -24,18 +13,22 @@
 </nav>
 
 <div class="card">
-    <div class="card-header">
-        <ul id="supplierTab" class="nav nav-tabs card-header-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" id="general-tab" href="#general" data-form="submitGeneralForm">General</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" id="address-tab" href="#address" data-form="submitAddressForm">Address</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" id="image-tab" href="#image" data-form="submitImageForm">Address</a>
-            </li>
-        </ul>
+    <div class="card-header card-header-primary card-header-tabs">
+        <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+                <ul id="supplierTab" class="nav nav-tabs" data-tabs="tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" id="general-tab" href="#general" data-form="submitGeneralForm">General</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="address-tab" href="#address" data-form="submitAddressForm">Address</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" id="image-tab" href="#image" data-form="submitImageForm">Files</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <div class="tab-content">
@@ -85,7 +78,7 @@
                 <form id="submitAddressForm" method="POST" asp-action="EditAddress">
                     <input name="SupplierId" type="hidden" value="@Model.Id" />
                     <input name="Id" type="hidden" value="@Model.Address.Id" />
-                    <div class="form-group row mb-3">
+                    <div class="form-row mb-3">
                         <div class="col-8">
                             <label asp-for="Address.Address"></label>
                             <input asp-for="Address.Address" type="text" name="Address" class="form-control">
@@ -97,14 +90,14 @@
                             <span asp-validation-for="Address.City" class="form-text text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row mb-3">
+                    <div class="form-row mb-3">
                         <div class="col">
                             <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
                             <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite">
                             <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-group row mb-3">
+                    <div class="form-row mb-3">
                         <div class="col">
                             <label asp-for="Address.Country"></label>
                             <input asp-for="Address.Country" type="text" name="Country" class="form-control">
@@ -127,9 +120,9 @@
             <div class="tab-pane fase" id="image" role="tabpanel" arial-labelledby="image-tab">
                 <form id="sumbitImageForm" method="POST" asp-action="EditImage">
                     <button id="uploadImageBtn" type="button" class="btn btn-secondary">Add image</button>
-                    <div class="form-group row mb-3">
+                    <div class="form-row mb-3">
                         <div class="col">
-                            
+
                         </div>
                     </div>
                 </form>
@@ -137,8 +130,12 @@
         </div>
     </div>
     <div class="card-footer">
-        <div class="" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" id="saveBtn" class="btn btn-outline-primary" form="submitGeneralForm">Save</button>
+        <form method="POST" asp-action="Delete">
+            <input asp-for="Id" type="hidden" />
+            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+        </form>
+        <div>
+            <button type="submit" id="saveBtn" class="btn btn-primary mr-1" form="submitGeneralForm">Save</button>
             <a asp-action="index" class="btn btn-link">Cancel</a>
         </div>
     </div>

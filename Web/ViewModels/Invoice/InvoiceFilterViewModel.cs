@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.ViewModels {
@@ -16,6 +17,6 @@ namespace Web.ViewModels {
 
         [FromQuery(Name = "unpaid")]
         [Display(Name = "Unpaid")]
-        public bool Unpaid {get;set;}
+        public bool Unpaid { get; set; }
     }
 }

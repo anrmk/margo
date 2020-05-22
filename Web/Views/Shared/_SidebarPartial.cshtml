@@ -46,6 +46,11 @@
                     <i class="material-icons">supervisor_account</i> Vendors
                 </a>
             </li>
+            <li class="nav-item @(url.Contains("/account") ? "active" : "")">
+                <a class="nav-link" asp-controller="Account" asp-action="Activity">
+                    <i class="material-icons">directions_run</i> Activity
+                </a>
+            </li>
         </ul>
     </div>
 </div>

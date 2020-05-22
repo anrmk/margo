@@ -5,17 +5,6 @@
     ViewData["SubTitle"] = "";
 }
 
-@section Toolbar  {
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-            <form method="POST" asp-action="Delete">
-                <input asp-for="Id" type="hidden" />
-                <button type="submit" class="btn btn-outline-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="fa fa-trash-alt mr-1"></i> Remove</button>
-            </form>
-        </div>
-    </div>
-}
-
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-action="Index">Sections</a></li>
@@ -28,7 +17,7 @@
         <form id="submitForm" asp-action="Edit">
             <input type="hidden" name="Id" value="@Model.Id" />
 
-            <div class="form-group row mb-3">
+            <div class="form-row mb-3">
                 <div class="col-4">
                     <label asp-for="Name"></label>
                     <input asp-for="Name" class="form-control" />
@@ -42,9 +31,14 @@
             </div>
         </form>
     </div>
-    <div class="card-footer">
-        <div class="" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" class="btn btn-outline-primary" form="submitForm">Save</button>
+    <div class="card-footer d-flex justify-content-between">
+        <form method="POST" asp-action="Delete">
+            <input asp-for="Id" type="hidden" />
+            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+        </form>
+
+        <div>
+            <button type="submit" class="btn btn-primary mr-1" form="submitForm">Save</button>
             <a asp-action="index" class="btn btn-link">Cancel</a>
         </div>
     </div>

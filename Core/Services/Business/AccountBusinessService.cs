@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Extension;
 using Core.Services.Managers;
 
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +23,9 @@ namespace Core.Services.Business {
         Task SignInAsync(ApplicationUserEntity entity, bool isPersistent);
         Task SignOutAsync();
         Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUserEntity entity);
+
+        Task<Pager<LogDto>> GetLogPager(LogFilterDto filter);
+
     }
 
     public class AccountBusinessService: BaseBusinessManager, IAccountBusinessService {
@@ -29,17 +35,19 @@ namespace Core.Services.Business {
         private readonly SignInManager<ApplicationUserEntity> _signInManager;
 
         private readonly IUserProfileManager _userProfileManager;
+        private readonly ILogManager _logManager;
 
         public AccountBusinessService(IMapper mapper,
             UserManager<ApplicationUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<ApplicationUserEntity> signInManager,
-            IUserProfileManager userProfileManager) {
+            IUserProfileManager userProfileManager, ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _userProfileManager = userProfileManager;
+            _logManager = logManager;
         }
 
         public async Task<ApplicationUserEntity> CreateUser(ApplicationUserDto dto, string password) {
@@ -73,6 +81,29 @@ namespace Core.Services.Business {
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUserEntity entity) {
             return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
+        }
+
+        public async Task<Pager<LogDto>> GetLogPager(LogFilterDto filter) {
+            var sortby = filter.Sort ?? "Logged";
+
+            Expression<Func<LogEntity, bool>> where = x =>
+                   (true)
+                && (string.IsNullOrEmpty(filter.Search) || x.Message.ToLower().Contains(filter.Search.ToLower()))
+                && (!string.IsNullOrEmpty(x.UserName))
+                    ;
+
+
+            var tuple = await _logManager.Pager<LogEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit);
+            var list = tuple.Item1;
+            var count = tuple.Item2;
+
+            if(count == 0)
+                return new Pager<LogDto>(new List<LogDto>(), 0, filter.Offset, filter.Limit);
+
+            var page = (filter.Offset + filter.Limit) / filter.Limit;
+
+            var result = _mapper.Map<List<LogDto>>(list);
+            return new Pager<LogDto>(result, count, page, filter.Limit);
         }
 
         public async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe) {

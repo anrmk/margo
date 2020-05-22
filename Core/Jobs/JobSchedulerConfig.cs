@@ -21,7 +21,7 @@ namespace Core.Jobs {
             //services.AddSingleton(new JobSchedule(jobType: typeof(CollectorJob), cronExpression: "0 0/1 * * * ?")); // run every 30 minutes
 
             // Add Hosted Service
-            services.AddHostedService<QuartzHostedService>();
+            //services.AddHostedService<QuartzHostedService>();
         }
     }
 }

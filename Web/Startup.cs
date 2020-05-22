@@ -4,7 +4,7 @@ using Core.Context;
 using Core.Data.Entities;
 using Core.Jobs;
 using Core.Services;
-using Core.Services.Managers;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -103,6 +103,10 @@ namespace Web {
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory) {
+            //  GlobalDiagnosticsContext.Set("configDir", "C:\\Logs");
+            //  GlobalDiagnosticsContext.Set("connectionString", Configuration.GetConnectionString("DefaultConnection"));
+
+
             if(env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             } else {

@@ -28,6 +28,8 @@
     $.validator.setDefaults(settings);
     $.validator.unobtrusive.options = settings;
 
+}).ajaxSend((event, xhr, options) => {
+    //xhr.setRequestHeader("Authorization", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {
     $('form fieldset').attr('disabled', 'disabled');
 }).ajaxStop(() => {
@@ -168,10 +170,12 @@ $.fn.bootstrapTable.formatDate = function (value, row, index) {
 };
 
 $.extend($.fn.bootstrapTable.defaults, {
+    totalField: 'totalItems',
+    dataField: 'items',
     classes: 'table table-hover',
     theadClasses: 'text-primary',
     sidePagination: 'server',
-    toolbar: '#toolbar',
+    toolbar: '#tableToolbar',
     showPaginationSwitch: false,
     search: true,
     idField: "id",

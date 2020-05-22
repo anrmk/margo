@@ -29,6 +29,8 @@ namespace Core.Context {
         private readonly ClaimsPrincipal _principal;
 
         #region DbSet
+        public DbSet<LogEntity> Logs { get; set; }
+
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
         public DbSet<CompanySectionEntity> CompanySections { get; set; }

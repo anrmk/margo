@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using NLog.Web;
+
 namespace Web {
     public class Program {
         public static void Main(string[] args) {
@@ -30,6 +32,6 @@ namespace Web {
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
-                });
+                }).UseNLog();
     }
 }

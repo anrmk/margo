@@ -35,24 +35,34 @@ namespace Web.Controllers {
         }
 
 
-        [Microsoft.AspNetCore.Mvc.NonAction]
+        [NonAction]
         public override void OnActionExecuting(ActionExecutingContext context) {
-            var user = context.HttpContext.User;
-            var controller = context.Controller;
-            var modelState = context.ModelState;
+            //var user = context.HttpContext.User;
+            //var controller = context.Controller;
+            //var modelState = context.ModelState;
 
-            var path = Request.Path;
-            var host = Request.Host.Value;
-            var userName = user.Identity.Name;
-            var userIsAuthenticated = user.Identity.IsAuthenticated;
+            //var path = Request.Path;
+            //var host = Request.Host.Value;
+            //var userName = user.Identity.Name;
+            //var userIsAuthenticated = user.Identity.IsAuthenticated;
 
 
+            //_logger.LogInformation(new EventId(33, name: "Index33"), "{shopitem} added to basket by {user}", new { Id = 6, Name = "Jacket", Color = "Orange" }, "Kenny");
 
-            _logger.LogInformation("OnActionExecuting");
+            //_logger.LogInformation("{user} Activity log", user?.Identity.Name);
+          //  base.OnActionExecuting(context);
         }
 
         public override void OnActionExecuted(ActionExecutedContext context) {
-            _logger.LogInformation("OnActionExecuted");
+            var userName = context.HttpContext.User?.Identity.Name;
+
+            if(context.Exception != null)
+                _logger.LogError("User {user} make activity ", userName);
+            else
+                _logger.LogInformation("User {user} make activity ", userName);
+
+            //base.OnActionExecuted(context);
+            // _logger.LogInformation("OnActionExecuted");
         }
 
 

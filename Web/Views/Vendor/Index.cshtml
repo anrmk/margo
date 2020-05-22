@@ -4,14 +4,20 @@
 }
 
 <div class="card">
+    <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+            <i class="material-icons">supervisor_account</i>
+        </div>
+        <h4 class="card-title">Vendor List</h4>
+        <span class="text-muted">Before registering as a new vendor, you can search of vendors to see if they’re already registered</span>
+    </div>
+
     <div class="card-body">
+        <div id="tableToolbar">
+            <a asp-controller="Vendor" asp-action="Create" class="btn btn-primary"><i class="fa fa-plus mr-1"></i> Create</a>
+        </div>
         <div class="table-responsive">
-            <div id="toolbar" role="toolbar">
-                <a asp-controller="Vendor" asp-action="Create" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Create</a>
-            </div>
-            <table id="datatable" data-toggle="table" data-url="/api/vendor"
-                   data-total-field="totalItems"
-                   data-data-field="items">
+            <table id="datatable" data-toggle="table" data-url="/api/vendor" >
                 <thead>
                     <tr>
                         <th data-field="no" data-sortable="true">Vendor no</th>
@@ -19,7 +25,7 @@
                         <th data-field="phoneNumber" data-sortable="true">Phone</th>
                         <th data-field="address">Address</th>
                         <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
-                        <th data-formatter="actionFormatter" class="text-nowrap text-right table-active">Actions</th>
+                        <th data-formatter="actionFormatter" class="text-right"></th>
                     </tr>
                 </thead>
             </table>
@@ -29,16 +35,14 @@
 
 @section Scripts {
     <script type="text/javascript">
-        function nameFormatter(value, row) {
-            return `${value} <p class='text-muted'>${row.company}</p>`;
-        }
-
-        function activityFormatter(value, row) {
-            return `<i class='mr-1 fa ${row.isActive ? 'fa-check-circle' : 'fa-times-circle'}'></i>`;
-        }
-
         function actionFormatter(value, row) {
-            return `<a href='/vendor/edit/${row.id}' class='btn btn-outline-secondary mr-1' >Edit</a>`;
+            return `<a href='/vendor/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
         }
+
+        $(document).ready(function () {
+            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
+                location.href = `/vendor/edit/${row.id}`;
+            });
+        });
     </script>
 }

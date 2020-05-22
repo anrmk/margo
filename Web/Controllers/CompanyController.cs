@@ -82,6 +82,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Edit(long id, CompanyGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
+                    int.Parse("hello");
                     var item = await _crudBusinessManager.UpdateCompany(id, _mapper.Map<CompanyGeneralDto>(model));
                     if(item == null) {
                         return NotFound();
@@ -134,7 +135,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> AddSection(long id) {
             var item = await _crudBusinessManager.GetCompany(id);
             if(item == null) {
-                return NotFound();
+                return NotFound(id);
             }
 
             var sections = await _crudBusinessManager.GetSections();
@@ -309,7 +310,6 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    //[ApiController]
     public class CompanyController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;

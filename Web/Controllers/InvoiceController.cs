@@ -18,8 +18,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 using Web.Hubs;
 using Web.ViewModels;
@@ -149,6 +147,14 @@ namespace Web.Controllers.Mvc {
                 return BadRequest(er);
             }
         }
+
+        [HttpPost]
+        [Route("{id}/pay")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Pay(long id) {
+            var result = await _crudBusinessManager.PayInvoice(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
 
@@ -158,30 +164,30 @@ namespace Web.Controllers.Api {
     public class InvoiceController: ControllerBase {
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        private readonly ICrudBusinessManager _businessManager;
+        private readonly ICrudBusinessManager _crudBusinessManager;
         private readonly ITelegramBotClient _telegramBotClient;
 
         public InvoiceController(IConfiguration configuration, IMapper mapper, IViewRenderService viewRenderService,
             ICrudBusinessManager businessManager) {
             _configuration = configuration;
             _mapper = mapper;
-            _businessManager = businessManager;
+            _crudBusinessManager = businessManager;
             //_telegramBotClient = telegramBotClient;
         }
 
         [HttpGet]
         public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
-            var result = await _businessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
+            var result = await _crudBusinessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
             return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }
 
         [HttpGet("SendNotification", Name = "ApiSendNotification")]
         public ActionResult SendNotification() {
-            var me = _telegramBotClient.GetMeAsync().Result;
+         //   var me = _telegramBotClient.GetMeAsync().Result;
 
-            var message = "Hello Margo *world* \n lalala";
+          //  var message = "Hello Margo *world* \n lalala";
 
-            var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
+          //  var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
 
             //var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
             //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");
@@ -189,10 +195,6 @@ namespace Web.Controllers.Api {
             return Ok();
         }
 
-        [HttpGet("{id}/pay", Name = "Pay")]
-        public async Task<ActionResult> Pay(long id) {
-            var result = await _businessManager.PayInvoice(id);
-            return Ok(_mapper.Map<InvoiceViewModel>(result));
-        }
+
     }
 }

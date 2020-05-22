@@ -1,12 +1,9 @@
-﻿using System.Security.Policy;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+
 using Telegram.Bot;
-using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Core.Services {
     public interface INotifyService {
@@ -37,7 +34,7 @@ namespace Core.Services {
 
         public async Task<Message> SendTextMessage(string message) {
             return await _client.SendTextMessageAsync(
-                chatId: new ChatId(_chatId), 
+                chatId: new ChatId(_chatId),
                 text: message,
                 parseMode: ParseMode.Markdown,
                 disableNotification: true,

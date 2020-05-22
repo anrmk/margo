@@ -45,59 +45,62 @@
                     </div>
                     <div class="card-body">
                         <form id="submitGeneralForm" method="POST" asp-action="Edit">
-                            <input type="hidden" name="Id" value="@Model.Id" />
-                            <div class="form-row mb-3">
-                                <div class="col-4">
-                                    <label asp-for="General.No"></label>
-                                    <input asp-for="General.No" name="No" class="form-control" required />
-                                    <span asp-validation-for="General.No" class="text-danger"></span>
+                            <fieldset>
+                                <input type="hidden" name="Id" value="@Model.Id" />
+                                <div class="form-row mb-3">
+                                    <div class="col-4">
+                                        <label asp-for="General.No"></label>
+                                        <input asp-for="General.No" name="No" class="form-control" required />
+                                        <span asp-validation-for="General.No" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-8">
+                                        <label asp-for="General.Name"></label>
+                                        <input asp-for="General.Name" name="Name" class="form-control" required />
+                                        <span asp-validation-for="General.Name" class="text-danger"></span>
+                                    </div>
                                 </div>
-                                <div class="col-8">
-                                    <label asp-for="General.Name"></label>
-                                    <input asp-for="General.Name" name="Name" class="form-control" required />
-                                    <span asp-validation-for="General.Name" class="text-danger"></span>
+                                <div class="form-row mb-3">
+                                    <div class="col-4">
+                                        <label asp-for="General.Website"></label>
+                                        <input asp-for="General.Website" name="Website" class="form-control" placeholder="http://" />
+                                        <span asp-validation-for="General.Website" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <label asp-for="General.PhoneNumber"></label>
+                                        <input asp-for="General.PhoneNumber" name="PhoneNumber" class="form-control" />
+                                        <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <label asp-for="General.Email"></label>
+                                        <input asp-for="General.Email" name="Email" class="form-control" />
+                                        <span asp-validation-for="General.Email" class="text-danger"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-row mb-3">
-                                <div class="col-4">
-                                    <label asp-for="General.Website"></label>
-                                    <input asp-for="General.Website" name="Website" class="form-control" placeholder="http://" />
-                                    <span asp-validation-for="General.Website" class="text-danger"></span>
+                                <div class="form-row mb-3">
+                                    <div class="col-4">
+                                        <label asp-for="General.CEO"></label>
+                                        <input asp-for="General.CEO" name="CEO" class="form-control" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label asp-for="General.EIN"></label>
+                                        <input asp-for="General.EIN" name="EIN" class="form-control" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label asp-for="General.DB"></label>
+                                        <input asp-for="General.DB" name="DB" class="form-control" />
+                                        <span asp-validation-for="General.DB" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-2">
+                                        <label asp-for="General.Founded"></label>
+                                        <input asp-for="General.Founded" type="date" name="Founded" class="form-control" />
+                                    </div>
                                 </div>
-                                <div class="col-4">
-                                    <label asp-for="General.PhoneNumber"></label>
-                                    <input asp-for="General.PhoneNumber" name="PhoneNumber" class="form-control" />
-                                    <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
-                                </div>
-                                <div class="col-4">
-                                    <label asp-for="General.Email"></label>
-                                    <input asp-for="General.Email" name="Email" class="form-control" />
-                                    <span asp-validation-for="General.Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="form-row mb-3">
-                                <div class="col-4">
-                                    <label asp-for="General.CEO"></label>
-                                    <input asp-for="General.CEO" name="CEO" class="form-control" />
-                                </div>
-                                <div class="col-3">
-                                    <label asp-for="General.EIN"></label>
-                                    <input asp-for="General.EIN" name="EIN" class="form-control" />
-                                </div>
-                                <div class="col-3">
-                                    <label asp-for="General.DB"></label>
-                                    <input asp-for="General.DB" name="DB" class="form-control" />
-                                    <span asp-validation-for="General.DB" class="text-danger"></span>
-                                </div>
-                                <div class="col-2">
-                                    <label asp-for="General.Founded"></label>
-                                    <input asp-for="General.Founded" type="date" name="Founded" class="form-control" />
-                                </div>
-                            </div>
+                            </fieldset>
                         </form>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" id="saveBtn" class="btn btn-rose" form="submitGeneralForm">Save</button>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="submit" id="saveBtn" class="btn btn-primary" form="submitGeneralForm">Save</button>
+                        <a asp-action="index" class="btn btn-link">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -111,50 +114,53 @@
                     </div>
                     <div class="card-body">
                         <form id="submitAddressForm" method="POST" asp-action="EditAddress">
-                            <input type="hidden" name="CompanyId" value="@Model.Id" />
-                            <input type="hidden" name="Id" value="@Model.Address.Id" />
-                            <div class="form-row mb-3">
-                                <div class="col-8">
-                                    <label asp-for="Address.Address"></label>
-                                    <input asp-for="Address.Address" type="text" name="Address" class="form-control" />
-                                    <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
+                            <fieldset>
+                                <input type="hidden" name="CompanyId" value="@Model.Id" />
+                                <input type="hidden" name="Id" value="@Model.Address.Id" />
+                                <div class="form-row mb-3">
+                                    <div class="col-8">
+                                        <label asp-for="Address.Address"></label>
+                                        <input asp-for="Address.Address" type="text" name="Address" class="form-control" />
+                                        <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <label asp-for="Address.City"></label>
+                                        <input asp-for="Address.City" type="text" name="City" class="form-control" />
+                                        <span asp-validation-for="Address.City" class="form-text text-danger"></span>
+                                    </div>
                                 </div>
-                                <div class="col-4">
-                                    <label asp-for="Address.City"></label>
-                                    <input asp-for="Address.City" type="text" name="City" class="form-control" />
-                                    <span asp-validation-for="Address.City" class="form-text text-danger"></span>
+                                <div class="form-row mb-3">
+                                    <div class="col">
+                                        <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                                        <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite" />
+                                        <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-row mb-3">
-                                <div class="col">
-                                    <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                                    <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite" />
-                                    <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="form-row mb-3">
-                                <div class="col">
-                                    <label asp-for="Address.Country"></label>
-                                    <input asp-for="Address.Country" type="text" name="Country" class="form-control" />
-                                    <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
-                                </div>
+                                <div class="form-row mb-3">
+                                    <div class="col">
+                                        <label asp-for="Address.Country"></label>
+                                        <input asp-for="Address.Country" type="text" name="Country" class="form-control" />
+                                        <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
+                                    </div>
 
-                                <div class="col">
-                                    <label asp-for="Address.State"></label>
-                                    <input asp-for="Address.State" type="text" name="State" class="form-control" />
-                                    <span asp-validation-for="Address.State" class="form-text text-danger"></span>
-                                </div>
+                                    <div class="col">
+                                        <label asp-for="Address.State"></label>
+                                        <input asp-for="Address.State" type="text" name="State" class="form-control" />
+                                        <span asp-validation-for="Address.State" class="form-text text-danger"></span>
+                                    </div>
 
-                                <div class="col">
-                                    <label asp-for="Address.ZipCode"></label>
-                                    <input asp-for="Address.ZipCode" type="text" name="ZipCode" class="form-control" />
-                                    <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
+                                    <div class="col">
+                                        <label asp-for="Address.ZipCode"></label>
+                                        <input asp-for="Address.ZipCode" type="text" name="ZipCode" class="form-control" />
+                                        <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
+                                    </div>
                                 </div>
-                            </div>
+                            </fieldset>
                         </form>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" id="saveBtn" class="btn btn-rose" form="submitAddressForm">Save</button>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="submit" id="saveBtn" class="btn btn-primary" form="submitAddressForm">Save</button>
+                        <a asp-action="index" class="btn btn-link">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -164,8 +170,10 @@
                         <div class="card-header card-header-primary d-flex justify-content-between">
                             <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="material-icons mr-1">add</i> Add new field</a>
                             <form method="POST" asp-action="DeleteSection">
-                                <input name="Id" value="@(section.Id)" type="hidden" />
-                                <button type="submit" class="btn btn-rose" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+                                <fieldset>
+                                    <input name="Id" value="@(section.Id)" type="hidden" />
+                                    <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+                                </fieldset>
                             </form>
                         </div>
 
@@ -184,21 +192,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach(var field in section.Fields) {
-                                        <tr>
-                                            <td>@(field.Name)</td>
-                                            <td>@(field.Value)</td>
-                                            <td class="text-nowrap">
-                                                @if(!string.IsNullOrEmpty(field.Link)) {
-                                                    <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
-                                                }
-                                            </td>
-                                            <td>@(field.Note)</td>
-                                            <td class="text-right">
-                                                <a asp-action="EditSectionField" asp-route-id="@(field.Id)" data-target="modal"><i class="material-icons">keyboard_arrow_right</i></a>
-                                            </td>
-                                        </tr>
-                                    }
+                                        @foreach(var field in section.Fields) {
+                                            <tr>
+                                                <td>@(field.Name)</td>
+                                                <td>@(field.Value)</td>
+                                                <td class="text-nowrap">
+                                                    @if(!string.IsNullOrEmpty(field.Link)) {
+                                                        <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
+                                                    }
+                                                </td>
+                                                <td>@(field.Note)</td>
+                                                <td class="text-right">
+                                                    <a asp-action="EditSectionField" asp-route-id="@(field.Id)" data-target="modal"><i class="material-icons">keyboard_arrow_right</i></a>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>

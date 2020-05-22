@@ -8,6 +8,7 @@ using Core.Context;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 
 using Web.Hubs;
@@ -19,6 +20,14 @@ namespace Web.Controllers.Mvc {
         }
 
         public IActionResult Index() {
+            //throw new Exception("Some Exceprion ");
+            // LogManager.Configuration.Install(new NLog.Config.InstallationContext(Console.Out));
+            //_logger.LogInformation(new EventId(33, name: "Index33"), "{shopitem} added to basket by {user}", new { Id = 6, Name = "Jacket", Color = "Orange" }, "Kenny");
+            //_logger.LogError("Error on HomeController");
+            //_logger.LogDebug("Debug on HomeController");
+            //_logger.LogTrace("Trace on HomeController");
+            //_logger.LogCritical("Critical on HomeController");
+            //_logger.LogWarning("Warning on HomeController");
             return View();
         }
 

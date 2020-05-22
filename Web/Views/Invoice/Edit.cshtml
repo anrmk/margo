@@ -12,10 +12,6 @@
 </nav>
 
 <div class="card">
-    <form id="submitRemoveForm" method="POST" asp-action="Delete" class="m-0">
-        <input name="Id" value="@Model.Id" type="hidden" />
-    </form>
-
     <div class="card-header card-header-primary">
         <div class="card-title">
             <h4 class="m-0">Invoice #@(Model.No)</h4>
@@ -69,9 +65,12 @@
         </form>
     </div>
     <div class="card-footer d-flex justify-content-between">
-        <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }" form="submitRemoveForm"><i class="material-icons">delete_outline</i> Remove</button>
+        <form method="POST" asp-action="Delete" class="m-0">
+            <input name="Id" value="@Model.Id" type="hidden" />
+            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+        </form>
         <div>
-            <button type="submit" class="btn btn-primary" form="submitForm">Save</button>
+            <button type="submit" class="btn btn-primary mr-1" form="submitForm">Save</button>
             <a asp-action="index" class="btn btn-link">Cancel</a>
         </div>
     </div>

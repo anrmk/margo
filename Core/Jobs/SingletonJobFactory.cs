@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Quartz;
 using Quartz.Spi;
 
@@ -13,9 +14,9 @@ namespace Core.JobFactory {
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler) {
             try {
                 return _serviceProvider.GetService(bundle.JobDetail.JobType) as IJob;
-            } catch (Exception e) {
+            } catch(Exception e) {
                 Console.WriteLine($"SingletonJobFactory Exceptino: {e.Message}");
-                return null; 
+                return null;
             }
         }
 

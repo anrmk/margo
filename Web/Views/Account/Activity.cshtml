@@ -1,0 +1,161 @@
+﻿@model Web.ViewModels.LogFilterViewModel
+@{
+    ViewData["Title"] = "Activity and timeline";
+    ViewData["SubTitle"] = "See the activity saved in your account and the places you've been. You can delete any or all your past activity.";
+}
+
+<div class="card">
+    <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+            <i class="material-icons">directions_run</i>
+        </div>
+        <h4 class="card-title">User activity report</h4>
+        <span class="text-muted">User activity report provides information on all the change actions done on a selected user during his life cycle. Changes that a user encountered during his life cycle are reported.</span>
+    </div>
+
+    @*<div class="card-header">
+
+
+            <form id="filterForm">
+                <fieldset>
+                    <div class="form-row mb-3">
+                        <div class="col">
+                            <label asp-for="UserName" class="control-label"></label>
+                            <select asp-for="UserName" asp-items="@ViewBag.Companies" class="form-control">
+                                <option>Select User</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label asp-for="Date" class="control-label"></label>
+                            <input asp-for="Date" class="form-control" />
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>*@
+
+    <div class="card-body">
+        <div id="tableToolbar">
+
+        </div>
+
+        <table id="datatable" data-toggle="table" data-url="/api/account/logs">
+            <thead>
+                <tr>
+                    <th data-field="level" data-sortable="true" data-formatter="levelFormatter">Level</th>
+                    <th data-field="logged" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Date</th>
+                    <th data-field="userName" data-sortable="true">User</th>
+                    <th data-field="message" data-sortable="true">Message</th>
+                    <th data-field="action" data-sortable="true">Action</th>
+                    <th data-field="url">Url</th>
+                    <th data-field="method">Method</th>
+                    <th data-field="exception" data-formatter="actionFormatter" class="text-right"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function queryParams(params) {
+            if (!params.search) {
+                params.search = $('div.search input').val();
+            }
+            var filterForm = $('#filterForm').serializeJSON({ parseNumbers: true });
+
+            return $.extend({}, params, filterForm);
+        }
+
+        function levelFormatter(value, row) {
+            switch (value.toLowerCase()) {
+                case 'error':
+                    return `<i class='material-icons text-danger'>report</i>`;
+                case 'info':
+                    return `<i class='material-icons text-info'>info</i>`;
+                case 'warning':
+                    return `<i class='material-icons text-warning'>warning</i>`;
+                default:
+                    return value;
+            }
+        }
+
+        function actionFormatter(value, row) {
+            if (!value.trim()) {
+                return '';
+            }
+            return `<a href='/invoice/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
+        }
+    </script>
+}
+
+
+@*<ul class="timeline timeline-simple">
+        <li class="timeline-inverted">
+            <div class="timeline-badge danger">
+                <i class="material-icons">card_travel</i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+                    <span class="badge badge-pill badge-danger">Some title</span>
+                </div>
+                <div class="timeline-body">
+                    <p>Wifey made the best Father's Day meal ever. So thankful so happy so blessed. Thank you for making my family We just had fun with the “future” theme !!! It was a fun night all together ... The always rude Kanye Show at 2am Sold Out Famous viewing  Figueroa and 12th in downtown.</p>
+                </div>
+                <h6>
+                    <i class="ti-time"></i> 11 hours ago via Twitter
+                </h6>
+            </div>
+        </li>
+        <li class="timeline-inverted">
+            <div class="timeline-badge success">
+                <i class="material-icons">extension</i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+                    <span class="badge badge-pill badge-success">Another One</span>
+                </div>
+                <div class="timeline-body">
+                    <p>Thank God for the support of my wife and real friends. I also wanted to point out that it’s the first album to go number 1 off of streaming!!! I love you Ellen and also my number one design rule of anything I do from shoes to music to homes is that Kim has to like it....</p>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-inverted">
+            <div class="timeline-badge info">
+                <i class="material-icons">fingerprint</i>
+            </div>
+            <div class="timeline-panel">
+                <div class="timeline-heading">
+                    <span class="badge badge-pill badge-info">Another Title</span>
+                </div>
+                <div class="timeline-body">
+                    <p>Called I Miss the Old Kanye That’s all it was Kanye And I love you like Kanye loves Kanye Famous viewing Figueroa and 12th in downtown LA 11:10PM</p>
+                    <p>What if Kanye made a song about Kanye Royère doesn't make a Polar bear bed but the Polar bear couch is my favorite piece of furniture we own It wasn’t any Kanyes Set on his goals Kanye</p>
+                    <hr>
+                    <div class="dropdown pull-left">
+                        <button type="button" class="btn btn-round btn-info dropdown-toggle" data-toggle="dropdown">
+                            <i class="material-icons">build</i>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li>
+                                <a href="#action">Action</a>
+                            </li>
+                            <li>
+                                <a href="#action">Another action</a>
+                            </li>
+                            <li>
+                                <a href="#here">Something else here</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#link">Separated link</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>*@

@@ -4,12 +4,12 @@
 }
 
 <div class="card">
-    <div class="card-header card-header-primary d-flex justify-content-between">
-        <div class="card-title">
-            <h4 class="card-title m-0">Payment List</h4>
-            <p class="card-category"></p>
+    <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+            <i class="material-icons">list_alt</i>
         </div>
-        <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
+        <h4 class="card-title">Payment List</h4>
+        <span class="text-muted"></span>
     </div>
 
     <div class="card-body">
@@ -41,15 +41,11 @@
             </fieldset>
         </form>
 
-        @*<div id="toolbar" class="btn-toolbar" role="toolbar">
-                <div class="btn-group mr-2" role="group" aria-label="Invoice active button group">
-                    <a asp-route="ApiSendNotification" class="btn btn-outline-success"><i class="fa fa-plus mr-1"></i> Send Notification</a>
-                </div>
-            </div>*@
-        <table id="datatable" data-toggle="table" data-url="/api/invoice"
-               data-query-params="queryParams"
-               data-total-field="totalItems"
-               data-data-field="items">
+        <div id="tableToolbar">
+            <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
+        </div>
+
+        <table id="datatable" data-toggle="table" data-url="/api/invoice" data-query-params="queryParams">
             <thead>
                 <tr>
                     <th data-checkbox="true"></th>
@@ -82,7 +78,10 @@
             if (row['isPayd'] == true) {
                 return $.fn.bootstrapTable.formatDate(row['paymentDate']);
             } else {
-                return `<a href='/api/invoice/${row.id}/pay' data-target='modal' class='btn btn-sm btn-round btn-primary mr-3'><i class="material-icons">attach_money</i> Pay</a>`
+                return `<form action='/invoice/${row.id}/pay' method='POST'>` +
+                    `<input type='hidden' value='${row.id}'/>` +
+                    `<button class='btn btn-sm btn-round btn-primary mr-3' onclick='if (!confirm("Are you sure want to change status?")) { return false; }'><i class="material-icons">attach_money</i> Pay</button>` +
+                    `</form>`;
             }
         }
 

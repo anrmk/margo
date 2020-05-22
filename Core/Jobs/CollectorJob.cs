@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Core.Context;
 using Core.Data.Entities;
 using Core.Extension;
 using Core.Services;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,7 +38,7 @@ namespace Core.Jobs {
 
                     var rnd = new Random();
                     var count = rnd.Next(5, 15);
-                    
+
                     for(var i = 0; i < count; i++) {
                         var company = companies[rnd.Next(0, companies.Count)];
                         var vendor = vendors[rnd.Next(0, vendors.Count)];

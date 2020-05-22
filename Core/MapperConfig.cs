@@ -11,6 +11,8 @@ namespace Core {
             CreateMap<ApplicationUserEntity, ApplicationUserDto>().ReverseMap();
             CreateMap<ApplicationUserProfileEntity, UserProfileDto>().ReverseMap();
 
+            CreateMap<LogEntity, LogDto>().ReverseMap();
+
             #region COMPANY
             CreateMap<CompanyDto, CompanyEntity>()
                 .ReverseMap()

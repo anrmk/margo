@@ -5,6 +5,7 @@ using AutoMapper;
 
 using Core.Context;
 using Core.Data.Dto;
+using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Authentication;
@@ -12,19 +13,25 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Web.Controllers.Mvc;
 using Web.Hubs;
 using Web.Models.AccountViewModel;
+using Web.ViewModels;
 
-namespace Web.Controllers {
+namespace Web.Controllers.Mvc {
     public class AccountController: BaseController<AccountController> {
         private readonly IAccountBusinessService _accountBusinessService;
 
         public AccountController(ILogger<AccountController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
          IAccountBusinessService accountBusinessService) : base(logger, mapper, notificationHub, context) {
             _accountBusinessService = accountBusinessService;
+        }
+
+        public async Task<IActionResult> Activity() {
+            return View(new LogFilterViewModel());
         }
 
         [HttpGet]
@@ -122,5 +129,28 @@ namespace Web.Controllers {
             }
         }
         #endregion
+    }
+}
+
+namespace Web.Controllers.Api {
+    [Route("api/[controller]")]
+    public class AccountController: ControllerBase {
+        private readonly IMapper _mapper;
+        private readonly ICrudBusinessManager _crudBusinessManager;
+        private readonly IAccountBusinessService _accountBusinessService;
+
+        public AccountController(IMapper mapper, ICrudBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
+            _mapper = mapper;
+            _crudBusinessManager = businessManager;
+            _accountBusinessService = accountBusinessService;
+            //_telegramBotClient = telegramBotClient;
+        }
+
+        [HttpGet]
+        [Route("logs")]
+        public async Task<Pager<LogDto>> GetLog([FromQuery] LogFilterViewModel model) {
+            return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
+            //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+        }
     }
 }
