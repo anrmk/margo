@@ -25,6 +25,7 @@ namespace Core.Services.Business {
         Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUserEntity entity);
 
         Task<Pager<LogDto>> GetLogPager(LogFilterDto filter);
+        Task<LogDto> GetLog(long id);
 
     }
 
@@ -92,7 +93,6 @@ namespace Core.Services.Business {
                 && (!string.IsNullOrEmpty(x.UserName))
                     ;
 
-
             var tuple = await _logManager.Pager<LogEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit);
             var list = tuple.Item1;
             var count = tuple.Item2;
@@ -104,6 +104,11 @@ namespace Core.Services.Business {
 
             var result = _mapper.Map<List<LogDto>>(list);
             return new Pager<LogDto>(result, count, page, filter.Limit);
+        }
+
+        public async Task<LogDto> GetLog(long id) {
+            var item = await _logManager.Find(id);
+            return _mapper.Map<LogDto>(item);
         }
 
         public async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe) {
@@ -127,7 +132,7 @@ namespace Core.Services.Business {
                 });
                 return null;
             } catch(Exception e) {
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
             return null;
         }

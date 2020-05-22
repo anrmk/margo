@@ -1,0 +1,82 @@
+﻿@model Web.ViewModels.LogViewModel
+@{
+    ViewData["Title"] = "Edit Invoice";
+    ViewData["SubTitle"] = "Please provide all required details to edit invoice";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Activity">Activity and timeline</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.UserName - @Model.Logged</li>
+    </ol>
+</nav>
+
+<div class="card">
+    @if(Model.Level.ToLower() == "error") {
+        <div class="card-header card-header-danger card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons">report</i>
+            </div>
+            <h4 class="card-title">User activity information</h4>
+            <span class="text-muted"></span>
+        </div>
+    } else if(Model.Level.ToLower() == "warning") {
+        <div class="card-header card-header-warning card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons">warning</i>
+            </div>
+            <h4 class="card-title">User activity information</h4>
+            <span class="text-muted"></span>
+        </div>
+    } else {
+        <div class="card-header card-header-info card-header-icon">
+            <div class="card-icon">
+                <i class="material-icons">info</i>
+            </div>
+            <h4 class="card-title">User activity information</h4>
+            <span class="text-muted"></span>
+        </div>
+    }
+
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Level</dt>
+            <dd class="col-sm-9">@Model.Level</dd>
+
+            <dt class="col-sm-3">Logged</dt>
+            <dd class="col-sm-9">@Model.Logged</dd>
+
+            <dt class="col-sm-3">Logger</dt>
+            <dd class="col-sm-9">@Model.Logger</dd>
+
+            <dt class="col-sm-3">User</dt>
+            <dd class="col-sm-9">@Model.UserName</dd>
+
+            <dt class="col-sm-3">Message</dt>
+            <dd class="col-sm-9">@Model.Message</dd>
+
+            <dt class="col-sm-3">Action</dt>
+            <dd class="col-sm-9">@Model.Action</dd>
+
+            <dt class="col-sm-3">Url</dt>
+            <dd class="col-sm-9">@Model.Url</dd>
+
+            <dt class="col-sm-3">Method</dt>
+            <dd class="col-sm-9">@Model.Method</dd>
+
+            @if(!string.IsNullOrEmpty(Model.Exception)) {
+                <dt class="col-sm-3">Exception</dt>
+                <dd class="col-sm-9">
+                    <div class="alert alert-danger">
+                        @Model.Exception
+                    </div>
+                </dd>
+            }
+        </dl>
+    </div>
+    <div class="card-footer d-flex justify-content-end">
+        <div>
+            <a asp-action="Activity" class="btn btn-link">Cancel</a>
+        </div>
+    </div>
+</div>

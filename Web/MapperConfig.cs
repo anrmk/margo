@@ -23,7 +23,8 @@ namespace Web {
         public MapperConfig() {
             CreateMap<PagerFilterViewModel, PagerFilter>();
 
-            CreateMap<LogFilterViewModel, LogFilterDto>();
+            CreateMap<LogViewModel, LogDto>().ReverseMap();
+            CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();
 
             #region COMPANY
             CreateMap<CompanyViewModel, CompanyDto>().ReverseMap();

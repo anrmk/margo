@@ -39,7 +39,7 @@
 
         </div>
 
-        <table id="datatable" data-toggle="table" data-url="/api/account/logs">
+        <table id="datatable" data-toggle="table" data-url="/api/account/activity">
             <thead>
                 <tr>
                     <th data-field="level" data-sortable="true" data-formatter="levelFormatter">Level</th>
@@ -83,11 +83,14 @@
         }
 
         function actionFormatter(value, row) {
-            if (!value.trim()) {
-                return '';
-            }
-            return `<a href='/invoice/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
+            return `<a href='/account/activityview/${row.id}'><i class="material-icons">chevron_right</i></a>`;
         }
+
+        $(document).ready(function () {
+            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
+                location.href = `/account/activityview/${row.id}`;
+            });
+        });
     </script>
 }
 

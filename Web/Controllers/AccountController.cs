@@ -30,8 +30,16 @@ namespace Web.Controllers.Mvc {
             _accountBusinessService = accountBusinessService;
         }
 
-        public async Task<IActionResult> Activity() {
+        public IActionResult Activity() {
             return View(new LogFilterViewModel());
+        }
+
+        public async Task<IActionResult> ActivityView(long id) {
+            var item = await _accountBusinessService.GetLog(id);
+            if(item == null)
+                return NotFound();
+
+            return View(_mapper.Map<LogViewModel>(item));
         }
 
         [HttpGet]
@@ -147,8 +155,8 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet]
-        [Route("logs")]
-        public async Task<Pager<LogDto>> GetLog([FromQuery] LogFilterViewModel model) {
+        [Route("activity")]
+        public async Task<Pager<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {
             return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
             //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }
