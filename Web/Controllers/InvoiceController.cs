@@ -183,11 +183,11 @@ namespace Web.Controllers.Api {
 
         [HttpGet("SendNotification", Name = "ApiSendNotification")]
         public ActionResult SendNotification() {
-         //   var me = _telegramBotClient.GetMeAsync().Result;
+            //   var me = _telegramBotClient.GetMeAsync().Result;
 
-          //  var message = "Hello Margo *world* \n lalala";
+            //  var message = "Hello Margo *world* \n lalala";
 
-          //  var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
+            //  var chatId = int.Parse(_configuration.GetConnectionString("TelegramChatId"));
 
             //var result = await _telegramBotClient.SendTextMessageAsync(new ChatId(_configuration.GetConnectionString("TelegramChatId")), message, ParseMode.Markdown);
             //await _telegramBotClient.SendInvoiceAsync(chatId, "Invoice Title", "Invoice description hdafljlj kjl", "", "providerToken", "startParameter", "USD");

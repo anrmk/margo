@@ -50,7 +50,7 @@ namespace Web.Controllers {
             //_logger.LogInformation(new EventId(33, name: "Index33"), "{shopitem} added to basket by {user}", new { Id = 6, Name = "Jacket", Color = "Orange" }, "Kenny");
 
             //_logger.LogInformation("{user} Activity log", user?.Identity.Name);
-          //  base.OnActionExecuting(context);
+            //  base.OnActionExecuting(context);
         }
 
         public override void OnActionExecuted(ActionExecutedContext context) {

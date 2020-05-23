@@ -54,6 +54,11 @@ namespace Core {
 
             #endregion
 
+            CreateMap<PaymentDto, PaymentEntity>()
+                .ForMember(d => d.Invoice, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.InvoiceNo, o => o.MapFrom(s => s.Invoice != null ? s.Invoice.No : ""));
+
             #region VENDOR
             CreateMap<VendorDto, VendorEntity>()
                 .ReverseMap()

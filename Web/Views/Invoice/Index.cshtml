@@ -78,10 +78,12 @@
             if (row['isPayd'] == true) {
                 return $.fn.bootstrapTable.formatDate(row['paymentDate']);
             } else {
-                return `<form action='/invoice/${row.id}/pay' method='POST'>` +
-                    `<input type='hidden' value='${row.id}'/>` +
-                    `<button class='btn btn-sm btn-round btn-primary mr-3' onclick='if (!confirm("Are you sure want to change status?")) { return false; }'><i class="material-icons">attach_money</i> Pay</button>` +
-                    `</form>`;
+                return `<a href='/payment/create/${row.id}' data-target='modal'>Pay</a>`
+
+                //return `<form action='/invoice/${row.id}/pay' method='POST'>` +
+                //    `<input type='hidden' value='${row.id}'/>` +
+                //    `<button class='btn btn-sm btn-round btn-primary mr-3' onclick='if (!confirm("Are you sure want to change status?")) { return false; }'><i class="material-icons">attach_money</i> Pay</button>` +
+                //    `</form>`;
             }
         }
 
@@ -90,9 +92,9 @@
         }
 
         $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
+            $('#datatable').on('dbl-click-row.bs.table', (e, row, $element) => {
                 location.href = `/invoice/edit/${row.id}`;
-            });
+            })
         });
     </script>
 }

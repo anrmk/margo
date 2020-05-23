@@ -2,8 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using NLog;
-
 namespace Core.Data.Entities {
     [Table(name: "Logs")]
     public class LogEntity: EntityBase<long> {

@@ -1,5 +1,4 @@
-﻿using Core.HostedService;
-using Core.JobFactory;
+﻿using Core.JobFactory;
 
 using Microsoft.Extensions.DependencyInjection;
 

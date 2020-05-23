@@ -47,6 +47,7 @@ namespace Core.Context {
         //public DbSet<VaccountSecurityQuestionEntity> VaccountSecurityQuestion { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
+        public DbSet<PaymentEntity> Payments { get; set; }
         #endregion
 
         public Database ApplicationDatabase { get; private set; }

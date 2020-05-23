@@ -14,6 +14,12 @@
     <Compile Remove="Migrations\20200506010735_update-supplier-to-vendor.Designer.cs" />
     <Compile Remove="Migrations\20200506173357_init-accounts.cs" />
     <Compile Remove="Migrations\20200506173357_init-accounts.Designer.cs" />
+    <Compile Remove="Migrations\20200522224945_paiment-init.cs" />
+    <Compile Remove="Migrations\20200522224945_paiment-init.Designer.cs" />
+    <Compile Remove="Migrations\20200522225323_payments-init.cs" />
+    <Compile Remove="Migrations\20200522225323_payments-init.Designer.cs" />
+    <Compile Remove="Migrations\20200522225402_payments-init.cs" />
+    <Compile Remove="Migrations\20200522225402_payments-init.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

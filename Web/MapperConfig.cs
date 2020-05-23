@@ -92,6 +92,8 @@ namespace Web {
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
             #endregion
 
+            CreateMap<PaymentViewModel, PaymentDto>().ReverseMap();
+
             #region SECTIONS
             CreateMap<SectionViewModel, SectionDto>().ReverseMap();
             CreateMap<SectionListViewModel, SectionDto>().ReverseMap();

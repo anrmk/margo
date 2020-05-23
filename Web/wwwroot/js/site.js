@@ -10,16 +10,7 @@
     if (window.notificationHub === undefined)
         window.notificationHub = new NotificationHub();
 
-    $('a[data-target=modal]').on('click', e => {
-        e.preventDefault();
-        var opt = {
-            'url': $(e.currentTarget).attr('href')
-        }
-
-        $.ajax(opt).done((data, status, jqXHR) => {
-            $(data).dialog('Your action is required', (action, e, content) => { });
-        })
-    });
+    $.fn.initModalLink('body');
 
     var settings = {
         validClass: "is-valid",
@@ -129,9 +120,9 @@ $.fn.dialog = function (header, callback) {
             var submitBtn = $('.modal .modal-footer #modalSubmitBtn');
             var submitRemoveBtn = $('.modal .modal-footer #modalSubmitRemoveBtn');
 
-            (form.length == 1) ?  submitBtn.attr('form', form.attr('id')).removeAttr('hidden') : submitBtn.attr('hidden', 'hidden');
+            (form.length == 1) ? submitBtn.attr('form', form.attr('id')).removeAttr('hidden') : submitBtn.attr('hidden', 'hidden');
             (removeform.length == 1) ? submitRemoveBtn.removeAttr('hidden') : submitRemoveBtn.attr('hidden', 'hidden');
-            
+
             callback("shown.bs.modal", e, this);
         }).off('hidden.bs.modal').on('hidden.bs.modal', (e) => {
             this.empty();
@@ -158,6 +149,19 @@ $.fn.randomDate = function (from, to) {
     const fromTime = from.getTime();
     const toTime = to.getTime();
     return new Date(fromTime + Math.random() * (toTime - fromTime));
+}
+
+$.fn.initModalLink = function (target) {
+    $(target).find('a[data-target=modal]').on('click', e => {
+        e.preventDefault();
+        var opt = {
+            'url': $(e.currentTarget).attr('href')
+        }
+
+        $.ajax(opt).done((data, status, jqXHR) => {
+            $(data).dialog('Your action is required', (action, e, content) => { });
+        })
+    });
 }
 
 /**
@@ -189,7 +193,14 @@ $.extend($.fn.bootstrapTable.defaults, {
     showToggle: true,
     sortStable: true,
     pagination: true,
-    maintainMetaData: true
+    maintainMetaData: true,
+    ajaxOptions: {
+        'beforeSend': function (jqXHR) {
+        },
+        'complete': function (jqXHR, textStatus) {
+            $.fn.initModalLink('table');
+        }
+    }
 });
 
 //$.extend($.fn.bootstrapTable.columnDefaults, {
