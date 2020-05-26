@@ -9,7 +9,7 @@
             <i class="material-icons">list_alt</i>
         </div>
         <h4 class="card-title">Payment List</h4>
-        <span class="text-muted"></span>
+        <span class="text-muted">You can pay for invoices by credit card or ACH bank transfer. All you have to do is tap the button in the list of invoices.</span>
     </div>
 
     <div class="card-body">
@@ -43,6 +43,7 @@
 
         <div id="tableToolbar">
             <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
+            <button id="bulkDeleteBtn" class="btn btn-danger" disabled><i class="material-icons">delete_outline</i> Remove</button>
         </div>
 
         <table id="datatable" data-toggle="table" data-url="/api/invoice" data-query-params="queryParams">
@@ -52,9 +53,12 @@
                     <th data-field="no" data-sortable="true">Invoice</th>
                     <th data-field="companyName">Company</th>
                     <th data-field="vendorName">Vendor</th>
-                    <th data-field="amount">Amount</th>
-                    <th data-field="date" data-formatter="$.fn.bootstrapTable.formatDate">Date</th>
+                    <th data-field="date" data-formatter="$.fn.bootstrapTable.formatDate">Statement Date</th>
                     <th data-field="dueDate" data-formatter="$.fn.bootstrapTable.formatDate">Due Date</th>
+
+                    <th data-field="balanceAmount">Balance</th>
+                    <th data-field="amount">Amount</th>
+
                     <th data-field="isPayd" data-formatter="isPaydFormatter">Payment</th>
                     <th data-formatter="actionFormatter" class="text-right"></th>
                 </tr>
@@ -76,14 +80,10 @@
 
         function isPaydFormatter(value, row) {
             if (row['isPayd'] == true) {
-                return $.fn.bootstrapTable.formatDate(row['paymentDate']);
+                return `<span class='text-success d-block'><i class='material-icons align-bottom mr-1'>check_circle_outline</i> Paid</span>` +
+                    `<small>${$.fn.bootstrapTable.formatDate(row['paymentDate'])}</small>`;
             } else {
-                return `<a href='/payment/create/${row.id}' data-target='modal'>Pay</a>`
-
-                //return `<form action='/invoice/${row.id}/pay' method='POST'>` +
-                //    `<input type='hidden' value='${row.id}'/>` +
-                //    `<button class='btn btn-sm btn-round btn-primary mr-3' onclick='if (!confirm("Are you sure want to change status?")) { return false; }'><i class="material-icons">attach_money</i> Pay</button>` +
-                //    `</form>`;
+                return `<a href='/payment/create/${row.id}' data-target='modal' class='btn btn-sm btn-round btn-primary'><i class='material-icons mr-1'>attach_money</i> Pay</a>`
             }
         }
 
@@ -92,9 +92,39 @@
         }
 
         $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', (e, row, $element) => {
+            var $table = $('#datatable');
+
+            $bulkDeleteBtn = $('#bulkDeleteBtn').click(e => {
+                e.preventDefault();
+
+                if (!confirm('Are you sure want to delete this?')) { return false; }
+
+                var selections = $table.bootstrapTable('getSelections');
+                var ids = selections.map(x => x.id);
+
+                if (ids.length > 0) {
+                    var options = {
+                        'type': 'post',
+                        'url': '/api/invoice/delete',
+                        'data': JSON.stringify(ids),
+                        'contentType': 'application/json; charset=utf-8'
+                    };
+
+                    $.ajax(options).done((data, status, jqXHR) => {
+                        if (data == true) {
+                            $bulkDeleteBtn.prop('disabled', true);
+                            $table.bootstrapTable('refresh');
+                        }
+                    });
+                }
+            });
+
+            $table.on('dbl-click-row.bs.table', (e, row, $element) => {
                 location.href = `/invoice/edit/${row.id}`;
-            })
+            }).on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+                var selections = $table.bootstrapTable('getSelections');
+                $bulkDeleteBtn.prop('disabled', !selections.length);
+            });
         });
     </script>
 }

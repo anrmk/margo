@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -69,7 +70,17 @@ namespace Core.Services.Business {
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
         Task<bool> DeleteInvoice(long id);
-        Task<InvoiceDto> PayInvoice(long id);
+        Task<bool> DeleteInvoice(long[] id);
+
+        #region PAYMENT
+        Task<PaymentDto> GetPayment(long id);
+        Task<Pager<PaymentDto>> GetPaymentPager(PaymentFilterDto filter);
+        Task<PaymentDto> CreatePayment(PaymentDto dto);
+        Task<PaymentDto> UpdatePayment(long id, PaymentDto dto);
+        Task<bool> DeletePayment(long id);
+        Task<bool> DeletePayment(long[] id);
+
+        #endregion
 
         #region COMPANY SECTIONS
         Task<CompanySectionDto> GetCompanySection(long id);
@@ -111,6 +122,7 @@ namespace Core.Services.Business {
         //private readonly IVaccountSecurityQuestionManager _vaccountSecurityQuestionManager;
 
         private readonly IInvoiceManager _invoiceManager;
+        private readonly IPaymentManager _paymentManager;
 
         //private readonly INsiBusinessManager _nsiBusinessManager;
 
@@ -122,7 +134,7 @@ namespace Core.Services.Business {
             ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager, ICompanySectionFieldManager companySectionFieldManager,
             IVendorManager supplierManager, IVendorAddressManager vendorAddressManager,
             //IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
-            IInvoiceManager invoiceManager) {
+            IInvoiceManager invoiceManager, IPaymentManager paymentManager) {
             _mapper = mapper;
 
             _sectionManager = sectionManager;
@@ -140,6 +152,7 @@ namespace Core.Services.Business {
             //_vaccountSecurityQuestionManager = vaccountSecurityQuestionManager;
 
             _invoiceManager = invoiceManager;
+            _paymentManager = paymentManager;
         }
 
         #region COMPANY
@@ -364,7 +377,7 @@ namespace Core.Services.Business {
                ;
             #endregion
 
-            string[] include = new string[] { "Company", "Vendor" };
+            string[] include = new string[] { "Company", "Vendor", "Payments" };
 
             var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
             var list = tuple.Item1;
@@ -385,15 +398,6 @@ namespace Core.Services.Business {
             return _mapper.Map<InvoiceDto>(entity);
         }
 
-        public async Task<bool> DeleteInvoice(long id) {
-            var entity = await _invoiceManager.Find(id);
-            if(entity == null) {
-                return false;
-            }
-            int result = await _invoiceManager.Delete(entity);
-            return result != 0;
-        }
-
         public async Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto) {
             var entity = await _invoiceManager.FindInclude(id);
             if(entity == null) {
@@ -404,17 +408,100 @@ namespace Core.Services.Business {
             return _mapper.Map<InvoiceDto>(entity);
         }
 
-        public async Task<InvoiceDto> PayInvoice(long id) {
-            var item = await _invoiceManager.FindInclude(id);
+        public async Task<bool> DeleteInvoice(long id) {
+            var entity = await _invoiceManager.Find(id);
+            if(entity == null) {
+                return false;
+            }
+            int result = await _invoiceManager.Delete(entity);
+            return result != 0;
+        }
+
+        public async Task<bool> DeleteInvoice(long[] ids) {
+            var invoices = await _invoiceManager.FindByIds(ids);
+            var hasPayments = invoices.Any(x => x.Payments != null && x.Payments.Count > 0);
+            if(hasPayments)
+                throw new Exception("Delete a payment or overpayment from an invoices!");
+
+            int result = await _invoiceManager.Delete(invoices);
+            return result != 0;
+        }
+
+        #endregion
+
+        #region PAYMENTS
+        public async Task<PaymentDto> GetPayment(long id) {
+            var result = await _paymentManager.FindInclude(id);
+            return _mapper.Map<PaymentDto>(result);
+        }
+
+        public async Task<Pager<PaymentDto>> GetPaymentPager(PaymentFilterDto filter) {
+            #region Sort/Filter
+            var sortby = filter.Sort ?? "Date";
+
+            Expression<Func<PaymentEntity, bool>> where = x =>
+                  (true)
+               && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower())))
+               && (!filter.InvoiceId.HasValue || x.InvoiceId == filter.InvoiceId)
+               && (!filter.DateFrom.HasValue || x.Date >= filter.DateFrom)
+               && (!filter.DateTo.HasValue || x.Date <= filter.DateTo)
+
+               ;
+            #endregion
+
+            string[] include = new string[] { "Invoice" };
+
+            var tuple = await _paymentManager.Pager<PaymentEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var list = tuple.Item1;
+            var count = tuple.Item2;
+
+            if(count == 0)
+                return new Pager<PaymentDto>(new List<PaymentDto>(), 0, filter.Offset, filter.Limit);
+
+            var page = (filter.Offset + filter.Limit) / filter.Limit;
+
+            var result = _mapper.Map<List<PaymentDto>>(list);
+            return new Pager<PaymentDto>(result, count, page, filter.Limit);
+        }
+
+        public async Task<PaymentDto> CreatePayment(PaymentDto dto) {
+            var item = await _invoiceManager.FindInclude(dto.InvoiceId ?? 0);
             if(item == null) {
                 return null;
             }
 
-            item.IsPayd = true;
-            item.PaymentDate = DateTime.Now;
-            item = await _invoiceManager.Update(item);
+            var entity = _mapper.Map<PaymentEntity>(dto);
+            entity = await _paymentManager.Create(entity);
 
-            return _mapper.Map<InvoiceDto>(item);
+            return _mapper.Map<PaymentDto>(entity);
+        }
+
+        public async Task<PaymentDto> UpdatePayment(long id, PaymentDto dto) {
+            var entity = await _paymentManager.FindInclude(id);
+            if(entity == null) {
+                return null;
+            }
+            var entity1 = _mapper.Map(dto, entity);
+            entity = await _paymentManager.Update(entity1);
+            return _mapper.Map<PaymentDto>(entity);
+        }
+
+        public async Task<bool> DeletePayment(long id) {
+            var entity = await _paymentManager.Find(id);
+            if(entity == null)
+                throw new Exception("We did not find payment records for this request.!");
+
+            int result = await _paymentManager.Delete(entity);
+            return result != 0;
+        }
+
+        public async Task<bool> DeletePayment(long[] id) {
+            var entity = await _paymentManager.FindByIds(id);
+            if(entity == null)
+                throw new Exception("We did not find payment records for this request.!");
+
+            int result = await _paymentManager.Delete(entity);
+            return result != 0;
         }
         #endregion
 

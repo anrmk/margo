@@ -25,6 +25,9 @@
     $('form fieldset').attr('disabled', 'disabled');
 }).ajaxStop(() => {
     $('form fieldset').removeAttr('disabled')
+}).ajaxError((e, jqxhr, settings, thrownError) => {
+    window.console.log("Error", jqxhr.responseText);
+    $.fn.alert('top', 'center', jqxhr.responseText, 'danger');
 });
 
 $.fn.initSidebar = function (isWindows) {
@@ -164,13 +167,17 @@ $.fn.initModalLink = function (target) {
     });
 }
 
-/**
- * Extension for bootstrapTable 
- * formatting Date
- */
 $.fn.bootstrapTable.formatDate = function (value, row, index) {
     var options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return value == null ? "" : new Date(value).toLocaleDateString("en-US", options);
+};
+
+$.fn.bootstrapTable.formatDateTime = function (value, row, index) {
+    return value == null ? "" : new Date(value).toLocaleString();
+};
+
+$.fn.bootstrapTable.formatCurrency = function (value) {
+    return "$" + value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
 };
 
 $.extend($.fn.bootstrapTable.defaults, {

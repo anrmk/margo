@@ -11,67 +11,174 @@
     </ol>
 </nav>
 
-<div class="card">
-    <div class="card-header card-header-primary">
-        <div class="card-title">
-            <h4 class="m-0">Invoice #@(Model.No)</h4>
+<div class="row">
+    <div class="col-md-12 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-pills nav-pills-primary flex-column">
+                    <li class="nav-item"><a class="nav-link active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">Overview</a></li>
+                    <li class="nav-item"><a class="nav-link" id="payment-item" data-toggle="list" href="#payment" role="tab" aria-controls="payment">Payments</a></li>
+                </ul>
+            </div>
         </div>
     </div>
+    <div class="col-md-12 col-lg-9">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-item">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">list_alt</i>
+                        </div>
+                        <h4 class="card-title">Invoice #@(Model.No)</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="submitForm" method="POST" asp-action="Edit">
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    <label asp-for="No"></label>
+                                    <input asp-for="No" class="form-control" required />
+                                    <span asp-validation-for="No" class="text-danger"></span>
+                                </div>
+                                <div class="col-3">
+                                    <label asp-for="Date"></label>
+                                    <input asp-for="Date" type="date" class="form-control" required />
+                                    <span asp-validation-for="Date" class="text-danger"></span>
+                                </div>
+                                <div class="col-3">
+                                    <label asp-for="DueDate"></label>
+                                    <input asp-for="DueDate" type="date" class="form-control" required />
+                                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-6">
+                                    <label asp-for="VendorId"></label>
+                                    <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control" readonly required>
+                                        <option>Chose an account</option>
+                                    </select>
+                                    <span asp-validation-for="VendorId" class="text-danger"></span>
+                                </div>
+                                <div class="col-6">
+                                    <label asp-for="CompanyId"></label>
+                                    <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control" readonly required data-live-search="true">
+                                        <option>Chose an account</option>
+                                    </select>
+                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-6">
+                                    <label asp-for="Amount"></label>
+                                    <input asp-for="Amount" type="number" class="form-control" required />
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <form method="POST" asp-action="Delete" class="m-0">
+                            <input name="Id" value="@Model.Id" type="hidden" />
+                            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
+                        </form>
+                        &nbsp;
+                        <div>
+                            <button type="submit" class="btn btn-primary mr-1" form="submitForm">Save</button>
+                            <a asp-action="index" class="btn btn-link">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <div class="card-body">
-        <form id="submitForm" method="POST" asp-action="Edit">
-            <div class="form-row mb-3">
-                <div class="col-4">
-                    <label asp-for="No"></label>
-                    <input asp-for="No" class="form-control" required />
-                    <span asp-validation-for="No" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="VendorId"></label>
-                    <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker" data-style="btn btn-link"
-                            required
-                            data-live-search="true">
-                        <option>Chose an account</option>
-                    </select>
-                    <span asp-validation-for="VendorId" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="CompanyId"></label>
-                    <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-style="btn btn-link"
-                            required
-                            data-live-search="true">
-                        <option>Chose an account</option>
-                    </select>
-                    <span asp-validation-for="CompanyId" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-row mb-3">
-                <div class="col-3">
-                    <label asp-for="Amount"></label>
-                    <input asp-for="Amount" type="number" class="form-control" required />
-                    <span asp-validation-for="Amount" class="text-danger"></span>
-                </div>
-                <div class="col-3">
-                    <label asp-for="Date"></label>
-                    <input asp-for="Date" type="date" class="form-control" required />
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-                <div class="col-3">
-                    <label asp-for="DueDate"></label>
-                    <input asp-for="DueDate" type="date" class="form-control" required />
-                    <span asp-validation-for="DueDate" class="text-danger"></span>
+            <div class="tab-pane fade show" id="payment" role="tabpanel" aria-labelledby="payment-item">
+                <div class="card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">list_alt</i>
+                        </div>
+                        <h4 class="card-title">Payments</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="tableToolbar">
+                            <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
+                            <button id="bulkDeleteBtn" class="btn btn-danger" disabled><i class="material-icons">delete_outline</i> Remove</button>
+                        </div>
+
+                        <table id="datatable" data-toggle="table" data-url="/api/payment" data-query-params="queryParams">
+                            <thead>
+                                <tr>
+                                    <th data-checkbox="true"></th>
+                                    <th data-field="no" data-sortable="true">Payment</th>
+                                    <th data-field="methodName" data-sortable="true">Method</th>
+                                    <th data-field="amount" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatCurrency">Amount received</th>
+                                    <th data-field="date" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Payment date</th>
+                                    <th data-formatter="actionFormatter" class="text-right"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        &nbsp;
+                        <div>
+                            <a asp-action="index" class="btn btn-link">Back</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="card-footer d-flex justify-content-between">
-        <form method="POST" asp-action="Delete" class="m-0">
-            <input name="Id" value="@Model.Id" type="hidden" />
-            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
-        </form>
-        <div>
-            <button type="submit" class="btn btn-primary mr-1" form="submitForm">Save</button>
-            <a asp-action="index" class="btn btn-link">Cancel</a>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function queryParams(params) {
+            return $.extend({ 'invoiceId': @Model.Id }, params);
+        }
+
+        function actionFormatter(value, row) {
+            return `<a href='/payment/details/${row.id}' class='btn btn-sm btn-round btn-primary' data-target='modal'><i class="material-icons mr-1">visibility</i> View</a>`;
+        }
+
+        $(document).ready(function () {
+            var $table = $('#datatable');
+            var url = document.location.toString();
+            if (url.match('#')) {
+                $('#list-tab a[href="#' + url.split('#')[1] + '"]').tab('show');
+            }
+
+            $bulkDeleteBtn = $('#bulkDeleteBtn').click(e => {
+                e.preventDefault();
+
+                if (!confirm('Are you sure want to delete this?')) { return false; }
+
+                var selections = $table.bootstrapTable('getSelections');
+                var ids = selections.map(x => x.id);
+
+                if (ids.length > 0) {
+                    var options = {
+                        'type': 'post',
+                        'url': '/api/payment/delete',
+                        'data': JSON.stringify(ids),
+                        'contentType': 'application/json; charset=utf-8'
+                    };
+
+                    $.ajax(options).done((data, status, jqXHR) => {
+                        if (data == true) {
+                            $bulkDeleteBtn.prop('disabled', true);
+                            $table.bootstrapTable('refresh');
+                        }
+                    });
+                }
+            });
+
+            $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+                var selections = $table.bootstrapTable('getSelections');
+                $bulkDeleteBtn.prop('disabled', !selections.length);
+            });
+
+            //$('#datatable').on('dbl-click-row.bs.table', (e, row, $element) => {
+            //    location.href = `/invoice/edit/${row.id}`;
+            //})
+        });
+    </script>
+}

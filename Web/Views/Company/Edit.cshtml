@@ -17,7 +17,7 @@
         <div class="card">
             <div class="card-body">
                 <ul class="nav nav-pills nav-pills-primary flex-column">
-                    <li class="nav-item"><a class="nav-link active" d="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">General</a></li>
+                    <li class="nav-item"><a class="nav-link active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">Overview</a></li>
                     <li class="nav-item"><a class="nav-link" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a></li>
 
                     @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
@@ -100,7 +100,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-end">
                         <button type="submit" id="saveBtn" class="btn btn-primary" form="submitGeneralForm">Save</button>
-                        <a asp-action="index" class="btn btn-link">Cancel</a>
+                        <a asp-action="index" class="btn btn-link">Back</a>
                     </div>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                     </div>
                     <div class="card-footer d-flex justify-content-end">
                         <button type="submit" id="saveBtn" class="btn btn-primary" form="submitAddressForm">Save</button>
-                        <a asp-action="index" class="btn btn-link">Cancel</a>
+                        <a asp-action="index" class="btn btn-link">Back</a>
                     </div>
                 </div>
             </div>

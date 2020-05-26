@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Core.Data.Entities {
     [Table(name: "Invoices")]
@@ -24,10 +26,38 @@ namespace Core.Data.Entities {
         [DataType(DataType.Date)]
         public DateTime DueDate { get; set; }
 
-        public bool IsPayd { get; set; }
+        [NotMapped]
+        public bool IsPayd {
+            get {
+                if(Payments != null && Payments.Count > 0) {
+                    var result = Payments.Sum(x => x.Amount);
+                    return Amount == result;
+                }
+                return false;
+            }
+        }
 
-        [DataType(DataType.Date)]
-        public DateTime PaymentDate { get; set; }
+        [NotMapped]
+        public DateTime? PaymentDate {
+            get {
+                if(Payments != null && Payments.Count > 0) {
+                    var result = Payments.OrderByDescending(x => x.Date).FirstOrDefault();
+                    return result?.Date;
+                }
+                return (DateTime?)null;
+            }
+        }
+
+        [NotMapped]
+        public decimal? PaymentAmount {
+            get {
+                if(Payments != null && Payments.Count > 0) {
+                    var result = Payments.Sum(x => x.Amount);
+                    return result;
+                }
+                return (decimal?)null;
+            }
+        }
 
         public bool IsDraft { get; set; } = true;
 
@@ -40,5 +70,7 @@ namespace Core.Data.Entities {
         [Column("Vendor_Id")]
         public long? VendorId { get; set; }
         public VendorEntity Vendor { get; set; }
+
+        public virtual List<PaymentEntity> Payments { get; set; }
     }
 }
