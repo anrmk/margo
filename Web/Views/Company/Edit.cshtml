@@ -167,49 +167,30 @@
             @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
                 <div class="tab-pane fade" id="@(section.SectionCode)" role="tabpanel" aria-labelledby="@(section.SectionCode)-item">
                     <div class="card">
-                        <div class="card-header card-header-primary d-flex justify-content-between">
-                            <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="material-icons mr-1">add</i> Add new field</a>
-                            <form method="POST" asp-action="DeleteSection">
-                                <fieldset>
-                                    <input name="Id" value="@(section.Id)" type="hidden" />
-                                    <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
-                                </fieldset>
-                            </form>
+                        <div class="card-header card-header-rose card-header-icon">
+                            <div class="card-icon"><i class="material-icons">info</i></div>
+                            <h4 class="card-title">@(section.SectionName)</h4>
                         </div>
 
                         <div class="card-body">
                             <p>@(section.SectionDescription)</p>
-
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead class="text-primary">
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Value</th>
-                                            <th>Link</th>
-                                            <th>Note</th>
-                                            <th class="text-right"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach(var field in section.Fields) {
-                                            <tr>
-                                                <td>@(field.Name)</td>
-                                                <td>@(field.Value)</td>
-                                                <td class="text-nowrap">
-                                                    @if(!string.IsNullOrEmpty(field.Link)) {
-                                                        <a href="@(field.Link)" target="_blank"><i class="fa fa-external-link-alt mr-1"></i> @(field.Link)</a>
-                                                    }
-                                                </td>
-                                                <td>@(field.Note)</td>
-                                                <td class="text-right">
-                                                    <a asp-action="EditSectionField" asp-route-id="@(field.Id)" data-target="modal"><i class="material-icons">keyboard_arrow_right</i></a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                            <div id="tableToolbar_@(section.Id)">
+                                <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="material-icons mr-1">add</i> Add new field</a>
+                                <button id="bulkDeleteBtn" class="btn btn-danger" data-action="delete" data-target="#datatable_@(section.Id)" onclick="javascript: bulkDelete(this)" disabled><i class="material-icons">delete_outline</i> Remove</button>
                             </div>
+
+                            <table id="datatable_@(section.Id)" data-toggle="table" data-url="/api/company/section/@(section.Id)/fields" data-toolbar="#tableToolbar_@(section.Id)">
+                                <thead>
+                                    <tr>
+                                        <th data-checkbox="true"></th>
+                                        <th data-field="name" data-sortable="true">Name</th>
+                                        <th data-field="value" data-sortable="true">Value</th>
+                                        <th data-field="link" data-formatter="$.fn.bootstrapTable.formatLink">Link</th>
+                                        <th data-field="note">Note</th>
+                                        <th data-formatter="actionFormatter" class="text-right"></th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -220,11 +201,50 @@
 
 @section Scripts {
     <script type="text/javascript">
-        function queryParams(params) {
-            return $.extend({ 'companyId': @Model.Id }, params);
+        function actionFormatter(value, row) {
+            return `<a href='/company/editSectionField/${row.id}' class='btn btn-sm btn-round btn-primary' data-target='modal'><i class="material-icons mr-1">edit</i> Edit</a>`;
+        }
+
+        function bulkDelete(e) {
+            //e.preventDefault();
+            var $bulkDeleteBtn = $(e);
+            var target = $bulkDeleteBtn.data('target');
+            var $table = $(target);
+
+            if (!confirm('Are you sure want to delete this?')) { return false; }
+
+            var selections = $table.bootstrapTable('getSelections');
+            var ids = selections.map(x => x.id);
+
+            if (ids.length > 0) {
+                var options = {
+                    'type': 'post',
+                    'url': '/api/company/section/fields/delete',
+                    'data': JSON.stringify(ids),
+                    'contentType': 'application/json; charset=utf-8'
+                };
+
+                $.ajax(options).done((data, status, jqXHR) => {
+                    if (data == true) {
+                        $bulkDeleteBtn.prop('disabled', true);
+                        $table.bootstrapTable('refresh');
+                    }
+                });
+            }
         }
 
         $(document).ready(function () {
+            var $tables = $('table[data-toggle=table]').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+                var target = $(this);
+                var selections = target.bootstrapTable('getSelections');
+                var $bulkDeleteBtn = $(target.data('toolbar')).find('button[data-action=delete]');
+                if (!selections.length) {
+                    $bulkDeleteBtn.attr('disabled', true);
+                } else {
+                    $bulkDeleteBtn.removeAttr('disabled');
+                }
+            });
+
             var url = document.location.toString();
             if (url.match('#')) {
                 $('#list-tab a[href="#' + url.split('#')[1] + '"]').tab('show');

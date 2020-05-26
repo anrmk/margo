@@ -169,16 +169,20 @@ $.fn.initModalLink = function (target) {
 
 $.fn.bootstrapTable.formatDate = function (value, row, index) {
     var options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return value == null ? "" : new Date(value).toLocaleDateString("en-US", options);
+    return value == null ? '' : new Date(value).toLocaleDateString("en-US", options);
 };
 
 $.fn.bootstrapTable.formatDateTime = function (value, row, index) {
-    return value == null ? "" : new Date(value).toLocaleString();
+    return value == null ? '' : new Date(value).toLocaleString();
 };
 
 $.fn.bootstrapTable.formatCurrency = function (value) {
-    return "$" + value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    return "$" + value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 };
+
+$.fn.bootstrapTable.formatLink = function (value) {
+    return value == null ? '' : `<a href='${value}'target="_blank"><i class="fa fa-external-link-alt mr-1"></i>${value}</a>`;
+}
 
 $.extend($.fn.bootstrapTable.defaults, {
     totalField: 'totalItems',

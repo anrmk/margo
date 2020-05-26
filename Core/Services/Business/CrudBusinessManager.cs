@@ -70,7 +70,7 @@ namespace Core.Services.Business {
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
         Task<bool> DeleteInvoice(long id);
-        Task<bool> DeleteInvoice(long[] id);
+        Task<bool> DeleteInvoice(long[] ids);
 
         #region PAYMENT
         Task<PaymentDto> GetPayment(long id);
@@ -78,7 +78,7 @@ namespace Core.Services.Business {
         Task<PaymentDto> CreatePayment(PaymentDto dto);
         Task<PaymentDto> UpdatePayment(long id, PaymentDto dto);
         Task<bool> DeletePayment(long id);
-        Task<bool> DeletePayment(long[] id);
+        Task<bool> DeletePayment(long[] ids);
 
         #endregion
 
@@ -91,10 +91,12 @@ namespace Core.Services.Business {
         #endregion
 
         #region COMPANY SECTION FIELDS
+        Task<List<CompanySectionFieldDto>> GetCompanySectionFields(long sectionId);
         Task<CompanySectionFieldDto> GetCompanySectionField(long id);
         Task<CompanySectionFieldDto> CreateCompanySectionField(CompanySectionFieldDto dto);
         Task<CompanySectionFieldDto> UpdateCompanySectionField(long id, CompanySectionFieldDto dto);
         Task<bool> DeleteCompanySectionField(long id);
+        Task<bool> DeleteCompanySectionField(long[] ids);
         #endregion
 
         #region SECTION
@@ -419,6 +421,7 @@ namespace Core.Services.Business {
 
         public async Task<bool> DeleteInvoice(long[] ids) {
             var invoices = await _invoiceManager.FindByIds(ids);
+
             var hasPayments = invoices.Any(x => x.Payments != null && x.Payments.Count > 0);
             if(hasPayments)
                 throw new Exception("Delete a payment or overpayment from an invoices!");
@@ -495,8 +498,8 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
-        public async Task<bool> DeletePayment(long[] id) {
-            var entity = await _paymentManager.FindByIds(id);
+        public async Task<bool> DeletePayment(long[] ids) {
+            var entity = await _paymentManager.Filter(x => ids.Contains(x.Id));
             if(entity == null)
                 throw new Exception("We did not find payment records for this request.!");
 
@@ -685,6 +688,11 @@ namespace Core.Services.Business {
         #endregion
 
         #region COMPANY SECTION FIELDS
+        public async Task<List<CompanySectionFieldDto>> GetCompanySectionFields(long sectionId) {
+            var result = await _companySectionFieldManager.FindAllBySectionId(sectionId);
+            return _mapper.Map<List<CompanySectionFieldDto>>(result);
+        }
+
         public async Task<CompanySectionFieldDto> GetCompanySectionField(long id) {
             var result = await _companySectionFieldManager.Find(id);
             return _mapper.Map<CompanySectionFieldDto>(result);
@@ -715,6 +723,16 @@ namespace Core.Services.Business {
             }
 
             return false;
+        }
+
+        public async Task<bool> DeleteCompanySectionField(long[] ids) {
+            var entities = await _companySectionFieldManager.Filter(x => ids.Contains(x.Id));
+
+            if(entities == null)
+                throw new Exception("We did not find field records for this request!");
+
+            int result = await _companySectionFieldManager.Delete(entities);
+            return result != 0;
         }
         #endregion
 

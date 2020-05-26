@@ -82,7 +82,6 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Edit(long id, CompanyGeneralViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    int.Parse("hello");
                     var item = await _crudBusinessManager.UpdateCompany(id, _mapper.Map<CompanyGeneralDto>(model));
                     if(item == null) {
                         return NotFound();
@@ -326,10 +325,25 @@ namespace Web.Controllers.Api {
             return pager;
         }
 
-        //[HttpGet]
-        //[Route("section/{sectionId}/fields")]
-        //public async Task<List<CompanySectionFieldViewModel>> GetFields(long sectionId) {
-        //    return null;
-        //}
+        [HttpGet]
+        [Route("section/{sectionId}/fields")]
+        public async Task<List<CompanySectionFieldViewModel>> GetFields(long sectionId) {
+            var result = await _businessManager.GetCompanySectionFields(sectionId);
+            return _mapper.Map<List<CompanySectionFieldViewModel>>(result);
+        }
+
+        [HttpPost]
+        [Route("section/fields/delete")]
+        public async Task<ActionResult> Delete([FromBody] List<long> id) {
+            try {
+                if(id.Count > 0) {
+                    var result = await _businessManager.DeleteCompanySectionField(id.ToArray());
+                    return Ok(result);
+                }
+            } catch(Exception er) {
+                return BadRequest(er.Message);
+            }
+            return Ok(false);
+        }
     }
 }
