@@ -3,17 +3,29 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Platform</title>
+    <title>@ViewData["Title"] - </title>
 
     <partial name="_StylePartial" />
+    <style>
+        body > .grid {
+            height: 100%;
+        }
+
+        .image {
+            margin-top: -100px;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <div class="ui middle aligned center aligned grid">
         @RenderBody()
     </div>
 
     <partial name="_ScriptPartial" />
-    <partial name="_ValidationScriptsPartial" />
     @RenderSection("Scripts", required: false)
 </body>
 </html>

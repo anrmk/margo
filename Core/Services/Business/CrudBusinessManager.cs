@@ -165,7 +165,7 @@ namespace Core.Services.Business {
 
         public async Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter) {
             #region Sort/Filter
-            var sortby = filter.Sort ?? "Name";
+            var sortby = "Name";
 
             Expression<Func<CompanyEntity, bool>> where = x =>
                    (true)
@@ -174,17 +174,17 @@ namespace Core.Services.Business {
 
             string[] include = new string[] { "Address" };
 
-            var tuple = await _companyManager.Pager<CompanyEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var tuple = await _companyManager.Pager<CompanyEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<CompanyDto>(new List<CompanyDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<CompanyDto>(new List<CompanyDto>(), 0, filter.Length, filter.Start);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<CompanyDto>>(list);
-            return new Pager<CompanyDto>(result, count, page, filter.Limit);
+            return new Pager<CompanyDto>(result, count, page, filter.Length);
         }
 
         public async Task<List<CompanyDto>> GetCompanies() {
@@ -267,8 +267,7 @@ namespace Core.Services.Business {
         }
 
         public async Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter) {
-            #region Sort/Filter
-            var sortby = filter.Sort ?? "No";
+            var sortby =  "No";
 
             Expression<Func<VendorEntity, bool>> where = x =>
                    (true)
@@ -276,21 +275,20 @@ namespace Core.Services.Business {
                     || x.Name.ToLower().Contains(filter.Search.ToLower())
                     || x.No.ToLower().Contains(filter.Search.ToLower())
                     || x.Description.ToLower().Contains(filter.Search.ToLower()));
-            #endregion
 
             string[] include = new string[] { "Address" };
 
-            var tuple = await _vendorManager.Pager<VendorEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var tuple = await _vendorManager.Pager<VendorEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Length, filter.Start);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<VendorDto>>(list);
-            return new Pager<VendorDto>(result, count, page, filter.Limit);
+            return new Pager<VendorDto>(result, count, page, filter.Length);
         }
 
         public async Task<List<VendorDto>> GetVendors() {
@@ -369,7 +367,7 @@ namespace Core.Services.Business {
 
         public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
             #region Sort/Filter
-            var sortby = filter.Sort ?? "No";
+            var sortby =  "No";
 
             Expression<Func<InvoiceEntity, bool>> where = x =>
                   (true)
@@ -381,17 +379,17 @@ namespace Core.Services.Business {
 
             string[] include = new string[] { "Company", "Vendor", "Payments" };
 
-            var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var tuple = await _invoiceManager.Pager<InvoiceEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<InvoiceDto>(new List<InvoiceDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<InvoiceDto>(new List<InvoiceDto>(), 0, filter.Start, filter.Length);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<InvoiceDto>>(list);
-            return new Pager<InvoiceDto>(result, count, page, filter.Limit);
+            return new Pager<InvoiceDto>(result, count, page, filter.Start);
         }
 
         public async Task<InvoiceDto> CreateInvoice(InvoiceDto dto) {
@@ -440,7 +438,7 @@ namespace Core.Services.Business {
 
         public async Task<Pager<PaymentDto>> GetPaymentPager(PaymentFilterDto filter) {
             #region Sort/Filter
-            var sortby = filter.Sort ?? "Date";
+            var sortby = "Date";
 
             Expression<Func<PaymentEntity, bool>> where = x =>
                   (true)
@@ -448,23 +446,22 @@ namespace Core.Services.Business {
                && (!filter.InvoiceId.HasValue || x.InvoiceId == filter.InvoiceId)
                && (!filter.DateFrom.HasValue || x.Date >= filter.DateFrom)
                && (!filter.DateTo.HasValue || x.Date <= filter.DateTo)
-
                ;
             #endregion
 
             string[] include = new string[] { "Invoice" };
 
-            var tuple = await _paymentManager.Pager<PaymentEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit, include);
+            var tuple = await _paymentManager.Pager<PaymentEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<PaymentDto>(new List<PaymentDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<PaymentDto>(new List<PaymentDto>(), 0, filter.Start, filter.Length);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<PaymentDto>>(list);
-            return new Pager<PaymentDto>(result, count, page, filter.Limit);
+            return new Pager<PaymentDto>(result, count, page, filter.Start);
         }
 
         public async Task<PaymentDto> CreatePayment(PaymentDto dto) {
@@ -744,24 +741,24 @@ namespace Core.Services.Business {
 
         public async Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter) {
             #region Sort/Filter
-            var sortby = filter.Sort ?? "Name";
+            var sortby =  "Name";
 
             Expression<Func<SectionEntity, bool>> where = x =>
                    (true)
                    && (string.IsNullOrEmpty(filter.Search) || x.Name.ToLower().Contains(filter.Search.ToLower()));
             #endregion
 
-            var tuple = await _sectionManager.Pager<SectionEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit);
+            var tuple = await _sectionManager.Pager<SectionEntity>(where, sortby, filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Start, filter.Length);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<SectionDto>>(list);
-            return new Pager<SectionDto>(result, count, page, filter.Limit);
+            return new Pager<SectionDto>(result, count, page, filter.Start);
         }
 
         public async Task<List<SectionDto>> GetSections() {

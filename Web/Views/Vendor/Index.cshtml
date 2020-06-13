@@ -1,48 +1,123 @@
 ﻿@{
     ViewData["Title"] = "Vendors";
     ViewData["Subtitle"] = "Organize and keep track of your vendor by adding, deleting, merging, or restoring them in the system.";
+    var tableId = Guid.NewGuid();
+    var getVendorsUrl = Url.RouteUrl("GetVendors");
 }
 
-<div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-        <div class="card-icon">
-            <i class="material-icons">supervisor_account</i>
-        </div>
-        <h4 class="card-title">Vendor List</h4>
-        <span class="text-muted">Before registering as a new vendor, you can search of vendors to see if they’re already registered</span>
-    </div>
+@section RightSidebar {
+    hello
+}
 
-    <div class="card-body">
-        <div id="tableToolbar">
-            <a asp-controller="Vendor" asp-action="Create" class="btn btn-primary"><i class="fa fa-plus mr-1"></i> Create</a>
-        </div>
-        <div class="table-responsive">
-            <table id="datatable" data-toggle="table" data-url="/api/vendor" >
-                <thead>
-                    <tr>
-                        <th data-field="no" data-sortable="true">Vendor no</th>
-                        <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="phoneNumber" data-sortable="true">Phone</th>
-                        <th data-field="address">Address</th>
-                        <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
-                        <th data-formatter="actionFormatter" class="text-right"></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+<a asp-controller="Vendor" asp-action="Create" class="btn btn-primary"><i class="fa fa-plus mr-1"></i> Create</a>
+<span class="text-muted">Before registering as a new vendor, you can search of vendors to see if they’re already registered</span>
+
+<div class="ui segment">
+    <div class="ui breadcrumb">
+        <a class="section">Home</a>
+        <div class="divider"> / </div>
+        <a class="section">Store</a>
+        <div class="divider"> / </div>
+        <div class="active section">T-Shirt</div>
     </div>
 </div>
 
+<div class="ui raised segment">
+    <div id="toolbar" class="ui ui secondary menu">
+        <button class="orange ui button" data-action="create"><i class="plus icon"></i> Create</button>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
+    </div>
+    <div class="ui divider"></div>
+
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table">
+        <thead>
+            <tr>
+                <th class="collapsing"></th>
+                <th>Vendor no</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address.</th>
+                <th class="right aligned collapsing">Modified</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Vendor no</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address.</th>
+                <th>Modified</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
 @section Scripts {
     <script type="text/javascript">
-        function actionFormatter(value, row) {
-            return `<a href='/vendor/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
-        }
+    $(document).ready(function () {
+        window.selected = [];
 
-        $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
-                location.href = `/vendor/edit/${row.id}`;
-            });
+        var $filter = $('#filter');
+        var $table = $('#@tableId');
+
+        var $datatable = $table.DataTable({
+            'ajax': {
+                'url': '@(getVendorsUrl)',
+                'data': (d) => {
+                    var data = $.extend({}, d, $filter.serializeJSON());
+                    return data;
+                }
+            },
+            'columns': [
+                { 'data': 'id', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) },
+                { 'data': 'no', 'orderable': true},
+                { 'data': 'name'},
+                { 'data': 'phoneNumber'},
+                { 'data': 'address'},
+                { 'data': 'updatedDate' }
+            ],
+            'rowCallback': function (row, data) {
+                if ($.inArray(data.id, window.selected) !== -1) {
+                    $(row).addClass('active');
+                }
+            },
         });
+
+        //$table.on('select', function (e, dt, type, indexes) {
+        //    table[type](indexes).nodes().to$().addClass('active');
+        //});
+
+        $table.find('tbody').on('dblclick', 'tr', function (e) {
+            var row = $datatable.row(this);
+            var data = row.data();
+
+            location.href = `/vendor/edit/${data.id}`;
+          //if ($(this).hasClass('active')) {
+          //    $(this).removeClass('active');
+          //}
+          //else {
+          //    $table.find('tr.active').removeClass('active');
+          //    $(this).addClass('active');
+          //}
+        });
+
+        $table.on('change', 'input', function () {
+            var inputs = $table.find('input:checked')
+            if (inputs.length > 0) {
+                $('button[data-action=delete]').enabled();
+            } else {
+                $('button[data-action=delete]').disabled();
+            }
+        })
+
+        $('#button').click(function () { table.row('.selected').remove().draw(false); });
+
+
+        
+    });
     </script>
 }

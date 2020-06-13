@@ -15,7 +15,7 @@ using Web.Models;
 
 namespace Web.Controllers.Mvc {
     public class HomeController: BaseController<HomeController> {
-        public HomeController(ILogger<HomeController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) : base(logger, mapper, notificationHub, context) {
+        public HomeController(ILogger<HomeController> logger, IMapper mapper) : base(logger, mapper) {
         }
 
         public IActionResult Index() {

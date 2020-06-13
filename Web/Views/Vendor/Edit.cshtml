@@ -12,6 +12,94 @@
     </ol>
 </nav>
 
+<div class="ui raised segment">
+    <form class="ui form" id="submitGeneralForm" method="POST" asp-action="Edit">
+        <h4 class="ui dividing header">General</h4>
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="General.No"></label>
+                <input asp-for="General.No" type="text" name="No" required>
+                <span asp-validation-for="General.No" class="text-danger"></span>
+            </div>
+            <div class="field required">
+                <label asp-for="General.Name"></label>
+                <input asp-for="General.Name" type="text" name="Name" required>
+                <span asp-validation-for="General.Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="field">
+            <label asp-for="General.Description">Description <span class="text-muted">(Optional)</span></label>
+            <textarea asp-for="General.Description" name="Description" rows="3"></textarea>
+            <span asp-validation-for="General.Description"></span>
+        </div>
+        <div class="three fields">
+            <div class="field">
+                <label asp-for="General.PhoneNumber"></label>
+                <input asp-for="General.PhoneNumber" type="text" name="PhoneNumber" >
+                <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="field">
+                <label asp-for="General.Email"></label>
+                <input asp-for="General.Email" type="text" name="Email" >
+                <span asp-validation-for="General.Email" class="text-danger"></span>
+            </div>
+            <div class="field">
+                <label asp-for="General.Website"></label>
+                <input asp-for="General.Website" type="text" name="Website" >
+                <span asp-validation-for="General.Website" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" class="ui submit button">Save</button>
+    </form>
+</div>
+
+<div class="ui raised segment">
+    <form class="ui form" method="POST" asp-action="EditAddress">
+        <h4 class="ui dividing header">Address</h4>
+        <input name="SupplierId" type="hidden" value="@Model.Id" />
+        <input name="Id" type="hidden" value="@Model.Address.Id" />
+        <div class="two fields">
+            <div class="field">
+                <label asp-for="Address.Address"></label>
+                <input asp-for="Address.Address" type="text" name="Address" >
+                <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.City"></label>
+                <input asp-for="Address.City" type="text" name="City" >
+                <span asp-validation-for="Address.City" class="form-text text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <div class="col">
+                <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                <input asp-for="Address.Address2" type="text" name="Address2"  placeholder="Appartment or suite">
+                <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row mb-3">
+            <div class="col">
+                <label asp-for="Address.Country"></label>
+                <input asp-for="Address.Country" type="text" name="Country" >
+                <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Address.State"></label>
+                <input asp-for="Address.State" type="text" name="State" >
+                <span asp-validation-for="Address.State" class="form-text text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Address.ZipCode"></label>
+                <input asp-for="Address.ZipCode" type="text" name="ZipCode" >
+                <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
 <div class="card">
     <div class="card-header card-header-primary card-header-tabs">
         <div class="nav-tabs-navigation">
@@ -38,36 +126,36 @@
                     <div class="form-row mb-3">
                         <div class="col-4">
                             <label asp-for="General.No"></label>
-                            <input asp-for="General.No" type="text" name="No" class="form-control" required>
+                            <input asp-for="General.No" type="text" name="No"  required>
                             <span asp-validation-for="General.No" class="text-danger"></span>
                         </div>
                         <div class="col-8">
                             <label asp-for="General.Name"></label>
-                            <input asp-for="General.Name" type="text" name="Name" class="form-control" required>
+                            <input asp-for="General.Name" type="text" name="Name"  required>
                             <span asp-validation-for="General.Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-row mb-3">
                         <div class="col">
                             <label asp-for="General.Description">Description <span class="text-muted">(Optional)</span></label>
-                            <textarea asp-for="General.Description" name="Description" class="form-control" rows="3"></textarea>
+                            <textarea asp-for="General.Description" name="Description"  rows="3"></textarea>
                             <span asp-validation-for="General.Description" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="form-row mb-3">
                         <div class="col-4">
                             <label asp-for="General.PhoneNumber"></label>
-                            <input asp-for="General.PhoneNumber" type="text" name="PhoneNumber" class="form-control">
+                            <input asp-for="General.PhoneNumber" type="text" name="PhoneNumber" >
                             <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
                         </div>
                         <div class="col-4">
                             <label asp-for="General.Email"></label>
-                            <input asp-for="General.Email" type="text" name="Email" class="form-control">
+                            <input asp-for="General.Email" type="text" name="Email" >
                             <span asp-validation-for="General.Email" class="text-danger"></span>
                         </div>
                         <div class="col-4">
                             <label asp-for="General.Website"></label>
-                            <input asp-for="General.Website" type="text" name="Website" class="form-control">
+                            <input asp-for="General.Website" type="text" name="Website" >
                             <span asp-validation-for="General.Website" class="text-danger"></span>
                         </div>
                     </div>
@@ -75,46 +163,7 @@
             </div>
 
             <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                <form id="submitAddressForm" method="POST" asp-action="EditAddress">
-                    <input name="SupplierId" type="hidden" value="@Model.Id" />
-                    <input name="Id" type="hidden" value="@Model.Address.Id" />
-                    <div class="form-row mb-3">
-                        <div class="col-8">
-                            <label asp-for="Address.Address"></label>
-                            <input asp-for="Address.Address" type="text" name="Address" class="form-control">
-                            <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
-                        </div>
-                        <div class="col-4">
-                            <label asp-for="Address.City"></label>
-                            <input asp-for="Address.City" type="text" name="City" class="form-control">
-                            <span asp-validation-for="Address.City" class="form-text text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col">
-                            <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                            <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite">
-                            <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col">
-                            <label asp-for="Address.Country"></label>
-                            <input asp-for="Address.Country" type="text" name="Country" class="form-control">
-                            <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
-                        </div>
-                        <div class="col">
-                            <label asp-for="Address.State"></label>
-                            <input asp-for="Address.State" type="text" name="State" class="form-control">
-                            <span asp-validation-for="Address.State" class="form-text text-danger"></span>
-                        </div>
-                        <div class="col">
-                            <label asp-for="Address.ZipCode"></label>
-                            <input asp-for="Address.ZipCode" type="text" name="ZipCode" class="form-control">
-                            <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
-                        </div>
-                    </div>
-                </form>
+                
             </div>
 
             <div class="tab-pane fase" id="image" role="tabpanel" arial-labelledby="image-tab">

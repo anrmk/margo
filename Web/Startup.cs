@@ -40,7 +40,7 @@ namespace Web {
             #endregion
 
             #region Identity
-            services.AddIdentity<ApplicationUserEntity, IdentityRole>()
+            services.AddIdentity<AppNetUserEntity, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
@@ -63,7 +63,7 @@ namespace Web {
             });
 
             services.ConfigureApplicationCookie(options => {
-                options.ExpireTimeSpan = TimeSpan.FromHours(4);
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
 
@@ -77,25 +77,25 @@ namespace Web {
             });
             #endregion
 
-            services.AddSignalR();
+            //services.AddSignalR();
 
             services.Configure<FormOptions>(options => {
                 options.ValueCountLimit = int.MaxValue;
             });
 
             ServicesConfig.Configuration(services);
-            JobSchedulerConfig.Configuration(services);
+            //Jobs
+            //JobSchedulerConfig.Configuration(services);
 
-            services.AddTransient<IViewRenderService, ViewRenderService>();
-            services.AddSingleton<INotifyService>(ctx => {
-                var token = Configuration.GetConnectionString("TelegramConnection");
-                var chatId = Configuration.GetConnectionString("TelegramChatId");
-                var notify = new NotifyService(token, chatId);
-                return notify;
-            });
+            
+            //services.AddSingleton<INotifyService>(ctx => {
+            //    var token = Configuration.GetConnectionString("TelegramConnection");
+            //    var chatId = Configuration.GetConnectionString("TelegramChatId");
+            //    var notify = new NotifyService(token, chatId);
+            //    return notify;
+            //});
 
-            services.AddDbContext<ApplicationContext>();
-
+      
             MapperConfig.Register(services);
 
             services.AddControllersWithViews();
@@ -124,7 +124,7 @@ namespace Web {
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapHub<NotificationHub>("/notificationHub");
+                //endpoints.MapHub<NotificationHub>("/notificationHub");
 
                 endpoints.MapControllerRoute(
                     name: "default",

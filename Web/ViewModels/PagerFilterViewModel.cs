@@ -14,10 +14,12 @@ namespace Web.ViewModels {
         [FromQuery(Name = "order")]
         public string Order { get; set; }
 
-        [FromQuery(Name = "offset")]
-        public int Offset { get; set; } = 0;
+        [FromQuery(Name = "start")]
+        public int Start { get; set; } = 0;
 
-        [FromQuery(Name = "limit")]
-        public int Limit { get; set; } = 10;
+        [FromQuery(Name = "length")]
+        public int Length { get; set; } = 10;
+
+        public int Take { get; set; }
     }
 }

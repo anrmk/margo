@@ -27,8 +27,8 @@ namespace Web.Controllers.Mvc {
         private readonly INsiBusinessManager _nsiBusinessManager;
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
-            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
+        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper,
+            INsiBusinessManager nsiBusinessManager, ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _nsiBusinessManager = nsiBusinessManager;
             _crudBusinessManager = crudBusinessManager;
         }
@@ -165,7 +165,7 @@ namespace Web.Controllers.Api {
         [HttpGet]
         public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
             var result = await _crudBusinessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
-            return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+            return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 
         [HttpPost]

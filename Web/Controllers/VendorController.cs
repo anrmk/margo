@@ -10,6 +10,7 @@ using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
@@ -19,10 +20,11 @@ using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
+    [Authorize]
     public class VendorController: BaseController<VendorController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public VendorController(ILogger<VendorController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context, ICrudBusinessManager businessManager) : base(logger, mapper, notificationHub, context) {
+        public VendorController(ILogger<VendorController> logger, IMapper mapper, ICrudBusinessManager businessManager) : base(logger, mapper) {
             _crudBusinessManager = businessManager;
         }
 
@@ -134,7 +136,6 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    // [ApiController]
     public class VendorController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly ICrudBusinessManager _businessManager;
@@ -144,10 +145,10 @@ namespace Web.Controllers.Api {
             _businessManager = businessManager;
         }
 
-        [HttpGet]
-        public async Task<Pager<VendorListViewModel>> GetSuppliers(PagerFilterViewModel model) {
+        [HttpGet("GetVendors", Name = "GetVendors")]
+        public async Task<Pager<VendorListViewModel>> GetVendors(PagerFilterViewModel model) {
             var result = await _businessManager.GetVendorPager(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+            var pager = new Pager<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
     }

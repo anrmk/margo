@@ -1,56 +1,47 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using Core.Data.Entities
-
-@inject SignInManager<ApplicationUserEntity> SignInManager
-@inject UserManager<ApplicationUserEntity> UserManager
-
-@{
+﻿@{
     var url = Context.Request.Path.ToString().ToLower();
 }
 
-<div class="sidebar" data-color="purple" data-background-color="white">
-    <div class="logo">
-        <a href="#" class="simple-text logo-normal text-center">Margo Assistant</a>
+<!-- Sidebar Menu -->
+<div class="ui vertical sidebar menu left overlay visible">
+    <div class="item">
+        <a class="ui logo icon image" href="#"></a>
+        <a href="/"><b>Margo Assistant</b></a>
     </div>
-    <div class="sidebar-wrapper">
-        <ul class="nav">
-            <li class="nav-item @(url.Contains("/home") || url.Equals("/") ? "active" : "")">
-                <a class="nav-link" asp-controller="Home" asp-action="Index">
-                    <i class="material-icons">dashboard</i> <p>Dashboard</p>
-                </a>
-            </li>
-            <li class="nav-item @(url.Contains("/company") ? "active" : "")">
-                <a class="nav-link" asp-controller="Company" asp-action="Index">
-                    <i class="material-icons">storage</i> <p>Database</p>
 
-                </a>
-            </li>
-            <li class="nav-item @(url.Contains("/invoice") ? "active" : "")">
-                <a class="nav-link" asp-controller="Invoice" asp-action="Index">
-                    <i class="material-icons">list_alt</i> <p>Payments</p>
-                </a>
-            </li>
-        </ul>
+    <div class="item">
+        <div class="header">Dashboard</div>
+        <div class="menu">
+            <a class="item @(url.Contains("/home") || url.Equals("/") ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
+        </div>
+    </div>
 
-        <h6 class="sidebar-heading d-flex justify-content-between px-3 mt-4 mb-1 text-muted">
-            Settings
-        </h6>
-        <ul class="nav flex-column">
-            <li class="nav-item @(url.Contains("/section") ? "active" : "")">
-                <a class="nav-link" asp-controller="Section" asp-action="Index">
-                    <i class="material-icons">view_list</i> Section
-                </a>
-            </li>
-            <li class="nav-item @(url.Contains("/vendor") ? "active" : "")">
-                <a class="nav-link" asp-controller="Vendor" asp-action="Index">
-                    <i class="material-icons">supervisor_account</i> Vendors
-                </a>
-            </li>
-            <li class="nav-item @(url.Contains("/account") ? "active" : "")">
-                <a class="nav-link" asp-controller="Account" asp-action="Activity">
-                    <i class="material-icons">directions_run</i> Activity
-                </a>
-            </li>
-        </ul>
+    <div class="item">
+        <div class="header">Company</div>
+        <div class="menu">
+            <a class="item @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">Database</a>
+        </div>
+    </div>
+
+    <div class="item">
+        <div class="header">Payment</div>
+        <div class="menu">
+            <a class="item @(url.Contains("/invoice") ? "active" : "")" asp-controller="Invoice" asp-action="Index">Invoices</a>
+        </div>
+    </div>
+
+    <div class="item">
+        <div class="header">Settings</div>
+        <div class="menu">
+            <a class="item @(url.Contains("/section") ? "active" : "")" asp-controller="Section" asp-action="Index">
+                Section
+            </a>
+            <a class="item @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
+                Vendors
+            </a>
+            <a class="item @(url.Contains("/account") ? "active" : "") " asp-controller="Account" asp-action="Activity">
+                Activity
+            </a>
+        </div>
     </div>
 </div>

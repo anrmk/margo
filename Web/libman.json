@@ -3,84 +3,57 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "font-awesome@5.11.2",
-      "destination": "wwwroot/lib/font-awesome/"
+      "library": "jquery@3.5.1",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [ "jquery.min.js" ]
     },
     {
-      "library": "moment.js@2.24.0",
-      "destination": "wwwroot/lib/moment/",
-      "files": [
-        "moment.min.js"
-      ]
-    },
-    {
-      "library": "bootstrap-datepicker@1.9.0",
-      "destination": "wwwroot/lib/bootstrap-datepicker/",
-      "files": [
-        "js/bootstrap-datepicker.min.js",
-        "css/bootstrap-datepicker.min.css"
-      ]
+      "library": "jquery-load-json@1.3.3",
+      "destination": "wwwroot/lib/jquery-loadjson/",
+      "files": [ "dist/jquery.loadJSON.min.js" ],
+      "provider": "jsdelivr"
     },
     {
       "library": "jquery.serializeJSON@2.9.0",
-      "destination": "wwwroot/lib/jquery-serializeJSON/"
+      "destination": "wwwroot/lib/jquery-serializeJSON/",
+      "files": [ "jquery.serializejson.min.js" ]
     },
     {
-      "library": "bootstrap-table@1.16.0",
-      "destination": "wwwroot/lib/bootstrap-table/"
+      "library": "jquery-validate@1.19.2",
+      "destination": "wwwroot/lib/jquery-validation",
+      "files": [ "jquery.validate.js", "jquery.validate.min.js", "additional-methods.js", "additional-methods.min.js" ]
     },
     {
-      "library": "Sortable@1.10.1",
-      "destination": "wwwroot/lib/sortable"
+      "library": "jquery-validation-unobtrusive@3.2.11",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     },
     {
-      "provider": "unpkg",
-      "library": "bootstrap@4.4.1",
-      "destination": "wwwroot/lib/bootstrap/",
+      "library": "datatables.net@1.10.21",
+      "destination": "wwwroot/lib/jquery-datatables/",
+      "files": [ "js/jquery.dataTables.js", "js/jquery.dataTables.min.js" ],
+      "provider": "unpkg"
+    },
+    {
+      "library": "datatables.net-se@1.10.21",
+      "destination": "wwwroot/lib/jquery-datatables-se/",
       "files": [
-        "dist/css/bootstrap-grid.css",
-        "dist/css/bootstrap-grid.css.map",
-        "dist/css/bootstrap-grid.min.css",
-        "dist/css/bootstrap-grid.min.css.map",
-        "dist/css/bootstrap-reboot.css",
-        "dist/css/bootstrap-reboot.css.map",
-        "dist/css/bootstrap-reboot.min.css",
-        "dist/css/bootstrap-reboot.min.css.map",
-        "dist/css/bootstrap.css",
-        "dist/css/bootstrap.css.map",
-        "dist/css/bootstrap.min.css",
-        "dist/css/bootstrap.min.css.map",
-        "dist/js/bootstrap.bundle.js",
-        "dist/js/bootstrap.bundle.js.map",
-        "dist/js/bootstrap.bundle.min.js",
-        "dist/js/bootstrap.bundle.min.js.map",
-        "dist/js/bootstrap.js",
-        "dist/js/bootstrap.js.map",
-        "dist/js/bootstrap.min.js",
-        "dist/js/bootstrap.min.js.map"
-      ]
+        "css/dataTables.semanticui.css",
+        "css/dataTables.semanticui.min.css",
+        "js/dataTables.semanticui.js",
+        "js/dataTables.semanticui.min.js"
+      ],
+      "provider": "unpkg"
     },
     {
-      "library": "bootstrap-select@1.13.12",
-      "destination": "wwwroot/lib/bootstrap-select/",
-      "files": [
-        "js/bootstrap-select.min.js.map",
-        "css/bootstrap-select.css",
-        "css/bootstrap-select.css.map",
-        "css/bootstrap-select.min.css",
-        "js/bootstrap-select.js",
-        "js/bootstrap-select.js.map",
-        "js/bootstrap-select.min.js"
-      ]
+      "library": "moment.js@2.26.0",
+      "destination": "wwwroot/lib/moment/",
+      "files": [ "moment.min.js" ]
     },
     {
-      "provider": "jsdelivr",
-      "library": "jquery-load-json@1.3.3",
-      "destination": "wwwroot/lib/jquery-load-json/",
-      "files": [
-        "dist/jquery.loadJSON.min.js"
-      ]
+      "library": "semantic-ui@2.4.1",
+      "destination": "wwwroot/lib/semantic"
     },
+
     {
       "library": "aspnet-signalr@1.1.4",
       "destination": "wwwroot/lib/aspnet-signalr/"

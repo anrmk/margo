@@ -24,12 +24,12 @@ namespace Core.Context {
         int SaveChanges();
     }
 
-    public class ApplicationContext: IdentityDbContext<ApplicationUserEntity>, IApplicationContext {
+    public class ApplicationContext: IdentityDbContext<AppNetUserEntity>, IApplicationContext {
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
 
         #region DbSet
-        public DbSet<LogEntity> Logs { get; set; }
+        //public DbSet<LogEntity> Logs { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
@@ -41,10 +41,6 @@ namespace Core.Context {
         public DbSet<VendorEntity> Vendors { get; set; }
         public DbSet<VendorAddressEntity> VendorAddress { get; set; }
         public DbSet<VendorMediaEntity> VendorMedias { get; set; }
-
-        //public DbSet<VaccountEntity> Vaccounts { get; set; }
-        //public DbSet<VaccountSecurityEntity> VaccountSecurities { get; set; }
-        //public DbSet<VaccountSecurityQuestionEntity> VaccountSecurityQuestion { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
         public DbSet<PaymentEntity> Payments { get; set; }

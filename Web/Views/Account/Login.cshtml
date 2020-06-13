@@ -3,58 +3,49 @@
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_EmptyLayout.cshtml";
 }
-<div class="row">
-    <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto mt-lg-5">
-        <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form">
-            <div class="card card-login">
-                <div class="card-header card-header-rose text-center">
-                    <h4 class="card-title"><i class="material-icons">fingerprint</i> Login</h4>
-                </div>
-                <div class="card-body">
-                    <p class="card-description text-center">
-                        Sign in to your account to access all our products. <a asp-controller="Faq" asp-action="Index">Learn More.</a> <br />
-                        Works in latest Chrome, Safari, and Firefox
-                    </p>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="material-icons">face</i>
-                                </span>
-                            </div>
-                            <input asp-for="Email" placeholder="Email" class="form-control" required autofocus />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="material-icons">email</i>
-                                </span>
-                            </div>
-                            <input asp-for="Password" placeholder="Password" class="form-control" required />
-                        </div>
-                    </div>
-                    <div class="form-check">
-                        <label asp-for="RememberMe" class="form-check-label">
-                            <input asp-for="RememberMe" class="form-check-input" />
-                            <span class="form-check-sign"><span class="check"></span></span> @Html.DisplayNameFor(m => m.RememberMe)
-                        </label>
-                    </div>
-                </div>
+<div class="column">
+    <h2 class="ui orange image header">
+        @*<img src="assets/images/logo.png" class="image" />*@
+        <div class="content">
+            Log-in to your account
+        </div>
+    </h2>
 
-                <div class="card-footer justify-content-center">
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Lets Go</button>
+    <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="ui large form">
+        <div class="ui stacked segment">
+            <p>
+                Sign in to your account to access all our products. <a asp-controller="Faq" asp-action="Index">Learn More.</a> <br />
+                Works in latest Chrome, Safari, and Firefox
+            </p>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="user icon"></i>
+                    <input asp-for="Email" placeholder="Email" class="form-control" required autofocus />
                 </div>
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div asp-validation-summary="All"></div>
-
-                <p class="mt-5 mb-3 text-muted text-center">
-                    By clicking Sign In with Email, you agree to our Terms and have read and acknowledge our US Privacy Statement. <br />
-                    <strong>Margo Assistant</strong> don't know you? <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Sign Up!</a>
-                </p>
             </div>
-        </form>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="lock icon"></i>
+                    <input asp-for="Password" placeholder="Password" class="form-control" required />
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui checkbox">
+                    <input asp-for="RememberMe" class="hidden" />
+                    <label asp-for="RememberMe"></label>
+                </div>
+            </div>
+            <button class="ui fluid large orange submit button" type="submit">Lets Go</button>
+        </div>
+
+        <div class="ui error message">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All"></div>
+        </div>
+    </form>
+
+    <div class="ui message">
+        By clicking Sign In with Email, you agree to our Terms and have read and acknowledge our US Privacy Statement. <br />
+        <strong>Margo Assistant</strong> don't know you? <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Sign Up!</a>
     </div>
 </div>

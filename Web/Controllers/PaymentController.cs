@@ -21,8 +21,8 @@ namespace Web.Controllers.Mvc {
     public class PaymentController: BaseController<PaymentController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public PaymentController(ILogger<PaymentController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
-            ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
+        public PaymentController(ILogger<PaymentController> logger, IMapper mapper, 
+            ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
 
@@ -139,7 +139,7 @@ namespace Web.Controllers.Api {
         [HttpGet]
         public async Task<Pager<PaymentViewModel>> GetPayments([FromQuery] PaymentFilterViewModel model) {
             var result = await _crudBusinessManager.GetPaymentPager(_mapper.Map<PaymentFilterDto>(model));
-            return new Pager<PaymentViewModel>(_mapper.Map<List<PaymentViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+            return new Pager<PaymentViewModel>(_mapper.Map<List<PaymentViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 
         [HttpPost]

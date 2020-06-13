@@ -8,8 +8,8 @@ using Core.Data.Entities;
 namespace Core {
     public class MapperConfig: Profile {
         public MapperConfig() {
-            CreateMap<ApplicationUserEntity, ApplicationUserDto>().ReverseMap();
-            CreateMap<ApplicationUserProfileEntity, UserProfileDto>().ReverseMap();
+            CreateMap<AppNetUserEntity, ApplicationUserDto>().ReverseMap();
+            CreateMap<AppNetUserProfileEntity, UserProfileDto>().ReverseMap();
 
             CreateMap<LogEntity, LogDto>().ReverseMap();
 

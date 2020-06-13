@@ -45,10 +45,10 @@ namespace Core.Context {
         }
 
         private void ApplicationUser() {
-            var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUserEntity>>();
+            var userManager = _serviceProvider.GetRequiredService<UserManager<AppNetUserEntity>>();
 
             if(userManager.FindByEmailAsync("test@test.com").Result == null) {
-                var user = new ApplicationUserEntity() {
+                var user = new AppNetUserEntity() {
                     UserName = "test@test.com",
                     NormalizedUserName = "ADMINISTRATOR",
                     Email = "test@test.com",
@@ -63,19 +63,19 @@ namespace Core.Context {
         }
 
         private void Section() {
-            var _context = _serviceProvider.GetRequiredService<ApplicationContext>();
-            var sections = _context.Sections.ToList();
+            //var _context = _serviceProvider.GetRequiredService<ApplicationContext>();
+            //var sections = _context.Sections.ToList();
 
-            if(sections.Count == 0) {
-                var newSections = new List<SectionEntity>() {
-                    new SectionEntity() { IsDefault = true, Sort = 1, Name = "Addresses", Description = "" },
-                    new SectionEntity() { IsDefault = true, Sort = 2, Name = "Phones", Description = "" },
-                    new SectionEntity() { IsDefault = true, Sort = 3, Name = "Emails", Description = "An email list is a collection of email addresses of business."},
-                    new SectionEntity() { IsDefault = true, Sort = 4, Name = "Social Media", Description = "" }
-                };
-                _context.Sections.AddRange(newSections);
-                _context.SaveChanges();
-            }
+            //if(sections.Count == 0) {
+            //    var newSections = new List<SectionEntity>() {
+            //        new SectionEntity() { IsDefault = true, Sort = 1, Name = "Addresses", Description = "" },
+            //        new SectionEntity() { IsDefault = true, Sort = 2, Name = "Phones", Description = "" },
+            //        new SectionEntity() { IsDefault = true, Sort = 3, Name = "Emails", Description = "An email list is a collection of email addresses of business."},
+            //        new SectionEntity() { IsDefault = true, Sort = 4, Name = "Social Media", Description = "" }
+            //    };
+            //    _context.Sections.AddRange(newSections);
+            //    _context.SaveChanges();
+            //}
         }
     }
 }

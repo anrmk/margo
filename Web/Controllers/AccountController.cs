@@ -23,8 +23,8 @@ namespace Web.Controllers.Mvc {
     public class AccountController: BaseController<AccountController> {
         private readonly IAccountBusinessService _accountBusinessService;
 
-        public AccountController(ILogger<AccountController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
-         IAccountBusinessService accountBusinessService) : base(logger, mapper, notificationHub, context) {
+        public AccountController(ILogger<AccountController> logger, IMapper mapper,
+         IAccountBusinessService accountBusinessService) : base(logger, mapper) {
             _accountBusinessService = accountBusinessService;
         }
 

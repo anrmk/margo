@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Core.Data.Entities
+
+@inject SignInManager<AppNetUserEntity> SignInManager
+@inject UserManager<AppNetUserEntity> UserManager
+
+@{
+    var userName = UserManager.GetUserName(User);
+    ViewData["UserName"] = userName;
+    var isSignIn = SignInManager.IsSignedIn(User);
+    ViewData["IsSignIn"] = isSignIn;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,28 +20,43 @@
 
     <partial name="_StylePartial" />
 </head>
-<body>
-    <div class="wrapper">
-        <partial name="_SidebarPartial" />
-        <div class="main-panel">
-            <partial name="_HeaderPartial" />
 
-            <div class="content">
-                <div class="container-fluid">
-                    <div class="row">
-                        <main role="main" class="col-md-12">
-                            @RenderBody()
-                        </main>
-                    </div>
+
+<body class="pushable">
+    <partial name="_HeaderPartial" model="userName" />
+
+    @if(isSignIn) {
+        <partial name="_SidebarPartial" />
+    }
+    <div class="pusher">
+        <div class="ui grid">
+            <div class="three wide computer only column">
+
+            </div>
+
+            <div class="sixteen wide mobile twelve wide tablet ten wide computer only column">
+                <div class="ui basic segment">
+                    <div class="ui header">@ViewData["Title"]</div>
+                </div>
+                <div class="ui basic segment">
+                    @RenderBody()
                 </div>
             </div>
-            <partial name="_FooterPartial" />
+
+            <div class="four wide tablet three wide computer only column">
+                <div style="margin-top: 30px">
+                    <partial name="_RightSidebarPartial" />
+
+                    @RenderSection("RightSidebar", required: false)
+                </div>
+            </div>
         </div>
+        @if(isSignIn) {
+            <partial name="_FooterPartial" />
+        }
     </div>
-    <partial name="_ModalPartial" />
 
     <partial name="_ScriptPartial" />
-    <partial name="_ValidationScriptsPartial" />
     @RenderSection("Scripts", required: false)
 </body>
 </html>

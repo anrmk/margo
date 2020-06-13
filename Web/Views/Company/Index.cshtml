@@ -1,31 +1,28 @@
 ﻿@{
     ViewData["Title"] = "Companies";
+    var tableId = Guid.NewGuid();
+    var getCompaniesUrl = Url.RouteUrl("GetCompanies");
 }
 
-<div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-        <div class="card-icon">
-            <i class="material-icons">storage</i>
-        </div>
-        <h4 class="card-title">Company List</h4>
-        <span class="text-muted">Organize and keep track of your companies by adding, deleting, merging, or restoring them in the system.</span>
+<div class="ui container">
+    <div class="ui breadcrumb">
+        <a class="section">Home</a>
+        <div class="divider"> / </div>
+        <a class="section">Store</a>
+        <div class="divider"> / </div>
+        <div class="active section">T-Shirt</div>
     </div>
 
-    <div class="card-body">
-        <div id="tableToolbar">
-            <a asp-controller="Company" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
-        </div>
-
-        <table id="datatable" data-toggle="table" data-url="/api/company">
+    <div class="ui raised segment">
+        <table id="@(tableId)" class="ui selectable celled unstackable table">
             <thead>
                 <tr>
-                    <th data-field="isStarred" data-formatter="isStarredFormatter"></th>
-                    <th data-field="no" data-sortable="true">Company no</th>
-                    <th data-field="name" data-sortable="true">Company</th>
-                    <th data-field="phoneNumber" data-sortable="true">Phone</th>
-                    <th data-field="address">Address</th>
-                    <th data-field="updatedDate" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Modified</th>
-                    <th data-formatter="actionFormatter" class="text-right"></th>
+                    <th>Company no</th>
+                    <th>Company</th>
+                    <th>Phone</th>
+                    <th>Address.</th>
+                    <th>Modified</th>
+                    <th>Action</th>
                 </tr>
             </thead>
         </table>
@@ -34,18 +31,32 @@
 
 @section Scripts {
     <script type="text/javascript">
-        function isStarredFormatter(value, row) {
-            return value == null || value == false ? `<i class='fa fa-star mr-1'></i>` : `<i class='fa fa-star text-warning mr-1'></i>`;
-        }
-
-        function actionFormatter(value, row) {
-            return `<a href='/company/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
-        }
-
-        $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
-                location.href = `/company/edit/${row.id}`;
-            });
+        var $filter = $('#filter');
+        var $table = $('#@tableId').DataTable({
+            
+            'ajax': {
+                'url': '@(getCompaniesUrl)',
+                'type': 'GET',
+                'data': (d) => {
+                    var data = $.extend({}, d, $filter.serializeJSON());
+                    return data;
+                },
+                'async': true,
+                'complete': function (data, status, jqXHR) {
+                    if (status === 'success') {
+                        // localStorage.setItem('FILTERDATA', this.data);
+                    } else {
+                        //localStorage.clear('FILTERDATA');
+                    }
+                }
+            },
+            'columns': [
+                { 'data': 'no', 'orderable': true},
+                { 'data':  'name'},
+                { 'data':  'phoneNumber'},
+                { 'data':  'address'},
+                { 'data': 'updatedDate' },
+                { 'data': 'title', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) }]
         });
     </script>
 }

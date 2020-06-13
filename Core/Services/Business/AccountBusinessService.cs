@@ -14,15 +14,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Core.Services.Business {
     public interface IAccountBusinessService {
-        Task<ApplicationUserEntity> CreateUser(ApplicationUserDto dto, string password);
+        Task<AppNetUserEntity> CreateUser(ApplicationUserDto dto, string password);
         Task<ApplicationUserDto> UpdateUserProfile(string id, UserProfileDto dto);
         //Task<ApplicationUserDto> GetUserProfile(string name);
         //Task<ApplicationUserDto> UpdateUserProfile(string userId, ApplicationUserProfileDto model);
         //Task<IdentityResult> UpdatePassword(string userId, string oldPassword, string newPassword);
         Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe);
-        Task SignInAsync(ApplicationUserEntity entity, bool isPersistent);
+        Task SignInAsync(AppNetUserEntity entity, bool isPersistent);
         Task SignOutAsync();
-        Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUserEntity entity);
+        Task<string> GenerateEmailConfirmationTokenAsync(AppNetUserEntity entity);
 
         Task<Pager<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
@@ -31,17 +31,17 @@ namespace Core.Services.Business {
 
     public class AccountBusinessService: BaseBusinessManager, IAccountBusinessService {
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUserEntity> _userManager;
+        private readonly UserManager<AppNetUserEntity> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<ApplicationUserEntity> _signInManager;
+        private readonly SignInManager<AppNetUserEntity> _signInManager;
 
         private readonly IUserProfileManager _userProfileManager;
         private readonly ILogManager _logManager;
 
         public AccountBusinessService(IMapper mapper,
-            UserManager<ApplicationUserEntity> userManager,
+            UserManager<AppNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<ApplicationUserEntity> signInManager,
+            SignInManager<AppNetUserEntity> signInManager,
             IUserProfileManager userProfileManager, ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
@@ -51,8 +51,8 @@ namespace Core.Services.Business {
             _logManager = logManager;
         }
 
-        public async Task<ApplicationUserEntity> CreateUser(ApplicationUserDto dto, string password) {
-            var user = new ApplicationUserEntity() {
+        public async Task<AppNetUserEntity> CreateUser(ApplicationUserDto dto, string password) {
+            var user = new AppNetUserEntity() {
                 UserName = dto.UserName,
                 NormalizedUserName = dto.NormalizedUserName,
                 Email = dto.Email,
@@ -80,12 +80,12 @@ namespace Core.Services.Business {
             return null;
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUserEntity entity) {
+        public async Task<string> GenerateEmailConfirmationTokenAsync(AppNetUserEntity entity) {
             return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
         }
 
         public async Task<Pager<LogDto>> GetLogPager(LogFilterDto filter) {
-            var sortby = filter.Sort ?? "Logged";
+            var sortby = "Logged";
 
             Expression<Func<LogEntity, bool>> where = x =>
                    (true)
@@ -93,17 +93,17 @@ namespace Core.Services.Business {
                 && (!string.IsNullOrEmpty(x.UserName))
                     ;
 
-            var tuple = await _logManager.Pager<LogEntity>(where, sortby, filter.Order.Equals("desc"), filter.Offset, filter.Limit);
+            var tuple = await _logManager.Pager<LogEntity>(where, sortby,  filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<LogDto>(new List<LogDto>(), 0, filter.Offset, filter.Limit);
+                return new Pager<LogDto>(new List<LogDto>(), 0, filter.Start, filter.Length);
 
-            var page = (filter.Offset + filter.Limit) / filter.Limit;
+            var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<LogDto>>(list);
-            return new Pager<LogDto>(result, count, page, filter.Limit);
+            return new Pager<LogDto>(result, count, page, filter.Start);
         }
 
         public async Task<LogDto> GetLog(long id) {
@@ -115,7 +115,7 @@ namespace Core.Services.Business {
             return await _signInManager.PasswordSignInAsync(userName, password, rememberMe, false);
         }
 
-        public async Task SignInAsync(ApplicationUserEntity entity, bool isPersistent) {
+        public async Task SignInAsync(AppNetUserEntity entity, bool isPersistent) {
             await _signInManager.SignInAsync(entity, isPersistent);
         }
 
@@ -125,7 +125,7 @@ namespace Core.Services.Business {
 
         public async Task<ApplicationUserDto> UpdateUserProfile(string id, UserProfileDto dto) {
             try {
-                var item1 = await _userProfileManager.Create(new ApplicationUserProfileEntity() {
+                var item1 = await _userProfileManager.Create(new AppNetUserProfileEntity() {
                     Name = dto.Name,
                     SurName = dto.SurName,
                     MiddleName = dto.MiddleName

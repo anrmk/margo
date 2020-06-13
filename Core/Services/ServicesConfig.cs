@@ -11,10 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Core.Services {
     public class ServicesConfig {
         public static void Configuration(IServiceCollection services) {
-            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
+            services.AddSingleton<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
 
             ///Context
             services.AddTransient<IApplicationContext, ApplicationContext>();
@@ -36,15 +36,11 @@ namespace Core.Services {
             services.AddTransient<IVendorAddressManager, VendorAddressManager>();
             services.AddTransient<IVendorMediaManager, VendorMediaManager>();
 
-            //services.AddTransient<IVaccountManager, VaccountManager>();
-            //services.AddTransient<IVaccountSecurityManager, VaccountSecurityManager>();
-            //services.AddTransient<IVaccountSecurityQuestionManager, VaccountSecurityQuestionManager>();
-
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();
 
-            ///Business
-            services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
+            /////Business
+            //services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
             services.AddTransient<ICrudBusinessManager, CrudBusinessManager>();
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
         }

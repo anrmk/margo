@@ -22,8 +22,8 @@ namespace Web.Controllers.Mvc {
     public class CompanyController: BaseController<CompanyController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
-            ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
+        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, 
+            ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
 
@@ -318,10 +318,10 @@ namespace Web.Controllers.Api {
             _businessManager = businessManager;
         }
 
-        [HttpGet]
+        [HttpGet("GetCompanies", Name = "GetCompanies")]
         public async Task<Pager<CompanyListViewModel>> GetCompanies(PagerFilterViewModel model) {
             var result = await _businessManager.GetCompanyPage(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+            var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 

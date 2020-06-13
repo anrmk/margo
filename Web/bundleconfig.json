@@ -1,0 +1,53 @@
+﻿[
+  //  CSS STYLE
+  {
+    "outputFileName": "wwwroot/css/vendor.min.css",
+    "inputFiles": [
+      "wwwroot/lib/semantic/semantic.min.css",
+      "wwwroot/lib/jquery-datatables-se/css/dataTables.semanticui.min.css"
+    ],
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  //  JAVA SCRIPT
+  {
+    "outputFileName": "wwwroot/js/vendor.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/jquery.min.js",
+      "wwwroot/lib/jquery-loadjson/dist/jquery.loadJSON.min.js",
+      "wwwroot/lib/jquery-serializeJSON/jquery.serializejson.min.js",
+      "wwwroot/lib/jquery-validation/jquery.validate.min.js",
+      "wwwroot/lib/jquery-validation/additional-methods.min.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+      "wwwroot/lib/jquery-datatables/js/jquery.dataTables.min.js",
+      "wwwroot/lib/jquery-datatables-se/js/dataTables.semanticui.min.js",
+
+      "wwwroot/lib/moment/moment.min.js",
+      "wwwroot/lib/semantic/semantic.min.js",
+      "wwwroot/lib/aspnet-signalr/signalr.min.js"
+    ],
+    "minify": {
+      "enabled": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/jquery-extensions.js",
+     // "wwwroot/js/notification-hub.js",
+      "wwwroot/js/api-controller.js",
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true
+    },
+    "sourceMap": false
+  }
+]

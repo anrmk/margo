@@ -20,7 +20,15 @@ $.fn.ajaxSubmit = function (opt, callback) {
     });
 }
 
-$.fn.close = function () {
-    $(this).closest('.card').fadeOut();
+
+$.fn.formatCurrency = function (value) {
+    return "$" + value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+};
+
+$.fn.formatLink = function (value) {
+    return value == null ? '' : `<a href='${value}'target="_blank"><i class="fa fa-external-link-alt mr-1"></i>${value}</a>`;
 }
 
+$.fn.renderDatatableAction = function (data, type, row, target) {
+    return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}'> <label></label></div>`;
+}

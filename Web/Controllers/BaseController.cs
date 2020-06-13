@@ -14,14 +14,14 @@ using Microsoft.Extensions.Logging;
 using Web.Hubs;
 
 namespace Web.Controllers {
-    [Authorize]
+    //[Authorize]
     public class BaseController<IController>: Controller {
         protected readonly IController _controller;
         protected readonly ILogger<IController> _logger;
         protected readonly IMapper _mapper;
-        protected readonly IHubContext<NotificationHub> _notificationHub;
+       // protected readonly IHubContext<NotificationHub> _notificationHub;
 
-        protected readonly ApplicationContext _context;
+        //protected readonly ApplicationContext _context;
 
         public string CurrentLanguage => "en";
 
@@ -30,8 +30,10 @@ namespace Web.Controllers {
         public string CurrentUser => User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
         public async Task ClientNotify(string msg) {
+            /*
             if(_notificationHub != null)
                 await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
+            */
         }
 
 
@@ -67,17 +69,17 @@ namespace Web.Controllers {
 
 
 
-        public BaseController(ILogger<IController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) {
-            _logger = logger;
-            _mapper = mapper;
-            _context = context;
-            _notificationHub = notificationHub;
-        }
+        //public BaseController(ILogger<IController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) {
+        //    _logger = logger;
+        //    _mapper = mapper;
+        //    _context = context;
+        //   // _notificationHub = notificationHub;
+        //}
 
-        public BaseController(ILogger<IController> logger, IMapper mapper, ApplicationContext context) {
+        public BaseController(ILogger<IController> logger, IMapper mapper) {
             _logger = logger;
             _mapper = mapper;
-            _context = context;
+           // _context = context;
         }
 
         public override ViewResult View(string view, object model) {
@@ -95,4 +97,15 @@ namespace Web.Controllers {
             return base.View();
         }
     }
+
+    //[ApiController]
+    //public class BaseApiController<IController>: ControllerBase {
+    //    protected readonly ILogger<IController> _logger;
+    //    protected readonly IMapper _mapper;
+
+    //    public BaseApiController(ILogger<IController> logger, IMapper mapper) {
+    //        _logger = logger;
+    //        _mapper = mapper;
+    //    }
+    //}
 }

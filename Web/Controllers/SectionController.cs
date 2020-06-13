@@ -20,8 +20,8 @@ namespace Web.Controllers.Mvc {
     public class SectionController: BaseController<SectionController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public SectionController(ILogger<SectionController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context,
-           ICrudBusinessManager crudBusinessManager) : base(logger, mapper, notificationHub, context) {
+        public SectionController(ILogger<SectionController> logger, IMapper mapper, 
+           ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
 
@@ -113,7 +113,7 @@ namespace Web.Controllers.Api {
         [HttpGet]
         public async Task<Pager<SectionListViewModel>> GetSections(PagerFilterViewModel model) {
             var result = await _businessManager.GetSectionPage(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+            var pager = new Pager<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
     }
