@@ -12,6 +12,7 @@ namespace Core.Services.Managers {
     public interface ICompanyManager: IEntityManager<CompanyEntity> {
         Task<CompanyEntity> FindInclude(long id);
         Task<List<CompanyEntity>> FindAll();
+        Task<List<CompanyEntity>> FindAll(long[] ids);
     }
 
     public class CompanyManager: AsyncEntityManager<CompanyEntity>, ICompanyManager {
@@ -27,6 +28,13 @@ namespace Core.Services.Managers {
         public async Task<List<CompanyEntity>> FindAll() {
             return await DbSet
                 .Include(x => x.Address)
+                .ToListAsync();
+        }
+
+        public async Task<List<CompanyEntity>> FindAll(long[] ids) {
+            return await DbSet
+                .Include(x => x.Address)
+                .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }
     }

@@ -20,6 +20,7 @@ namespace Core.Services.Business {
         Task<CompanyDto> CreateCompany(CompanyGeneralDto dto);
         Task<CompanyDto> UpdateCompany(long id, CompanyGeneralDto dto);
         Task<bool> DeleteCompany(long id);
+        Task<bool> DeleteCompany(long[] ids);
         #endregion
 
         #region COMPANY ADDRESS
@@ -206,6 +207,12 @@ namespace Core.Services.Business {
             entity = await _companyManager.Update(newEntity);
 
             return _mapper.Map<CompanyDto>(entity);
+        }
+
+        public async Task<bool> DeleteCompany(long[] ids) {
+            var companies = await _companyManager.FindAll(ids);
+            int result = await _companyManager.Delete(companies);
+            return result != 0;
         }
 
         public async Task<bool> DeleteCompany(long id) {

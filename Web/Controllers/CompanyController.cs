@@ -22,7 +22,7 @@ namespace Web.Controllers.Mvc {
     public class CompanyController: BaseController<CompanyController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, 
+        public CompanyController(ILogger<CompanyController> logger, IMapper mapper,
             ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
@@ -323,6 +323,15 @@ namespace Web.Controllers.Api {
             var result = await _businessManager.GetCompanyPage(_mapper.Map<PagerFilter>(model));
             var pager = new Pager<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
+        }
+
+        [HttpPost("DeleteCompanies", Name = "DeleteCompanies")]
+        public async Task<ActionResult> DeleteCompanies(long[] ids) {
+            if(ids.Length > 0) {
+                var result = await _businessManager.DeleteInvoice(ids);
+                return Ok(new { Status = true, Data = ids });
+            }
+            return Ok(new { Status = false });
         }
 
         [HttpGet]

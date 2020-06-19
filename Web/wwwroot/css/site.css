@@ -2,128 +2,425 @@
   background-color: #DADADA;
 }
 
-.menu {
-  margin: 0 !important;
+#mainbody .pusher > .full.height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 
-.hidden.menu {
-  display: none;
+#mainbody .full.height > .toc {
+  position: fixed;
+  z-index: 1;
+  background-color: #1b1c1d;
+  width: 250px;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  height: calc(100vh);
 }
 
-.masthead.segment {
-  min-height: 700px;
-  padding: 1em 0em;
+#mainbody .full.height > .toc .ui.menu {
+  border-radius: 0;
+  border-width: 0 1px 0 0;
+  box-shadow: none;
+  margin: 0;
+  width: inherit;
+  overflow: hidden;
+  will-change: transform;
+  max-height: 100vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.masthead .logo.item img {
-  margin-right: 1em;
-}
-
-.ui.menu .right .ui.button {
-  margin-left: 0.5em;
-}
-
-.masthead h1.ui.header {
-  margin-top: 3em;
-  margin-bottom: 0em;
-  font-size: 4em;
-  font-weight: normal;
-}
-
-.masthead h2 {
-  font-size: 1.7em;
-  font-weight: normal;
-}
-
-.ui.vertical.stripe {
-  padding: 8em 0em;
-}
-
-  .ui.vertical.stripe h3 {
-    font-size: 2em;
-  }
-
-  .ui.vertical.stripe .button + h3,
-  .ui.vertical.stripe p + h3 {
-    margin-top: 3em;
-  }
-
-  .ui.vertical.stripe .floated.image {
-    clear: both;
-  }
-
-  .ui.vertical.stripe p {
-    font-size: 1.33em;
-  }
-
-  .ui.vertical.stripe .horizontal.divider {
-    margin: 3em 0em;
-  }
-
-.quote.stripe.segment {
-  padding: 0em;
-}
-
-  .quote.stripe.segment .grid .column {
-    padding-top: 5em;
-    padding-bottom: 5em;
-  }
-
-.footer.segment {
-  padding: 5em 0em;
-}
-
-.secondary.pointing.menu .toc.item {
-  /*  display: none;*/
-}
-
-.article {
+#mainbody .article {
   -webkit-box-flex: 1;
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-width: 0px;
-  margin-left: 260px;
+  margin-left: 250px;
+}
+
+/*******************************
+      Definition Container
+*******************************/
+#mainbody > .pusher > .footer {
+  clear: both;
+}
+
+#mainbody .fixed.menu > .container,
+#mainbody .main.container,
+#mainbody .masthead > .container,
+#mainbody .footer > .container {
+  position: relative;
+}
+
+#mainbody .main.container {
+  padding: 2em 0em 7em;
+}
+
+#mainbody .wide.main.container {
+  width: 80%;
+  margin: 0 auto;
+  max-width: 1140px;
+}
+
+#mainbody .main.container > .right.rail .sticky,
+#mainbody .main.container > .tab > .mainbodys > .right.rail .sticky,
+#mainbody .main.container > .tab > .right.rail .sticky {
+  padding-bottom: 2em;
+}
+
+#mainbody .following.menu .menu .active.item {
+  font-weight: bold;
+}
+
+/*--------------
+     Sidebar
+---------------*/
+#mainbody .ui.sidebar.menu .item {
+  will-change: transform;
+}
+
+#mainbody .sidebar.menu .logo.image,
+#mainbody .ui.menu .logo.image {
+  width: 35px;
+  margin-right: 1em;
+}
+
+#mainbody #toc > * {
+  will-change: transform;
+}
+
+#mainbody #toc > :last-child {
+  padding-bottom: 2em;
+}
+
+#mainbody #toc > .ui.menu {
+  max-height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hidden Items */
+#mainbody #toc .hide.item {
+  display: none;
+}
+
+/* Sidebar Header */
+#mainbody #toc .inverted.header {
+  font-size: 1em;
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5em;
+}
+
+#mainbody #toc a.inverted.header.active,
+#mainbody #toc a.inverted.header:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+#mainbody #toc .menu .active.item {
+  color: #FFF;
+}
+
+/*******************************
+          Responsive
+*******************************/
+
+/* Defaults */
+#mainbody .masthead > .container,
+#mainbody .main.container,
+#mainbody .fixed.menu > .container {
+  margin-left: 3em !important;
+  margin-right: 3em !important;
+  width: auto !important;
+  max-width: 960px !important;
+}
+
+#mainbody .masthead > .container {
+  margin-right: 387px !important;
+}
+
+#mainbody .main.container {
+  margin-right: 387px !important;
+}
+
+/* Rail Default */
+#mainbody .main.container > .right.rail,
+#mainbody .main.container > .tab > .mainbodys > .right.rail,
+#mainbody .main.container > .tab > .right.rail {
+  margin-left: 3em;
+  padding-top: 2em;
+  width: 319px;
+}
+
+
+/* Remove Overview from pages with Examples */
+@media only screen and (max-width: 1500px) {
+  #mainbody .fixed.column {
+    right: auto;
+    left: 100%;
+    margin-left: 4.5em;
+    width: 300px;
+  }
+
+  #mainbody .fixed.column + .mainbodys {
+    margin-right: 0px;
+  }
+
+  #mainbody .fixed.column + .mainbodys .right.rail {
+    display: none;
+  }
+}
+
+
+/* Table Ad */
+@media only screen and (max-width: 1272px) {
+  #mainbody .masthead > .container:first-child {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #mainbody .masthead > .container {
+    margin-right: 2em !important;
+    max-width: none !important;
+  }
+
+  #mainbody .bsa-cpc ._default_ {
+    margin-right: 0px;
+  }
 }
 
 /* Squish Content (Just For Small Computers) */
 @media only screen and (max-width: 1272px) {
-  .article {
+  /* Resize TOC  */
+  #mainbody .full.height > .toc {
+    width: 200px;
+  }
+
+  #mainbody .article {
     margin-left: 200px;
   }
+
+  #mainbody .masthead > .container,
+  #mainbody .main.container,
+  #mainbody .fixed.menu > .container {
+    margin-left: 2rem !important;
+    margin-right: 2rem !important;
+  }
+  /* Resize Main Container */
+  #mainbody .main.container {
+    margin-right: 318px !important;
+  }
+
+  .native-link {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .native-ad {
+    right: 2rem;
+  }
+
+  /* Resize Rail */
+  #mainbody .main.container > .right.rail,
+  #mainbody .main.container > .tab > .mainbodys > .right.rail,
+  #mainbody .main.container > .tab > .right.rail {
+    padding-left: 1.5em;
+    width: 260px;
+  }
+
+  #mainbody .fixed.column {
+    width: 250px;
+    margin-left: 2.5em;
+  }
 }
 
+/* Hide Top Bar */
+@media only screen and (min-width: 1145px) {
+  #mainbody .fixed.main.menu {
+    display: none;
+  }
+}
+
+/* Remove Fixed Sidebar /  Show Top Bar */
 @media only screen and (max-width: 1144px) {
-  .article {
-    margin-left: 0px;
-  }
-}
-
-@media only screen and (max-width: 700px) {
-  .ui.fixed.menu {
-    display: none !important;
-  }
-
-  .secondary.pointing.menu .item,
-  .secondary.pointing.menu .menu {
+  /* Hide Fixed Sidebar */
+  #mainbody .full.height > .toc {
     display: none;
   }
 
-  .secondary.pointing.menu .toc.item {
-    display: block;
+  #mainbody .full.height > .article {
+    margin-left: 0px;
   }
 
-  .masthead.segment {
-    min-height: 350px;
+  /* Hide Fixed Launch Button */
+  #mainbody .fixed.launch.button {
+    display: none !important;
   }
 
-  .masthead h1.ui.header {
-    font-size: 2em;
-    margin-top: 1.5em;
+  /* Additional Padding for Fixed Menu */
+  #mainbody .masthead.segment {
+    padding-top: 5em;
   }
 
-  .masthead h2 {
-    margin-top: 0.5em;
-    font-size: 1.5em;
+  /* Hide GitHub Stars in Intro */
+  #mainbody .masthead iframe {
+    display: none;
   }
+
+  /* Less Left Padding */
+  #mainbody .masthead > .container,
+  #mainbody .main.container,
+  #mainbody .fixed.menu > .container {
+    margin-left: 2em !important;
+  }
+
+  /* Padding Above Rail */
+  #mainbody .main.container > .right.rail .sticky,
+  #mainbody .main.container > .tab > .mainbodys > .right.rail .sticky,
+  #mainbody .main.container > .tab > .right.rail .sticky {
+    padding-top: 2.5em;
+  }
+
+  /* 100% Menu Width */
+  #mainbody .fixed.menu > .container {
+    margin-left: 0em !important;
+    margin-right: 0em !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Remove Bug Reports */
+  #mainbody .main.menu .bug.item {
+    display: none;
+  }
+
+  /* Hide Music *]/
+  #mainbody .main.menu .music.item {
+    display: none;
+  }
+
+  /* Space For Header Over Examples */
+  #mainbody .fixed.column .sticky {
+    padding-top: 2em;
+  }
+}
+
+/* Remove Rail */
+@media only screen and (max-width: 992px) {
+  /* Remove Rail */
+  #mainbody .main.container > .right.rail,
+  #mainbody .main.container > .tab > .mainbodys > .right.rail,
+  #mainbody .main.container > .tab > .right.rail {
+    display: none;
+  }
+
+  /* Fluid Containers */
+  #mainbody .masthead > .container,
+  #mainbody .main.container,
+  #mainbody .fixed.menu > .container {
+    margin-left: 1em !important;
+    margin-right: 1em !important;
+    max-width: none !important;
+  }
+
+  /* Still 100% Fixed Menu */
+  #mainbody .fixed.menu > .container {
+    margin-left: 0em !important;
+    margin-right: 0em !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+
+@media only screen and (max-width: 820px) {
+
+
+}
+
+@media only screen and (max-width: 768px) {
+  #mainbody .masthead > .container:first-child {
+    flex-direction: column;
+  }
+
+  /* Hide Some Fixed Menu Content (Pagination, Search) */
+  #mainbody .fixed.menu > .container > .section.item {
+    display: none;
+  }
+
+  #mainbody .masthead.segment {
+    padding-bottom: 0em;
+  }
+
+  #mainbody.button-page .mainbody > .button,
+  #mainbody.button-page .mainbody .html > .button {
+    margin-bottom: 8px;
+  }
+
+  #mainbody .stackable.grid .ui.vertical.divider {
+    display: none;
+  }
+
+  /* Add Sticky Footers */
+  body.pushable > .pusher {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+
+  body.pushable > .pusher > .full.height {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+  }
+
+  /* Ad Label */
+  #mainbody .bsa-cpc ._default_ {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+  /* Let Buttons Vertically Stack */
+  #mainbody .masthead .button {
+    margin-bottom: 0.75em;
+  }
+
+  #mainbody .masthead .main.menu {
+    display: none;
+  }
+
+  #mainbody .masthead .main.menu + .main.menu {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  /* No Download Button */
+  #mainbody .masthead .download.button {
+    display: none;
+  }
+
+  /* Hide Sitemap */
+  #mainbody .pusher > .footer .grid .three.column {
+    display: none !important;
+  }
+}
+
+/* Small Phone */
+@media only screen and (max-width: 500px) {
+
 }

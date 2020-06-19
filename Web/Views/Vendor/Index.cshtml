@@ -23,13 +23,12 @@
 </div>
 
 <div class="ui raised segment">
-    <div id="toolbar" class="ui ui secondary menu">
+    <div id="toolbar" class="ui secondary menu">
         <button class="orange ui button" data-action="create"><i class="plus icon"></i> Create</button>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
     </div>
-    <div class="ui divider"></div>
 
     <table id="@(tableId)" class="ui selectable celled unstackable orange table">
         <thead>
@@ -96,13 +95,6 @@
             var data = row.data();
 
             location.href = `/vendor/edit/${data.id}`;
-          //if ($(this).hasClass('active')) {
-          //    $(this).removeClass('active');
-          //}
-          //else {
-          //    $table.find('tr.active').removeClass('active');
-          //    $(this).addClass('active');
-          //}
         });
 
         $table.on('change', 'input', function () {

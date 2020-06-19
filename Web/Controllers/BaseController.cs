@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Web.Hubs;
 
 namespace Web.Controllers {
-    //[Authorize]
+    [Authorize]
     public class BaseController<IController>: Controller {
         protected readonly IController _controller;
         protected readonly ILogger<IController> _logger;

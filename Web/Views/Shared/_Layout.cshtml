@@ -22,34 +22,34 @@
 </head>
 
 
-<body class="pushable">
-    <partial name="_HeaderPartial" model="userName" />
+<body id="mainbody" class="menu pushable">
 
-    @if(isSignIn) {
-        <partial name="_SidebarPartial" />
-    }
     <div class="pusher">
-        <div class="ui grid">
-            <div class="three wide computer only column">
-
+        <div class="full height">
+            <div class="toc">
+                <partial name="_SidebarPartial" />
             </div>
 
-            <div class="sixteen wide mobile twelve wide tablet ten wide computer only column">
-                <div class="ui basic segment">
-                    <div class="ui header">@ViewData["Title"]</div>
-                </div>
-                <div class="ui basic segment">
+            <div class="article">
+                <partial name="_HeaderPartial" model="userName" />
+                
+                <div class="main ui container">
+                    <div class="ui dividing right rail">
+                        @RenderSection("RightSidebar", required: false)
+                    </div>
                     @RenderBody()
                 </div>
             </div>
 
-            <div class="four wide tablet three wide computer only column">
-                <div style="margin-top: 30px">
-                    <partial name="_RightSidebarPartial" />
 
-                    @RenderSection("RightSidebar", required: false)
-                </div>
-            </div>
+
+            @*<div class="four wide tablet three wide computer only column">
+                    <div style="margin-top: 30px">
+                        <partial name="_RightSidebarPartial" />
+
+                        @RenderSection("RightSidebar", required: false)
+                    </div>
+                </div>*@
         </div>
         @if(isSignIn) {
             <partial name="_FooterPartial" />

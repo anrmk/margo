@@ -2,61 +2,102 @@
     ViewData["Title"] = "Companies";
     var tableId = Guid.NewGuid();
     var getCompaniesUrl = Url.RouteUrl("GetCompanies");
+    var deleteCompaniesUrl = Url.RouteUrl("DeleteCompanies");
 }
 
-<div class="ui container">
-    <div class="ui breadcrumb">
-        <a class="section">Home</a>
-        <div class="divider"> / </div>
-        <a class="section">Store</a>
-        <div class="divider"> / </div>
-        <div class="active section">T-Shirt</div>
+@section RightSidebar {
+    <div class="ui sticky" style="width: 283px !important; height: 133px !important; left: 1330px;">
+        <h4 class="ui header">Sidebar</h4>
+
+        <div class="ui vertical following fluid accordion text menu">
+            <div class="item active">
+                <a class="title active">
+                    <i class="dropdown icon"></i> <b>Examples</b>
+                </a>
+                <div class="content menu active">
+                    <a class="item" href="#transitions">Transitions</a>
+                    <a class="item active" href="#displaying-multiple">Displaying Multiple</a>
+                    <a class="item" href="#using-a-custom-context">Using a custom context</a>
+                    <a class="item" href="#triggering-showhide-with-other-content">Triggering show/hide with other content</a>
+                    <a class="item" href="#triggering-custom-behavior-with-other-content">Triggering custom behavior with other content</a>
+                    <a class="item" href="#starting-visible">Starting Visible</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-controller="Company" asp-action="Create" class="ui button" data-action="create"><i class="fa fa-plus mr-1"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
     </div>
 
-    <div class="ui raised segment">
-        <table id="@(tableId)" class="ui selectable celled unstackable table">
-            <thead>
-                <tr>
-                    <th>Company no</th>
-                    <th>Company</th>
-                    <th>Phone</th>
-                    <th>Address.</th>
-                    <th>Modified</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table">
+        <thead>
+            <tr>
+                <th class="collapsing"></th>
+                <th>Company no</th>
+                <th>Company</th>
+                <th>Phone</th>
+                <th>Address.</th>
+                <th class="right aligned collapsing">Modified</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Company no</th>
+                <th>Company</th>
+                <th>Phone</th>
+                <th>Address.</th>
+                <th>Modified</th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
+    $(document).ready(function () {
+        window.selected = [];
         var $filter = $('#filter');
-        var $table = $('#@tableId').DataTable({
-            
+        var $table = $('#@tableId');
+
+          var $datatable = $table.DataTable({
             'ajax': {
                 'url': '@(getCompaniesUrl)',
-                'type': 'GET',
                 'data': (d) => {
                     var data = $.extend({}, d, $filter.serializeJSON());
                     return data;
                 },
-                'async': true,
-                'complete': function (data, status, jqXHR) {
-                    if (status === 'success') {
-                        // localStorage.setItem('FILTERDATA', this.data);
-                    } else {
-                        //localStorage.clear('FILTERDATA');
-                    }
-                }
+                'async': true
             },
             'columns': [
-                { 'data': 'no', 'orderable': true},
-                { 'data':  'name'},
-                { 'data':  'phoneNumber'},
-                { 'data':  'address'},
-                { 'data': 'updatedDate' },
-                { 'data': 'title', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) }]
+                { 'data': 'id', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) },
+                { 'data': 'no', 'orderable': true },
+                { 'data': 'name' },
+                { 'data': 'phoneNumber' },
+                { 'data': 'address' },
+                { 'data': 'updatedDate' }
+            ],
+            'rowCallback': function (row, data) {
+                if ($.inArray(data.id, window.selected) !== -1) {
+                    $(row).addClass('active');
+                }
+            },
         });
+
+        $table.on('change', 'input', function () {
+            var inputs = $table.find('input:checked')
+            if (inputs.length > 0) {
+                $('button[data-action=delete]').enabled();
+            } else {
+                $('button[data-action=delete]').disabled();
+            }
+        });
+    });
     </script>
 }

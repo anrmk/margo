@@ -12,10 +12,10 @@
         });
 
     // create sidebar and attach to menu open
-    $('.ui.sidebar')
-        .sidebar('setting', 'dimPage', false)
-        .sidebar('setting', 'transition', 'overlay');
-    $('.ui.sidebar').sidebar('attach events', '.toc.item');
+    //$('.ui.sidebar')
+    //    .sidebar('setting', 'dimPage', false)
+    //    .sidebar('setting', 'transition', 'overlay');
+    // $('.ui.sidebar').sidebar('attach events', '.toc.item');
 
 
 }).ajaxSend((event, xhr, options) => {
@@ -39,7 +39,11 @@ $.extend(true, $.fn.dataTable.defaults, {
     'searchDelay': 1800,
     'autoWidth': false,
     'mark': true,
-    'fnInitComplete': function (e, settings, json) {
-        $(e.oInit.toolbar).appendTo($('div.dt-toolbar'));
+    'language': {
+        'search': '_INPUT_',
+        'searchPlaceholder': 'Search...'
+    },
+    'fnInitComplete': function (settings, json) {
+        $($.fn.dataTable.defaults.toolbar).appendTo($('div.dt-toolbar'));
     }
 });
