@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class PaymentController: BaseController<PaymentController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public PaymentController(ILogger<PaymentController> logger, IMapper mapper, 
+        public PaymentController(ILogger<PaymentController> logger, IMapper mapper,
             ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }

@@ -1,12 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Companies";
     var tableId = Guid.NewGuid();
-    var getCompaniesUrl = Url.RouteUrl("GetCompanies");
-    var deleteCompaniesUrl = Url.RouteUrl("DeleteCompanies");
+
+    var listUrl = Url.RouteUrl("GetCompanies");
+    var deleteUrl = Url.RouteUrl("DeleteCompanies");
 }
 
 @section RightSidebar {
-    <div class="ui sticky" style="width: 283px !important; height: 133px !important; left: 1330px;">
+    <div class="ui sticky">
         <h4 class="ui header">Sidebar</h4>
 
         <div class="ui vertical following fluid accordion text menu">
@@ -63,12 +64,13 @@
     <script type="text/javascript">
     $(document).ready(function () {
         window.selected = [];
+
         var $filter = $('#filter');
         var $table = $('#@tableId');
 
           var $datatable = $table.DataTable({
             'ajax': {
-                'url': '@(getCompaniesUrl)',
+                'url': '@(listUrl)',
                 'data': (d) => {
                     var data = $.extend({}, d, $filter.serializeJSON());
                     return data;
@@ -81,7 +83,7 @@
                 { 'data': 'name' },
                 { 'data': 'phoneNumber' },
                 { 'data': 'address' },
-                { 'data': 'updatedDate' }
+                { 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row, this) }
             ],
             'rowCallback': function (row, data) {
                 if ($.inArray(data.id, window.selected) !== -1) {

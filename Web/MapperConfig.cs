@@ -72,6 +72,10 @@ namespace Web {
 
             CreateMap<VendorGeneralViewModel, VendorGeneralDto>().ReverseMap();
             CreateMap<VendorAddressViewModel, VendorAddressDto>().ReverseMap();
+            CreateMap<VendorSectionViewModel, VendorSectionDto>()
+                .ForMember(d => d.Fields, o => o.Ignore())
+                .ReverseMap();
+            CreateMap<VendorSectionFieldViewModel, VendorSectionFieldDto>().ReverseMap();
 
             CreateMap<VendorListViewModel, VendorDto>()
                 .ReverseMap()

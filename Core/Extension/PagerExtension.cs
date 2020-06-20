@@ -8,7 +8,7 @@ namespace Core.Extension {
     public class Pager<T> {
         public int RecordsTotal { get; private set; }
         public int RecordsFiltered => RecordsTotal;
-        
+
         public int StartPages { get; private set; }
         public int PageSize { get; private set; }
         public int TotalPages { get; private set; }
@@ -45,7 +45,7 @@ namespace Core.Extension {
 
     public class PagerFilter {
         public string Search { get; set; }
-       // public int Skip { get; set; }
+        // public int Skip { get; set; }
         public int Length { get; set; }
         public int Start { get; set; }
         public List<PagerSortQuery> Sort { get; set; }

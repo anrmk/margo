@@ -4,23 +4,20 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class SectionController: BaseController<SectionController> {
         private readonly ICrudBusinessManager _crudBusinessManager;
 
-        public SectionController(ILogger<SectionController> logger, IMapper mapper, 
+        public SectionController(ILogger<SectionController> logger, IMapper mapper,
            ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
@@ -110,7 +107,7 @@ namespace Web.Controllers.Api {
             _businessManager = businessManager;
         }
 
-        [HttpGet]
+        [HttpGet("GetSections", Name = "GetSections")]
         public async Task<Pager<SectionListViewModel>> GetSections(PagerFilterViewModel model) {
             var result = await _businessManager.GetSectionPage(_mapper.Map<PagerFilter>(model));
             var pager = new Pager<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);

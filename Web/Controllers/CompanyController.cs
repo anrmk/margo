@@ -5,17 +5,14 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -287,7 +284,7 @@ namespace Web.Controllers.Mvc {
                     return NotFound();
                 }
 
-                var companySection = await _crudBusinessManager.GetCompanySection(sectionField.CompanySectionId);
+                var companySection = await _crudBusinessManager.GetCompanySection(sectionField.SectionId);
                 if(companySection == null) {
                     return NotFound();
                 }

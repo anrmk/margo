@@ -6,6 +6,7 @@ using Core.Services.Managers;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Services {
@@ -35,6 +36,8 @@ namespace Core.Services {
             services.AddTransient<IVendorManager, VendorManager>();
             services.AddTransient<IVendorAddressManager, VendorAddressManager>();
             services.AddTransient<IVendorMediaManager, VendorMediaManager>();
+            services.AddTransient<IVendorSectionManager, VendorSectionManager>();
+            services.AddTransient<IVendorSectionFieldManager, VendorSectionFieldManager>();
 
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();
@@ -42,6 +45,7 @@ namespace Core.Services {
             /////Business
             //services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
             services.AddTransient<ICrudBusinessManager, CrudBusinessManager>();
+            services.AddTransient<IVendorBusinessManager, VendorBusinessManager>();
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
         }
     }

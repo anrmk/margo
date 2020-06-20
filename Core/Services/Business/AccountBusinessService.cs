@@ -93,7 +93,7 @@ namespace Core.Services.Business {
                 && (!string.IsNullOrEmpty(x.UserName))
                     ;
 
-            var tuple = await _logManager.Pager<LogEntity>(where, sortby,  filter.Start, filter.Length);
+            var tuple = await _logManager.Pager<LogEntity>(where, sortby, filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 

@@ -6,7 +6,7 @@ namespace Core.Data.Entities {
     [Table(name: "CompanySectionFields")]
     public class CompanySectionFieldEntity: EntityBase<long> {
         [ForeignKey("Section")]
-        [Column("CompanySection_Id")]
+        [Column("Section_Id")]
         public long? CompanySectionId { get; set; }
         public virtual CompanySectionEntity Section { get; set; }
 

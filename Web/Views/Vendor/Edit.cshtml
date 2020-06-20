@@ -2,16 +2,31 @@
 
 @{
     ViewData["Title"] = "Edit Vendor";
-    ViewData["SubTitle"] = "Please provide all required details to edit vendors info";
+    var sections = (List<Web.ViewModels.VendorSectionViewModel>)ViewBag.Sections;
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Vendors</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.General.Name</li>
-    </ol>
-</nav>
+@section RightSidebar {
+    <div class="ui sticky">
+        <h4 class="ui header">Sections</h4>
+        <div class="ui vertical following fluid accordion text menu">
+            @foreach(var section in sections) {
+                <a class="item" href="#@(section.SectionCode)">@(section.SectionName)</a>
+            }
 
+            @*<a class="item active" href="#displaying-multiple">Displaying Multiple</a>
+                <a class="item" href="#starting-visible">Add</a>*@
+        </div>
+    </div>
+}
+
+<div role="toolbar" class="ui secondary menu">
+    <div class="right menu">
+        <form method="POST" asp-action="Delete">
+            <input asp-for="Id" type="hidden" />
+            <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
+        </form>
+    </div>
+</div>
 <div class="ui raised segment">
     <form class="ui form" id="submitGeneralForm" method="POST" asp-action="Edit">
         <h4 class="ui dividing header">General</h4>
@@ -33,23 +48,6 @@
             <textarea asp-for="General.Description" name="Description" rows="3"></textarea>
             <span asp-validation-for="General.Description"></span>
         </div>
-        <div class="three fields">
-            <div class="field">
-                <label asp-for="General.PhoneNumber"></label>
-                <input asp-for="General.PhoneNumber" type="text" name="PhoneNumber" >
-                <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="field">
-                <label asp-for="General.Email"></label>
-                <input asp-for="General.Email" type="text" name="Email" >
-                <span asp-validation-for="General.Email" class="text-danger"></span>
-            </div>
-            <div class="field">
-                <label asp-for="General.Website"></label>
-                <input asp-for="General.Website" type="text" name="Website" >
-                <span asp-validation-for="General.Website" class="text-danger"></span>
-            </div>
-        </div>
         <button type="submit" class="ui submit button">Save</button>
     </form>
 </div>
@@ -62,140 +60,52 @@
         <div class="two fields">
             <div class="field">
                 <label asp-for="Address.Address"></label>
-                <input asp-for="Address.Address" type="text" name="Address" >
+                <input asp-for="Address.Address" type="text" name="Address">
                 <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
             </div>
             <div class="field">
                 <label asp-for="Address.City"></label>
-                <input asp-for="Address.City" type="text" name="City" >
+                <input asp-for="Address.City" type="text" name="City">
                 <span asp-validation-for="Address.City" class="form-text text-danger"></span>
             </div>
         </div>
         <div class="form-row mb-3">
             <div class="col">
                 <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                <input asp-for="Address.Address2" type="text" name="Address2"  placeholder="Appartment or suite">
+                <input asp-for="Address.Address2" type="text" name="Address2" placeholder="Appartment or suite">
                 <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
             </div>
         </div>
         <div class="form-row mb-3">
             <div class="col">
                 <label asp-for="Address.Country"></label>
-                <input asp-for="Address.Country" type="text" name="Country" >
+                <input asp-for="Address.Country" type="text" name="Country">
                 <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
             </div>
             <div class="col">
                 <label asp-for="Address.State"></label>
-                <input asp-for="Address.State" type="text" name="State" >
+                <input asp-for="Address.State" type="text" name="State">
                 <span asp-validation-for="Address.State" class="form-text text-danger"></span>
             </div>
             <div class="col">
                 <label asp-for="Address.ZipCode"></label>
-                <input asp-for="Address.ZipCode" type="text" name="ZipCode" >
+                <input asp-for="Address.ZipCode" type="text" name="ZipCode">
                 <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
             </div>
         </div>
     </form>
 </div>
 
-
-
-<div class="card">
-    <div class="card-header card-header-primary card-header-tabs">
-        <div class="nav-tabs-navigation">
-            <div class="nav-tabs-wrapper">
-                <ul id="supplierTab" class="nav nav-tabs" data-tabs="tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" id="general-tab" href="#general" data-form="submitGeneralForm">General</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" id="address-tab" href="#address" data-form="submitAddressForm">Address</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" id="image-tab" href="#image" data-form="submitImageForm">Files</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="card-body">
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-                <form id="submitGeneralForm" method="POST" asp-action="Edit">
-                    <input type="hidden" name="Id" value="@Model.Id" />
-                    <div class="form-row mb-3">
-                        <div class="col-4">
-                            <label asp-for="General.No"></label>
-                            <input asp-for="General.No" type="text" name="No"  required>
-                            <span asp-validation-for="General.No" class="text-danger"></span>
-                        </div>
-                        <div class="col-8">
-                            <label asp-for="General.Name"></label>
-                            <input asp-for="General.Name" type="text" name="Name"  required>
-                            <span asp-validation-for="General.Name" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col">
-                            <label asp-for="General.Description">Description <span class="text-muted">(Optional)</span></label>
-                            <textarea asp-for="General.Description" name="Description"  rows="3"></textarea>
-                            <span asp-validation-for="General.Description" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col-4">
-                            <label asp-for="General.PhoneNumber"></label>
-                            <input asp-for="General.PhoneNumber" type="text" name="PhoneNumber" >
-                            <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
-                        </div>
-                        <div class="col-4">
-                            <label asp-for="General.Email"></label>
-                            <input asp-for="General.Email" type="text" name="Email" >
-                            <span asp-validation-for="General.Email" class="text-danger"></span>
-                        </div>
-                        <div class="col-4">
-                            <label asp-for="General.Website"></label>
-                            <input asp-for="General.Website" type="text" name="Website" >
-                            <span asp-validation-for="General.Website" class="text-danger"></span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                
-            </div>
-
-            <div class="tab-pane fase" id="image" role="tabpanel" arial-labelledby="image-tab">
-                <form id="sumbitImageForm" method="POST" asp-action="EditImage">
-                    <button id="uploadImageBtn" type="button" class="btn btn-secondary">Add image</button>
-                    <div class="form-row mb-3">
-                        <div class="col">
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="card-footer">
-        <form method="POST" asp-action="Delete">
-            <input asp-for="Id" type="hidden" />
-            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
-        </form>
-        <div>
-            <button type="submit" id="saveBtn" class="btn btn-primary mr-1" form="submitGeneralForm">Save</button>
-            <a asp-action="index" class="btn btn-link">Cancel</a>
-        </div>
-    </div>
+@foreach(var section in sections) {
+<div class="ui raised segment" id="@(section.SectionCode)">
+    <h4 class="ui dividing header">@(section.SectionName)</h4>
 </div>
+}
 
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#supplierTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                $('#saveBtn').attr('form', $(e.target).data('form'));
-            })
+
         });
     </script>
 }

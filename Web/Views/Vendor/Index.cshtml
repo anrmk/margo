@@ -1,115 +1,47 @@
 ﻿@{
     ViewData["Title"] = "Vendors";
-    ViewData["Subtitle"] = "Organize and keep track of your vendor by adding, deleting, merging, or restoring them in the system.";
+
     var tableId = Guid.NewGuid();
-    var getVendorsUrl = Url.RouteUrl("GetVendors");
+    var listUrl = Url.RouteUrl("GetVendors");
+    var editUrl = Url.RouteUrl("EditVendor");
 }
 
 @section RightSidebar {
-    hello
+
 }
 
-<a asp-controller="Vendor" asp-action="Create" class="btn btn-primary"><i class="fa fa-plus mr-1"></i> Create</a>
-<span class="text-muted">Before registering as a new vendor, you can search of vendors to see if they’re already registered</span>
-
-<div class="ui segment">
-    <div class="ui breadcrumb">
-        <a class="section">Home</a>
-        <div class="divider"> / </div>
-        <a class="section">Store</a>
-        <div class="divider"> / </div>
-        <div class="active section">T-Shirt</div>
-    </div>
-</div>
-
-<div class="ui raised segment">
+<div>
     <div id="toolbar" class="ui secondary menu">
-        <button class="orange ui button" data-action="create"><i class="plus icon"></i> Create</button>
+        <a asp-controller="Vendor" asp-action="Create" class="ui button"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
     </div>
 
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table">
-        <thead>
-            <tr>
-                <th class="collapsing"></th>
-                <th>Vendor no</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Address.</th>
-                <th class="right aligned collapsing">Modified</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th></th>
-                <th>Vendor no</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Address.</th>
-                <th>Modified</th>
-            </tr>
-        </tfoot>
-    </table>
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 
 @section Scripts {
     <script type="text/javascript">
     $(document).ready(function () {
-        window.selected = [];
-
-        var $filter = $('#filter');
-        var $table = $('#@tableId');
-
-        var $datatable = $table.DataTable({
-            'ajax': {
-                'url': '@(getVendorsUrl)',
-                'data': (d) => {
-                    var data = $.extend({}, d, $filter.serializeJSON());
-                    return data;
-                }
+        window.DocumentController = new DocumentController({
+            'table': '#@tableId',
+            'controller': {
+                'api': '@listUrl',
+                'mvc': '/vendor'
             },
             'columns': [
-                { 'data': 'id', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) },
-                { 'data': 'no', 'orderable': true},
-                { 'data': 'name'},
-                { 'data': 'phoneNumber'},
-                { 'data': 'address'},
-                { 'data': 'updatedDate' }
-            ],
-            'rowCallback': function (row, data) {
-                if ($.inArray(data.id, window.selected) !== -1) {
-                    $(row).addClass('active');
-                }
-            },
+                { 'title': '', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': 'Name', 'data': 'name' },
+                { 'title': 'Vendor ', 'data': 'no', 'orderable': true },
+                { 'title': 'Phone', 'data': 'phoneNumber' },
+                { 'title': 'Address', 'data': 'address' },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+            ]
         });
 
-        //$table.on('select', function (e, dt, type, indexes) {
-        //    table[type](indexes).nodes().to$().addClass('active');
-        //});
-
-        $table.find('tbody').on('dblclick', 'tr', function (e) {
-            var row = $datatable.row(this);
-            var data = row.data();
-
-            location.href = `/vendor/edit/${data.id}`;
-        });
-
-        $table.on('change', 'input', function () {
-            var inputs = $table.find('input:checked')
-            if (inputs.length > 0) {
-                $('button[data-action=delete]').enabled();
-            } else {
-                $('button[data-action=delete]').disabled();
-            }
-        })
-
-        $('#button').click(function () { table.row('.selected').remove().draw(false); });
-
-
-        
+       // $('#button').click(function () { table.row('.selected').remove().draw(false); });
     });
     </script>
 }

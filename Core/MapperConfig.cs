@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
+﻿
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -74,12 +73,19 @@ namespace Core {
             ;
             CreateMap<VendorGeneralDto, VendorEntity>().ReverseMap();
             CreateMap<VendorAddressDto, VendorAddressEntity>().ReverseMap();
+            CreateMap<VendorSectionDto, VendorSectionEntity>()
+                .ForMember(d => d.Vendor, o => o.Ignore())
+                .ForMember(d => d.Section, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Vendor.Name))
+                .ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name))
+                .ForMember(d => d.SectionCode, o => o.MapFrom(s => s.Section.Code))
+                ;
+            CreateMap<VendorSectionFieldDto, VendorSectionFieldEntity>().ReverseMap();
             #endregion
 
             #region SECTIONS
-            CreateMap<SectionDto, SectionEntity>()
-                .ForMember(d => d.Code, o => o.MapFrom(s => Regex.Replace(s.Name, @"\s", "").ToLower()))
-                .ReverseMap();
+            CreateMap<SectionDto, SectionEntity>().ReverseMap();
             #endregion
 
         }

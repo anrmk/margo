@@ -28,6 +28,10 @@ $.fn.formatLink = function (value) {
     return value == null ? '' : `<a href='${value}'target="_blank"><i class="fa fa-external-link-alt mr-1"></i>${value}</a>`;
 }
 
-$.fn.renderDatatableAction = function (data, type, row, target) {
+$.fn.formatDate = function (data, type, row) {
+    return data == null ? "" : new Date(data).toLocaleDateString();
+};
+
+$.fn.renderDatatableAction = function (data, type, row) {
     return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}'> <label></label></div>`;
 }

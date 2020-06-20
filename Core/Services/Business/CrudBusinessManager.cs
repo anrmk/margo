@@ -29,19 +29,7 @@ namespace Core.Services.Business {
         Task<CompanyAddressDto> UpdateCompanyAddress(long companyId, CompanyAddressDto dto);
         #endregion
 
-        #region VENDOR
-        Task<VendorDto> GetVendor(long id);
-        Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter);
-        Task<List<VendorDto>> GetVendors();
-        Task<VendorDto> CreateVendor(VendorGeneralDto dto);
-        Task<VendorDto> UpdateVendor(long id, VendorGeneralDto dto);
-        Task<bool> DeleteVendor(long id);
-        #endregion
 
-        #region VENDOR ADDRESS
-        Task<VendorAddressDto> GetVendorAddress(long id);
-        Task<VendorAddressDto> UpdateVendorAddress(long companyId, VendorAddressDto dto);
-        #endregion
 
         //#region VACCOUNT
         //Task<VaccountDto> GetVaccount(long id);
@@ -117,8 +105,7 @@ namespace Core.Services.Business {
         private readonly ICompanySectionManager _companySectionManager;
         private readonly ICompanySectionFieldManager _companySectionFieldManager;
 
-        private readonly IVendorManager _vendorManager;
-        private readonly IVendorAddressManager _vendorAddressManager;
+
 
         //private readonly IVaccountManager _vaccountManager;
         //private readonly IVaccountSecurityManager _vaccountSecurityManager;
@@ -135,7 +122,7 @@ namespace Core.Services.Business {
         public CrudBusinessManager(IMapper mapper,
             ISectionManager sectionManager,
             ICompanyManager companyManager, ICompanyAddressManager companyAddressManager, ICompanySectionManager companySectionManager, ICompanySectionFieldManager companySectionFieldManager,
-            IVendorManager supplierManager, IVendorAddressManager vendorAddressManager,
+
             //IVaccountManager vaccountManager, IVaccountSecurityManager vaccountSecurityManager, IVaccountSecurityQuestionManager vaccountSecurityQuestionManager,
             IInvoiceManager invoiceManager, IPaymentManager paymentManager) {
             _mapper = mapper;
@@ -146,9 +133,6 @@ namespace Core.Services.Business {
             _companyAddressManager = companyAddressManager;
             _companySectionManager = companySectionManager;
             _companySectionFieldManager = companySectionFieldManager;
-
-            _vendorManager = supplierManager;
-            _vendorAddressManager = vendorAddressManager;
 
             //_vaccountManager = vaccountManager;
             //_vaccountSecurityManager = vaccountSecurityManager;
@@ -165,13 +149,11 @@ namespace Core.Services.Business {
         }
 
         public async Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter) {
-            #region Sort/Filter
             var sortby = "Name";
 
             Expression<Func<CompanyEntity, bool>> where = x =>
                    (true)
                    && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
-            #endregion
 
             string[] include = new string[] { "Address" };
 
@@ -267,100 +249,6 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        #region VENDOR
-        public async Task<VendorDto> GetVendor(long id) {
-            var result = await _vendorManager.FindInclude(id);
-            return _mapper.Map<VendorDto>(result);
-        }
-
-        public async Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter) {
-            var sortby =  "No";
-
-            Expression<Func<VendorEntity, bool>> where = x =>
-                   (true)
-                && (string.IsNullOrEmpty(filter.Search)
-                    || x.Name.ToLower().Contains(filter.Search.ToLower())
-                    || x.No.ToLower().Contains(filter.Search.ToLower())
-                    || x.Description.ToLower().Contains(filter.Search.ToLower()));
-
-            string[] include = new string[] { "Address" };
-
-            var tuple = await _vendorManager.Pager<VendorEntity>(where, sortby, filter.Start, filter.Length, include);
-            var list = tuple.Item1;
-            var count = tuple.Item2;
-
-            if(count == 0)
-                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Length, filter.Start);
-
-            var page = (filter.Start + filter.Length) / filter.Length;
-
-            var result = _mapper.Map<List<VendorDto>>(list);
-            return new Pager<VendorDto>(result, count, page, filter.Length);
-        }
-
-        public async Task<List<VendorDto>> GetVendors() {
-            var result = await _vendorManager.FindAll();
-            return _mapper.Map<List<VendorDto>>(result);
-        }
-
-        public async Task<VendorDto> CreateVendor(VendorGeneralDto dto) {
-            var entity = await _vendorManager.Create(_mapper.Map<VendorEntity>(dto));
-            return _mapper.Map<VendorDto>(entity);
-        }
-
-        public async Task<VendorDto> UpdateVendor(long id, VendorGeneralDto dto) {
-            var entity = await _vendorManager.Find(id);
-            if(entity == null) {
-                return null;
-            }
-
-            var newEntity = _mapper.Map(dto, entity);
-            entity = await _vendorManager.Update(newEntity);
-
-            return _mapper.Map<VendorDto>(entity);
-        }
-
-        public async Task<bool> DeleteVendor(long id) {
-            var result = 0;
-            var entity = await _vendorManager.Find(id);
-
-            if(entity == null) {
-                result = await _vendorManager.Delete(entity);
-            }
-
-            var address = await _vendorAddressManager.Find(entity.AddressId);
-            if(address != null) {
-                result = await _vendorAddressManager.Delete(address);
-            }
-
-            return result != 0;
-        }
-        #endregion
-
-        #region VENDOR ADRESS
-        public async Task<VendorAddressDto> GetVendorAddress(long id) {
-            var result = await _vendorAddressManager.Find(id);
-            return _mapper.Map<VendorAddressDto>(result);
-        }
-
-        public async Task<VendorAddressDto> UpdateVendorAddress(long supplierId, VendorAddressDto dto) {
-            var entity = await _vendorAddressManager.Find(dto.Id);
-
-            if(entity == null) {
-                entity = await _vendorAddressManager.Create(_mapper.Map<VendorAddressEntity>(dto));
-
-                var supplier = await _vendorManager.Find(supplierId);
-                supplier.AddressId = entity.Id;
-                await _vendorManager.Update(supplier);
-            } else {
-                var updateEntity = _mapper.Map(dto, entity);
-                entity = await _vendorAddressManager.Update(updateEntity);
-            }
-
-            return _mapper.Map<VendorAddressDto>(entity);
-        }
-        #endregion
-
         #region INVOICE
         public async Task<InvoiceDto> GetInvoice(long id) {
             var result = await _invoiceManager.FindInclude(id);
@@ -374,7 +262,7 @@ namespace Core.Services.Business {
 
         public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
             #region Sort/Filter
-            var sortby =  "No";
+            var sortby = "No";
 
             Expression<Func<InvoiceEntity, bool>> where = x =>
                   (true)
@@ -747,25 +635,23 @@ namespace Core.Services.Business {
         }
 
         public async Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter) {
-            #region Sort/Filter
-            var sortby =  "Name";
+            var sortby = "Name";
 
             Expression<Func<SectionEntity, bool>> where = x =>
                    (true)
                    && (string.IsNullOrEmpty(filter.Search) || x.Name.ToLower().Contains(filter.Search.ToLower()));
-            #endregion
 
             var tuple = await _sectionManager.Pager<SectionEntity>(where, sortby, filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Start, filter.Length);
+                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Length, filter.Start);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<SectionDto>>(list);
-            return new Pager<SectionDto>(result, count, page, filter.Start);
+            return new Pager<SectionDto>(result, count, page, filter.Length);
         }
 
         public async Task<List<SectionDto>> GetSections() {

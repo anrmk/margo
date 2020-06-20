@@ -2,7 +2,6 @@ using System;
 
 using Core.Context;
 using Core.Data.Entities;
-using Core.Jobs;
 using Core.Services;
 
 using Microsoft.AspNetCore.Builder;
@@ -15,8 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using Web.Hubs;
 
 namespace Web {
     public class Startup {
@@ -87,7 +84,7 @@ namespace Web {
             //Jobs
             //JobSchedulerConfig.Configuration(services);
 
-            
+
             //services.AddSingleton<INotifyService>(ctx => {
             //    var token = Configuration.GetConnectionString("TelegramConnection");
             //    var chatId = Configuration.GetConnectionString("TelegramChatId");
@@ -95,7 +92,7 @@ namespace Web {
             //    return notify;
             //});
 
-      
+
             MapperConfig.Register(services);
 
             services.AddControllersWithViews();

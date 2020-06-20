@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;

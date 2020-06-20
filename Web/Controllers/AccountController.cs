@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services.Business;
@@ -12,10 +11,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using Web.Hubs;
 using Web.Models.AccountViewModel;
 using Web.ViewModels;
 

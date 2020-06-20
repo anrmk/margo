@@ -2,7 +2,7 @@
     public class CompanySectionFieldDto {
         public long Id { get; set; }
 
-        public long CompanySectionId { get; set; }
+        public long SectionId { get; set; }
 
         public int Type { get; set; }
 

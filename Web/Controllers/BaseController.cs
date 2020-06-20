@@ -3,15 +3,10 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Core.Context;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-
-using Web.Hubs;
 
 namespace Web.Controllers {
     [Authorize]
@@ -19,7 +14,7 @@ namespace Web.Controllers {
         protected readonly IController _controller;
         protected readonly ILogger<IController> _logger;
         protected readonly IMapper _mapper;
-       // protected readonly IHubContext<NotificationHub> _notificationHub;
+        // protected readonly IHubContext<NotificationHub> _notificationHub;
 
         //protected readonly ApplicationContext _context;
 
@@ -79,7 +74,7 @@ namespace Web.Controllers {
         public BaseController(ILogger<IController> logger, IMapper mapper) {
             _logger = logger;
             _mapper = mapper;
-           // _context = context;
+            // _context = context;
         }
 
         public override ViewResult View(string view, object model) {

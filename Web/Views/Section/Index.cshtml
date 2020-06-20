@@ -1,49 +1,43 @@
 ﻿@{
     ViewData["Title"] = "Sections";
-    ViewData["Subtitle"] = "Organize and keep track of your companies by adding, deleting, merging, or restoring them in the system.";
+
+    var tableId = Guid.NewGuid();
+    var listUrl = Url.RouteUrl("GetSections");
+    var editUrl = Url.RouteUrl("EditVendor");
 }
 
-<div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-        <div class="card-icon">
-            <i class="material-icons">view_list</i>
+@section RightSidebar {
+
+}
+
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-controller="Section" asp-action="Create" class="ui button"><i class="fa fa-plus mr-1"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
-        <h4 class="card-title">Section List</h4>
-        <span class="text-muted"></span>
     </div>
 
-    <div class="card-body">
-        <div id="tableToolbar">
-            <a asp-controller="Section" asp-action="Create" class="btn btn-primary"><i class="fa fa-plus mr-1"></i> Create</a>
-        </div>
-        <div class="table-responsive">
-            <table id="datatable" data-toggle="table" data-url="/api/section">
-                <thead>
-                    <tr>
-                        <th data-field="isDefault" data-formatter="isDefaultFormatter"></th>
-                        <th data-field="name" data-sortable="true">Name</th>
-                        <th data-field="description" data-sortable="true">Description</th>
-                        <th data-formatter="actionFormatter" class="text-right"></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
-@section Scripts {
-    <script type="text/javascript">
-        function isDefaultFormatter(value, row) {
-            return value == null || value == false ? '' : `<i class='fa fa-check-circle'></i>`;
-        }
-        function actionFormatter(value, row) {
-            return `<a href='/section/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
-        }
 
-        $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
-                location.href = `/section/edit/${row.id}`;
-            });
-        });
-    </script>
+@section Scripts {
+<script type="text/javascript">
+$(document).ready(function () {
+    window.DocumentController = new DocumentController({
+        'table': '#@tableId',
+        'controller': {
+            'api': '@listUrl',
+            'mvc': '/section'
+        },
+        'columns': [
+            { 'title': '', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+            { 'title': 'Default', 'data': 'isDefault' },
+            { 'title': 'Name', 'data': 'name' },
+            { 'title': 'Description ', 'data': 'description'},
+        ]
+    });
+});
+</script>
 }
