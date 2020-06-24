@@ -4,7 +4,7 @@ Install-Package Microsoft.EntityFrameworkCore.Sqlite
 Install-Package Microsoft.EntityFrameworkCore.Tools
 
 Remote Desktop Connection
-194.87.101.159
+194.87.101.159 - OLD
 Administrator
 4zX1BiCyY2
 

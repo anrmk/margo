@@ -25,7 +25,7 @@ namespace Core.Services.Business {
         Task<VendorAddressDto> UpdateVendorAddress(long companyId, VendorAddressDto dto);
 
         //  VENDOR SECTION
-        Task<List<VendorSectionDto>> GetVendorSections(long vendorId);
+        Task<List<VendorSectionDto>> GetSections(long vendorId);
     }
 
     public class VendorBusinessManager: IVendorBusinessManager {
@@ -131,7 +131,7 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        public async Task<List<VendorSectionDto>> GetVendorSections(long vendorId) {
+        public async Task<List<VendorSectionDto>> GetSections(long vendorId) {
             var result = await _vendorSectionManager.FindAll(vendorId);
             return _mapper.Map<List<VendorSectionDto>>(result);
         }

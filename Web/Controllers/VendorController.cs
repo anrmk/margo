@@ -7,11 +7,14 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Extension;
+using Core.Services;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
@@ -69,7 +72,7 @@ namespace Web.Controllers.Mvc {
                 return NotFound();
             }
 
-            var sections = await _vendorBusinessManager.GetVendorSections(id);
+            var sections = await _vendorBusinessManager.GetSections(id);
             ViewBag.Sections = _mapper.Map<List<VendorSectionViewModel>>(sections);
 
             var companies = await _crudBusinessManager.GetCompanies();
@@ -136,12 +139,16 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     public class VendorController: ControllerBase {
         private readonly IMapper _mapper;
+        private readonly IViewRenderService _viewRenderService;
+
         private readonly ICrudBusinessManager _businessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
 
-        public VendorController(IMapper mapper, ICrudBusinessManager businessManager,
+        public VendorController(IMapper mapper, IViewRenderService viewRenderService,
+            ICrudBusinessManager businessManager,
             IVendorBusinessManager vendorBusinessManager) {
             _mapper = mapper;
+            _viewRenderService = viewRenderService;
             _businessManager = businessManager;
             _vendorBusinessManager = vendorBusinessManager;
         }
@@ -151,6 +158,32 @@ namespace Web.Controllers.Api {
             var result = await _vendorBusinessManager.GetVendorPager(_mapper.Map<PagerFilter>(model));
             var pager = new Pager<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
+        }
+
+        [HttpGet("CreateVendorSection", Name = "CreateVendorSection")]
+        public async Task<IActionResult> CreateVendorSection([FromQuery] long id) {
+            var result = await _vendorBusinessManager.GetVendor(id);
+            if(result == null)
+                return NotFound();
+
+            var vendorSection = await _vendorBusinessManager.GetSections(id);
+            var sections = await _businessManager.GetSections();
+            var exclude = sections.Where(x => !vendorSection.Any(y => x.Id == y.SectionId)).ToList();
+
+            var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                //{ "SummaryRanges", _mapper.Map<List<CompanySummaryRangeViewModel>>(summaryRanges) },
+                //{ "SearchCriterias", _mapper.Map<List<InvoiceConstructorSearchViewModel>>(constructorSearches)},
+                //{ "CompanyName", company.Name },
+                //{ "Constructors", _mapper.Map<List<InvoiceConstructorViewModel>>(constructors) },
+                //{ "CustomerCounts", customerCounts }
+            };
+
+            if(exclude.Count != 0) {
+                string html = _viewRenderService.RenderToStringAsync("_AddSectionPartial", _mapper.Map<List<SectionViewModel>>(exclude), viewDataDictionary).Result;
+                return Ok(html);
+            } else {
+                return Ok("Nothing to display");
+            }
         }
     }
 }

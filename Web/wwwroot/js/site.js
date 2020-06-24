@@ -11,6 +11,23 @@
             }
         });
 
+    $('form[data-submit=ajax]').ajaxSubmit({
+        'callback': (jqXHR, status) => {
+            if (status === 'success') {
+                $(`<div>${jqXHR.responseText}</div>`).dialog();
+            }
+        }
+    });
+
+    //.on('submit', e => {
+    //    e.preventDefault();
+    //    $(e.currentTarget).ajaxSubmit({}, (target, data, status, jqXHR) => {
+    //        if (status === 'success') {
+    //            $(`<div>${data}</div>`).dialog();
+    //        }
+    //    });
+    //});
+
     // create sidebar and attach to menu open
     //$('.ui.sidebar')
     //    .sidebar('setting', 'dimPage', false)
@@ -45,5 +62,14 @@ $.extend(true, $.fn.dataTable.defaults, {
     },
     'fnInitComplete': function (settings, json) {
         $($.fn.dataTable.defaults.toolbar).appendTo($('div.dt-toolbar'));
+    }
+});
+
+$.extend($.serializeJSON.defaultOptions, {
+    'parseNumbers': true,
+    'useIntKeysAsArrayIndex': false,
+    'customTypes': {
+        'string:nullable': function (str) { return str || null; },
+        'number:nullable': function (str) { return Number(str) || null; }
     }
 });

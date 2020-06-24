@@ -15,8 +15,7 @@
             'ajax': {
                 'url': this.options.controller.api,
                 'data': (d) => {
-                    var data = $.extend({}, d, this.filter?.serializeJSON());
-                    return d;
+                    return $.extend({}, d, this.filter.serializeJSON());
                 }
             },
             'columns': this.options.columns,

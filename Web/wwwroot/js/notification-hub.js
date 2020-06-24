@@ -1,5 +1,6 @@
 ﻿class NotificationHub {
     constructor(options, callback = (target) => { }) {
+        this.options = options;
         this.connection = null;
         this.initialize();
         this.callback = callback;
@@ -18,10 +19,10 @@
         this.start();
     }
 
-    start = async function () {
+    start = function () {
         var hub = this;
         try {
-            await this.connection.start().then((e) => {
+            this.connection.start().then((e) => {
                 console.log("notificationHub connected");
                 hub.connection.invoke('getConnectionId').then((connectionId) => {
                     sessionStorage.setItem('conectionId', connectionId);// Send the connectionId to controller
@@ -31,11 +32,11 @@
                 return console.log(err);
             });
         } catch (e) {
-
+            console.log(e);
         }
     }
 
-    notify = async function (data) {
+    notify = function (data) {
         if (data != null) {
             $.fn.alert(data)
         }
