@@ -9,7 +9,7 @@
     <div class="ui sticky">
         <div class="ui clearing">
             <h4 class="ui header">Sections</h4>
-            <form asp-action="CreateVendorSection" asp-route-id="@Model.Id" data-submit="ajax" method="get">
+            <form asp-action="AddVendorSection" asp-route-id="@Model.Id" data-submit="ajax" method="get">
                 <input asp-for="Id" type="hidden" />
                 <button class="ui button"><i class="plus icon" data-action="create"></i> Create</button>
             </form>
@@ -104,8 +104,13 @@
 
 @foreach(var section in sections) {
 <div class="ui raised segment" id="@(section.SectionCode)">
-    <h4 class="ui dividing header">@(section.SectionName)</h4>
-    <button class="ui button">Add</button>
+    <div class="">
+        <h4 class="ui dividing header">@(section.SectionName)</h4>
+        <i class="close icon"></i>
+    </div>
+    <div class="content">
+        <button class="ui button">Add</button>
+    </div>
 </div>
 }
 

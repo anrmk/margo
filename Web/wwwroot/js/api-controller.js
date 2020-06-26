@@ -2,34 +2,28 @@
 $.fn.ajaxSubmit = function (opt) {
     this.on('submit', e => {
         e.preventDefault();
-        var form = $(e.currentTarget);
-        var fieldset = form.find('fieldset');
+        var $form = $(e.currentTarget);
+        var data = $form.serializeJSON();
 
         var options = $.extend({
-            'url': form.attr('action'),
-            'type': form.attr('method'),
-            'data': JSON.stringify(form.serializeJSON()),
+            'url': $form.attr('action'),
+            'type': $form.attr('method'),
+            'data':  JSON.stringify($form.serializeJSON()),
             'processData': false,
             'contentType': 'application/json; charset=utf-8',
             'complete': (jqXHR, status) => {
-                fieldset.removeAttr('disabled');
+                $form.removeClass('loading');
                 opt.callback(jqXHR, status);
             },
-            'callback': (jqXHR, status) => {
-             
-            }
+            'callback': (jqXHR, status) => { }
         }, opt);
 
-        fieldset.attr('disabled', 'disabled');
-        $.ajax(options);
+        //if (options.type.toLowerCase() === 'post') {
+        //    options.data =data);
+        //}
 
-        //    .done((data, status, jqXHR) => {
-        //    fieldset.removeAttr('disabled');
-        //    opt.callback(e, data, status, jqXHR);
-        //}).fail((jqXHR, status) => {
-        //    fieldset.removeAttr('disabled');
-        //    opt.callback(e, null, status, jqXHR);
-        //});
+        $form.addClass('loading');
+        $.ajax(options);
     })
 }
 
@@ -51,33 +45,34 @@ $.fn.renderDatatableAction = function (data, type, row) {
 
 $.fn.dialog = function (opt) {
     var content = $((this == null || this.length == 0) ? '<p>Nothing to display</p>' : this);
-    var options = $.extend({}, {
-        'title': 'Modal window',
-        'content': content
-    }, opt);
-
-    $(options.content).find('form')
+    var options = $.extend({}, { 'title': 'Modal window', 'content': content }, opt);
 
     var mc = `<div class="ui modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
         `<div class="content">${options.content.html()}</div>` +
-        `<div class="actions"><div class="ui button deny">Cancel</div><div class="ui button approve">OK</div></div>` +
+        `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green submit">OK</button></div>` +
         `</div>`;
 
     $(mc).modal({
         'closable': false,
         'transition': 'horizontal flip',
-        'onDeny': function (e) {
-            window.alert('Wait not yet!');
-            return false;
-        },
-        'onApprove': function (e) {
-            var form = $(this).find('form');
-            if (form.length) {
-                form.ajaxSubmit({}, (target, data, status, jqXHR) => {
+        'onVisible': function () {
+            var $modal = $(this);
+            var $form = $modal.find('form');
+            if ($form.length) {
+                $form.ajaxSubmit({
+                    'callback': (jqXHR, status) => {
+                        $('.modal').modal('hide');
+                        $.fn.message({ 'content': jqXHR.responseText, 'status': status });
+                    }
                 });
-                //form.submit();
+                $modal.find('button.submit').attr('form', $form.attr('id'));
             }
-            return false;
         }
     }).modal('show');
+}
+
+$.fn.message = function (opt) {
+    var options = $.extend({}, { 'title': '', 'content': '', 'status' : 'info' }, opt);
+    var msg = `<div class='ui floating ${options.status} message'><i class='close icon'></i> <div class='header'>${options.title}</div><p>${options.content}</p></div>`;
+    $(msg).appendTo('body').delay(1500).remove();
 }

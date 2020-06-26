@@ -22,13 +22,13 @@ using Web.ViewModels;
 namespace Web.Controllers.Mvc {
     [Authorize]
     public class VendorController: BaseController<VendorController> {
-        private readonly ICrudBusinessManager _crudBusinessManager;
+        private readonly ICompanyBusinessManager _companyBusinessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
 
         public VendorController(ILogger<VendorController> logger, IMapper mapper,
-            ICrudBusinessManager businessManager,
+            ICompanyBusinessManager companyBusinessManager,
             IVendorBusinessManager vendorBusinessManager) : base(logger, mapper) {
-            _crudBusinessManager = businessManager;
+            _companyBusinessManager = companyBusinessManager;
             _vendorBusinessManager = vendorBusinessManager;
         }
 
@@ -57,10 +57,7 @@ namespace Web.Controllers.Mvc {
                     }
                     return RedirectToAction(nameof(Edit), new { id = item.Id });
                 }
-
             } catch(Exception e) {
-                _logger.LogError(e, e.Message);
-                ModelState.AddModelError("All", e.Message);
                 BadRequest(e);
             }
             return View(model);
@@ -75,7 +72,7 @@ namespace Web.Controllers.Mvc {
             var sections = await _vendorBusinessManager.GetSections(id);
             ViewBag.Sections = _mapper.Map<List<VendorSectionViewModel>>(sections);
 
-            var companies = await _crudBusinessManager.GetCompanies();
+            var companies = await _companyBusinessManager.GetCompanies();
             ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() }).ToList();
 
             return View(_mapper.Map<VendorViewModel>(item));
@@ -160,30 +157,50 @@ namespace Web.Controllers.Api {
             return pager;
         }
 
-        [HttpGet("CreateVendorSection", Name = "CreateVendorSection")]
-        public async Task<IActionResult> CreateVendorSection([FromQuery] long id) {
+        [HttpGet("DeleteVendors", Name = "DeleteVendors")]
+        public async Task<ActionResult> DeleteVendors([FromQuery] long[] id) {
+            if(id.Length > 0) {
+                var result = await _vendorBusinessManager.DeleteVendor(id);
+                return Ok(new { Status = result, Data = id });
+            }
+            return BadRequest("No items selected");
+        }
+
+        [HttpGet("AddVendorSection", Name = "AddVendorSection")]
+        public async Task<IActionResult> AddVendorSection([FromQuery] long id) {
             var result = await _vendorBusinessManager.GetVendor(id);
             if(result == null)
                 return NotFound();
 
             var vendorSection = await _vendorBusinessManager.GetSections(id);
             var sections = await _businessManager.GetSections();
-            var exclude = sections.Where(x => !vendorSection.Any(y => x.Id == y.SectionId)).ToList();
+            var exist = sections.Where(x => !vendorSection.Any(y => x.Id == y.SectionId)).ToList();
 
             var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                //{ "SummaryRanges", _mapper.Map<List<CompanySummaryRangeViewModel>>(summaryRanges) },
-                //{ "SearchCriterias", _mapper.Map<List<InvoiceConstructorSearchViewModel>>(constructorSearches)},
-                //{ "CompanyName", company.Name },
-                //{ "Constructors", _mapper.Map<List<InvoiceConstructorViewModel>>(constructors) },
-                //{ "CustomerCounts", customerCounts }
+                { "SectionList", _mapper.Map<List<SectionViewModel>>(exist) }
             };
 
-            if(exclude.Count != 0) {
-                string html = _viewRenderService.RenderToStringAsync("_AddSectionPartial", _mapper.Map<List<SectionViewModel>>(exclude), viewDataDictionary).Result;
+            if(exist.Count != 0) {
+                var model = new VendorSectionViewModel() { VendorId = id };
+                string html = _viewRenderService.RenderToStringAsync("_AddSectionPartial", model, viewDataDictionary).Result;
                 return Ok(html);
             } else {
                 return Ok("Nothing to display");
             }
         }
+
+        [HttpPost("CreateVendorSection", Name = "CreateVendorSection")]
+        public async Task<IActionResult> CreateVendorSection([FromBody] VendorSectionViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var result = await _vendorBusinessManager.CreateSection(_mapper.Map<VendorSectionDto>(model));
+                    return Ok(_mapper.Map<VendorSectionViewModel>(result));
+                }
+            } catch(Exception er) {
+                return BadRequest(er.Message);
+            }
+            return Ok();
+        }
+
     }
 }

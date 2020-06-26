@@ -18,14 +18,14 @@ namespace Core.Services {
     public class ViewRenderService: IViewRenderService {
         private readonly IRazorViewEngine _razorViewEngine;
         private readonly ITempDataProvider _tempDataProvider;
-        private readonly IServiceProvider _serviceProvider;
+        //private readonly IServiceProvider _serviceProvider;
         private readonly IActionContextAccessor _actionContext;
 
-        public ViewRenderService(IActionContextAccessor actionContext, IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IServiceProvider serviceProvider) {
+        public ViewRenderService(IActionContextAccessor actionContext, IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider /*IServiceProvider serviceProvider*/) {
             _actionContext = actionContext;
             _razorViewEngine = razorViewEngine;
             _tempDataProvider = tempDataProvider;
-            _serviceProvider = serviceProvider;
+            //_serviceProvider = serviceProvider;
         }
 
         public async Task<string> RenderToStringAsync(string viewName, object model) {
@@ -34,7 +34,7 @@ namespace Core.Services {
         }
 
         public async Task<string> RenderToStringAsync(string viewName, object model, ViewDataDictionary viewDictionary) {
-            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
+            //var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
             var actionContext = _actionContext.ActionContext;
 
             using(var sw = new StringWriter()) {

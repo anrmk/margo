@@ -12,29 +12,12 @@
         });
 
     $('form[data-submit=ajax]').ajaxSubmit({
-        'callback': (jqXHR, status) => {
+        'callback': function (jqXHR, status) {
             if (status === 'success') {
                 $(`<div>${jqXHR.responseText}</div>`).dialog();
             }
         }
     });
-
-    //.on('submit', e => {
-    //    e.preventDefault();
-    //    $(e.currentTarget).ajaxSubmit({}, (target, data, status, jqXHR) => {
-    //        if (status === 'success') {
-    //            $(`<div>${data}</div>`).dialog();
-    //        }
-    //    });
-    //});
-
-    // create sidebar and attach to menu open
-    //$('.ui.sidebar')
-    //    .sidebar('setting', 'dimPage', false)
-    //    .sidebar('setting', 'transition', 'overlay');
-    // $('.ui.sidebar').sidebar('attach events', '.toc.item');
-
-
 }).ajaxSend((event, xhr, options) => {
     //xhr.setRequestHeader("Authorization", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {
@@ -56,6 +39,9 @@ $.extend(true, $.fn.dataTable.defaults, {
     'searchDelay': 1800,
     'autoWidth': false,
     'mark': true,
+    'rowId': function (d) {
+        return 'row_' + d.id;
+    },
     'language': {
         'search': '_INPUT_',
         'searchPlaceholder': 'Search...'

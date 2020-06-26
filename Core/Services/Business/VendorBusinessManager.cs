@@ -26,6 +26,7 @@ namespace Core.Services.Business {
 
         //  VENDOR SECTION
         Task<List<VendorSectionDto>> GetSections(long vendorId);
+        Task<VendorSectionDto> CreateSection(VendorSectionDto dto);
     }
 
     public class VendorBusinessManager: IVendorBusinessManager {
@@ -131,9 +132,17 @@ namespace Core.Services.Business {
         }
         #endregion
 
+        #region SECTIONS
         public async Task<List<VendorSectionDto>> GetSections(long vendorId) {
             var result = await _vendorSectionManager.FindAll(vendorId);
             return _mapper.Map<List<VendorSectionDto>>(result);
         }
+
+        public async Task<VendorSectionDto> CreateSection(VendorSectionDto dto) {
+            var entity = await _vendorSectionManager.Create(_mapper.Map<VendorSectionEntity>(dto));
+            return _mapper.Map<VendorSectionDto>(entity);
+        }
+
+        #endregion
     }
 }

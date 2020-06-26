@@ -2,8 +2,11 @@
     ViewData["Title"] = "Vendors";
 
     var tableId = Guid.NewGuid();
+
     var listUrl = Url.RouteUrl("GetVendors");
-    var editUrl = Url.RouteUrl("EditVendor");
+    var deleteUrl = Url.RouteUrl("DeleteVendors");
+    var editUrl = Url.Action("Edit");
+    var displayUrl = Url.Action("Details");
 }
 
 @section RightSidebar {
@@ -28,17 +31,20 @@
         window.DocumentController = new DocumentController({
             'table': '#@tableId',
             'controller': {
-                'api': '@listUrl',
-                'mvc': '/vendor'
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
             },
             'columns': [
-                { 'title': '', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': 'Vendor ', 'className': 'collapsing', 'data': 'no', 'orderable': true },
                 { 'title': 'Name', 'data': 'name' },
-                { 'title': 'Vendor ', 'data': 'no', 'orderable': true },
                 { 'title': 'Phone', 'data': 'phoneNumber' },
                 { 'title': 'Address', 'data': 'address' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
-            ]
+            ],
+            'onDblRowClick': (e, data) => {
+                location.href = '@editUrl'+`/${data.id}`;
+            }
         });
 
        // $('#button').click(function () { table.row('.selected').remove().draw(false); });

@@ -3,9 +3,11 @@
         this.options = $.extend(true, {
             'table': '#table',
             'filter': '#table-filter',
-            'controller': { 'api': '', 'mvc': '' },
+            'controller': { 'list': '', 'delete': '' },
             'columns': [],
-            'selected': window.selected
+            'selected': [],
+            'onRowClick': (e, data) => { },
+            'onDblRowClick': (e, data) => { }
         }, options);
 
         this.table = $(this.options.table);
@@ -13,7 +15,7 @@
         this.filter = $(this.options.filter);
         this.datatable = this.table.DataTable({
             'ajax': {
-                'url': this.options.controller.api,
+                'url': this.options.controller.list,
                 'data': (d) => {
                     return $.extend({}, d, this.filter.serializeJSON());
                 }
@@ -21,7 +23,8 @@
             'columns': this.options.columns,
             'rowCallback': (row, data) => {
                 if ($.inArray(data.id, this.options.selected) !== -1) {
-                    $(row).addClass('active');
+                    $(row).find('input[type=checkbox]').attr('checked', true)
+                    //$(row).addClass('active');
                 }
             },
         });
@@ -33,9 +36,11 @@
 
     initialize() {
         var tbody = this.table.find('tbody');
+        this.toolbar.find('button[data-action=delete]').on('click', (e) => this.remove(e));
 
         tbody.on('click', 'tr', (e) => {
             var target = $(e.currentTarget);
+            var row = this.datatable.row(target);
 
             if (target.hasClass('active')) {
                 target.removeClass('active');
@@ -43,21 +48,51 @@
                 this.table.find('tr.active').removeClass('active');
                 target.addClass('active');
             }
+            this.options.onRowClick(e, row.data());
         });
 
         tbody.on('dblclick', 'tr', (e) => {
             var row = this.datatable.row(e.currentTarget);
-            var data = row.data();
-            location.href = `${this.options.controller.mvc}/Edit/${data.id}`;
+            this.options.onDblRowClick(e, row.data());
         });
 
         tbody.on('change', 'input', (e) => {
-            var inputs = this.table.find('input:checked');
-            if (inputs.length > 0) {
+            var $input = $(e.currentTarget);
+            var value = Number($input.val());
+            var index = $.inArray(value, this.options.selected);
+
+            if (index === -1) {
+                this.options.selected.push(value);
+            } else {
+                this.options.selected.splice(index, 1);
+            }
+
+            if (this.options.selected.length > 0) {
                 this.toolbar.find('button[data-action=delete]').enabled();
             } else {
                 this.toolbar.find('button[data-action=delete]').disabled();
             }
         })
+    }
+
+    remove(e) {
+        if (!confirm('Are you sure want to delete this?')) { return false; }
+        //this.datatable.rows('.selected').data();
+
+        var options = {
+            'url': this.options.controller.delete,
+            'data': { 'id': this.options.selected },
+            'traditional': true,
+            'contentType': 'application/json; charset=utf-8',
+            'complete': (jqXHR, status) => {
+                if (status === 'success') {
+                    var ids = this.options.selected.map(x => '#row_' + x);
+                    this.datatable.rows(ids).remove().draw(false);
+                    this.options.selected = [];
+                }
+            }
+        }
+
+        $.ajax(options);
     }
 }

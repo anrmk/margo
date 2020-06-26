@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using AutoMapper.Configuration.Annotations;
 
 namespace Web.ViewModels {
     public class VendorSectionViewModel {
@@ -13,9 +16,13 @@ namespace Web.ViewModels {
         [Display(Name = "Section")]
         public long SectionId { get; set; }
 
+        [Ignore]
         public string SectionName { get; set; }
+
+        [Ignore]
         public string SectionCode { get; set; }
 
+        [Ignore]
         public List<VendorSectionFieldViewModel> Fields { get; set; }
     }
 }

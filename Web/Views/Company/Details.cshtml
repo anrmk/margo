@@ -4,26 +4,13 @@
     ViewData["Title"] = Model.General.Name;
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Companies</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.General.Name</li>
-    </ol>
-</nav>
-
-<div class="card">
-    <div class="row no-gutters bg-light position-relative">
-        <div class="col-md-6 mb-md-0 p-md-4">
-            <img src="..." class="w-100" alt="...">
-        </div>
-        <div class="col-md-6 position-static p-4 pl-md-0">
-            <h5 class="mt-0">General</h5>
+<div class="ui card">
+    <div class="content">
+        <div class="header">@Model.General.Name</div>
+        <div class="description">
             <dl>
                 <dt><label asp-for="General.No"></label></dt>
                 <dd>@Model.General.No</dd>
-
-                <dt><label asp-for="General.Name"></label></dt>
-                <dd>@Model.General.Name</dd>
 
                 <dt><label asp-for="General.Website"></label></dt>
                 <dd>@Model.General.Website</dd>
@@ -47,10 +34,5 @@
                 <dd>@Model.General.Founded</dd>
             </dl>
         </div>
-    </div>
-
-    <div class="card-body">
-        <h3>General</h3>
-        
     </div>
 </div>

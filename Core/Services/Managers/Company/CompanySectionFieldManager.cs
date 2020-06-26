@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Managers {
     public interface ICompanySectionFieldManager: IEntityManager<CompanySectionFieldEntity> {
         Task<List<CompanySectionFieldEntity>> FindAllBySectionId(long id);
+        Task<List<CompanySectionFieldEntity>> FindAll(long[] ids);
     }
 
     public class CompanySectionFieldManager: AsyncEntityManager<CompanySectionFieldEntity>, ICompanySectionFieldManager {
@@ -18,6 +19,12 @@ namespace Core.Services.Managers {
 
         public async Task<List<CompanySectionFieldEntity>> FindAllBySectionId(long id) {
             return await DbSet.Where(x => x.CompanySectionId == id).ToListAsync();
+        }
+
+        public async Task<List<CompanySectionFieldEntity>> FindAll(long[] ids) {
+            return await DbSet
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
         }
     }
 }

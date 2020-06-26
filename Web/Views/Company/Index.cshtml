@@ -1,13 +1,18 @@
 ﻿@{
     ViewData["Title"] = "Companies";
+
     var tableId = Guid.NewGuid();
 
     var listUrl = Url.RouteUrl("GetCompanies");
     var deleteUrl = Url.RouteUrl("DeleteCompanies");
+    var editUrl = Url.Action("Edit");
+    var displayUrl = Url.Action("Details");
 }
 
 @section RightSidebar {
     <div class="ui sticky">
+        <div id="displayContainer"></div>
+
         <h4 class="ui header">Sidebar</h4>
 
         <div class="ui vertical following fluid accordion text menu">
@@ -36,68 +41,39 @@
         </div>
     </div>
 
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table">
-        <thead>
-            <tr>
-                <th class="collapsing"></th>
-                <th>Company no</th>
-                <th>Company</th>
-                <th>Phone</th>
-                <th>Address.</th>
-                <th class="right aligned collapsing">Modified</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th></th>
-                <th>Company no</th>
-                <th>Company</th>
-                <th>Phone</th>
-                <th>Address.</th>
-                <th>Modified</th>
-            </tr>
-        </tfoot>
-    </table>
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
     $(document).ready(function () {
-        window.selected = [];
-
-        var $filter = $('#filter');
-        var $table = $('#@tableId');
-
-          var $datatable = $table.DataTable({
-            'ajax': {
-                'url': '@(listUrl)',
-                'data': (d) => {
-                    var data = $.extend({}, d, $filter.serializeJSON());
-                    return data;
-                },
-                'async': true
+        window.DocumentController = new DocumentController({
+            'table': '#@tableId',
+            'controller': {
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
             },
             'columns': [
-                { 'data': 'id', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row, this) },
-                { 'data': 'no', 'orderable': true },
-                { 'data': 'name' },
-                { 'data': 'phoneNumber' },
-                { 'data': 'address' },
-                { 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row, this) }
-            ],
-            'rowCallback': function (row, data) {
-                if ($.inArray(data.id, window.selected) !== -1) {
-                    $(row).addClass('active');
-                }
-            },
-        });
+                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': 'No ', 'data': 'no', 'className': 'collapsing', 'orderable': true },
+                { 'title': 'Name', 'data': 'name' },
 
-        $table.on('change', 'input', function () {
-            var inputs = $table.find('input:checked')
-            if (inputs.length > 0) {
-                $('button[data-action=delete]').enabled();
-            } else {
-                $('button[data-action=delete]').disabled();
+                { 'title': 'Address', 'data': 'address' },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+            ],
+            'onRowClick': (e, data) => {
+                var options = {
+                    'url': '@displayUrl' + `/${data.id}`,
+                    'complete': (jqXHR, status) => {
+                        if (status === 'success') {
+                            $('#displayContainer').empty().html(jqXHR.responseText);
+                        }
+                    }
+                }
+                $.ajax(options);
+            },
+            'onDblRowClick': (e, data) => {
+                location.href = '@editUrl' + `/${data.id}`;
             }
         });
     });

@@ -14,7 +14,7 @@ namespace Core.Services {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddSingleton<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
+            services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
 
             ///Context
             services.AddTransient<IApplicationContext, ApplicationContext>();
@@ -44,7 +44,11 @@ namespace Core.Services {
             /////Business
             //services.AddTransient<INsiBusinessManager, NsiBusinessManager>();
             services.AddTransient<ICrudBusinessManager, CrudBusinessManager>();
+            services.AddTransient<ICompanyBusinessManager, CompanyBusinessManager>();
+            
+            services.AddTransient<IUccountBusinessManager, UccountBusinessManager>();
             services.AddTransient<IVendorBusinessManager, VendorBusinessManager>();
+            
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
         }
     }
