@@ -28,6 +28,10 @@
     <Compile Remove="Migrations\20200609231934_init.Designer.cs" />
     <Compile Remove="Migrations\20200611170211_update-vendors.cs" />
     <Compile Remove="Migrations\20200611170211_update-vendors.Designer.cs" />
+    <Compile Remove="Migrations\20200626223930_update.cs" />
+    <Compile Remove="Migrations\20200626223930_update.Designer.cs" />
+    <Compile Remove="Migrations\20200626232429_update.cs" />
+    <Compile Remove="Migrations\20200626232429_update.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

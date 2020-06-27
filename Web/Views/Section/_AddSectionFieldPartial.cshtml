@@ -1,0 +1,30 @@
+﻿@model Web.ViewModels.SectionFieldViewModel
+@{
+    var guid = Guid.NewGuid();
+}
+
+<form id="guid" class="ui form" asp-action="CreateSectionField" rel="createCompanySectionFieldComplete">
+    <fieldset>
+        <h4 class="ui dividing header">Section Field</h4>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="SectionId" />
+
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="field required">
+                <label asp-for="Type"></label>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<Core.Data.Entities.SectionFieldEnum>()" class="custom-select" required></select>
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui toggle checkbox">
+                <input asp-for="IsRequired" type="checkbox" tabindex="0" class="hidden" data-value-type="boolean" >
+                <label asp-for="IsRequired"></label>
+            </div>
+        </div>
+    </fieldset>
+</form>

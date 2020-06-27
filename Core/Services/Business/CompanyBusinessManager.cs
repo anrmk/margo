@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -40,7 +39,7 @@ namespace Core.Services.Business {
         Task<CompanySectionFieldDto> CreateSectionField(CompanySectionFieldDto dto);
         Task<CompanySectionFieldDto> UpdateSectionField(long id, CompanySectionFieldDto dto);
         Task<bool> DeleteSectionField(long id);
-        Task<bool> DeleteSectionField(long[] ids);
+        Task<bool> DeleteSectionFields(long[] ids);
     }
 
     public class CompanyBusinessManager: ICompanyBusinessManager {
@@ -176,8 +175,12 @@ namespace Core.Services.Business {
         }
 
         public async Task<CompanySectionDto> CreateSection(CompanySectionDto dto) {
-            var entity = await _companySectionManager.Create(_mapper.Map<CompanySectionEntity>(dto));
-            return _mapper.Map<CompanySectionDto>(entity);
+            var result = await _companySectionManager.Create(_mapper.Map<CompanySectionEntity>(dto));
+            if(result != null) {
+                var entity = await _companySectionManager.FindInclude(result.Id);
+                return _mapper.Map<CompanySectionDto>(entity);
+            }
+            return null;
         }
 
         public async Task<CompanySectionDto> UpdateSection(long id, CompanySectionDto dto) {
@@ -231,10 +234,10 @@ namespace Core.Services.Business {
         }
 
         public async Task<bool> DeleteSectionField(long id) {
-            return await DeleteSectionField(new long[] { id });
+            return await DeleteSectionFields(new long[] { id });
         }
 
-        public async Task<bool> DeleteSectionField(long[] ids) {
+        public async Task<bool> DeleteSectionFields(long[] ids) {
             var entities = await _companySectionFieldManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("We did not find field records for this request!");

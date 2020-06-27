@@ -86,6 +86,7 @@ namespace Core {
 
             #region SECTIONS
             CreateMap<SectionDto, SectionEntity>().ReverseMap();
+            CreateMap<SectionFieldDto, SectionFieldEntity>().ReverseMap();
             #endregion
 
         }

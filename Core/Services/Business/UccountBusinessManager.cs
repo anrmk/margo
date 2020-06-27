@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 
 using Core.Services.Managers;
 
@@ -14,7 +11,7 @@ namespace Core.Services.Business {
         private readonly ICompanyManager _companyManager;
 
         public UccountBusinessManager(IMapper mapper,
-            ICompanyManager companyManager) { 
+            ICompanyManager companyManager) {
             _mapper = mapper;
             _companyManager = companyManager;
         }

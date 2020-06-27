@@ -11,13 +11,9 @@
             }
         });
 
-    $('form[data-submit=ajax]').ajaxSubmit({
-        'callback': function (jqXHR, status) {
-            if (status === 'success') {
-                $(`<div>${jqXHR.responseText}</div>`).dialog();
-            }
-        }
-    });
+    $('form[data-request=ajax]').ajaxSubmit();
+    $('a[data-request=ajax]').ajaxClick();
+
 }).ajaxSend((event, xhr, options) => {
     //xhr.setRequestHeader("Authorization", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {

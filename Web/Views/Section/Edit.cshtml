@@ -2,44 +2,80 @@
 
 @{
     ViewData["Title"] = "Edit Section";
-    ViewData["SubTitle"] = "";
+
+    var guid = Guid.NewGuid();
+    var fields = (List<Web.ViewModels.SectionFieldViewModel>)ViewData["SectionFields"];
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Sections</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
-    </ol>
-</nav>
-
-<div class="card">
-    <div class="card-body">
-        <form id="submitForm" asp-action="Edit">
-            <input type="hidden" name="Id" value="@Model.Id" />
-
-            <div class="form-row mb-3">
-                <div class="col-4">
-                    <label asp-for="Name"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="col-8">
-                    <label asp-for="Description"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-            </div>
+@section RightSidebar {
+    <div class="ui sticky">
+        <div class="ui clearing">
+            <h4 class="ui header">Sections</h4>
+            <a asp-action="AddSectionField" asp-route-id="@Model.Id" data-request="ajax" rel="dialog"><i class="plus icon" data-action="create"></i> Create</a>
+        </div>
+    </div>
+}
+<div role="toolbar" class="ui secondary menu">
+    <div class="right menu">
+        <form asp-action="Delete" asp-route-Id="@Model.Id" method="delete">
+            <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
         </form>
     </div>
-    <div class="card-footer d-flex justify-content-between">
-        <form method="POST" asp-action="Delete">
-            <input asp-for="Id" type="hidden" />
-            <button type="submit" class="btn btn-danger" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="material-icons">delete_outline</i> Remove</button>
-        </form>
+</div>
 
-        <div>
-            <button type="submit" class="btn btn-primary mr-1" form="submitForm">Save</button>
-            <a asp-action="index" class="btn btn-link">Cancel</a>
+<div class="ui segments">
+    <div class="ui segment">
+        <form class="ui form" asp-action="Edit">
+            <fieldset>
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <div class="field required">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" required />
+                    <span asp-validation-for="Name"></span>
+                </div>
+                <button type="submit" class="ui submit button">Save</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="ui segment">
+        <h4 class="ui dividing header">Fields</h4>
+        <div class="ui form">
+            @foreach(var field in fields) {
+            <div class="tree fields">
+                <div class="field">
+                    <label>Name</label>
+                    <input placeholder="Read Only" readonly="" type="text" value="@field.Name" />
+                </div>
+                <div class="field">
+                    <label>Last Name</label>
+                    <input placeholder="Read Only" readonly="" type="text" value="@field.TypeName" />
+                </div>
+                <div class="field">
+                    <label>Required</label>
+                    <div class="ui slider checkbox">
+                        <input type="checkbox" tabindex="0" class="hidden" value="@field.IsRequired" />
+                        <label>Required</label>
+                    </div>
+                </div>
+            </div>
+            }
+
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+    function createCompanySectionFieldComplete(jqXHR, status) {
+        if (status === 'success') {
+            var data = jqXHR.responseJSON;
+            $('#fieldsContainer').append(`<a class='item' href='#${data.sectionCode}'>${data.sectionName}</a>`);
+            $('.modal').modal('hide');
+        }
+    }
+
+        $(document).ready(function () {
+          
+        });
+    </script>
+}

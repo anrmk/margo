@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Edit Vendor";
+
+    var guid = Guid.NewGuid();
+
     var sections = (List<Web.ViewModels.VendorSectionViewModel>)ViewBag.Sections;
 }
 
@@ -9,7 +12,7 @@
     <div class="ui sticky">
         <div class="ui clearing">
             <h4 class="ui header">Sections</h4>
-            <form asp-action="AddVendorSection" asp-route-id="@Model.Id" data-submit="ajax" method="get">
+            <form asp-action="AddVendorSection" asp-route-id="@Model.Id" data-request="ajax" method="get">
                 <input asp-for="Id" type="hidden" />
                 <button class="ui button"><i class="plus icon" data-action="create"></i> Create</button>
             </form>
@@ -34,7 +37,7 @@
     </div>
 </div>
 <div class="ui raised segment">
-    <form class="ui form" id="submitGeneralForm" method="POST" asp-action="Edit">
+    <form class="ui form" id="@guid" asp-action="Edit" method="post">
         <h4 class="ui dividing header">General</h4>
         <input type="hidden" name="Id" value="@Model.Id" />
         <div class="two fields">

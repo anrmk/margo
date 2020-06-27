@@ -139,10 +139,10 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
-        private readonly ICrudBusinessManager _crudBusinessManager;
+        private readonly ISectionBusinessManager _crudBusinessManager;
         private readonly IAccountBusinessService _accountBusinessService;
 
-        public AccountController(IMapper mapper, ICrudBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
+        public AccountController(IMapper mapper, ISectionBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
             _mapper = mapper;
             _crudBusinessManager = businessManager;
             _accountBusinessService = accountBusinessService;

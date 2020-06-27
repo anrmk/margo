@@ -16,8 +16,9 @@
         this.datatable = this.table.DataTable({
             'ajax': {
                 'url': this.options.controller.list,
+                'contentType': 'application/json; charset=utf-8',
                 'data': (d) => {
-                    return $.extend({}, d, this.filter.serializeJSON());
+                    return d;// $.extend({}, d, this.filter.serializeJSON());
                 }
             },
             'columns': this.options.columns,

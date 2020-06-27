@@ -1,14 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
-    public class SectionFieldEntity: AuditableEntity<long> {
-        public SectionFieldEnum Type { get; set; }
-
+    public class SectionFieldEntity: EntityBase<long> {
         [Required]
-        [MaxLength(24)]
+        [MaxLength(32)]
         public string Name { get; set; }
 
-        [MaxLength(256)]
-        public string Value { get; set; }
+        public SectionFieldEnum Type { get; set; }
+
+        public bool IsRequired { get; set; }
+
+        [ForeignKey("Section")]
+        [Column("Section_Id")]
+        public long SectionId { get; set; }
+        public virtual SectionEntity Section { get; set; }
     }
 }

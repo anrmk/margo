@@ -1,21 +1,19 @@
 ﻿//Submit form using jquery ajax
-$.fn.ajaxSubmit = function (opt) {
+$.fn.ajaxSubmit = function (opt = {}) {
     this.on('submit', e => {
         e.preventDefault();
         var $form = $(e.currentTarget);
-        var data = $form.serializeJSON();
+        //var data = $form.serializeJSON();
 
         var options = $.extend({
             'url': $form.attr('action'),
             'type': $form.attr('method'),
-            'data':  JSON.stringify($form.serializeJSON()),
+            'data': JSON.stringify($form.serializeJSON()),
             'processData': false,
             'contentType': 'application/json; charset=utf-8',
             'complete': (jqXHR, status) => {
-                $form.removeClass('loading');
-                opt.callback(jqXHR, status);
-            },
-            'callback': (jqXHR, status) => { }
+                $form.removeClass('loading').trigger('ajaxSubmitComplete', [jqXHR, status]);
+            }
         }, opt);
 
         //if (options.type.toLowerCase() === 'post') {
@@ -24,7 +22,39 @@ $.fn.ajaxSubmit = function (opt) {
 
         $form.addClass('loading');
         $.ajax(options);
-    })
+    }).on('ajaxSubmitComplete', (e, jqXHR, status) => {
+        e.preventDefault();
+        var func = $(e.currentTarget).attr('rel');
+        if (func === 'dialog') {
+            if (status === 'success') {
+                $(`<div>${jqXHR.responseText}</div>`).dialog();
+            }
+        } else if (typeof window[func] === 'function') {
+            window[func](jqXHR, status);
+        }
+    });
+}
+
+$.fn.ajaxClick = function (opt = {}) {
+    this.on('click', (e) => {
+        e.preventDefault();
+        var $link = $(e.currentTarget);
+        var options = $.extend({
+            'url': $link.attr('href'),
+            'complete': (jqXHR, status) => {
+                $link.trigger('ajaxClick', [jqXHR, status]);
+            }
+        }, opt);
+        $.ajax(options);
+    }).on('ajaxClick', (e, jqXHR, status) => {
+        e.preventDefault();
+        var func = $(e.currentTarget).attr('rel');
+        if (func === 'dialog') {
+            if (status === 'success') {
+                $(`<div>${jqXHR.responseText}</div>`).dialog();
+            }
+        }
+    });
 }
 
 $.fn.formatCurrency = function (value) {
@@ -59,12 +89,7 @@ $.fn.dialog = function (opt) {
             var $modal = $(this);
             var $form = $modal.find('form');
             if ($form.length) {
-                $form.ajaxSubmit({
-                    'callback': (jqXHR, status) => {
-                        $('.modal').modal('hide');
-                        $.fn.message({ 'content': jqXHR.responseText, 'status': status });
-                    }
-                });
+                $form.ajaxSubmit();
                 $modal.find('button.submit').attr('form', $form.attr('id'));
             }
         }
@@ -72,7 +97,7 @@ $.fn.dialog = function (opt) {
 }
 
 $.fn.message = function (opt) {
-    var options = $.extend({}, { 'title': '', 'content': '', 'status' : 'info' }, opt);
+    var options = $.extend({}, { 'title': '', 'content': '', 'status': 'info' }, opt);
     var msg = `<div class='ui floating ${options.status} message'><i class='close icon'></i> <div class='header'>${options.title}</div><p>${options.content}</p></div>`;
     $(msg).appendTo('body').delay(1500).remove();
 }

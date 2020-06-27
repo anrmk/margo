@@ -1,14 +1,10 @@
 using System;
 using System.IO;
 
-using Core.Context;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using NLog.Web;
 
 namespace Web {
     public class Program {
@@ -33,6 +29,6 @@ namespace Web {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
                 });
-            //.UseNLog();
+        //.UseNLog();
     }
 }

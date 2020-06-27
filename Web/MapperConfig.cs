@@ -103,6 +103,7 @@ namespace Web {
             #region SECTIONS
             CreateMap<SectionViewModel, SectionDto>().ReverseMap();
             CreateMap<SectionListViewModel, SectionDto>().ReverseMap();
+            CreateMap<SectionFieldViewModel, SectionFieldDto>().ReverseMap();
 
             #endregion
 

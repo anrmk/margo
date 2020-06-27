@@ -138,11 +138,11 @@ namespace Web.Controllers.Api {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
 
-        private readonly ICrudBusinessManager _businessManager;
+        private readonly ISectionBusinessManager _businessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
 
         public VendorController(IMapper mapper, IViewRenderService viewRenderService,
-            ICrudBusinessManager businessManager,
+            ISectionBusinessManager businessManager,
             IVendorBusinessManager vendorBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;

@@ -4,8 +4,6 @@ namespace Web.ViewModels {
     public class SectionViewModel {
         public long Id { get; set; }
 
-        public int Sort { get; set; }
-
         [Required]
         [MaxLength(24)]
         public string Name { get; set; }

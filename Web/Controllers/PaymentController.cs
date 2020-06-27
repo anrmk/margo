@@ -15,10 +15,10 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class PaymentController: BaseController<PaymentController> {
-        private readonly ICrudBusinessManager _crudBusinessManager;
+        private readonly ISectionBusinessManager _crudBusinessManager;
 
         public PaymentController(ILogger<PaymentController> logger, IMapper mapper,
-            ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
+            ISectionBusinessManager crudBusinessManager) : base(logger, mapper) {
             _crudBusinessManager = crudBusinessManager;
         }
 
@@ -126,8 +126,8 @@ namespace Web.Controllers.Api {
     //[ApiController]
     public class PaymentController: ControllerBase {
         private readonly IMapper _mapper;
-        private readonly ICrudBusinessManager _crudBusinessManager;
-        public PaymentController(IMapper mapper, ICrudBusinessManager businessManager) {
+        private readonly ISectionBusinessManager _crudBusinessManager;
+        public PaymentController(IMapper mapper, ISectionBusinessManager businessManager) {
             _mapper = mapper;
             _crudBusinessManager = businessManager;
         }

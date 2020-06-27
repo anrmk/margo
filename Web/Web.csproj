@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\InvoiceController.cs" />
+    <Compile Remove="Controllers\PaymentController.cs" />
   </ItemGroup>
 
   <ItemGroup>

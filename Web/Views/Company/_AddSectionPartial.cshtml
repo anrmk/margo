@@ -1,25 +1,21 @@
 ﻿@model Web.ViewModels.CompanySectionViewModel
 
 @{
-    ViewData["Title"] = "Create Section";
-    Layout = null;
+    var guid = Guid.NewGuid();
+    var sections = (List<Web.ViewModels.SectionViewModel>)ViewData["SectionList"];
 }
-
-
-<form id="submitModalForm" asp-action="AddSection">
-    <input type="hidden" asp-for="CompanyId" />
-    <input type="hidden" asp-for="Id" value="@Model.Id" />
-    <div class="alert alert-primary">
-        Sections are containers which contain informations in fields. Sections provide a way to organize your form and apply a particular layout.<br />
-        Note: It's easiest to <a asp-controller="Section" asp-action="Create">create</a> the page first, then the fields within the page.
-    </div>
-    <div class="form-group row mb-3">
-        <div class="col">
+<form class="ui form" id="@guid" asp-action="CreateCompanySection" rel="createCompanySectionComplete">
+    <fieldset>
+        <h4 class="ui dividing header">Adding new section</h4>
+        <input type="hidden" asp-for="CompanyId" required />
+        <div class="field">
             <label asp-for="SectionId"></label>
-            <select asp-for="SectionId" asp-items="@ViewBag.Sections" class="form-control" >
-                <option value="">Select customer type</option>
+            <select asp-for="SectionId" class="ui fluid dropdown" required>
+                <option value="" disabled selected>Select Section</option>
+                @foreach(var item in sections) {
+                    <option value="@item.Id">@item.Name</option>
+                }
             </select>
-            <span asp-validation-for="SectionId" class="text-danger"></span>
         </div>
-    </div>
+    </fieldset>
 </form>

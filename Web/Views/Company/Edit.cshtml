@@ -2,257 +2,130 @@
 
 @{
     ViewData["Title"] = "Edit Company";
-    ViewData["SubTitle"] = "Please provide all required details to edit company info";
+    var guid = Guid.NewGuid();
+    var sections = (List<Web.ViewModels.CompanySectionViewModel>)ViewBag.Sections;
 }
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index">Companies</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.General.Name</li>
-    </ol>
-</nav>
-
-<div class="row">
-    <div class="col-md-12 col-lg-3">
-        <div class="card">
-            <div class="card-body">
-                <ul class="nav nav-pills nav-pills-primary flex-column">
-                    <li class="nav-item"><a class="nav-link active" id="general-item" data-toggle="list" href="#general" role="tab" aria-controls="general">Overview</a></li>
-                    <li class="nav-item"><a class="nav-link" id="address-item" data-toggle="list" href="#address" role="tab" aria-controls="address">Address</a></li>
-
-                    @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                        <li class="nav-item">
-                            <a class="nav-link" id="@(section.SectionCode)-item" data-toggle="list" href="#@(section.SectionCode)" role="tab" aria-controls="@(section.SectionCode)">
-                                @(section.SectionName)
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </div>
-            <div class="card-footer ml-auto mr-auto">
-                <a class="btn btn-primary" asp-action="AddSection" asp-route-id="@Model.Id" data-target="modal" title="Add new section"><i class="material-icons">add</i> Add new section</a>
-            </div>
+@section RightSidebar {
+    <div class="ui sticky">
+        <div class="ui clearing">
+            <h4 class="ui header">Sections</h4>
+            <a asp-action="AddCompanySection" asp-route-id="@Model.Id" data-request="ajax" rel="dialog"><i class="plus icon"></i> Create</a>
         </div>
-    </div>
-
-    <div class="col-md-12 col-lg-9">
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-item">
-                <div class="card">
-                    <div class="card-header card-header-rose card-header-icon">
-                        <div class="card-icon"><i class="material-icons">info</i></div>
-                        <h4 class="card-title">General</h4>
-                    </div>
-                    <div class="card-body">
-                        <form id="submitGeneralForm" method="POST" asp-action="Edit">
-                            <fieldset>
-                                <input type="hidden" name="Id" value="@Model.Id" />
-                                <div class="form-row mb-3">
-                                    <div class="col-4">
-                                        <label asp-for="General.No"></label>
-                                        <input asp-for="General.No" name="No" class="form-control" required />
-                                        <span asp-validation-for="General.No" class="text-danger"></span>
-                                    </div>
-                                    <div class="col-8">
-                                        <label asp-for="General.Name"></label>
-                                        <input asp-for="General.Name" name="Name" class="form-control" required />
-                                        <span asp-validation-for="General.Name" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-4">
-                                        <label asp-for="General.Website"></label>
-                                        <input asp-for="General.Website" name="Website" class="form-control" placeholder="http://" />
-                                        <span asp-validation-for="General.Website" class="text-danger"></span>
-                                    </div>
-                                    <div class="col-4">
-                                        <label asp-for="General.PhoneNumber"></label>
-                                        <input asp-for="General.PhoneNumber" name="PhoneNumber" class="form-control" />
-                                        <span asp-validation-for="General.PhoneNumber" class="text-danger"></span>
-                                    </div>
-                                    <div class="col-4">
-                                        <label asp-for="General.Email"></label>
-                                        <input asp-for="General.Email" name="Email" class="form-control" />
-                                        <span asp-validation-for="General.Email" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-4">
-                                        <label asp-for="General.CEO"></label>
-                                        <input asp-for="General.CEO" name="CEO" class="form-control" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label asp-for="General.EIN"></label>
-                                        <input asp-for="General.EIN" name="EIN" class="form-control" />
-                                    </div>
-                                    <div class="col-3">
-                                        <label asp-for="General.DB"></label>
-                                        <input asp-for="General.DB" name="DB" class="form-control" />
-                                        <span asp-validation-for="General.DB" class="text-danger"></span>
-                                    </div>
-                                    <div class="col-2">
-                                        <label asp-for="General.Founded"></label>
-                                        <input asp-for="General.Founded" type="date" name="Founded" class="form-control" />
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="card-footer d-flex justify-content-end">
-                        <button type="submit" id="saveBtn" class="btn btn-primary" form="submitGeneralForm">Save</button>
-                        <a asp-action="index" class="btn btn-link">Back</a>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-item">
-                <div class="card">
-                    <div class="card-header card-header-rose card-header-icon">
-                        <div class="card-icon">
-                            <i class="material-icons">home</i>
-                        </div>
-                        <h4 class="card-title">Address Form</h4>
-                    </div>
-                    <div class="card-body">
-                        <form id="submitAddressForm" method="POST" asp-action="EditAddress">
-                            <fieldset>
-                                <input type="hidden" name="CompanyId" value="@Model.Id" />
-                                <input type="hidden" name="Id" value="@Model.Address.Id" />
-                                <div class="form-row mb-3">
-                                    <div class="col-8">
-                                        <label asp-for="Address.Address"></label>
-                                        <input asp-for="Address.Address" type="text" name="Address" class="form-control" />
-                                        <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
-                                    </div>
-                                    <div class="col-4">
-                                        <label asp-for="Address.City"></label>
-                                        <input asp-for="Address.City" type="text" name="City" class="form-control" />
-                                        <span asp-validation-for="Address.City" class="form-text text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col">
-                                        <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                                        <input asp-for="Address.Address2" type="text" name="Address2" class="form-control" placeholder="Appartment or suite" />
-                                        <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col">
-                                        <label asp-for="Address.Country"></label>
-                                        <input asp-for="Address.Country" type="text" name="Country" class="form-control" />
-                                        <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
-                                    </div>
-
-                                    <div class="col">
-                                        <label asp-for="Address.State"></label>
-                                        <input asp-for="Address.State" type="text" name="State" class="form-control" />
-                                        <span asp-validation-for="Address.State" class="form-text text-danger"></span>
-                                    </div>
-
-                                    <div class="col">
-                                        <label asp-for="Address.ZipCode"></label>
-                                        <input asp-for="Address.ZipCode" type="text" name="ZipCode" class="form-control" />
-                                        <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="card-footer d-flex justify-content-end">
-                        <button type="submit" id="saveBtn" class="btn btn-primary" form="submitAddressForm">Save</button>
-                        <a asp-action="index" class="btn btn-link">Back</a>
-                    </div>
-                </div>
-            </div>
-            @foreach(var section in ViewBag.Sections as List<Web.ViewModels.CompanySectionViewModel>) {
-                <div class="tab-pane fade" id="@(section.SectionCode)" role="tabpanel" aria-labelledby="@(section.SectionCode)-item">
-                    <div class="card">
-                        <div class="card-header card-header-rose card-header-icon">
-                            <div class="card-icon"><i class="material-icons">info</i></div>
-                            <h4 class="card-title">@(section.SectionName)</h4>
-                        </div>
-
-                        <div class="card-body">
-                            <p>@(section.SectionDescription)</p>
-                            <div id="tableToolbar_@(section.Id)">
-                                <a class="btn btn-primary" asp-action="AddSectionField" asp-route-companysectionid="@(section.Id)" data-target="modal"><i class="material-icons mr-1">add</i> Add new field</a>
-                                <button id="bulkDeleteBtn" class="btn btn-danger" data-action="delete" data-target="#datatable_@(section.Id)" onclick="javascript: bulkDelete(this)" disabled><i class="material-icons">delete_outline</i> Remove</button>
-                            </div>
-
-                            <table id="datatable_@(section.Id)" data-toggle="table" data-url="/api/company/section/@(section.Id)/fields" data-toolbar="#tableToolbar_@(section.Id)">
-                                <thead>
-                                    <tr>
-                                        <th data-checkbox="true"></th>
-                                        <th data-field="name" data-sortable="true">Name</th>
-                                        <th data-field="value" data-sortable="true">Value</th>
-                                        <th data-field="link" data-formatter="$.fn.bootstrapTable.formatLink">Link</th>
-                                        <th data-field="note">Note</th>
-                                        <th data-formatter="actionFormatter" class="text-right"></th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+        <div id="sectionsContainer" class="ui vertical following fluid accordion text menu">
+            @foreach(var section in sections) {
+                <a class="item" href="#section_@(section.Id)">@(section.SectionName)</a>
             }
         </div>
     </div>
+}
+
+<div role="toolbar" class="ui secondary menu">
+    <div class="right menu">
+        <form asp-action="Delete" asp-route-Id="@Model.Id" method="delete" >
+            <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
+        </form>
+    </div>
+</div>
+
+<div class="ui raised segment">
+    <form id="@guid" class="ui form" asp-action="Edit" method="post">
+        <fieldset>
+            <h4 class="ui dividing header">General</h4>
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="two fields">
+                <div class="field required">
+                    <label asp-for="General.No"></label>
+                    <input asp-for="General.No" name="No" required />
+                    <span asp-validation-for="General.No"></span>
+                </div>
+                <div class="field required">
+                    <label asp-for="General.Name"></label>
+                    <input asp-for="General.Name" name="Name" required />
+                    <span asp-validation-for="General.Name"></span>
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <label asp-for="General.Website"></label>
+                    <input asp-for="General.Website" name="Website" placeholder="http://" />
+                    <span asp-validation-for="General.Website"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="General.PhoneNumber"></label>
+                    <input asp-for="General.PhoneNumber" name="PhoneNumber" />
+                    <span asp-validation-for="General.PhoneNumber"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="General.Email"></label>
+                    <input asp-for="General.Email" name="Email" />
+                    <span asp-validation-for="General.Email"></span>
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <label asp-for="General.CEO"></label>
+                    <input asp-for="General.CEO" name="CEO" />
+                </div>
+                <div class="field">
+                    <label asp-for="General.EIN"></label>
+                    <input asp-for="General.EIN" name="EIN" />
+                </div>
+                <div class="field">
+                    <label asp-for="General.DB"></label>
+                    <input asp-for="General.DB" name="DB" />
+                    <span asp-validation-for="General.DB"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="General.Founded"></label>
+                    <input asp-for="General.Founded" type="date" name="Founded" />
+                </div>
+            </div>
+            <button type="submit" class="ui submit button">Save</button>
+        </fieldset>
+    </form>
+</div>
+
+<div id="cardContainer" class="ui cards">
+    @foreach(var section in sections) {
+    <div class="card" id="section_@(section.Id)">
+        <div class="content">
+            <form asp-action="DeleteCompanySection" asp-route-id="@(section.Id)" data-request="ajax" rel="deleteCompanySectionComplete" method="delete">
+                <button class="mini ui icon button right floated" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="close icon"></i></button>
+            </form>
+            <div class="header">@(section.SectionName)</div>
+            <div class="meta">@(section.SectionDescription)</div>
+            <div class="description">
+                <p></p>
+            </div>
+        </div>
+        <a class="ui bottom attached button" asp-action="AddCompanySectionField" asp-route-id="@(section.Id)" data-request="ajax" rel="dialog">
+            <i class="add icon"></i> Add
+        </a>
+    </div>
+    }
 </div>
 
 @section Scripts {
     <script type="text/javascript">
-        function actionFormatter(value, row) {
-            return `<a href='/company/editSectionField/${row.id}' class='btn btn-sm btn-round btn-primary' data-target='modal'><i class="material-icons mr-1">edit</i> Edit</a>`;
+        function createCompanySectionComplete(jqXHR, status) {
+            if (status === 'success') {
+                var data = jqXHR.responseJSON;
+                $('#sectionsContainer').append(`<a class='item' href='#${data.sectionCode}'>${data.sectionName}</a>`);
+                $('#cardContainer').append(``);
+                $('.modal').modal('hide');
+            }
         }
 
-        function bulkDelete(e) {
-            //e.preventDefault();
-            var $bulkDeleteBtn = $(e);
-            var target = $bulkDeleteBtn.data('target');
-            var $table = $(target);
-
-            if (!confirm('Are you sure want to delete this?')) { return false; }
-
-            var selections = $table.bootstrapTable('getSelections');
-            var ids = selections.map(x => x.id);
-
-            if (ids.length > 0) {
-                var options = {
-                    'type': 'post',
-                    'url': '/api/company/section/fields/delete',
-                    'data': JSON.stringify(ids),
-                    'contentType': 'application/json; charset=utf-8'
-                };
-
-                $.ajax(options).done((data, status, jqXHR) => {
-                    if (data == true) {
-                        $bulkDeleteBtn.prop('disabled', true);
-                        $table.bootstrapTable('refresh');
-                    }
-                });
+        function deleteCompanySectionComplete(jqXHR, status) {
+            if (status === 'success') {
+                var data = jqXHR.responseJSON;
+                $(`#section_${data}`).remove();
             }
         }
 
         $(document).ready(function () {
-            var $tables = $('table[data-toggle=table]').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
-                var target = $(this);
-                var selections = target.bootstrapTable('getSelections');
-                var $bulkDeleteBtn = $(target.data('toolbar')).find('button[data-action=delete]');
-                if (!selections.length) {
-                    $bulkDeleteBtn.attr('disabled', true);
-                } else {
-                    $bulkDeleteBtn.removeAttr('disabled');
-                }
-            });
 
-            var url = document.location.toString();
-            if (url.match('#')) {
-                $('#list-tab a[href="#' + url.split('#')[1] + '"]').tab('show');
-            }
-
-            $('#list-tab a').on('shown.bs.tab', function (e) {
-                window.location.hash = e.target.hash;
-            })
         });
     </script>
 }

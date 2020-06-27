@@ -2,8 +2,11 @@
     ViewData["Title"] = "Sections";
 
     var tableId = Guid.NewGuid();
+
     var listUrl = Url.RouteUrl("GetSections");
-    var editUrl = Url.RouteUrl("EditVendor");
+    var deleteUrl = Url.RouteUrl("DeleteSections");
+    var editUrl = Url.Action("Edit");
+    var displayUrl = Url.Action("Details");
 }
 
 @section RightSidebar {
@@ -23,21 +26,35 @@
 
 
 @section Scripts {
-<script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready(function () {
     window.DocumentController = new DocumentController({
         'table': '#@tableId',
         'controller': {
-            'api': '@listUrl',
-            'mvc': '/section'
+            'list': '@listUrl',
+            'delete': '@deleteUrl'
         },
         'columns': [
-            { 'title': '', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+            { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
             { 'title': 'Default', 'data': 'isDefault' },
             { 'title': 'Name', 'data': 'name' },
             { 'title': 'Description ', 'data': 'description'},
-        ]
+        ],
+        'onRowClick': (e, data) => {
+            @*var options = {
+                'url': '@displayUrl' + `/${data.id}`,
+                'complete': (jqXHR, status) => {
+                    if (status === 'success') {
+                        $('#displayContainer').empty().html(jqXHR.responseText);
+                    }
+                }
+            }
+            $.ajax(options);*@
+        },
+        'onDblRowClick': (e, data) => {
+            location.href = '@editUrl' + `/${data.id}`;
+        }
     });
 });
-</script>
+    </script>
 }

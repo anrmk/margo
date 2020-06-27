@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
@@ -17,5 +18,7 @@ namespace Core.Data.Entities {
         public string Description { get; set; }
 
         public bool IsDefault { get; set; }
+
+        public virtual ICollection<SectionFieldEntity> Fields { get; set; }
     }
 }

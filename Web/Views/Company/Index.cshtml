@@ -57,8 +57,6 @@
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'No ', 'data': 'no', 'className': 'collapsing', 'orderable': true },
                 { 'title': 'Name', 'data': 'name' },
-
-                { 'title': 'Address', 'data': 'address' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
             ],
             'onRowClick': (e, data) => {

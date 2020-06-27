@@ -6,20 +6,23 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Extension;
+using Core.Services;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class SectionController: BaseController<SectionController> {
-        private readonly ICrudBusinessManager _crudBusinessManager;
+        private readonly ISectionBusinessManager _sectionBusinessManager;
 
         public SectionController(ILogger<SectionController> logger, IMapper mapper,
-           ICrudBusinessManager crudBusinessManager) : base(logger, mapper) {
-            _crudBusinessManager = crudBusinessManager;
+           ISectionBusinessManager sectionBusinessManager) : base(logger, mapper) {
+            _sectionBusinessManager = sectionBusinessManager;
         }
 
         public ActionResult Index() {
@@ -36,7 +39,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Create(SectionViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.CreateSection(_mapper.Map<SectionDto>(model));
+                    var item = await _sectionBusinessManager.CreateSection(_mapper.Map<SectionDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
@@ -52,10 +55,13 @@ namespace Web.Controllers.Mvc {
         }
 
         public async Task<ActionResult> Edit(long id) {
-            var item = await _crudBusinessManager.GetSection(id);
+            var item = await _sectionBusinessManager.GetSection(id);
             if(item == null) {
                 return NotFound();
             }
+
+            var fields = await _sectionBusinessManager.GetSectionFields(id);
+            ViewBag.SectionFields = _mapper.Map<List<SectionFieldViewModel>>(fields);
 
             return View(_mapper.Map<SectionViewModel>(item));
         }
@@ -65,7 +71,7 @@ namespace Web.Controllers.Mvc {
         public async Task<ActionResult> Edit(long id, SectionViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdateSection(id, _mapper.Map<SectionDto>(model));
+                    var item = await _sectionBusinessManager.UpdateSection(id, _mapper.Map<SectionDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
@@ -81,7 +87,7 @@ namespace Web.Controllers.Mvc {
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id) {
             try {
-                var item = await _crudBusinessManager.DeleteSection(id);
+                var item = await _sectionBusinessManager.DeleteSection(id);
                 if(item == false) {
                     return NotFound();
                 }
@@ -97,21 +103,69 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
     public class SectionController: ControllerBase {
         private readonly IMapper _mapper;
-        private readonly ICrudBusinessManager _businessManager;
+        private readonly IViewRenderService _viewRenderService;
 
-        public SectionController(IMapper mapper, ICrudBusinessManager businessManager) {
+        private readonly ISectionBusinessManager _sectionBusinessManager;
+
+        public SectionController(IMapper mapper, IViewRenderService viewRenderService, 
+            ISectionBusinessManager sectionBusinessManager) {
             _mapper = mapper;
-            _businessManager = businessManager;
+            _viewRenderService = viewRenderService;
+            _sectionBusinessManager = sectionBusinessManager;
         }
 
         [HttpGet("GetSections", Name = "GetSections")]
-        public async Task<Pager<SectionListViewModel>> GetSections(PagerFilterViewModel model) {
-            var result = await _businessManager.GetSectionPage(_mapper.Map<PagerFilter>(model));
+        public async Task<Pager<SectionListViewModel>> GetSections([FromQuery] PagerFilterViewModel model) {
+            var result = await _sectionBusinessManager.GetSectionPage(_mapper.Map<PagerFilter>(model));
             var pager = new Pager<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
+        }
+
+        [HttpGet("DeleteSections", Name = "DeleteSections")]
+        public async Task<ActionResult> DeleteSections([FromQuery] long[] id) {
+            if(id.Length > 0) {
+                var result = await _sectionBusinessManager.DeleteSections(id);
+                if(result)
+                    return Ok(id);
+            }
+            return BadRequest("No items selected");
+        }
+
+        [HttpGet("GetSectionFields", Name = "GetSectionFields")]
+        public async Task<List<SectionFieldViewModel>> GetSectionFields(long id) {
+            var result = await _sectionBusinessManager.GetSectionFields(id);
+            return _mapper.Map<List<SectionFieldViewModel>>(result);
+        }
+
+        [HttpGet("AddSectionField", Name = "AddSectionField")]
+        public async Task<IActionResult> AddSectionField(long id) {
+            var result = await _sectionBusinessManager.GetSection(id);
+            if(result == null)
+                return NotFound();
+
+            //var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+            //    { "Section", _mapper.Map<List<SectionViewModel>>(result) }
+            //};
+
+            var model = new SectionFieldViewModel() { SectionId = id };
+            string html = _viewRenderService.RenderToStringAsync("_AddSectionFieldPartial", model).Result;
+            return Ok(html);
+        }
+
+        [HttpPost("CreateSectionField", Name = "CreateSectionField")]
+        public async Task<IActionResult> CreateSectionField([FromBody] SectionFieldViewModel model) {
+            try {
+                if(ModelState.IsValid) {
+                    var result = await _sectionBusinessManager.CreateSectionField(_mapper.Map<SectionFieldDto>(model));
+                    return Ok(_mapper.Map<SectionFieldViewModel>(result));
+                }
+            } catch(Exception er) {
+                return BadRequest(er.Message);
+            }
+            return Ok();
         }
     }
 }

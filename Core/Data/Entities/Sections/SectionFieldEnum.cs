@@ -1,10 +1,13 @@
-﻿namespace Core.Data.Entities {
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace Core.Data.Entities {
     public enum SectionFieldEnum {
+        [Display(Name ="String")]
         STRING,
-        DECIMAL,
-        EMAIL,
-        DATE,
-        LINK,
-        PHONE
+        [Display(Name = "Number")]
+        NUMBER,
+        [Display(Name = "Date Time")]
+        DATE
     }
 }

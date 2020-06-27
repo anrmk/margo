@@ -37,6 +37,7 @@ namespace Core.Context {
         public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 
         public DbSet<SectionEntity> Sections { get; set; }
+        public DbSet<SectionFieldEntity> SectionFields { get; set; }
 
         public DbSet<VendorEntity> Vendors { get; set; }
         public DbSet<VendorSectionEntity> VendorSections { get; set; }
