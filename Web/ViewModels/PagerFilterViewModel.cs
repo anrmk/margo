@@ -5,7 +5,7 @@ namespace Web.ViewModels {
     /// Filter for list paggination
     /// </summary>
     public class PagerFilterViewModel {
-        [FromQuery(Name = "search")]
+        [FromQuery(Name = "search[value]")]
         public string Search { get; set; } = "";
 
         [FromQuery(Name = "sort")]

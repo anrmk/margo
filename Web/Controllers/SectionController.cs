@@ -10,8 +10,6 @@ using Core.Services;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
@@ -110,7 +108,7 @@ namespace Web.Controllers.Api {
 
         private readonly ISectionBusinessManager _sectionBusinessManager;
 
-        public SectionController(IMapper mapper, IViewRenderService viewRenderService, 
+        public SectionController(IMapper mapper, IViewRenderService viewRenderService,
             ISectionBusinessManager sectionBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
@@ -134,10 +132,17 @@ namespace Web.Controllers.Api {
             return BadRequest("No items selected");
         }
 
+        //[HttpGet("GetSectionFields", Name = "GetSectionFields")]
+        //public async Task<List<SectionFieldViewModel>> GetSectionFields(long id) {
+        //    var result = await _sectionBusinessManager.GetSectionFields(id);
+        //    return _mapper.Map<List<SectionFieldViewModel>>(result);
+        //}
+
         [HttpGet("GetSectionFields", Name = "GetSectionFields")]
-        public async Task<List<SectionFieldViewModel>> GetSectionFields(long id) {
-            var result = await _sectionBusinessManager.GetSectionFields(id);
-            return _mapper.Map<List<SectionFieldViewModel>>(result);
+        public async Task<Pager<SectionFieldViewModel>> GetSectionFields([FromQuery] SectionFieldsFilterViewModel model) {
+            var result = await _sectionBusinessManager.GetSectionFieldsPage(_mapper.Map<SectionFieldsFilterDto>(model));
+            var pager = new Pager<SectionFieldViewModel>(_mapper.Map<List<SectionFieldViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+            return pager;
         }
 
         [HttpGet("AddSectionField", Name = "AddSectionField")]

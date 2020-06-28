@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Entities;
 using Core.Extension;
@@ -13,7 +12,7 @@ namespace Web.ViewModels {
         public string Name { get; set; }
 
         public SectionFieldEnum Type { get; set; }
-        public string TypeName =>  Type.GetAttribute<DisplayAttribute>().Name;
+        public string TypeName => Type.GetAttribute<DisplayAttribute>().Name;
 
         public bool IsRequired { get; set; }
 

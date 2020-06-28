@@ -77,23 +77,33 @@ $.fn.dialog = function (opt) {
     var content = $((this == null || this.length == 0) ? '<p>Nothing to display</p>' : this);
     var options = $.extend({}, { 'title': 'Modal window', 'content': content }, opt);
 
-    var mc = `<div class="ui modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
-        `<div class="content">${options.content.html()}</div>` +
-        `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green submit">OK</button></div>` +
-        `</div>`;
+    if (!window.dialog) {
+        var $mc = $(`<div class="ui modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
+            `<div class="content">${options.content.html()}</div>` +
+            `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green submit">OK</button></div>` +
+            `</div>`);
 
-    $(mc).modal({
-        'closable': false,
-        'transition': 'horizontal flip',
-        'onVisible': function () {
-            var $modal = $(this);
-            var $form = $modal.find('form');
-            if ($form.length) {
-                $form.ajaxSubmit();
-                $modal.find('button.submit').attr('form', $form.attr('id'));
+        window.dialog = $mc.modal({
+            'closable': false,
+            'transition': 'horizontal flip',
+            'onVisible': function () {
+                var $modal = $(this);
+                var $form = $modal.find('form');
+                if ($form.length) {
+                    $form.ajaxSubmit();
+                    $modal.find('button.submit').attr('form', $form.attr('id'));
+                }
+            },
+            'onHidden': function () {
+                var $modal = $(this).find('div.content').empty();
+
             }
-        }
-    }).modal('show');
+        });
+    } else {
+        window.dialog.find('div.header').html(options.title)
+        window.dialog.find('div.content').html(options.content.html())
+    }
+    window.dialog.modal('show');
 }
 
 $.fn.message = function (opt) {

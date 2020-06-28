@@ -3,7 +3,7 @@
     var guid = Guid.NewGuid();
 }
 
-<form id="guid" class="ui form" asp-action="CreateSectionField" rel="createCompanySectionFieldComplete">
+<form id="@guid" class="ui form" asp-action="CreateSectionField" rel="createCompanySectionFieldComplete">
     <fieldset>
         <h4 class="ui dividing header">Section Field</h4>
         <input type="hidden" asp-for="Id" />

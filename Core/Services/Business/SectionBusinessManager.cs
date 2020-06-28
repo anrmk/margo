@@ -24,6 +24,7 @@ namespace Core.Services.Business {
         //  SECTION FIELD
         Task<SectionFieldDto> GetSectionField(long id);
         Task<List<SectionFieldDto>> GetSectionFields(long sectionId);
+        Task<Pager<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter);
         Task<SectionFieldDto> CreateSectionField(SectionFieldDto dto);
         Task<SectionFieldDto> UpdateSectionField(long id, SectionFieldDto dto);
         Task<bool> DeleteSectionField(long id);
@@ -34,7 +35,7 @@ namespace Core.Services.Business {
         private readonly ISectionManager _sectionManager;
         private readonly ISectionFieldManager _sectionFieldManager;
 
-        public SectionBusinessManager(IMapper mapper, ISectionManager sectionManager, 
+        public SectionBusinessManager(IMapper mapper, ISectionManager sectionManager,
             ISectionFieldManager sectionFieldManager) {
             _mapper = mapper;
             _sectionManager = sectionManager;
@@ -510,6 +511,27 @@ namespace Core.Services.Business {
         public async Task<List<SectionFieldDto>> GetSectionFields(long sectionId) {
             var result = await _sectionFieldManager.FindAll(sectionId);
             return _mapper.Map<List<SectionFieldDto>>(result);
+        }
+
+        public async Task<Pager<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter) {
+            var sortby = "Name";
+
+            Expression<Func<SectionFieldEntity, bool>> where = x =>
+                   (true)
+                   && (string.IsNullOrEmpty(filter.Search) || x.Name.ToLower().Contains(filter.Search.ToLower()))
+                   && (x.SectionId == filter.SectionId);
+
+            var tuple = await _sectionFieldManager.Pager<SectionFieldEntity>(where, sortby, filter.Start, filter.Length);
+            var list = tuple.Item1;
+            var count = tuple.Item2;
+
+            if(count == 0)
+                return new Pager<SectionFieldDto>(new List<SectionFieldDto>(), 0, filter.Length, filter.Start);
+
+            var page = (filter.Start + filter.Length) / filter.Length;
+
+            var result = _mapper.Map<List<SectionFieldDto>>(list);
+            return new Pager<SectionFieldDto>(result, count, page, filter.Length);
         }
 
         public async Task<SectionFieldDto> CreateSectionField(SectionFieldDto dto) {

@@ -104,6 +104,8 @@ namespace Web {
             CreateMap<SectionViewModel, SectionDto>().ReverseMap();
             CreateMap<SectionListViewModel, SectionDto>().ReverseMap();
             CreateMap<SectionFieldViewModel, SectionFieldDto>().ReverseMap();
+            CreateMap<SectionFieldsFilterViewModel, SectionFieldsFilterDto>().ReverseMap();
+
 
             #endregion
 

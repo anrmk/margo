@@ -1,19 +1,17 @@
 ﻿$(document).ready(() => {
     // fix menu when passed
-    $('.masthead')
-        .visibility({
-            once: false,
-            onBottomPassed: function () {
-                $('.fixed.menu').transition('fade in');
-            },
-            onBottomPassedReverse: function () {
-                $('.fixed.menu').transition('fade out');
-            }
-        });
+    $('.masthead').visibility({
+        once: false,
+        onBottomPassed: function () {
+            $('.fixed.menu').transition('fade in');
+        },
+        onBottomPassedReverse: function () {
+            $('.fixed.menu').transition('fade out');
+        }
+    });
 
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
-
 }).ajaxSend((event, xhr, options) => {
     //xhr.setRequestHeader("Authorization", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {
@@ -32,7 +30,7 @@ $.extend(true, $.fn.dataTable.defaults, {
     'ordering': false,
     'processing': true,
     'serverSide': true,
-    'searchDelay': 1800,
+    'searchDelay': 3500,
     'autoWidth': false,
     'mark': true,
     'rowId': function (d) {
