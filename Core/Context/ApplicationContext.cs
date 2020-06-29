@@ -45,6 +45,10 @@ namespace Core.Context {
         public DbSet<VendorAddressEntity> VendorAddress { get; set; }
         public DbSet<VendorMediaEntity> VendorMedias { get; set; }
 
+        public DbSet<UccountEntity> Uccounts { get; set; }
+        public DbSet<UccountSectionEntity> UccountSections { get; set; }
+        public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
+
         public DbSet<InvoiceEntity> Invoices { get; set; }
         public DbSet<PaymentEntity> Payments { get; set; }
         #endregion
