@@ -458,7 +458,7 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Length, filter.Start);
+                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
@@ -526,7 +526,7 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionFieldDto>(new List<SectionFieldDto>(), 0, filter.Length, filter.Start);
+                return new Pager<SectionFieldDto>(new List<SectionFieldDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 

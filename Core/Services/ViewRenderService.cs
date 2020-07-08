@@ -15,6 +15,8 @@ namespace Core.Services {
     }
 
     public class ViewRenderService: IViewRenderService {
+        private readonly bool isMainPage = false;
+
         private readonly IRazorViewEngine _razorViewEngine;
         private readonly ITempDataProvider _tempDataProvider;
         //private readonly IServiceProvider _serviceProvider;
@@ -37,7 +39,7 @@ namespace Core.Services {
             var actionContext = _actionContext.ActionContext;
 
             using(var sw = new StringWriter()) {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+                var viewResult = _razorViewEngine.FindView(actionContext, viewName, isMainPage);
 
                 if(viewResult.View == null) {
                     throw new ArgumentNullException($"{viewName} does not match any available view");

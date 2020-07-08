@@ -46,12 +46,7 @@ namespace Web {
             CreateMap<CompanyGeneralViewModel, CompanyGeneralDto>().ReverseMap();
             CreateMap<CompanyAddressViewModel, CompanyAddressDto>().ReverseMap();
 
-            CreateMap<CompanyListViewModel, CompanyDto>()
-                .ReverseMap()
-                .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
-                .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))
-                .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.General.PhoneNumber))
-                .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
+            CreateMap<CompanyListViewModel, CompanyDto>().ReverseMap();
 
             CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
             CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
@@ -59,33 +54,19 @@ namespace Web {
 
             #region VENDOR
             CreateMap<VendorViewModel, VendorDto>().ReverseMap();
-            CreateMap<VendorViewModel, VendorGeneralDto>().ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new VendorGeneralViewModel() {
-                    Id = s.Id,
-                    Name = s.Name,
-                    No = s.No,
-                    PhoneNumber = s.PhoneNumber,
-                    Website = s.Website,
-                    Email = s.Email,
-                    Description = s.Description
-                }));
-
-            CreateMap<VendorGeneralViewModel, VendorGeneralDto>().ReverseMap();
-            CreateMap<VendorAddressViewModel, VendorAddressDto>().ReverseMap();
             CreateMap<VendorSectionViewModel, VendorSectionDto>()
                 .ForMember(d => d.Fields, o => o.Ignore())
                 .ReverseMap();
             CreateMap<VendorSectionFieldViewModel, VendorSectionFieldDto>().ReverseMap();
 
-            CreateMap<VendorListViewModel, VendorDto>()
-                .ReverseMap()
-                .ForMember(d => d.No, o => o.MapFrom(s => s.General.No))
-                .ForMember(d => d.Name, o => o.MapFrom(s => s.General.Name))
-                .ForMember(d => d.Description, o => o.MapFrom(s => s.General.Description))
-                .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.General.PhoneNumber))
-                .ForMember(d => d.Email, o => o.MapFrom(s => s.General.Email))
-                .ForMember(d => d.Website, o => o.MapFrom(s => s.General.Website))
-                .ForMember(d => d.Address, o => o.MapFrom(s => (s.Address != null) ? s.Address.ToString() : ""));
+            CreateMap<VendorListViewModel, VendorDto>().ReverseMap();
+            #endregion
+
+            #region UCCOUNTS
+            CreateMap<UccountViewModel, UccountDto>().ReverseMap();
+            CreateMap<UccountListViewModel, UccountDto>().ReverseMap();
+            CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
+            CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
             #endregion
 
             #region INVOICE
@@ -108,6 +89,10 @@ namespace Web {
 
 
             #endregion
+
+            CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
+            CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
+
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();
         }

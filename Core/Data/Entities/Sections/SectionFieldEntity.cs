@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using Core.Data.Enums;
+
 namespace Core.Data.Entities {
     public class SectionFieldEntity: EntityBase<long> {
         [Required]
         [MaxLength(32)]
         public string Name { get; set; }
 
-        public SectionFieldEnum Type { get; set; }
+        public FieldEnum Type { get; set; }
 
         public bool IsRequired { get; set; }
 

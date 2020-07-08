@@ -4,7 +4,8 @@
     "outputFileName": "wwwroot/css/vendor.min.css",
     "inputFiles": [
       "wwwroot/lib/semantic/semantic.min.css",
-      "wwwroot/lib/jquery-datatables-se/css/dataTables.semanticui.min.css"
+      "wwwroot/lib/jquery-datatables-se/css/dataTables.semanticui.min.css",
+      "wwwroot/lib/jquery-fancytree/dist/skin-lion/ui.fancytree.min.css"
     ],
     "minify": {
       "enabled": false
@@ -28,6 +29,7 @@
       "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
       "wwwroot/lib/jquery-datatables/js/jquery.dataTables.min.js",
       "wwwroot/lib/jquery-datatables-se/js/dataTables.semanticui.min.js",
+      "wwwroot/lib/jquery-fancytree/dist/jquery.fancytree-all-deps.min.js",
 
       "wwwroot/lib/moment/moment.min.js",
       "wwwroot/lib/semantic/semantic.min.js",
@@ -43,6 +45,7 @@
       "wwwroot/js/jquery-extensions.js",
       //"wwwroot/js/notification-hub.js",
       "wwwroot/js/document-controller.js",
+      "wwwroot/js/treeview-controller.js",
       "wwwroot/js/api-controller.js",
       "wwwroot/js/site.js"
     ],

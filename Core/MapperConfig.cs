@@ -15,18 +15,7 @@ namespace Core {
             #region COMPANY
             CreateMap<CompanyDto, CompanyEntity>()
                 .ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new CompanyGeneralDto() {
-                    Id = s.Id,
-                    Name = s.Name,
-                    No = s.No,
-                    PhoneNumber = s.PhoneNumber,
-                    Website = s.Website,
-                    Email = s.Email,
-                    Founded = s.Founded,
-                    EIN = s.EIN,
-                    DB = s.DB,
-                    CEO = s.CEO
-                }));
+              ;
             CreateMap<CompanyGeneralDto, CompanyEntity>().ReverseMap();
             CreateMap<CompanyAddressDto, CompanyAddressEntity>().ReverseMap();
             CreateMap<CompanySectionDto, CompanySectionEntity>()
@@ -59,19 +48,7 @@ namespace Core {
                 .ForMember(d => d.InvoiceNo, o => o.MapFrom(s => s.Invoice != null ? s.Invoice.No : ""));
 
             #region VENDOR
-            CreateMap<VendorDto, VendorEntity>()
-                .ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new VendorGeneralDto() {
-                    Id = s.Id,
-                    No = s.No,
-                    Name = s.Name,
-                    Description = s.Description,
-                    Email = s.Email,
-                    PhoneNumber = s.PhoneNumber,
-                    Website = s.Website
-                }));
-            ;
-            CreateMap<VendorGeneralDto, VendorEntity>().ReverseMap();
+            CreateMap<VendorDto, VendorEntity>().ReverseMap();
             CreateMap<VendorAddressDto, VendorAddressEntity>().ReverseMap();
             CreateMap<VendorSectionDto, VendorSectionEntity>()
                 .ForMember(d => d.Vendor, o => o.Ignore())
@@ -89,6 +66,23 @@ namespace Core {
             CreateMap<SectionFieldDto, SectionFieldEntity>().ReverseMap();
             #endregion
 
+            #region CATEGORY
+            CreateMap<CategoryDto, CategoryEntity>()
+                .ForMember(d => d.Parent, o => o.Ignore())
+                .ReverseMap()
+                .ForMember(d => d.ParentName, o => o.MapFrom(s => s.Parent != null ? s.Parent.Name : ""))
+                ;
+            CreateMap<CategoryFieldDto, CategoryFieldEntity>().ReverseMap();
+            #endregion
+
+            #region UCCOUNTS
+            CreateMap<UccountDto, UccountEntity>()
+                .ReverseMap();
+            //.ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name ?? ""));
+            CreateMap<UccountSectionDto, UccountSectionEntity>().ReverseMap();
+            CreateMap<UccountSectionFieldDto, UccountSectionFieldEntity>().ReverseMap();
+
+            #endregion
         }
     }
 }

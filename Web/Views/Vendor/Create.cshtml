@@ -1,4 +1,4 @@
-﻿@model Web.ViewModels.VendorGeneralViewModel
+﻿@model Web.ViewModels.VendorViewModel
 
 @{
     ViewData["Title"] = "Create Vendor";
@@ -35,24 +35,6 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-row mb-3">
-                <div class="col-4">
-                    <label asp-for="PhoneNumber"></label>
-                    <input asp-for="PhoneNumber" type="text" class="form-control">
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="Email"></label>
-                    <input asp-for="Email" type="text" class="form-control">
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="col-4">
-                    <label asp-for="Website"></label>
-                    <input asp-for="Website" type="text" class="form-control">
-                    <span asp-validation-for="Website" class="text-danger"></span>
-                </div>
-            </div>
-
         </div>
         <div class="card-footer">
             <div class="" role="toolbar" aria-label="Toolbar with button groups">

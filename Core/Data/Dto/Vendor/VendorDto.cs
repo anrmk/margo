@@ -4,7 +4,9 @@ namespace Core.Data.Dto {
     public class VendorDto {
         public long Id { get; set; }
 
-        public VendorGeneralDto General { get; set; }
+        public string No { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
 
         public virtual VendorAddressDto Address { get; set; }
 

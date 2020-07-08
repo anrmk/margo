@@ -16,8 +16,8 @@ namespace Core.Services.Business {
         Task<VendorDto> GetVendor(long id);
         Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter);
         Task<List<VendorDto>> GetVendors();
-        Task<VendorDto> CreateVendor(VendorGeneralDto dto);
-        Task<VendorDto> UpdateVendor(long id, VendorGeneralDto dto);
+        Task<VendorDto> CreateVendor(VendorDto dto);
+        Task<VendorDto> UpdateVendor(long id, VendorDto dto);
         Task<bool> DeleteVendor(long[] ids);
 
         //  VENDOR ADDRESS
@@ -84,12 +84,12 @@ namespace Core.Services.Business {
             return _mapper.Map<List<VendorDto>>(result);
         }
 
-        public async Task<VendorDto> CreateVendor(VendorGeneralDto dto) {
+        public async Task<VendorDto> CreateVendor(VendorDto dto) {
             var entity = await _vendorManager.Create(_mapper.Map<VendorEntity>(dto));
             return _mapper.Map<VendorDto>(entity);
         }
 
-        public async Task<VendorDto> UpdateVendor(long id, VendorGeneralDto dto) {
+        public async Task<VendorDto> UpdateVendor(long id, VendorDto dto) {
             var entity = await _vendorManager.Find(id);
             if(entity == null) {
                 return null;

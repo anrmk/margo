@@ -74,7 +74,7 @@ $.fn.renderDatatableAction = function (data, type, row) {
 }
 
 $.fn.dialog = function (opt) {
-    var content = $((this == null || this.length == 0) ? '<p>Nothing to display</p>' : this);
+    var content = $((this == null || this.length == 0) ? '<p>Nothing to display</p>' : $('<div>').append(this));
     var options = $.extend({}, { 'title': 'Modal window', 'content': content }, opt);
 
     if (!window.dialog) {
@@ -95,8 +95,7 @@ $.fn.dialog = function (opt) {
                 }
             },
             'onHidden': function () {
-                var $modal = $(this).find('div.content').empty();
-
+                $(this).find('div.content').empty();
             }
         });
     } else {

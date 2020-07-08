@@ -17,12 +17,12 @@
             </div>
             <div class="field required">
                 <label asp-for="Type"></label>
-                <select asp-for="Type" asp-items="Html.GetEnumSelectList<Core.Data.Entities.SectionFieldEnum>()" class="custom-select" required></select>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<Core.Data.Enums.FieldEnum>()" class="custom-select" required></select>
             </div>
         </div>
         <div class="field">
             <div class="ui toggle checkbox">
-                <input asp-for="IsRequired" type="checkbox" tabindex="0" class="hidden" data-value-type="boolean" >
+                <input asp-for="IsRequired" type="checkbox" class="hidden" value="true" data-unchecked-value="false" checked >
                 <label asp-for="IsRequired"></label>
             </div>
         </div>

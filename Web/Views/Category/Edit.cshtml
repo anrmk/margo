@@ -1,0 +1,31 @@
+﻿@model Web.ViewModels.CategoryViewModel
+
+@{
+    var formId = Guid.NewGuid();
+}
+
+@*
+    <div role="toolbar" class="ui secondary menu">
+        <div class="right menu">
+            <form asp-action="Delete" asp-route-Id="@Model.Id" method="delete">
+                <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
+            </form>
+        </div>
+    </div>*@
+
+<form id="@formId" class="ui form" asp-action="UpdateCategory" asp-route-id="@Model.Id">
+    <fieldset>
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" required />
+                <span asp-validation-for="Name"></span>
+            </div>
+            <div class="field required">
+                <label asp-for="ParentId"></label>
+                <select asp-for="ParentId" asp-items="@ViewBag.Categories"></select>
+            </div>
+        </div>
+    </fieldset>
+</form>

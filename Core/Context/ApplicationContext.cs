@@ -49,6 +49,9 @@ namespace Core.Context {
         public DbSet<UccountSectionEntity> UccountSections { get; set; }
         public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
 
+        public DbSet<CategoryEntity> Categories { get; set; }
+        public DbSet<CategoryFieldEntity> CategoryFields { get; set; }
+
         public DbSet<InvoiceEntity> Invoices { get; set; }
         public DbSet<PaymentEntity> Payments { get; set; }
         #endregion

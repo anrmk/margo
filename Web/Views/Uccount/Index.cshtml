@@ -1,5 +1,67 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Accounts";
+    var tableId = Guid.NewGuid();
+
+    var listUrl = Url.RouteUrl("GetUccounts");
+    var deleteUrl = Url.RouteUrl("DeleteUccounts");
+    var editUrl = Url.Action("Edit");
+    var displayUrl = Url.Action("Details");
+}
+
+@section RightSidebar {
+    <div></div>
+}
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-action="AddUccount" data-request="ajax" rel="dialog"><i class="plus icon" data-action="create"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
+    </div>
+
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function createUccountComplete(jqXHR, status) {
+            if (status === 'success') {
+                var data = jqXHR.responseJson;
+                $('.modal').modal('hide');
+                window.location = `@(editUrl)/${data.id}`;
+                //window.SectionFieldsTable.draw('true');
+            }
+            alert(status)
+        }
+
+        $(document).ready(function () {
+            window.UccountController = new DocumentController({
+            'table': '#@tableId',
+            'controller': {
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
+            },
+            'columns': [
+                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                //{ 'title': 'No ', 'data': 'no', 'className': 'collapsing', 'orderable': true },
+                { 'title': 'Name', 'data': 'sectionName' },
+                //{ 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+            ],
+            'onRowClick': (e, data) => {
+                var options = {
+                    'url': '@displayUrl' + `/${data.id}`,
+                    'complete': (jqXHR, status) => {
+                        if (status === 'success') {
+                            $('#displayContainer').empty().html(jqXHR.responseText);
+                        }
+                    }
+                }
+                $.ajax(options);
+            },
+            'onDblRowClick': (e, data) => {
+                location.href = '@editUrl' + `/${data.id}`;
+            }
+        });
+        });
+    </script>
 }

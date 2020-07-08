@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Core.Data.Entities;
+using Core.Data.Enums;
 
 namespace Web.ViewModels {
     public class CompanySectionFieldViewModel {
@@ -12,7 +12,7 @@ namespace Web.ViewModels {
 
         [Required]
         [Display(Name = "Input Type")]
-        public SectionFieldEnum Type { get; set; }
+        public FieldEnum Type { get; set; }
 
         [Required]
         [Display(Name = "Name")]

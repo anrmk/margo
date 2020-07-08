@@ -36,6 +36,9 @@
     <div class="item">
         <div class="header">Settings</div>
         <div class="menu">
+            <a class="item @(url.Contains("/category") ? "active" : "")" asp-controller="Category" asp-action="Index">
+                Categories
+            </a>
             <a class="item @(url.Contains("/section") ? "active" : "")" asp-controller="Section" asp-action="Index">
                 Section
             </a>

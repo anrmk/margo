@@ -42,66 +42,22 @@
         <input type="hidden" name="Id" value="@Model.Id" />
         <div class="two fields">
             <div class="field required">
-                <label asp-for="General.No"></label>
-                <input asp-for="General.No" type="text" name="No" required>
-                <span asp-validation-for="General.No" class="text-danger"></span>
+                <label asp-for="No"></label>
+                <input asp-for="No" type="text" name="No" required>
+                <span asp-validation-for="No" class="text-danger"></span>
             </div>
             <div class="field required">
-                <label asp-for="General.Name"></label>
-                <input asp-for="General.Name" type="text" name="Name" required>
-                <span asp-validation-for="General.Name" class="text-danger"></span>
+                <label asp-for="Name"></label>
+                <input asp-for="Name" type="text" name="Name" required>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
         <div class="field">
-            <label asp-for="General.Description">Description <span class="text-muted">(Optional)</span></label>
-            <textarea asp-for="General.Description" name="Description" rows="3"></textarea>
-            <span asp-validation-for="General.Description"></span>
+            <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
+            <textarea asp-for="Description" name="Description" rows="3"></textarea>
+            <span asp-validation-for="Description"></span>
         </div>
         <button type="submit" class="ui submit button">Save</button>
-    </form>
-</div>
-
-<div class="ui raised segment">
-    <form class="ui form" method="POST" asp-action="EditAddress">
-        <h4 class="ui dividing header">Address</h4>
-        <input name="SupplierId" type="hidden" value="@Model.Id" />
-        <input name="Id" type="hidden" value="@Model.Address.Id" />
-        <div class="two fields">
-            <div class="field">
-                <label asp-for="Address.Address"></label>
-                <input asp-for="Address.Address" type="text" name="Address">
-                <span asp-validation-for="Address.Address" class="form-text text-danger"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.City"></label>
-                <input asp-for="Address.City" type="text" name="City">
-                <span asp-validation-for="Address.City" class="form-text text-danger"></span>
-            </div>
-        </div>
-        <div class="form-row mb-3">
-            <div class="col">
-                <label asp-for="Address.Address2">Address 2 <span class="text-muted">(Optional)</span></label>
-                <input asp-for="Address.Address2" type="text" name="Address2" placeholder="Appartment or suite">
-                <span asp-validation-for="Address.Address2" class="form-text text-danger"></span>
-            </div>
-        </div>
-        <div class="form-row mb-3">
-            <div class="col">
-                <label asp-for="Address.Country"></label>
-                <input asp-for="Address.Country" type="text" name="Country">
-                <span asp-validation-for="Address.Country" class="form-text text-danger"></span>
-            </div>
-            <div class="col">
-                <label asp-for="Address.State"></label>
-                <input asp-for="Address.State" type="text" name="State">
-                <span asp-validation-for="Address.State" class="form-text text-danger"></span>
-            </div>
-            <div class="col">
-                <label asp-for="Address.ZipCode"></label>
-                <input asp-for="Address.ZipCode" type="text" name="ZipCode">
-                <span asp-validation-for="Address.ZipCode" class="form-text text-danger"></span>
-            </div>
-        </div>
     </form>
 </div>
 

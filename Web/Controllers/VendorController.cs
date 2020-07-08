@@ -42,16 +42,16 @@ namespace Web.Controllers.Mvc {
         }
 
         public ActionResult Create() {
-            var model = new VendorGeneralViewModel();
+            var model = new VendorViewModel();
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(VendorGeneralViewModel model) {
+        public async Task<ActionResult> Create(VendorViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _vendorBusinessManager.CreateVendor(_mapper.Map<VendorGeneralDto>(model));
+                    var item = await _vendorBusinessManager.CreateVendor(_mapper.Map<VendorDto>(model));
                     if(item == null) {
                         return BadRequest();
                     }
@@ -73,17 +73,17 @@ namespace Web.Controllers.Mvc {
             ViewBag.Sections = _mapper.Map<List<VendorSectionViewModel>>(sections);
 
             var companies = await _companyBusinessManager.GetCompanies();
-            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.General.Name, Value = x.Id.ToString() }).ToList();
+            ViewBag.Companies = companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
             return View(_mapper.Map<VendorViewModel>(item));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(long id, VendorGeneralViewModel model) {
+        public async Task<ActionResult> Edit(long id, VendorViewModel model) {
             try {
                 if(ModelState.IsValid) {
-                    var item = await _vendorBusinessManager.UpdateVendor(id, _mapper.Map<VendorGeneralDto>(model));
+                    var item = await _vendorBusinessManager.UpdateVendor(id, _mapper.Map<VendorDto>(model));
                     if(item == null) {
                         return NotFound();
                     }
@@ -97,7 +97,7 @@ namespace Web.Controllers.Mvc {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAddress(long supplierId, VendorAddressViewModel model) {
+        public async Task<ActionResult> EditAddress(long supplierId, VendorViewModel model) {
             try {
                 if(ModelState.IsValid) {
                     var item = await _vendorBusinessManager.UpdateVendorAddress(supplierId, _mapper.Map<VendorAddressDto>(model));

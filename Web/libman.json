@@ -45,6 +45,23 @@
       "provider": "unpkg"
     },
     {
+      "provider": "unpkg",
+      "library": "jquery.fancytree@2.35.0",
+      "destination": "wwwroot/lib/jquery-fancytree/",
+      "files": [
+        "dist/jquery.fancytree-all.min.js",
+        "dist/jquery.fancytree-all-deps.min.js",
+        "dist/skin-lion/icons-rtl.gif",
+        "dist/skin-lion/icons.gif",
+        "dist/skin-lion/loading.gif",
+        "dist/skin-lion/ui.fancytree.css",
+        "dist/skin-lion/ui.fancytree.less",
+        "dist/skin-lion/ui.fancytree.min.css",
+        "dist/skin-lion/vline-rtl.gif",
+        "dist/skin-lion/vline.gif"
+      ]
+    },
+    {
       "library": "moment.js@2.26.0",
       "destination": "wwwroot/lib/moment/",
       "files": [ "moment.min.js" ]

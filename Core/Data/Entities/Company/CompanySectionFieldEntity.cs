@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using Core.Data.Enums;
+
 namespace Core.Data.Entities {
     [Table(name: "CompanySectionFields")]
     public class CompanySectionFieldEntity: EntityBase<long> {
@@ -10,7 +12,7 @@ namespace Core.Data.Entities {
         public long? CompanySectionId { get; set; }
         public virtual CompanySectionEntity Section { get; set; }
 
-        public SectionFieldEnum Type { get; set; }
+        public FieldEnum Type { get; set; }
 
         [Required]
         [MaxLength(128)]

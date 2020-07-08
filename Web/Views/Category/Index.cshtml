@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Sections";
+
+    var treeId = Guid.NewGuid();
+
+    var listUrl = Url.RouteUrl("GetCategories");
+    var deleteUrl = Url.RouteUrl("DeleteCategories");
+    var editUrl = Url.RouteUrl("EditCategory");
+    var displayUrl = Url.Action("Details");
+}
+
+@section RightSidebar {
+
+}
+
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-controller="Section" asp-action="Create" class="ui button"><i class="fa fa-plus mr-1"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
+    </div>
+
+    <div id="@(treeId)" data-toolbar="#toolbar"></div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        window.TreeViewController = new TreeViewController({
+            'target': '#@treeId',
+            'controller': {
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
+            },
+
+            'onRowClick': (e, data) => {
+
+            },
+            'onDblRowClick': (e, data) => {
+                $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                })
+            }
+        });
+    });
+    </script>
+}

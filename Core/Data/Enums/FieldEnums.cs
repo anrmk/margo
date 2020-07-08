@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Data.Entities {
-    public enum SectionFieldEnum {
+namespace Core.Data.Enums {
+    public enum FieldEnum {
         [Display(Name = "String")]
         STRING,
         [Display(Name = "Number")]
