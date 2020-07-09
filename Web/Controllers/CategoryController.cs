@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Services;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
+
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -36,7 +38,7 @@ namespace Web.Controllers.Mvc {
 
             var categories = await _categoryBussinessManager.GetCategories();
             categories.Remove(item);
-            ViewData["Categories"] = categories.Select(x => new SelectListItem() {Text = x.Name, Value = x.Id.ToString() }).ToList();
+            ViewData["Categories"] = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
             return View(_mapper.Map<CategoryViewModel>(item));
         }
@@ -64,6 +66,30 @@ namespace Web.Controllers.Api {
             return pager;
         }
 
+        [HttpGet("AddCategory", Name = "AddCategory")]
+        public async Task<IActionResult> AddCategory() {
+            var categories = await _categoryBusinessManager.GetCategories();
+            var categoryList = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Categories", categoryList }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("Create", new CategoryViewModel(), viewData);
+            return Ok(html);
+        }
+
+        [HttpPost("CreateCategory", Name = "CreateCategory")]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _categoryBusinessManager.CreateCategory(_mapper.Map<CategoryDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<CategoryViewModel>(item));
+            }
+            return BadRequest();
+        }
+
         [HttpGet("EditCategory", Name = "EditCategory")]
         public async Task<IActionResult> EditCategory([FromQuery] long id) {
             var item = await _categoryBusinessManager.GetCategory(id);
@@ -72,10 +98,10 @@ namespace Web.Controllers.Api {
 
             var categories = await _categoryBusinessManager.GetCategories();
             categories.Remove(item);
-            var cate = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+            var categoryList = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "Categories", cate }
+                { "Categories", categoryList }
             };
 
             var html = await _viewRenderService.RenderToStringAsync("Edit", _mapper.Map<CategoryViewModel>(item), viewData);
@@ -83,7 +109,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdateCategory", Name = "UpdateCategory")]
-        public async Task<IActionResult> UpdateCategory([FromQuery] long id, CategoryViewModel model) {
+        public async Task<IActionResult> UpdateCategory([FromQuery] long id, [FromBody] CategoryViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _categoryBusinessManager.UpdateCategory(id, _mapper.Map<CategoryDto>(model));
                 if(item == null)

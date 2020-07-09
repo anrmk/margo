@@ -15,6 +15,7 @@ namespace Core.Services.Business {
         Task<CategoryDto> GetCategory(long id);
         Task<List<CategoryDto>> GetCategories();
         Task<Pager<CategoryDto>> GetCategoryPage(PagerFilter filter);
+        Task<CategoryDto> CreateCategory(CategoryDto dto);
         Task<CategoryDto> UpdateCategory(long id, CategoryDto dto);
         
         Task<bool> DeleteCategories(long[] ids);
@@ -63,6 +64,12 @@ namespace Core.Services.Business {
 
             var result = _mapper.Map<List<CategoryDto>>(list);
             return new Pager<CategoryDto>(result, count, page, filter.Length);
+        }
+
+        public async Task<CategoryDto> CreateCategory(CategoryDto dto) {
+            var newEntity = _mapper.Map<CategoryEntity>(dto);
+            var entity = await _categoryManager.Create(newEntity);
+            return _mapper.Map<CategoryDto>(entity);
         }
 
         public async Task<CategoryDto> UpdateCategory(long id, CategoryDto dto) {

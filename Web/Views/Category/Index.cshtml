@@ -15,9 +15,12 @@
 
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <a asp-controller="Section" asp-action="Create" class="ui button"><i class="fa fa-plus mr-1"></i> Create</a>
+        <a asp-route="AddCategory" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
+        <div>
+            <input type="search" name="search" incremental placeholder="Search text" autocomplete="off">
         </div>
     </div>
 
@@ -45,5 +48,12 @@
             }
         });
     });
+
+    function ajaxSubmitComplete(jqXHR, status) {
+        if (status === 'success') {
+            window.TreeViewController.reload();
+            window.dialog.modal('hide');
+        }
+    }
     </script>
 }

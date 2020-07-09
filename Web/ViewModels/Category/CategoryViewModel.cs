@@ -13,5 +13,6 @@ namespace Web.ViewModels {
         public string Name { get; set; }
 
         public long? ParentId { get; set; }
+
     }
 }

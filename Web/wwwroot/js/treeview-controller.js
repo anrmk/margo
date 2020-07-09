@@ -31,6 +31,14 @@
             'dblclick': (e, jqXHR) => {
                 this.options.onDblRowClick(e, jqXHR.node.data);
             },
+            'select': (e, jqXHR) => {
+                this.options.selected = jqXHR.tree.getSelectedNodes().map(x => x.key);
+                if (this.options.selected.length > 0) {
+                    this.toolbar.find('button[data-action=delete]').enabled();
+                } else {
+                    this.toolbar.find('button[data-action=delete]').disabled();
+                }
+            }
         });
 
         this.initialize();
@@ -41,6 +49,24 @@
     initialize() {
         var tbody = this.target.find('tbody');
         this.toolbar.find('button[data-action=delete]').on('click', (e) => this.remove(e));
+
+        this.toolbar.find('input[name=search]').on('change search', (e) => {
+            if (e.type === "change" && e.target.onsearch !== undefined) {
+                // We fall back to handling the change event only if the search event is not supported.
+                return;
+            }
+            var n,
+                tree = $.ui.fancytree.getTree(),
+                match = $.trim($(e.target).val());
+
+            // Pass a string to perform case insensitive matching
+            n = tree.filterNodes(match, { mode: "hide" });
+            // This will adjust the start value in case the filtered row set
+            // is not inside the current viewport
+            // tree.setViewport();
+
+            $("span.matches").text(n ? "(" + n + " matches)" : "");
+        });
 
         //tbody.on('click', 'tr', (e) => {
         //    var target = $(e.currentTarget);
@@ -79,6 +105,11 @@
         //})
     }
 
+    reload() {
+        var tree = this.treeview.fancytree('getTree');
+        tree.reload();
+    }
+
     remove(e) {
         if (!confirm('Are you sure want to delete this?')) { return false; }
 
@@ -89,8 +120,17 @@
             'contentType': 'application/json; charset=utf-8',
             'complete': (jqXHR, status) => {
                 if (status === 'success') {
-                    var ids = this.options.selected.map(x => '#row_' + x);
-                    this.treeview.rows(ids).remove().draw(false);
+                    this.reload();
+
+                    //selNodes = tree.getSelectedNodes();
+
+                    //selNodes.forEach(function (node) {
+                    //    while (node.hasChildren()) {
+                    //        node.getFirstChild().moveTo(node.parent, "child");
+                    //    }
+                    //    node.remove();
+                    //});
+
                     this.options.selected = [];
                 }
             }

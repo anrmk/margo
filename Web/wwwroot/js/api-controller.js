@@ -3,7 +3,6 @@ $.fn.ajaxSubmit = function (opt = {}) {
     this.on('submit', e => {
         e.preventDefault();
         var $form = $(e.currentTarget);
-        //var data = $form.serializeJSON();
 
         var options = $.extend({
             'url': $form.attr('action'),
@@ -16,21 +15,19 @@ $.fn.ajaxSubmit = function (opt = {}) {
             }
         }, opt);
 
-        //if (options.type.toLowerCase() === 'post') {
-        //    options.data =data);
-        //}
-
         $form.addClass('loading');
         $.ajax(options);
     }).on('ajaxSubmitComplete', (e, jqXHR, status) => {
         e.preventDefault();
-        var func = $(e.currentTarget).attr('rel');
+        var func = $(e.currentTarget).attr('rel') || 'ajaxSubmitComplete';
         if (func === 'dialog') {
             if (status === 'success') {
                 $(`<div>${jqXHR.responseText}</div>`).dialog();
             }
         } else if (typeof window[func] === 'function') {
             window[func](jqXHR, status);
+        } else {
+            //window.dialog.modal('hide');
         }
     });
 }
