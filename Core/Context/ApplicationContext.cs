@@ -5,7 +5,6 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 
 using Core.Data.Entities;
-using Core.Data.Entities.Vendor;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -40,10 +39,10 @@ namespace Core.Context {
         public DbSet<SectionFieldEntity> SectionFields { get; set; }
 
         public DbSet<VendorEntity> Vendors { get; set; }
-        public DbSet<VendorSectionEntity> VendorSections { get; set; }
-        public DbSet<VendorSectionFieldEntity> VendorSectionFields { get; set; }
-        public DbSet<VendorAddressEntity> VendorAddress { get; set; }
-        public DbSet<VendorMediaEntity> VendorMedias { get; set; }
+        //public DbSet<VendorSectionEntity> VendorSections { get; set; }
+        public DbSet<VendorFieldEntity> VendorSectionFields { get; set; }
+        //public DbSet<VendorAddressEntity> VendorAddress { get; set; }
+        //public DbSet<VendorMediaEntity> VendorMedias { get; set; }
 
         public DbSet<UccountEntity> Uccounts { get; set; }
         public DbSet<UccountSectionEntity> UccountSections { get; set; }

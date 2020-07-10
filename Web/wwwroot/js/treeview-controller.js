@@ -55,7 +55,6 @@
 
         this.initialize();
         this.callback = callback;
-        //this.callback(this);
     }
 
     initialize() {
@@ -79,47 +78,10 @@
 
             $("span.matches").text(n ? "(" + n + " matches)" : "");
         });
-
-        //tbody.on('click', 'tr', (e) => {
-        //    var target = $(e.currentTarget);
-        //    var row = this.datatable.row(target);
-
-        //    if (target.hasClass('active')) {
-        //        target.removeClass('active');
-        //    } else {
-        //        this.treeview.find('tr.active').removeClass('active');
-        //        target.addClass('active');
-        //    }
-        //    this.options.onRowClick(e, row.data());
-        //});
-
-        //tbody.on('dblclick', 'tr', (e) => {
-        //    var row = this.datatable.row(e.currentTarget);
-        //    this.options.onDblRowClick(e, row.data());
-        //});
-
-        //tbody.on('change', 'input', (e) => {
-        //    var $input = $(e.currentTarget);
-        //    var value = Number($input.val());
-        //    var index = $.inArray(value, this.options.selected);
-
-        //    if (index === -1) {
-        //        this.options.selected.push(value);
-        //    } else {
-        //        this.options.selected.splice(index, 1);
-        //    }
-
-        //    if (this.options.selected.length > 0) {
-        //        this.toolbar.find('button[data-action=delete]').enabled();
-        //    } else {
-        //        this.toolbar.find('button[data-action=delete]').disabled();
-        //    }
-        //})
     }
 
     reload() {
-        var tree = this.treeview.fancytree('getTree');
-        tree.reload();
+        this.treeview.fancytree('getTree').reload();
     }
 
     remove(e) {
@@ -133,7 +95,6 @@
             'complete': (jqXHR, status) => {
                 if (status === 'success') {
                     this.reload();
-
                     //selNodes = tree.getSelectedNodes();
 
                     //selNodes.forEach(function (node) {

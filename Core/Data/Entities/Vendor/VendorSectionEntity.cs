@@ -13,6 +13,6 @@ namespace Core.Data.Entities {
         public long? SectionId { get; set; }
         public virtual SectionEntity Section { get; set; }
 
-        public virtual ICollection<VendorSectionFieldEntity> Fields { get; set; }
+        public virtual ICollection<VendorFieldEntity> Fields { get; set; }
     }
 }

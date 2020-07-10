@@ -11,6 +11,6 @@ namespace Core.Data.Dto {
         public string SectionName { get; set; }
         public string SectionCode { get; set; }
 
-        public virtual List<VendorSectionFieldDto> Fields { get; set; }
+        public virtual List<VendorFieldDto> Fields { get; set; }
     }
 }

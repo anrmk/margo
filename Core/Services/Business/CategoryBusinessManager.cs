@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 
@@ -17,8 +16,8 @@ namespace Core.Services.Business {
         Task<Pager<CategoryDto>> GetCategoryPage(PagerFilter filter);
         Task<CategoryDto> CreateCategory(CategoryDto dto);
         Task<CategoryDto> UpdateCategory(long id, CategoryDto dto);
-        
         Task<bool> DeleteCategories(long[] ids);
+        
         Task<bool> DeleteFields(long[] ids);
     }
 

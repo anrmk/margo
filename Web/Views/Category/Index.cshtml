@@ -11,9 +11,7 @@
 }
 
 @section RightSidebar {
-    <div id="viewContainer">
-    </div>
-
+    <div id="@(treeId)_detail"></div>
 }
 
 <div>
@@ -24,7 +22,7 @@
         </div>
     </div>
 
-    <div id="@(treeId)" data-toolbar="#toolbar" class="ui orange segment"></div>
+    <div id="@(treeId)" class="ui orange segment" data-toolbar="#toolbar"></div>
 </div>
 
 @section Scripts {
@@ -36,10 +34,9 @@
                 'list': '@listUrl',
                 'delete': '@deleteUrl'
             },
-
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#viewContainer').html(result);
+                    $('#@(treeId)_detail').html(result);
                 });
             },
             'onDblRowClick': (e, data) => {

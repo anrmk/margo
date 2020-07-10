@@ -9,8 +9,7 @@
         <div class="two fields">
             <div class="field required">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" required />
-                <span asp-validation-for="Name"></span>
+                <input asp-for="Name" data-value-type="string" required />
             </div>
             <div class="field required">
                 <label asp-for="ParentId"></label>
@@ -19,16 +18,16 @@
                 </select>
             </div>
         </div>
-        <div>
-            <div class="ui right floated vertical animated mini button" tabindex="0" onclick="javascript: $.fn.addField('#fieldContainer');">
-                <div class="hidden content">Add</div>
-                <div class="visible content">
-                    <i class="plus icon"></i>
-                </div>
-            </div>
 
-            <h4 class="ui dividing header">Fields</h4>
-            <div id="fieldContainer" class="ui form"></div>
+        <div class="ui right floated vertical animated mini button" tabindex="0" onclick="javascript: $.fn.addField('#@(formId)_container');">
+            <div class="hidden content">Add</div>
+            <div class="visible content">
+                <i class="plus icon"></i>
+            </div>
         </div>
+
+        <h4 class="ui dividing header">Fields</h4>
+        <div id="@(formId)_container" class="ui form"></div>
+
     </fieldset>
 </form>

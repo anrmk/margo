@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
@@ -21,5 +22,7 @@ namespace Web.ViewModels {
         public string CreatedBy { get; set; }
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
+
+        public virtual List<VendorFieldViewModel> Fields { get; set; }
     }
 }

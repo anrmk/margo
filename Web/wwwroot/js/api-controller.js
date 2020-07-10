@@ -26,8 +26,6 @@ $.fn.ajaxSubmit = function (opt = {}) {
             }
         } else if (typeof window[func] === 'function') {
             window[func](e, jqXHR, status);
-        } else {
-            //window.dialog.modal('hide');
         }
     });
     return this;
@@ -117,7 +115,7 @@ $.fn.addField = function (target) {
     $.get('/api/section/getfieldtypes', { cache: true }).done(res => {
         var $section = $(`<div class="inline fields">
             <div class="eight wide field required">
-                <input name="Fields[][Name]" required placeholder="Name" />
+                <input name="Fields[][Name]" required placeholder="Name" data-value-type="string" />
             </div>
             <div class="four wide field required" placeholder="Parent">
                 <select name="Fields[][Type]" data-value-type="number" required >

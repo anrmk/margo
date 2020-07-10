@@ -1,82 +1,56 @@
 ﻿@model Web.ViewModels.VendorViewModel
 
 @{
-    ViewData["Title"] = "Edit Vendor";
-
-    var guid = Guid.NewGuid();
-
-    var sections = (List<Web.ViewModels.VendorSectionViewModel>)ViewBag.Sections;
+    var formId = Guid.NewGuid();
 }
 
-@section RightSidebar {
-    <div class="ui sticky">
-        <div class="ui clearing">
-            <h4 class="ui header">Sections</h4>
-            <form asp-action="AddVendorSection" asp-route-id="@Model.Id" data-request="ajax" method="get">
-                <input asp-for="Id" type="hidden" />
-                <button class="ui button"><i class="plus icon" data-action="create"></i> Create</button>
-            </form>
-        </div>
-        <div class="ui vertical following fluid accordion text menu">
-            @foreach(var section in sections) {
-                <a class="item" href="#@(section.SectionCode)">@(section.SectionName)</a>
-            }
-
-            @*<a class="item active" href="#displaying-multiple">Displaying Multiple</a>
-                <a class="item" href="#starting-visible">Add</a>*@
-        </div>
-    </div>
-}
-
-<div role="toolbar" class="ui secondary menu">
-    <div class="right menu">
-        <form method="POST" asp-action="Delete">
-            <input asp-for="Id" type="hidden" />
-            <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
-        </form>
-    </div>
-</div>
-<div class="ui raised segment">
-    <form class="ui form" id="@guid" asp-action="Edit" method="post">
-        <h4 class="ui dividing header">General</h4>
-        <input type="hidden" name="Id" value="@Model.Id" />
+<form id="@formId" class="ui form" asp-action="UpdateVendor" asp-route-id="@Model.Id" method="put">
+    <fieldset>
+        <input type="hidden" asp-for="Id" />
         <div class="two fields">
-            <div class="field required">
+            <div class="six width field required">
                 <label asp-for="No"></label>
-                <input asp-for="No" type="text" name="No" required>
-                <span asp-validation-for="No" class="text-danger"></span>
+                <input asp-for="No" data-value-type="string" required>
             </div>
-            <div class="field required">
+            <div class="twelve width field required">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" type="text" name="Name" required>
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <input asp-for="Name" required>
             </div>
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
-            <textarea asp-for="Description" name="Description" rows="3"></textarea>
-            <span asp-validation-for="Description"></span>
+            <textarea asp-for="Description" rows="3"></textarea>
         </div>
-        <button type="submit" class="ui submit button">Save</button>
-    </form>
-</div>
 
-@foreach(var section in sections) {
-<div class="ui raised segment" id="@(section.SectionCode)">
-    <div class="">
-        <h4 class="ui dividing header">@(section.SectionName)</h4>
-        <i class="close icon"></i>
-    </div>
-    <div class="content">
-        <button class="ui button">Add</button>
-    </div>
-</div>
-}
+        <div class="ui right floated vertical animated mini button" onclick="javascript: $.fn.addField('#@(formId)_container');">
+            <div class="hidden content">Add</div>
+            <div class="visible content">
+                <i class="plus icon"></i>
+            </div>
+        </div>
 
-@section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-        });
-    </script>
-}
+        <h4 class="ui dividing header">Fields</h4>
+        <div id="@(formId)_container" class="ui form">
+            @foreach(var field in Model.Fields) {
+                <div id="@(formId +"_"+ field.Id)" class="inline fields">
+                    <input type="hidden" name="Fields[][Id]" value="@field.Id" />
+                    <div class="eight wide field required">
+                        <input name="Fields[][Name]" required placeholder="Name" value="@field.Name" data-value-type="string" />
+                    </div>
+                    <div class="four wide field required">
+                        <select name="Fields[][Type]" asp-for="@field.Type" asp-items="Html.GetEnumSelectList<Core.Data.Enums.FieldEnum>()" data-value-type="number" required></select>
+                    </div>
+                    <div class="three wide field">
+                        <div class="ui toggle checkbox">
+                            <input name="Fields[][IsRequired]" type="checkbox" data-value-type="boolean" @(field.IsRequired ? "checked" : "")>
+                            <label>Is Required</label>
+                        </div>
+                    </div>
+                    <div class="one wide field">
+                        <a asp-action="DeleteVendorField" asp-route-id="@field.Id" data-request="ajax" data-target="#@(formId +"_"+ field.Id)">delete</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </fieldset>
+</form>

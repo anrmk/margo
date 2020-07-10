@@ -52,16 +52,6 @@ namespace Web {
             CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
             #endregion
 
-            #region VENDOR
-            CreateMap<VendorViewModel, VendorDto>().ReverseMap();
-            CreateMap<VendorSectionViewModel, VendorSectionDto>()
-                .ForMember(d => d.Fields, o => o.Ignore())
-                .ReverseMap();
-            CreateMap<VendorSectionFieldViewModel, VendorSectionFieldDto>().ReverseMap();
-
-            CreateMap<VendorListViewModel, VendorDto>().ReverseMap();
-            #endregion
-
             #region UCCOUNTS
             CreateMap<UccountViewModel, UccountDto>().ReverseMap();
             CreateMap<UccountListViewModel, UccountDto>().ReverseMap();
@@ -93,6 +83,10 @@ namespace Web {
             CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryFieldViewModel, CategoryFieldDto>().ReverseMap();
+
+            CreateMap<VendorViewModel, VendorDto>().ReverseMap();
+            CreateMap<VendorListViewModel, VendorDto>().ReverseMap();
+            CreateMap<VendorFieldViewModel, VendorFieldDto>().ReverseMap();
 
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();

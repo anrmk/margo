@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
@@ -15,18 +16,20 @@ namespace Core.Data.Entities {
         [MaxLength(2048)]
         public string Description { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
-        public string PhoneNumber { get; set; }
+        public virtual ICollection<VendorFieldEntity> Fields { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        //[DataType(DataType.PhoneNumber)]
+        //public string PhoneNumber { get; set; }
 
-        [DataType(DataType.Url)]
-        public string Website { get; set; }
+        //[DataType(DataType.EmailAddress)]
+        //public string Email { get; set; }
 
-        [ForeignKey("Address")]
-        [Column("VendorAddress_Id")]
-        public long? AddressId { get; set; }
-        public virtual VendorAddressEntity Address { get; set; }
+        //[DataType(DataType.Url)]
+        //public string Website { get; set; }
+
+        //[ForeignKey("Address")]
+        //[Column("VendorAddress_Id")]
+        //public long? AddressId { get; set; }
+        //public virtual VendorAddressEntity Address { get; set; }
     }
 }

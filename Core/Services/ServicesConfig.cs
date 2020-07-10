@@ -37,10 +37,7 @@ namespace Core.Services {
             services.AddTransient<ICategoryFieldManager, CategoryFieldManager>();
 
             services.AddTransient<IVendorManager, VendorManager>();
-            services.AddTransient<IVendorAddressManager, VendorAddressManager>();
-            services.AddTransient<IVendorMediaManager, VendorMediaManager>();
-            services.AddTransient<IVendorSectionManager, VendorSectionManager>();
-            services.AddTransient<IVendorSectionFieldManager, VendorSectionFieldManager>();
+            services.AddTransient<IVendorFieldManager, VendorFieldManager>();
 
             services.AddTransient<IUccountManager, UccountManager>();
             services.AddTransient<IUccountSectionManager, UccountSectionManager>();

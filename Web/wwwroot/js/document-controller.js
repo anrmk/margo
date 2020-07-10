@@ -32,7 +32,10 @@
 
         this.initialize();
         this.callback = callback;
-        //this.callback(this);
+    }
+
+    reload(paging) {
+        this.datatable.draw(paging);
     }
 
     initialize() {
@@ -78,7 +81,6 @@
 
     remove(e) {
         if (!confirm('Are you sure want to delete this?')) { return false; }
-        //this.datatable.rows('.selected').data();
 
         var options = {
             'url': this.options.controller.delete,

@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Dto\Vendor\VendorAddressDto.cs" />
+    <Compile Remove="Data\Dto\Vendor\VendorSectionDto.cs" />
+    <Compile Remove="Data\Entities\Vendor\VendorAddressEntity.cs" />
+    <Compile Remove="Data\Entities\Vendor\VendorMediaEntity.cs" />
+    <Compile Remove="Data\Entities\Vendor\VendorSectionEntity.cs" />
+    <Compile Remove="Services\Managers\Vendor\VendorAddressManager.cs" />
+    <Compile Remove="Services\Managers\Vendor\VendorMediaManager.cs" />
+    <Compile Remove="Services\Managers\Vendor\VendorSectionManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />

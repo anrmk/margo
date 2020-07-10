@@ -32,10 +32,9 @@ namespace Web.Controllers.Mvc {
             return View();
         }
 
-        public async Task<IActionResult> Details(long id) {
-            return View();
-
-        }
+        //public async Task<IActionResult> Details(long id) {
+        //    return View();
+        //}
 
         public async Task<IActionResult> Edit(long id) {
             var item = await _uccountBusinessManager.GetUccount(id);

@@ -31,19 +31,20 @@ namespace Web.Controllers.Mvc {
             return View();
         }
 
-        public async Task<IActionResult> Edit(long id) {
-            var item = await _categoryBussinessManager.GetCategory(id);
-            if(item == null)
-                return NotFound();
+        //public async Task<IActionResult> Edit(long id) {
+        //    var item = await _categoryBussinessManager.GetCategory(id);
+        //    if(item == null)
+        //        return NotFound();
 
-            var categories = await _categoryBussinessManager.GetCategories();
-            categories.Remove(item);
-            ViewData["Categories"] = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
+        //    var categories = await _categoryBussinessManager.GetCategories();
+        //    categories.Remove(item);
+        //    ViewData["Categories"] = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
-            return View(_mapper.Map<CategoryViewModel>(item));
-        }
+        //    return View(_mapper.Map<CategoryViewModel>(item));
+        //}
     }
 }
+
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
@@ -140,7 +141,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteCategoryField", Name = "DeleteCategoryField")]
-        public async Task<IActionResult> DeleteCategoryField(long id) {
+        public async Task<IActionResult> DeleteCategoryField([FromQuery] long id) {
             var result = await _categoryBusinessManager.DeleteFields(new long[] { id });
             if(result)
                 return Ok(id);

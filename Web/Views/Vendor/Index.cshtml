@@ -5,17 +5,18 @@
 
     var listUrl = Url.RouteUrl("GetVendors");
     var deleteUrl = Url.RouteUrl("DeleteVendors");
-    var editUrl = Url.Action("Edit");
+    var detailsUrl = Url.RouteUrl("DetailsVendor");
+    var editUrl = Url.RouteUrl("EditVendor");
     var displayUrl = Url.Action("Details");
 }
 
 @section RightSidebar {
-
+    <div id="@(tableId)_detail"></div>
 }
 
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <a asp-controller="Vendor" asp-action="Create" class="ui button"><i class="fa fa-plus mr-1"></i> Create</a>
+        <a asp-route="AddVendor" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
@@ -23,7 +24,6 @@
 
     <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
-
 
 @section Scripts {
     <script type="text/javascript">
@@ -37,17 +37,34 @@
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Vendor ', 'className': 'collapsing', 'data': 'no', 'orderable': true },
-                { 'title': 'Name', 'data': 'name' },
-                { 'title': 'Phone', 'data': 'phoneNumber' },
-                { 'title': 'Address', 'data': 'address' },
+                { 'title': 'Business Name', 'data': 'name' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
             ],
+            'onRowClick': (e, data) => {
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#@(tableId)_detail').html(result);
+                });
+            },
             'onDblRowClick': (e, data) => {
-                location.href = '@editUrl'+`/${data.id}`;
+                 $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                });
             }
         });
-
-       // $('#button').click(function () { table.row('.selected').remove().draw(false); });
     });
+
+    ajaxSubmitComplete = function (e, jqXHR, status) {
+        if (status === 'success') {
+            window.DocumentController.reload(false);
+            window.dialog.modal('hide');
+        }
+    };
+
+    ajaxClick = function (e, jqXHR, status) {
+        if (status === 'success') {
+            var target = $(e.target).attr('data-target');
+            $(target).remove();
+        }
+    };
     </script>
 }
