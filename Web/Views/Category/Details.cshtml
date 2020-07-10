@@ -1,0 +1,18 @@
+﻿@model Web.ViewModels.CategoryViewModel
+
+<div class="ui red card">
+    <div class="content">
+        <div class="header">@Model.Name</div>
+        <div class="meta">@Model.ParentName</div>
+        <h4 class="ui dividing header">Fields</h4>
+        <table class="ui table">
+            @foreach(var field in Model.Fields) {
+                <tr>
+                    <td>@field.Name</td>
+                    <td>@field.TypeName</td>
+                    <td>@field.IsRequired</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

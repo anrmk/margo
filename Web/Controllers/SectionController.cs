@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
 using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
@@ -113,6 +116,12 @@ namespace Web.Controllers.Api {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _sectionBusinessManager = sectionBusinessManager;
+        }
+
+        [HttpGet("GetFieldTypes", Name = "GetFieldTypes")]
+        public IActionResult GetFieldTypes() {
+            var cast = Enum.GetValues(typeof(FieldEnum)).Cast<FieldEnum>().Select(x => new { Name = Enum.GetName(typeof(FieldEnum), x), Id =  x, Title =  x.GetAttribute<DisplayAttribute>().Name}).ToList();
+            return Ok(cast);
         }
 
         [HttpGet("GetSections", Name = "GetSections")]

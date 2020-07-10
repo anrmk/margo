@@ -66,6 +66,16 @@ namespace Web.Controllers.Api {
             return pager;
         }
 
+        [HttpGet("DetailsCategory", Name = "DetailsCategory")]
+        public async Task<IActionResult> DetailsCategory([FromQuery] long id) {
+            var item = await _categoryBusinessManager.GetCategory(id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<CategoryViewModel>(item));
+            return Ok(html);
+        }
+
         [HttpGet("AddCategory", Name = "AddCategory")]
         public async Task<IActionResult> AddCategory() {
             var categories = await _categoryBusinessManager.GetCategories();

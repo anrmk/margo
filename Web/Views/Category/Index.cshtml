@@ -5,11 +5,14 @@
 
     var listUrl = Url.RouteUrl("GetCategories");
     var deleteUrl = Url.RouteUrl("DeleteCategories");
+    var detailsUrl = Url.RouteUrl("DetailsCategory");
     var editUrl = Url.RouteUrl("EditCategory");
     var displayUrl = Url.Action("Details");
 }
 
 @section RightSidebar {
+    <div id="viewContainer">
+    </div>
 
 }
 
@@ -19,12 +22,9 @@
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
-        <div>
-            <input type="search" name="search" incremental placeholder="Search text" autocomplete="off">
-        </div>
     </div>
 
-    <div id="@(treeId)" data-toolbar="#toolbar"></div>
+    <div id="@(treeId)" data-toolbar="#toolbar" class="ui orange segment"></div>
 </div>
 
 
@@ -39,12 +39,14 @@
             },
 
             'onRowClick': (e, data) => {
-
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#viewContainer').html(result);
+                });
             },
             'onDblRowClick': (e, data) => {
                 $.get('@editUrl', { 'id': data.id }).done(result => {
                     $(result).dialog();
-                })
+                });
             }
         });
     });

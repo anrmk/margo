@@ -10,8 +10,20 @@
             'onDblRowClick': (e, data) => { }
         }, options);
 
-        this.target = $(this.options.target);
-        this.toolbar = $(this.target.data('toolbar'));
+        this.target = $(this.options.target).addClass('fancytree-connectors');
+        this.toolbar = $(`<div class='ui stackable grid'>
+                            <div class='row'>
+                                <div class='eight wide column' data-id='toolbar'></div>
+                                <div class='right aligned eight wide column'>
+                                    <div class='ui form'>
+                                        <input type='search' name='search' incremental placeholder='Search text' autocomplete='off' />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`).insertBefore(this.target);
+        $(this.target.data('toolbar')).appendTo(this.toolbar.find('div[data-id=toolbar]'));
+
+        //this.toolbar = .insertBefore(this.target);
         this.filter = $(this.options.filter);
         this.treeview = this.target.fancytree({
             'checkbox': true,

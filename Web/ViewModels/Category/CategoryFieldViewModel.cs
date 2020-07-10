@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Core.Data.Enums;
 using Core.Extension;
 
-namespace Web.ViewModels.Category {
+namespace Web.ViewModels {
     public class CategoryFieldViewModel {
         public long Id { get; set; }
 

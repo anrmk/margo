@@ -92,6 +92,7 @@ namespace Web {
 
             CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
+            CreateMap<CategoryFieldViewModel, CategoryFieldDto>().ReverseMap();
 
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();

@@ -13,6 +13,8 @@ namespace Web.ViewModels {
         public string Name { get; set; }
 
         public long? ParentId { get; set; }
+        public string ParentName { get; set; }
 
+        public virtual List<CategoryFieldViewModel> Fields { get; set; }
     }
 }
