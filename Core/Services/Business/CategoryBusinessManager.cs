@@ -19,7 +19,7 @@ namespace Core.Services.Business {
         Task<CategoryDto> UpdateCategory(long id, CategoryDto dto);
         
         Task<bool> DeleteCategories(long[] ids);
-        
+        Task<bool> DeleteFields(long[] ids);
     }
 
     public class CategoryBusinessManager: BaseBusinessManager, ICategoryBusinessManager {
@@ -92,6 +92,13 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
-        
+        public async Task<bool> DeleteFields(long[] ids) {
+            var entities = await _categoryFieldManager.FindAll(ids);
+            if(entities == null)
+                throw new Exception("We did not find records for this request!");
+
+            int result = await _categoryFieldManager.Delete(entities);
+            return result != 0;
+        }
     }
 }

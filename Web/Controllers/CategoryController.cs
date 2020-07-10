@@ -138,5 +138,13 @@ namespace Web.Controllers.Api {
             }
             return BadRequest("No items selected");
         }
+
+        [HttpGet("DeleteCategoryField", Name = "DeleteCategoryField")]
+        public async Task<IActionResult> DeleteCategoryField(long id) {
+            var result = await _categoryBusinessManager.DeleteFields(new long[] { id });
+            if(result)
+                return Ok(id);
+            return BadRequest("No item selected");
+        }
     }
 }

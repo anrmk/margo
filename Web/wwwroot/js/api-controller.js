@@ -25,11 +25,12 @@ $.fn.ajaxSubmit = function (opt = {}) {
                 $(`<div>${jqXHR.responseText}</div>`).dialog();
             }
         } else if (typeof window[func] === 'function') {
-            window[func](jqXHR, status);
+            window[func](e, jqXHR, status);
         } else {
             //window.dialog.modal('hide');
         }
     });
+    return this;
 }
 
 $.fn.ajaxClick = function (opt = {}) {
@@ -45,13 +46,16 @@ $.fn.ajaxClick = function (opt = {}) {
         $.ajax(options);
     }).on('ajaxClick', (e, jqXHR, status) => {
         e.preventDefault();
-        var func = $(e.currentTarget).attr('rel');
+        var func = $(e.currentTarget).attr('rel') || 'ajaxClick';
         if (func === 'dialog') {
             if (status === 'success') {
                 $(`<div>${jqXHR.responseText}</div>`).dialog();
             }
+        } else if (typeof window[func] === 'function') {
+            window[func](e, jqXHR, status);
         }
     });
+    return this;
 }
 
 $.fn.dialog = function (opt) {
@@ -72,6 +76,7 @@ $.fn.dialog = function (opt) {
                 var $form = $modal.find('form');
                 if ($form.length) {
                     $form.ajaxSubmit();
+                    $form.find('a[data-request=ajax]').ajaxClick();
                     $modal.find('button.submit').attr('form', $form.attr('id'));
                 }
             },

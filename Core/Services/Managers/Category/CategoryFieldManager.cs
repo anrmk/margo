@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Managers {
     public interface ICategoryFieldManager: IEntityManager<CategoryFieldEntity> {
         Task<List<CategoryFieldEntity>> FindAll(long categoryId);
+        Task<List<CategoryFieldEntity>> FindAll(long[] ids);
     }
 
     public class CategoryFieldManager: AsyncEntityManager<CategoryFieldEntity>, ICategoryFieldManager {
@@ -18,6 +19,13 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Where(x => x.CategoryId == categoryId)
                 .ToListAsync();
+        }
+
+        public async Task<List<CategoryFieldEntity>> FindAll(long[] ids) {
+            return await DbSet
+            .Include(x => x.Category)
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync();
         }
     }
 }

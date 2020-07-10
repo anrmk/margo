@@ -4,7 +4,7 @@
     var formId = Guid.NewGuid();
 }
 
-<form id="@formId" class="ui form" asp-action="UpdateCategory" asp-route-id="@Model.Id" method="put" >
+<form id="@formId" class="ui form" asp-action="UpdateCategory" asp-route-id="@Model.Id" method="put">
     <fieldset>
         <input type="hidden" name="Id" value="@Model.Id" />
         <div class="two fields">
@@ -18,6 +18,39 @@
                 <select asp-for="ParentId" asp-items="@ViewBag.Categories" data-value-type="number">
                     <option>No parent</option>
                 </select>
+            </div>
+        </div>
+
+        <div>
+            <div class="ui right floated vertical animated mini button" tabindex="0" onclick="javascript: $.fn.addField('#fieldContainer');">
+                <div class="hidden content">Add</div>
+                <div class="visible content">
+                    <i class="plus icon"></i>
+                </div>
+            </div>
+
+            <h4 class="ui dividing header">Fields</h4>
+            <div id="fieldContainer" class="ui form">
+                @foreach(var field in Model.Fields) {
+                    <div class="inline fields" id="categoryField_@field.Id" >
+                        <input type="hidden" name="Fields[][Id]" value="@field.Id" />
+                        <div class="eight wide field required">
+                            <input name="Fields[][Name]" required placeholder="Name" value="@field.Name" />
+                        </div>
+                        <div class="four wide field required" placeholder="Parent">
+                            <select name="Fields[][Type]" asp-for="@field.Type" asp-items="Html.GetEnumSelectList<Core.Data.Enums.FieldEnum>()" data-value-type="number" required></select>
+                        </div>
+                        <div class="three wide field">
+                            <div class="ui toggle checkbox">
+                                <input name="Fields[][IsRequired]" type="checkbox" data-value-type="boolean" tabindex="0" @(field.IsRequired ? "checked" : "")>
+                                <label>Is Required</label>
+                            </div>
+                        </div>
+                        <div class="one wide field">
+                            <a asp-action="DeleteCategoryField" asp-route-id="@field.Id" data-request="ajax" data-target="#categoryField_@field.Id">delete</a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </fieldset>

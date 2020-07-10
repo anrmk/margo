@@ -27,7 +27,6 @@
     <div id="@(treeId)" data-toolbar="#toolbar" class="ui orange segment"></div>
 </div>
 
-
 @section Scripts {
     <script type="text/javascript">
     $(document).ready(function () {
@@ -51,11 +50,18 @@
         });
     });
 
-    function ajaxSubmitComplete(jqXHR, status) {
+    ajaxSubmitComplete = function(e, jqXHR, status) {
         if (status === 'success') {
             window.TreeViewController.reload();
             window.dialog.modal('hide');
         }
-    }
+    };
+
+    ajaxClick = function (e, jqXHR, status) {
+        if (status === 'success') {
+            var target = $(e.target).attr('data-target');
+            $(target).remove();
+        }
+    };
     </script>
 }

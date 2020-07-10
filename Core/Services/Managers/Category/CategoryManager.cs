@@ -14,7 +14,6 @@ namespace Core.Services.Managers {
         Task<CategoryEntity> FindInclude(long id);
         Task<List<CategoryEntity>> FindAll();
         Task<List<CategoryEntity>> FindAll(long[] ids);
-
     }
 
     public class CategoryManager: AsyncEntityManager<CategoryEntity>, ICategoryManager {

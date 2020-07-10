@@ -23,10 +23,10 @@
                         </div>`).insertBefore(this.target);
         $(this.target.data('toolbar')).appendTo(this.toolbar.find('div[data-id=toolbar]'));
 
-        //this.toolbar = .insertBefore(this.target);
         this.filter = $(this.options.filter);
         this.treeview = this.target.fancytree({
             'checkbox': true,
+            'icon': false,
             'source': {
                 'url': this.options.controller.list,
                 'contentType': 'application/json; charset=utf-8',
