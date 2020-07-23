@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "Uccounts")]
@@ -13,6 +14,8 @@ namespace Core.Data.Entities {
         [Column("Vendor_Id")]
         public long VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
+
+        public UccountKindEnums Kind { get; set; }
 
         public virtual ICollection<UccountSectionEntity> Sections { get; set; }
     }
