@@ -15,9 +15,7 @@ namespace Core.Data.Entities {
         public long VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
 
-        public virtual ICollection<ServiceEntity> Services { get; set; }
-
-        public UccountTypes Type { get; set; }
+        public UccountKindEnums Kind { get; set; }
 
         public virtual ICollection<UccountSectionEntity> Sections { get; set; }
     }

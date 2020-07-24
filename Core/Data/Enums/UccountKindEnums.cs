@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.Data.Enums {
-    public enum UccountTypes {
+    public enum UccountKindEnums {
         [Display(Name = "Business account")]
         BUSINESS = 0,
         [Display(Name = "Personal account")]

@@ -72,11 +72,7 @@ namespace Core {
             //.ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name ?? ""));
             CreateMap<UccountSectionDto, UccountSectionEntity>().ReverseMap();
             CreateMap<UccountSectionFieldDto, UccountSectionFieldEntity>().ReverseMap();
-            CreateMap<UccountServiceDto, ServiceEntity>().ReverseMap();
-            #endregion
 
-            #region SERVICES
-            CreateMap<ServiceDto, ServiceEntity>().ReverseMap();
             #endregion
         }
     }
