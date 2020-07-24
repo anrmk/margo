@@ -57,6 +57,7 @@ namespace Web {
             CreateMap<UccountListViewModel, UccountDto>().ReverseMap();
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
+            CreateMap<UccountServiceViewModel, UccountServiceDto>().ReverseMap();
             #endregion
 
             #region INVOICE
@@ -90,6 +91,10 @@ namespace Web {
 
 
             CreateMap<NsiViewModel, NsiDto>().ReverseMap();
+
+            #region SERVICES
+            CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();
+            #endregion
         }
     }
 }
