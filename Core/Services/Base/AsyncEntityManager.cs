@@ -129,25 +129,25 @@ namespace Core.Services.Base {
             return (await query.ToListAsync()).AsQueryable();
         }
 
-        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, bool descSort, int offset, int limit, params string[] properties) {
+        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, bool descSort, int start, int length, params string[] properties) {
             var query = where is null ? DbSet.AsQueryable() : DbSet.Where(where).AsQueryable();
             int count = await query.CountAsync();
 
             query = string.IsNullOrEmpty(order) ?
-               query.OrderBy(x => Guid.NewGuid().ToString()).Skip(offset) :
-               SortExtension.OrderByDynamic(query, order, descSort).Skip(offset);
+               query.OrderBy(x => Guid.NewGuid().ToString()).Skip(start) :
+               SortExtension.OrderByDynamic(query, order, descSort).Skip(start);
 
             foreach(var prop in properties)
                 query = query.Include(prop);
 
-            query = query.Take(limit);
+            query = query.Take(length);
 
             var result = await query.ToListAsync();
             return new Tuple<List<T>, int>(result, count);
         }
 
-        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, int offset, int limit, params string[] properties) {
-            return await Pager<Key>(where, order, false, offset, limit, properties);
+        public async Task<Tuple<List<T>, int>> Pager<Key>(Expression<Func<T, bool>> where, string order, int start, int length, params string[] properties) {
+            return await Pager<Key>(where, order, false, start, length, properties);
         }
     }
 }

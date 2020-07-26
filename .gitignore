@@ -199,7 +199,8 @@ ClientBin/
 *.dbproj.schemaview
 *.pfx
 *.publishsettings
-*.min.*
+*.min.js
+*.min.css
 node_modules/
 orleans.codegen.cs
 
