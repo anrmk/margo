@@ -83,16 +83,52 @@ namespace Core.Context {
 
             if(sections.Count == 0) {
                 var newSections = new List<CategoryEntity>() {
-                    new CategoryEntity() { Name = "Addresses" },
-                    new CategoryEntity() { Name = "Bank" },
-                    new CategoryEntity() { Name = "Car" },
-                    new CategoryEntity() { Name = "Domain" },
-                    new CategoryEntity() { Name = "Email" , Fields = new List<CategoryFieldEntity>(){
-                        new CategoryFieldEntity() {IsRequired = true, Name="Login", Type = FieldEnum.STRING },
-                        new CategoryFieldEntity() {IsRequired = true, Name="Password", Type = FieldEnum.STRING }
-                    } },
-                    new CategoryEntity() { Name = "Phone"},
-                    new CategoryEntity() { Name = "Social Media" },
+                     new CategoryEntity() { Name = "Email", Fields = new List<CategoryFieldEntity>(){
+                        new CategoryFieldEntity() {Name="Login", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name="Password", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name="Account", Type = FieldEnum.TEXT },
+                        new CategoryFieldEntity() {Name="Note", Type = FieldEnum.TEXT }
+                    }},
+
+                    new CategoryEntity() { Name = "Phone", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name="Phone Number", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name="Provider", Type = FieldEnum.TEXT },
+                        new CategoryFieldEntity() {Name="Secure Question", Type = FieldEnum.TEXT },
+                        new CategoryFieldEntity() {Name="Device", Type = FieldEnum.TEXT }
+                    }},
+
+                    new CategoryEntity() {Name = "VoIP", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name = "Phone Number", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Server", Type = FieldEnum.TEXT },
+                        new CategoryFieldEntity() {Name = "Login", Type = FieldEnum.TEXT },
+                        new CategoryFieldEntity() {Name = "Password", Type = FieldEnum.PASSWORD },
+                    }},
+
+                    new CategoryEntity() { Name = "Fax", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name = "Fax Number", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "User Name", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Password", Type = FieldEnum.PASSWORD, IsRequired = true}
+                    }},
+
+                    new CategoryEntity() { Name = "Social Media", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name = "Email", Type = FieldEnum.EMAIL, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Password", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Login/User Name", Type = FieldEnum.TEXT},
+                        new CategoryFieldEntity() {Name = "Comment", Type = FieldEnum.TEXT},
+                        new CategoryFieldEntity() {Name = "Link", Type = FieldEnum.LINK},
+                    }},
+
+                     new CategoryEntity() { Name = "Websites", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name = "Username", Type = FieldEnum.TEXT, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Password", Type = FieldEnum.PASSWORD, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Link", Type = FieldEnum.LINK},
+                     }},
+
+                     new CategoryEntity() { Name = "Hosting & Domain", Fields = new List<CategoryFieldEntity>() {
+                        new CategoryFieldEntity() {Name = "Email", Type = FieldEnum.EMAIL, IsRequired = true },
+                        new CategoryFieldEntity() {Name = "Username", Type = FieldEnum.TEXT},
+                        new CategoryFieldEntity() {Name = "Password", Type = FieldEnum.PASSWORD, IsRequired = true },
+                     }},
                 };
                 _context.Categories.AddRange(newSections);
                 _context.SaveChanges();
@@ -103,10 +139,10 @@ namespace Core.Context {
                 var newVendors = new List<VendorEntity>() {
                     new VendorEntity() { No="045554823",  Name = "T Roberts Fabrics INC" },
                     new VendorEntity() { No="622824209",  Name = "Water Purification Consultants", Fields = new List<VendorFieldEntity>() {
-                        new VendorFieldEntity() {IsRequired = true, Name = "Field 1", Type = FieldEnum.STRING },
+                        new VendorFieldEntity() {IsRequired = true, Name = "Field 1", Type = FieldEnum.TEXT },
                         new VendorFieldEntity() {IsRequired = true, Name = "Field 2", Type = FieldEnum.NUMBER },
                         new VendorFieldEntity() {IsRequired = true, Name = "Field 3", Type = FieldEnum.DATE },
-                        new VendorFieldEntity() {IsRequired = false, Name = "Field 1", Type = FieldEnum.STRING },
+                        new VendorFieldEntity() {IsRequired = false, Name = "Field 1", Type = FieldEnum.TEXT },
                         }
                     },
                     new VendorEntity() { No="Not Specified",  Name = "Springs Enterprises LLC" },

@@ -3,10 +3,18 @@
 namespace Core.Data.Enums {
     public enum FieldEnum {
         [Display(Name = "String")]
-        STRING,
+        TEXT,
         [Display(Name = "Number")]
         NUMBER,
         [Display(Name = "Date Time")]
-        DATE
+        DATE,
+        [Display(Name = "True of False")]
+        BOOLEAN,
+        [Display(Name = "Password")]
+        PASSWORD,
+        [Display(Name = "E-mail")]
+        EMAIL,
+        [Display(Name = "Link")]
+        LINK
     }
 }

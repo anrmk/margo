@@ -17,9 +17,9 @@ namespace Core.Extension {
         public int EndPage { get; private set; }
         public IEnumerable<T> Data { get; private set; }
 
-        public Pager(IEnumerable<T> list, int totalItems, int? page, int pageSize = 20) {
-            var totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
-            var currentPage = page ?? 1;
+        public Pager(IEnumerable<T> list, int totalItems, int? start, int length = 20) {
+            var totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)length);
+            var currentPage = start ?? 1;
             var startPage = currentPage - 5;
             var endPage = currentPage + 4;
             if(startPage <= 0) {
@@ -35,7 +35,7 @@ namespace Core.Extension {
 
             RecordsTotal = totalItems;
             Start = currentPage;
-            PageSize = pageSize;
+            PageSize = length;
             TotalPages = totalPages;
             StartPages = startPage;
             EndPage = endPage;
