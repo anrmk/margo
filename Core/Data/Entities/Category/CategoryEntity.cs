@@ -15,6 +15,6 @@ namespace Core.Data.Entities {
 
         public virtual ICollection<CategoryFieldEntity> Fields { get; set; }
 
-        public virtual ICollection<ServiceEntity> Services { get; set; }
+        public virtual ICollection<UccountServiceEntity> Services { get; set; }
     }
 }

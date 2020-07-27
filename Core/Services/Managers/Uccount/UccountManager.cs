@@ -20,7 +20,9 @@ namespace Core.Services.Managers {
         public async Task<List<UccountEntity>> FindAll(long[] ids) {
             return await DbSet
                 .Include(x => x.Company)
-                .Include(x => x.Sections)
+                .Include(x => x.Vendor)
+                .Include(x => x.Services)
+                .Include(x => x.Person)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }
