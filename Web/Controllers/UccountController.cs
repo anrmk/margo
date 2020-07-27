@@ -42,8 +42,8 @@ namespace Web.Controllers.Mvc {
                 return NotFound();
             }
 
-            //var sectionFields = await _uccountBusinessManager.GetSectionFields(item.SectionId ?? 0);
-            //ViewBag.SectionFields = _mapper.Map<List<UccountSectionFieldViewModel>>(sectionFields).ToList();
+            var services = await _uccountBusinessManager.GetServices(id);
+            ViewBag.Services = _mapper.Map<List<UccountServiceViewModel>>(services).ToList();
 
             return View(_mapper.Map<UccountViewModel>(item));
         }
@@ -86,12 +86,10 @@ namespace Web.Controllers.Api {
         public async Task<IActionResult> AddUccount() {
             var companies = await _companyBusinessManager.GetCompanies();
             var vendors = await _vendorBusinessManager.GetVendors();
-            var templates = await _sectionBusinessManager.GetSections();
 
             var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
-                { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
-                { "Templates", templates.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
+                { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
             };
 
             var model = new UccountViewModel();
@@ -104,6 +102,10 @@ namespace Web.Controllers.Api {
             try {
                 if(ModelState.IsValid) {
                     var result = await _uccountBusinessManager.CreateUccount(_mapper.Map<UccountDto>(model));
+                    foreach(var service in model.Services)
+                    {
+                        await _uccountBusinessManager.CreateService(_mapper.Map<UccountServiceDto>(service));
+                    }
                     return Ok(_mapper.Map<UccountViewModel>(result));
                 }
             } catch(Exception er) {
