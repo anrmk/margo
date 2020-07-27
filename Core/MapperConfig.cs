@@ -68,15 +68,26 @@ namespace Core {
 
             #region UCCOUNTS
             CreateMap<UccountDto, UccountEntity>()
-                .ReverseMap();
+                .ReverseMap()
+                .ForMember(d => d.Updated, o => o.MapFrom(s => s.UpdatedDate))
+                .ForMember(
+                    d => d.VendorName,
+                    o => o.MapFrom(s => s.VendorId == default
+                        ? null
+                        : s.Vendor.Name))
+                .ForMember(
+                    d => d.CompanyName,
+                    o => o.MapFrom(s => s.CompanyId == default
+                        ? null
+                        : s.Company.Name));
             //.ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name ?? ""));
             CreateMap<UccountSectionDto, UccountSectionEntity>().ReverseMap();
             CreateMap<UccountSectionFieldDto, UccountSectionFieldEntity>().ReverseMap();
-            CreateMap<UccountServiceDto, ServiceEntity>().ReverseMap();
+            CreateMap<UccountServiceDto, UccountServiceEntity>().ReverseMap();
             #endregion
 
             #region SERVICES
-            CreateMap<ServiceDto, ServiceEntity>().ReverseMap();
+            CreateMap<ServiceDto, UccountServiceEntity>().ReverseMap();
             #endregion
         }
     }

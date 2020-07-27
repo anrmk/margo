@@ -33,6 +33,8 @@ namespace Core.Services {
             services.AddTransient<ISectionManager, SectionManager>();
             services.AddTransient<ISectionFieldManager, SectionFieldManager>();
 
+            services.AddTransient<IUccountServiceManager, UccountServiceManager>();
+
             services.AddTransient<ICategoryManager, CategoryManager>();
             services.AddTransient<ICategoryFieldManager, CategoryFieldManager>();
 

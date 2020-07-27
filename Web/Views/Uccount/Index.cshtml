@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Accounts";
+
     var tableId = Guid.NewGuid();
 
     var listUrl = Url.RouteUrl("GetUccounts");
@@ -9,7 +10,7 @@
 }
 
 @section RightSidebar {
-    <div></div>
+    <div id="@(tableId)_detail"></div>
 }
 <div>
     <div id="toolbar" class="ui secondary menu">
@@ -59,7 +60,7 @@
         });
 
         $(document).ready(function () {
-            window.UccountController = new DocumentController({
+            window.DocumentController = new DocumentController({
             'table': '#@tableId',
             'controller': {
                 'list': '@listUrl',
@@ -67,9 +68,10 @@
             },
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                //{ 'title': 'No ', 'data': 'no', 'className': 'collapsing', 'orderable': true },
-                { 'title': 'Name', 'data': 'sectionName' },
-                //{ 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+                { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
+                { 'title': 'Name', 'className': 'collapsing', 'data': 'name' },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'modifiedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
             ],
             'onRowClick': (e, data) => {
                 var options = {

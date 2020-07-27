@@ -14,8 +14,10 @@ using Microsoft.Extensions.Configuration;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace Core.Context {
-    public interface IApplicationContext {
+namespace Core.Context
+{
+    public interface IApplicationContext
+    {
         Database ApplicationDatabase { get; }
         DbSet<T> Set<T>() where T : class;
         EntityEntry<T> Entry<T>(T entity) where T : class;
@@ -23,7 +25,8 @@ namespace Core.Context {
         int SaveChanges();
     }
 
-    public class ApplicationContext: IdentityDbContext<AppNetUserEntity>, IApplicationContext {
+    public class ApplicationContext : IdentityDbContext<AppNetUserEntity>, IApplicationContext
+    {
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
 
@@ -48,6 +51,10 @@ namespace Core.Context {
         public DbSet<UccountSectionEntity> UccountSections { get; set; }
         public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
 
+        public DbSet<UccountServiceEntity> Services { get; set; }
+
+        public DbSet<UccountPersonEntity> Persons { get; set; }
+
         public DbSet<CategoryEntity> Categories { get; set; }
         public DbSet<CategoryFieldEntity> CategoryFields { get; set; }
 
@@ -57,34 +64,42 @@ namespace Core.Context {
 
         public Database ApplicationDatabase { get; private set; }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal) : base(options) {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal) : base(options)
+        {
             _configuration = configuration;
             _principal = principal as ClaimsPrincipal;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task<int> SaveChangesAsync() {
+        public async Task<int> SaveChangesAsync()
+        {
             var modifiedEntries = ChangeTracker.Entries()
               .Where(x => x.Entity is IAuditableEntity
                   && (x.State == EntityState.Added || x.State == EntityState.Modified));
 
 
-            foreach(var entry in modifiedEntries) {
+            foreach (var entry in modifiedEntries)
+            {
                 IAuditableEntity entity = entry.Entity as IAuditableEntity;
-                if(entity != null) {
+                if (entity != null)
+                {
 
                     string identityName = _principal?.Identity.Name ?? "system"; // Thread.CurrentPrincipal.Identity.Name;
                     DateTime now = DateTime.Now;
 
-                    if(entry.State == EntityState.Added) {
+                    if (entry.State == EntityState.Added)
+                    {
                         entity.CreatedBy = identityName;
                         entity.CreatedDate = now;
-                    } else {
+                    }
+                    else
+                    {
                         Entry(entity).Property(x => x.CreatedBy).IsModified = false;
                         Entry(entity).Property(x => x.CreatedDate).IsModified = false;
                     }
@@ -93,24 +108,32 @@ namespace Core.Context {
                 }
             }
             bool saveFailed;
-            do {
+            do
+            {
                 saveFailed = false;
-                try {
+                try
+                {
                     return await base.SaveChangesAsync();
-                } catch(DbUpdateConcurrencyException e) {
+                }
+                catch (DbUpdateConcurrencyException e)
+                {
                     saveFailed = true;
                     Console.WriteLine(e.Message);
                     return -1001;
-                } catch(DbUpdateException e) {
+                }
+                catch (DbUpdateException e)
+                {
                     Console.WriteLine(e.Message);
                     saveFailed = true;
                     return -1002;
-                } catch(Exception e) {
+                }
+                catch (Exception e)
+                {
                     Console.WriteLine(e.Message);
                     saveFailed = true;
                     return -1003;
                 }
-            } while(saveFailed);
+            } while (saveFailed);
         }
     }
 }

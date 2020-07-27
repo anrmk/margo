@@ -6,7 +6,7 @@ using Core.Data.Dto.Nsi;
 using Core.Extension;
 
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Linq;
 using Web.ViewModels;
 
 namespace Web {
@@ -54,7 +54,20 @@ namespace Web {
 
             #region UCCOUNTS
             CreateMap<UccountViewModel, UccountDto>().ReverseMap();
-            CreateMap<UccountListViewModel, UccountDto>().ReverseMap();
+            CreateMap<UccountListViewModel, UccountDto>()
+                .ReverseMap()
+                .ForMember(d => d.ModifiedDate, o => o.MapFrom(s => s.Updated))
+                .ForMember(
+                    d => d.Name, 
+                    o => o.MapFrom(s => s.VendorId != 0 
+                        ? s.VendorName
+                        : s.CompanyName))
+                .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
+                .ForMember(
+                    d => d.Kind,
+                    o => o.MapFrom(s => s.Kind == Core.Data.Enums.UccountTypes.BUSINESS
+                        ? "Business"
+                        : "Personal"));
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
             CreateMap<UccountServiceViewModel, UccountServiceDto>().ReverseMap();

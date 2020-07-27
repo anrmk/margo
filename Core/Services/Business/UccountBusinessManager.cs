@@ -26,12 +26,16 @@ namespace Core.Services.Business {
 
         Task<UccountSectionFieldDto> GetSectionField(long id);
         Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId);
+
+        Task<List<UccountServiceDto>> GetServices(long id);
+        Task<UccountServiceDto> CreateService(UccountServiceDto dto);
     }
     public class UccountBusinessManager: IUccountBusinessManager {
         private readonly IMapper _mapper;
         private readonly IUccountManager _uccountManager;
         private readonly IUccountSectionManager _uccountSectionManager;
         private readonly IUccountSectionFieldManager _uccountSectionFieldManager;
+        private readonly IUccountServiceManager _uccountServiceManager;
 
         private readonly ICompanyManager _companyManager;
         private readonly ISectionManager _sectionManager;
@@ -40,12 +44,14 @@ namespace Core.Services.Business {
             IUccountManager uccountManager,
             IUccountSectionManager uccountSectionManager,
             IUccountSectionFieldManager uccountSectionFieldManager,
+            IUccountServiceManager uccountServiceManager,
             ICompanyManager companyManager,
             ISectionManager sectionManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountSectionManager = uccountSectionManager;
             _uccountSectionFieldManager = uccountSectionFieldManager;
+            _uccountServiceManager = uccountServiceManager;
             _companyManager = companyManager;
             _sectionManager = sectionManager;
         }
@@ -64,7 +70,7 @@ namespace Core.Services.Business {
                    (true);
             //&& (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
 
-            string[] include = new string[] { "Company", "Vendor", "Section" };
+            string[] include = new string[] { "Company", "Vendor", "Services" };
 
             var tuple = await _uccountManager.Pager<UccountEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
@@ -105,6 +111,16 @@ namespace Core.Services.Business {
 
             //dto.SectionId = sectionEntity.Id;
 
+            //dto.Services = await GetServices(dto.Id);
+            foreach (var service in dto.Services)
+            {
+                await _uccountServiceManager.Create(new UccountServiceEntity
+                {
+                    CategoryId = service.CategoryId,
+                    AccountId = service.UccountId
+                });
+            }
+
             var entity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
             return _mapper.Map<UccountDto>(entity);
             //}
@@ -118,6 +134,19 @@ namespace Core.Services.Business {
             }
             var newEntity = _mapper.Map(dto, entity);
             entity = await _uccountManager.Update(newEntity);
+            entity.Services = new List<UccountServiceEntity>();
+
+            foreach (var service in dto.Services)
+            {
+                var serviceEntity = await _uccountServiceManager.Find(id);
+                if (serviceEntity == null)
+                {
+                    continue;
+                }
+
+                var newServiceEntity = _mapper.Map(service, serviceEntity);
+                entity.Services.Add(await _uccountServiceManager.Update(newServiceEntity));
+            }
 
             return _mapper.Map<UccountDto>(entity);
         }
@@ -151,6 +180,18 @@ namespace Core.Services.Business {
         public async Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId) {
             var result = await _uccountSectionFieldManager.FindAll(sectionId);
             return _mapper.Map<List<UccountSectionFieldDto>>(result);
+        }
+
+        public async Task<List<UccountServiceDto>> GetServices(long accountId)
+        {
+            var result = await _uccountServiceManager.FindAll(accountId);
+            return _mapper.Map<List<UccountServiceDto>>(result);
+        }
+
+        public async Task<UccountServiceDto> CreateService(UccountServiceDto dto)
+        {
+            var result = await _uccountServiceManager.Create(_mapper.Map<UccountServiceEntity>(dto));
+            return _mapper.Map<UccountServiceDto>(result);
         }
     }
 }
