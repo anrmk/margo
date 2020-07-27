@@ -28,9 +28,6 @@ bld/
 [Mm]igration[s]/
 [Dd]atabase/
 
-# Visual code
-./vscode
-
 # Visual Studio 2015 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
@@ -256,3 +253,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# Vendor auto-generated files
+Web/wwwroot/css/vendor.min.css
+Web/wwwroot/js/vendor.min.js
+
+# Visual Studio Code debug configuration folder
+.vscode/

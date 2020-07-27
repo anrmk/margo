@@ -13,12 +13,6 @@
     <Compile Remove="Data\Entities\Vendor\VendorAddressEntity.cs" />
     <Compile Remove="Data\Entities\Vendor\VendorMediaEntity.cs" />
     <Compile Remove="Data\Entities\Vendor\VendorSectionEntity.cs" />
-    <Compile Remove="Migrations\20200722234335_update-log.cs" />
-    <Compile Remove="Migrations\20200722234335_update-log.Designer.cs" />
-    <Compile Remove="Migrations\20200722234813_update-uccount.cs" />
-    <Compile Remove="Migrations\20200722234813_update-uccount.Designer.cs" />
-    <Compile Remove="Migrations\20200723000622_update.cs" />
-    <Compile Remove="Migrations\20200723000622_update.Designer.cs" />
     <Compile Remove="Services\Managers\Vendor\VendorAddressManager.cs" />
     <Compile Remove="Services\Managers\Vendor\VendorMediaManager.cs" />
     <Compile Remove="Services\Managers\Vendor\VendorSectionManager.cs" />

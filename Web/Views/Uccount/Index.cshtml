@@ -13,7 +13,23 @@
 }
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <a asp-action="AddUccount" data-request="ajax" rel="dialog"><i class="plus icon" data-action="create"></i> Create</a>
+        <div class="ui floating dropdown labeled icon button">
+            <i class="plus icon"></i>
+            <span class="text">Create</span>
+            <div class="menu">
+                <div class="header">
+                    Account Types
+                </div>
+                <div id="account-types-menu" class="scrolling menu">
+                    <div class="item" data-value="0">
+                        Bussines
+                    </div>
+                    <div class="item" data-value="1">
+                        Person
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
@@ -33,6 +49,14 @@
             }
             alert(status)
         }
+
+        // Initilize dropdown (this is need to be interactive)
+        const dropdown = $('.ui.dropdown').dropdown();
+        const dropdownMenu = $('#account-types-menu');
+        dropdownMenu.on('click', '.item', function() {
+            const value = $(this).data("value");
+            // api logic...
+        });
 
         $(document).ready(function () {
             window.UccountController = new DocumentController({
