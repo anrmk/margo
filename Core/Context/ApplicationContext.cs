@@ -53,7 +53,7 @@ namespace Core.Context
 
         public DbSet<UccountServiceEntity> Services { get; set; }
 
-        public DbSet<UccountPersonEntity> Persons { get; set; }
+        public DbSet<PersonEntity> Persons { get; set; }
 
         public DbSet<CategoryEntity> Categories { get; set; }
         public DbSet<CategoryFieldEntity> CategoryFields { get; set; }
