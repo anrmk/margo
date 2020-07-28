@@ -2,10 +2,12 @@
 
 @{
     var formId = Guid.NewGuid();
+    Layout = null;
 }
 
-<form id="@formId" class="ui form" asp-action="CreatePerson" method="post">
+<form id="@formId" class="ui form" asp-action="UpdatePerson" asp-route-id="@Model.Id" method="put">
     <fieldset>
+        <input type="hidden" asp-for="Id" />
         <div class="fields">
             <div class="field required">
                 <label asp-for="Name"></label>
@@ -22,7 +24,7 @@
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
-            <textarea asp-for="Description" rows="2"></textarea>
+            <textarea asp-for="Description" rows="3"></textarea>
         </div>
     </fieldset>
 </form>

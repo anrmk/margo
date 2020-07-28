@@ -65,7 +65,7 @@ namespace Web.Controllers.Api {
 
         [HttpGet("AddPerson", Name = "AddPerson")]
         public async Task<IActionResult> AddPerson() {
-            var html = await _viewRenderService.RenderToStringAsync("Create", new PersonViewModel());
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new PersonViewModel());
             return Ok(html);
         }
 
@@ -86,7 +86,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Edit", _mapper.Map<PersonViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<PersonViewModel>(item));
             return Ok(html);
         }
 
