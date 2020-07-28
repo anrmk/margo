@@ -1,0 +1,36 @@
+﻿@model Web.ViewModels.PersonViewModel
+
+@{
+    var formId = Guid.NewGuid();
+}
+
+<form id="@formId" class="ui form" asp-action="UpdatePerson" asp-route-id="@Model.Id" method="put">
+    <fieldset>
+        <input type="hidden" asp-for="Id" />
+        <div class="fields">
+            <div class="field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" data-value-type="string" required>
+            </div>
+            <div class="field required">
+                <label asp-for="SurName">Surname</label>
+                <input asp-for="SurName" data-value-type="string" required>
+            </div>
+            <div class="field">
+                <label asp-for="MiddleName">Middle name</label>
+                <input asp-for="MiddleName" type="text" required>
+            </div>
+        </div>
+        <div class="field">
+            <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
+            <textarea asp-for="Description" rows="3"></textarea>
+        </div>
+
+        <div class="ui right floated vertical animated mini button" onclick="javascript: $.fn.addField('#@(formId)_container');">
+            <div class="hidden content">Add</div>
+            <div class="visible content">
+                <i class="plus icon"></i>
+            </div>
+        </div>
+    </fieldset>
+</form>
