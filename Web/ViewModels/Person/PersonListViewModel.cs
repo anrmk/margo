@@ -9,9 +9,11 @@ namespace Web.ViewModels
     {
         public long Id { get; set; }
 
+        [Required]
         [StringLength(64, MinimumLength = 1)]
         public string Name { get; set; }
 
+        [Required]
         [StringLength(64, MinimumLength = 1)]
         public string SurName { get; set; }
 
