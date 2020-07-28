@@ -70,7 +70,7 @@
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
                 { 'title': 'Name', 'className': 'collapsing', 'data': 'name' },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'modifiedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
             ],
             'onRowClick': (e, data) => {

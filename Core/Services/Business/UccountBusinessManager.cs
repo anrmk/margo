@@ -27,7 +27,7 @@ namespace Core.Services.Business {
         Task<UccountSectionFieldDto> GetSectionField(long id);
         Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId);
 
-        Task<List<UccountServiceDto>> GetServices(long id);
+        Task<List<UccountServiceDto>> GetServices(long accountId);
         Task<UccountServiceDto> CreateService(UccountServiceDto dto);
     }
     public class UccountBusinessManager: IUccountBusinessManager {
