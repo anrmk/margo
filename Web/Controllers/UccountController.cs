@@ -82,6 +82,16 @@ namespace Web.Controllers.Api {
             return pager;
         }
 
+        [HttpGet("DetailsUccount", Name = "DetailsUccount")]
+        public async Task<IActionResult> DetailsUccount([FromQuery] long id) {
+            var item = await _uccountBusinessManager.GetUccountWith(id);
+            if (item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<UccountViewModel>(item));
+            return Ok(html);
+        }
+
         [HttpGet("AddUccount", Name = "AddUccount")]
         public async Task<IActionResult> AddUccount() {
             var companies = await _companyBusinessManager.GetCompanies();

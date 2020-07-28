@@ -59,17 +59,21 @@ namespace Web {
                 .ForMember(
                     d => d.Services,
                     o => o.MapFrom(s => s.Services.Select(x =>
-                        new UccountServiceViewModel
-                        {
+                        new UccountServiceViewModel {
                             Id = x.Id,
                             CategoryId = x.CategoryId,
                             UccountId = x.UccountId
-                        })));
+                        })))
+                .ForMember(
+                    d => d.Name,
+                    o => o.MapFrom(s => s.VendorId.HasValue
+                        ? s.VendorName
+                        : s.CompanyName));
             CreateMap<UccountListViewModel, UccountDto>()
                 .ReverseMap()
                 .ForMember(
                     d => d.Name,
-                    o => o.MapFrom(s => s.VendorId != 0
+                    o => o.MapFrom(s => s.VendorId.HasValue
                         ? s.VendorName
                         : s.CompanyName))
                 .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))

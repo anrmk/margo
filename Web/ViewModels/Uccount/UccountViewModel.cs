@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Web.ViewModels {
     public class UccountViewModel {
         public long Id { get; set; }
+        public string Name { get; set; }
 
         [Display(Name ="Company")]
         public long CompanyId { get; set; }

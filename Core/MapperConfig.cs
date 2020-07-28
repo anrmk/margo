@@ -72,12 +72,12 @@ namespace Core {
                 .ForMember(d => d.Updated, o => o.MapFrom(s => s.UpdatedDate))
                 .ForMember(
                     d => d.VendorName,
-                    o => o.MapFrom(s => s.VendorId == default
+                    o => o.MapFrom(s => !s.VendorId.HasValue
                         ? null
                         : s.Vendor.Name))
                 .ForMember(
                     d => d.CompanyName,
-                    o => o.MapFrom(s => s.CompanyId == default
+                    o => o.MapFrom(s => !s.CompanyId.HasValue
                         ? null
                         : s.Company.Name));
             //.ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name ?? ""));

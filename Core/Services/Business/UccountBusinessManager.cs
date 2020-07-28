@@ -14,6 +14,7 @@ namespace Core.Services.Business {
     public interface IUccountBusinessManager {
         //  UCCOUNT
         Task<UccountDto> GetUccount(long id);
+        Task<UccountDto> GetUccountWith(long id);
         Task<Pager<UccountDto>> GetUccountPage(PagerFilter filter);
         Task<List<UccountDto>> GetUccounts();
         Task<UccountDto> CreateUccount(UccountDto dto);
@@ -39,6 +40,7 @@ namespace Core.Services.Business {
 
         private readonly ICompanyManager _companyManager;
         private readonly ISectionManager _sectionManager;
+        private readonly IVendorManager _vendorManager;
 
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
@@ -46,7 +48,8 @@ namespace Core.Services.Business {
             IUccountSectionFieldManager uccountSectionFieldManager,
             IUccountServiceManager uccountServiceManager,
             ICompanyManager companyManager,
-            ISectionManager sectionManager) {
+            ISectionManager sectionManager,
+            IVendorManager vendorManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountSectionManager = uccountSectionManager;
@@ -54,6 +57,7 @@ namespace Core.Services.Business {
             _uccountServiceManager = uccountServiceManager;
             _companyManager = companyManager;
             _sectionManager = sectionManager;
+            _vendorManager = vendorManager;
         }
 
         #region UCCOUNT
@@ -61,6 +65,19 @@ namespace Core.Services.Business {
         public async Task<UccountDto> GetUccount(long id) {
             var result = await _uccountManager.Find(id);
             return _mapper.Map<UccountDto>(result);
+        }
+
+        public async Task<UccountDto> GetUccountWith(long id) {
+            var uccount = await _uccountManager.Find(id);
+
+            uccount.Company = !uccount.CompanyId.HasValue
+                ? null
+                : await _companyManager.Find(uccount.CompanyId);
+            uccount.Vendor = !uccount.VendorId.HasValue
+                ? null
+                : await _vendorManager.Find(uccount.VendorId);
+
+            return _mapper.Map<UccountDto>(uccount);
         }
 
         public async Task<Pager<UccountDto>> GetUccountPage(PagerFilter filter) {

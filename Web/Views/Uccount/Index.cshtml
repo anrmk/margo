@@ -6,7 +6,7 @@
     var listUrl = Url.RouteUrl("GetUccounts");
     var deleteUrl = Url.RouteUrl("DeleteUccounts");
     var editUrl = Url.Action("Edit");
-    var displayUrl = Url.Action("Details");
+    var detailsUrl = Url.RouteUrl("DetailsUccount");
 }
 
 @section RightSidebar {
@@ -69,25 +69,18 @@
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
-                { 'title': 'Name', 'className': 'collapsing', 'data': 'name' },
+                { 'title': 'Name', 'data': 'name' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
             ],
             'onRowClick': (e, data) => {
-                var options = {
-                    'url': '@displayUrl' + `/${data.id}`,
-                    'complete': (jqXHR, status) => {
-                        if (status === 'success') {
-                            $('#displayContainer').empty().html(jqXHR.responseText);
-                        }
-                    }
-                }
-                $.ajax(options);
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#@(tableId)_detail').html(result);
+                });
             },
             'onDblRowClick': (e, data) => {
                 location.href = '@editUrl' + `/${data.id}`;
-            }
-        });
+            }});
         });
     </script>
 }
