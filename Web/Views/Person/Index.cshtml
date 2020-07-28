@@ -35,9 +35,9 @@
             },
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                { 'title': 'First name', 'data': 'name' },
-                { 'title': 'Last name', 'data': 'surname' },
-                { 'title': 'Middle name', 'data': 'middlename' },
+                { 'title': 'First name', 'className': 'collapsing', 'data': 'name' },
+                { 'title': 'Middle name', 'className': 'collapsing', 'data': 'middleName' },
+                { 'title': 'Last name', 'className': 'collapsing', 'data': 'surName' },
                 { 'title': 'Description', 'data': 'description' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
             ],

@@ -11,25 +11,18 @@
                 <label asp-for="Name"></label>
                 <input asp-for="Name" data-value-type="string" required>
             </div>
+            <div class="field">
+                <label asp-for="MiddleName">Middle name</label>
+                <input asp-for="MiddleName" type="text">
+            </div>
             <div class="field required">
                 <label asp-for="SurName">Surname</label>
                 <input asp-for="SurName" data-value-type="string" required>
-            </div>
-            <div class="field">
-                <label asp-for="MiddleName">Middle name</label>
-                <input asp-for="MiddleName" type="text" required>
             </div>
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
             <textarea asp-for="Description" rows="2"></textarea>
-        </div>
-
-        <div class="ui right floated vertical animated mini button" tabindex="0" onclick="javascript: $.fn.addField('#@(formId)_container');">
-            <div class="hidden content">Add</div>
-            <div class="visible content">
-                <i class="plus icon"></i>
-            </div>
         </div>
     </fieldset>
 </form>

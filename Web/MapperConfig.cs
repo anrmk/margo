@@ -58,8 +58,8 @@ namespace Web {
                 .ReverseMap()
                 .ForMember(d => d.ModifiedDate, o => o.MapFrom(s => s.Updated))
                 .ForMember(
-                    d => d.Name, 
-                    o => o.MapFrom(s => s.VendorId != 0 
+                    d => d.Name,
+                    o => o.MapFrom(s => s.VendorId != 0
                         ? s.VendorName
                         : s.CompanyName))
                 .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
@@ -107,6 +107,11 @@ namespace Web {
 
             #region SERVICES
             CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();
+            #endregion
+
+            #region PERSONS
+            CreateMap<PersonViewModel, PersonDto>().ReverseMap();
+            CreateMap<PersonListViewModel, PersonDto>().ReverseMap();
             #endregion
         }
     }
