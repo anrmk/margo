@@ -22,7 +22,6 @@
         <div class="header">Database</div>
         <div class="menu">
             <a class="item @(url.Contains("/company") ? "active" : "")" asp-controller="Company" asp-action="Index">Companies</a>
-            <a class="item @(url.Contains("/person") ? "active" : "")" asp-controller="Person" asp-action="Index">Persons</a>
             <a class="item @(url.Contains("/accounts") ? "active" : "")" asp-controller="Uccount" asp-action="Index">Accounts</a>
         </div>
     </div>
@@ -37,6 +36,9 @@
     <div class="item">
         <div class="header">Settings</div>
         <div class="menu">
+            <a class="item @(url.Contains("/person") ? "active" : "")" asp-controller="Person" asp-action="Index"
+               >Persons
+            </a>
             <a class="item @(url.Contains("/category") ? "active" : "")" asp-controller="Category" asp-action="Index">
                 Categories
             </a>

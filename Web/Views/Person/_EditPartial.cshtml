@@ -8,7 +8,7 @@
 <form id="@formId" class="ui form" asp-action="UpdatePerson" asp-route-id="@Model.Id" method="put">
     <fieldset>
         <input type="hidden" asp-for="Id" />
-        <div class="fields">
+        <div class="three fields">
             <div class="field required">
                 <label asp-for="Name"></label>
                 <input asp-for="Name" data-value-type="string" required>
