@@ -84,6 +84,8 @@ namespace Core {
             CreateMap<UccountSectionDto, UccountSectionEntity>().ReverseMap();
             CreateMap<UccountSectionFieldDto, UccountSectionFieldEntity>().ReverseMap();
             CreateMap<UccountServiceDto, UccountServiceEntity>().ReverseMap();
+            CreateMap<UccountServiceFieldDto, UccountServiceFieldEntity>().ReverseMap();
+            CreateMap<UccountVendorFieldDto, UccountVendorFieldEntity>().ReverseMap();
             #endregion
 
             #region SERVICES

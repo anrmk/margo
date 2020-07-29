@@ -5,5 +5,6 @@ namespace Core.Data.Dto {
         public long Id { get; set; }
         public long UccountId { get; set; }
         public long CategoryId { get; set; }
+        public IEnumerable<UccountServiceFieldDto> Fields { get; set; }
     }
 }

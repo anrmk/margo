@@ -44,6 +44,7 @@ namespace Core.Services {
             services.AddTransient<IUccountManager, UccountManager>();
             services.AddTransient<IUccountSectionManager, UccountSectionManager>();
             services.AddTransient<IUccountSectionFieldManager, UccountSectionFieldManager>();
+            services.AddTransient<IUccountServiceFieldManager, UccountServiceFieldManager>();
 
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();

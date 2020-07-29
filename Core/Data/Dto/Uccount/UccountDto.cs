@@ -12,6 +12,7 @@ namespace Core.Data.Dto {
         public long? PersonId { get; set; }
         public UccountTypes Kind { get; set; }
         public DateTime Updated { get; set; }
-        public IEnumerable<UccountServiceDto> Services { get; set; }
+        public ICollection<UccountServiceDto> Services { get; set; }
+        public ICollection<UccountVendorFieldDto> VendorFields { get; set; }
     }
 }

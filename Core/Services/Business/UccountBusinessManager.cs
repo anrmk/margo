@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Data.Enums;
 using Core.Extension;
 using Core.Services.Managers;
 
@@ -37,6 +38,7 @@ namespace Core.Services.Business {
         private readonly IUccountSectionManager _uccountSectionManager;
         private readonly IUccountSectionFieldManager _uccountSectionFieldManager;
         private readonly IUccountServiceManager _uccountServiceManager;
+        private readonly IUccountServiceFieldManager _uccountServiceFieldManager;
 
         private readonly ICompanyManager _companyManager;
         private readonly ISectionManager _sectionManager;
@@ -47,6 +49,7 @@ namespace Core.Services.Business {
             IUccountSectionManager uccountSectionManager,
             IUccountSectionFieldManager uccountSectionFieldManager,
             IUccountServiceManager uccountServiceManager,
+            IUccountServiceFieldManager uccountServiceFieldManager,
             ICompanyManager companyManager,
             ISectionManager sectionManager,
             IVendorManager vendorManager) {
@@ -55,6 +58,7 @@ namespace Core.Services.Business {
             _uccountSectionManager = uccountSectionManager;
             _uccountSectionFieldManager = uccountSectionFieldManager;
             _uccountServiceManager = uccountServiceManager;
+            _uccountServiceFieldManager = uccountServiceFieldManager;
             _companyManager = companyManager;
             _sectionManager = sectionManager;
             _vendorManager = vendorManager;
@@ -108,40 +112,92 @@ namespace Core.Services.Business {
         }
 
         public async Task<UccountDto> CreateUccount(UccountDto dto) {
-            //var template = await _sectionManager.FindInclude(dto.TemplateId);
-            //if(template != null) {
-            //var sectionEntity = new UccountSectionEntity() {
-            //    Code = template.Code,
-            //    Name = template.Name,
-            //    Description = template.Description
-            //};
-
-            //sectionEntity = await _uccountSectionManager.Create(sectionEntity);
-
-            //var fieldsEntity = template.Fields.Select(x => new UccountSectionFieldEntity() {
-            //    Name = x.Name,
-            //    SectionId = sectionEntity.Id,
-            //    Type = x.Type,
-            //    Value = ""
-            //});
-            //fieldsEntity = await _uccountSectionFieldManager.Create(fieldsEntity);
-
-            //dto.SectionId = sectionEntity.Id;
-
-            //dto.Services = await GetServices(dto.Id);
-            foreach (var service in dto.Services)
+            try
             {
-                await _uccountServiceManager.Create(new UccountServiceEntity
-                {
-                    CategoryId = service.CategoryId,
-                    AccountId = service.UccountId
-                });
+                var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
+                return _mapper.Map<UccountDto>(uccountEntity);
+            }
+            catch (System.Exception e)
+            {
+                
+                throw;
             }
 
-            var entity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
-            return _mapper.Map<UccountDto>(entity);
-            //}
-            //return null;
+            // foreach (var service in dto.Services)
+            // {
+            //     var uccountService = _mapper.Map<UccountServiceEntity>(service);
+            //     // foreach (var field in service.Fields)
+            //     foreach (var field in dto.ServicesFields)
+            //     {
+            //         uccountService.Fields.Add(_mapper.Map<UccountServiceFieldEntity>(field));
+            //     }
+            //     uccountMapEntity.Services.Add(uccountService);
+            // }
+
+            // UccountEntity uccountEntity;
+            //     uccountEntity = await _uccountManager.Create(uccountMapEntity);
+            // if (dto.Kind == UccountTypes.PERSONAL) {
+            //     if (dto.PersonId == null || dto.VendorId == null) {
+            //         throw new NullReferenceException();
+            //     }
+            //     var uccountMapEntity = _mapper.Map<UccountEntity>(dto);
+            //     foreach (var service in dto.Services)
+            //     {
+            //         var uccountService = _mapper.Map<UccountServiceEntity>(service);
+            //         foreach (var field in service.Fields)
+            //         {
+            //             uccountService.Fields.Add(_mapper.Map<UccountServiceFieldEntity>(field));
+            //         }
+            //         uccountMapEntity.Services.Add(uccountService);
+            //     }
+
+            //     uccountEntity = await _uccountManager.Create(uccountMapEntity);
+
+            //     if (dto.VendorFields.Count > 0) {
+                    
+            //     }
+            // } else {
+            //     if (dto.PersonId == null || dto.VendorId == null) {
+            //         throw new NullReferenceException();
+            //     }
+            //     uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
+            // }
+
+            // if (dto.Services.Count > 0) {
+            //     var services = new List<UccountServiceEntity>();
+            //     foreach (var service in dto.Services)
+            //     {
+            //         // var serviceEntity = await _uccountServiceManager.Create(new UccountServiceEntity
+            //         // {
+            //         //     CategoryId = service.CategoryId,
+            //         //     AccountId = uccountEntity.Id
+            //         // });
+            //         var serviceEntity = new UccountServiceEntity
+            //         {
+            //             CategoryId = service.CategoryId,
+            //             AccountId = uccountEntity.Id
+            //         };
+
+            //         services.Add(serviceEntity);
+
+            //         if (dto.ServiceFields.Count > 0) {
+            //             foreach (var serviceField in dto.ServiceFields)
+            //             {
+            //                 await _uccountServiceFieldManager.Create(new UccountServiceFieldEntity
+            //                 {
+            //                     Id = serviceField.Id,
+            //                     Type = serviceField.Type,
+            //                     Name = serviceField.Name,
+            //                     Value = serviceField.Value,
+            //                     IsRequired = serviceField.IsRequired,
+            //                     ServiceId = serviceEntity.Id
+            //                 });
+            //             }
+            //         }
+            //     }
+            // }
+
+            // var entity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
         }
 
         public async Task<UccountDto> UpdateUccount(long id, UccountDto dto) {
