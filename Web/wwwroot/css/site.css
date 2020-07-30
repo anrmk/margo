@@ -2,6 +2,23 @@
   background-color: #DADADA;
 }
 
+a.a--style-none {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.flex  {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
 fieldset {
   min-width: 0;
   padding: 0;

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
+using Core.Data.Enums;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
@@ -58,21 +59,24 @@ namespace Web.Controllers.Api {
         private readonly IViewRenderService _viewRenderService;
         private readonly IUccountBusinessManager _uccountBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
-        private readonly ISectionBusinessManager _sectionBusinessManager;
+        private readonly ICategoryBusinessManager _categoryBusinessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
+        private readonly IPersonBusinessManager _personBusinessManager;
 
 
         public UccountController(IMapper mapper, IViewRenderService viewRenderService,
             IUccountBusinessManager uccountBusinessManager,
             ICompanyBusinessManager companyBusinessManager,
-            ISectionBusinessManager sectionBusinessManager,
-            IVendorBusinessManager vendorBusinessManager) {
+            ICategoryBusinessManager categoryBusinessManager,
+            IVendorBusinessManager vendorBusinessManager,
+            IPersonBusinessManager personBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _uccountBusinessManager = uccountBusinessManager;
             _companyBusinessManager = companyBusinessManager;
-            _sectionBusinessManager = sectionBusinessManager;
+            _categoryBusinessManager = categoryBusinessManager;
             _vendorBusinessManager = vendorBusinessManager;
+            _personBusinessManager = personBusinessManager;
         }
 
         [HttpGet("GetUccounts", Name = "GetUccounts")]
@@ -92,19 +96,32 @@ namespace Web.Controllers.Api {
             return Ok(html);
         }
 
-        [HttpGet("AddUccount", Name = "AddUccount")]
-        public async Task<IActionResult> AddUccount() {
-            var companies = await _companyBusinessManager.GetCompanies();
-            var vendors = await _vendorBusinessManager.GetVendors();
-
-            var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
-                { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
-            };
-
+        public async Task<IActionResult> AddUccount([FromQuery] UccountTypes kind) {
+            string html;
             var model = new UccountViewModel();
-            string html = _viewRenderService.RenderToStringAsync("_AddUccountPartial", model, viewDataDictionary).Result;
-            return Ok(html);
+            var vendors = await _vendorBusinessManager.GetVendors();
+            var categories = await _categoryBusinessManager.GetCategories();
+
+            if (kind == UccountTypes.PERSONAL) {
+                var persons = await _personBusinessManager.GetPersons();
+                var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                    { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Kind", kind }
+                };
+                html = _viewRenderService.RenderToStringAsync("_AddPersonUccountPartial", model, viewDataDictionary).Result;
+            } else {
+                var companies = await _companyBusinessManager.GetCompanies();
+                var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                    { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                    { "Kind", kind }
+                };
+                html = _viewRenderService.RenderToStringAsync("_AddBusinessUccountPartial", model, viewDataDictionary).Result;
+            }
+             return Ok(html);
         }
 
         [HttpPost("CreateUccount", Name = "CreateUccount")]
@@ -112,11 +129,6 @@ namespace Web.Controllers.Api {
             try {
                 if(ModelState.IsValid) {
                     var result = await _uccountBusinessManager.CreateUccount(_mapper.Map<UccountDto>(model));
-                    foreach(var service in model.Services)
-                    {
-                        await _uccountBusinessManager.CreateService(_mapper.Map<UccountServiceDto>(service));
-                    }
-                    return Ok(_mapper.Map<UccountViewModel>(result));
                 }
             } catch(Exception er) {
                 return BadRequest(er.Message);

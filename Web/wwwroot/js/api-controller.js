@@ -3,14 +3,15 @@ $.fn.ajaxSubmit = function (opt = {}) {
     this.on('submit', e => {
         e.preventDefault();
         var $form = $(e.currentTarget);
-
+        var $data = $form.serializeJSON();
         var options = $.extend({
             'url': $form.attr('action'),
             'type': $form.attr('method'),
-            'data': JSON.stringify($form.serializeJSON()),
+            'data': JSON.stringify($data),
             'processData': false,
             'contentType': 'application/json; charset=utf-8',
             'complete': (jqXHR, status) => {
+                jqXHR.data = $data;
                 $form.removeClass('loading').trigger('ajaxSubmitComplete', [jqXHR, status]);
             }
         }, opt);
