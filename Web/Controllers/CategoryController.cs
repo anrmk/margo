@@ -101,6 +101,14 @@ namespace Web.Controllers.Api {
             return BadRequest();
         }
 
+        [HttpGet("GetCategory", Name = "GetCategory")]
+        public async Task<IActionResult> GetCategory([FromQuery] long id) {
+            var item = await _categoryBusinessManager.GetCategory(id);
+            if(item == null)
+                return NotFound();
+            return Ok(_mapper.Map<CategoryViewModel>(item));
+        }
+
         [HttpGet("EditCategory", Name = "EditCategory")]
         public async Task<IActionResult> EditCategory([FromQuery] long id) {
             var item = await _categoryBusinessManager.GetCategory(id);
