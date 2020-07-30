@@ -260,3 +260,6 @@ Web/wwwroot/js/vendor.min.js
 
 # Visual Studio Code debug configuration folder
 .vscode/
+
+# Visual Studio debug configurations
+Web/Properties/*.json

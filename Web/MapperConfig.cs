@@ -121,6 +121,11 @@ namespace Web {
             #region SERVICES
             CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();
             #endregion
+
+            #region PERSONS
+            CreateMap<PersonViewModel, PersonDto>().ReverseMap();
+            CreateMap<PersonListViewModel, PersonDto>().ReverseMap();
+            #endregion
         }
     }
 }

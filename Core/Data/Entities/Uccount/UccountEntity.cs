@@ -18,7 +18,7 @@ namespace Core.Data.Entities {
         [ForeignKey("Person")]
         [Column("Person_Id")]
         public long? PersonId { get; set; }
-        public virtual UccountPersonEntity Person { get; set; }
+        public virtual PersonEntity Person { get; set; }
 
         public UccountTypes Kind { get; set; }
 

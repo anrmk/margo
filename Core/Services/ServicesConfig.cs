@@ -54,12 +54,15 @@ namespace Core.Services {
             services.AddTransient<ISectionBusinessManager, SectionBusinessManager>();
             services.AddTransient<ICompanyBusinessManager, CompanyBusinessManager>();
             services.AddTransient<ICategoryBusinessManager, CategoryBusinessManager>();
-            
+
 
             services.AddTransient<IUccountBusinessManager, UccountBusinessManager>();
             services.AddTransient<IVendorBusinessManager, VendorBusinessManager>();
 
             services.AddTransient<IAccountBusinessService, AccountBusinessService>();
+
+            services.AddTransient<IPersonManager, PersonManager>();
+            services.AddTransient<IPersonBusinessManager, PersonBusinessManager>();
         }
     }
 }
