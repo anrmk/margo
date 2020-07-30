@@ -83,6 +83,8 @@ namespace Web {
                         s.Kind.GetAttribute<DisplayAttribute>().Name));
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
+            CreateMap<UccountServiceFieldViewModel, UccountServiceFieldDto>().ReverseMap();
+            CreateMap<UccountVendorFieldViewModel, UccountVendorFieldDto>().ReverseMap();
             CreateMap<UccountServiceViewModel, UccountServiceDto>().ReverseMap();
             #endregion
 
