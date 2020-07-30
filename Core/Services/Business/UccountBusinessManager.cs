@@ -112,92 +112,9 @@ namespace Core.Services.Business {
         }
 
         public async Task<UccountDto> CreateUccount(UccountDto dto) {
-            try
-            {
-                var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
-                return _mapper.Map<UccountDto>(uccountEntity);
-            }
-            catch (System.Exception e)
-            {
-                
-                throw;
-            }
+            var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
 
-            // foreach (var service in dto.Services)
-            // {
-            //     var uccountService = _mapper.Map<UccountServiceEntity>(service);
-            //     // foreach (var field in service.Fields)
-            //     foreach (var field in dto.ServicesFields)
-            //     {
-            //         uccountService.Fields.Add(_mapper.Map<UccountServiceFieldEntity>(field));
-            //     }
-            //     uccountMapEntity.Services.Add(uccountService);
-            // }
-
-            // UccountEntity uccountEntity;
-            //     uccountEntity = await _uccountManager.Create(uccountMapEntity);
-            // if (dto.Kind == UccountTypes.PERSONAL) {
-            //     if (dto.PersonId == null || dto.VendorId == null) {
-            //         throw new NullReferenceException();
-            //     }
-            //     var uccountMapEntity = _mapper.Map<UccountEntity>(dto);
-            //     foreach (var service in dto.Services)
-            //     {
-            //         var uccountService = _mapper.Map<UccountServiceEntity>(service);
-            //         foreach (var field in service.Fields)
-            //         {
-            //             uccountService.Fields.Add(_mapper.Map<UccountServiceFieldEntity>(field));
-            //         }
-            //         uccountMapEntity.Services.Add(uccountService);
-            //     }
-
-            //     uccountEntity = await _uccountManager.Create(uccountMapEntity);
-
-            //     if (dto.VendorFields.Count > 0) {
-                    
-            //     }
-            // } else {
-            //     if (dto.PersonId == null || dto.VendorId == null) {
-            //         throw new NullReferenceException();
-            //     }
-            //     uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
-            // }
-
-            // if (dto.Services.Count > 0) {
-            //     var services = new List<UccountServiceEntity>();
-            //     foreach (var service in dto.Services)
-            //     {
-            //         // var serviceEntity = await _uccountServiceManager.Create(new UccountServiceEntity
-            //         // {
-            //         //     CategoryId = service.CategoryId,
-            //         //     AccountId = uccountEntity.Id
-            //         // });
-            //         var serviceEntity = new UccountServiceEntity
-            //         {
-            //             CategoryId = service.CategoryId,
-            //             AccountId = uccountEntity.Id
-            //         };
-
-            //         services.Add(serviceEntity);
-
-            //         if (dto.ServiceFields.Count > 0) {
-            //             foreach (var serviceField in dto.ServiceFields)
-            //             {
-            //                 await _uccountServiceFieldManager.Create(new UccountServiceFieldEntity
-            //                 {
-            //                     Id = serviceField.Id,
-            //                     Type = serviceField.Type,
-            //                     Name = serviceField.Name,
-            //                     Value = serviceField.Value,
-            //                     IsRequired = serviceField.IsRequired,
-            //                     ServiceId = serviceEntity.Id
-            //                 });
-            //             }
-            //         }
-            //     }
-            // }
-
-            // var entity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
+            return _mapper.Map<UccountDto>(uccountEntity);
         }
 
         public async Task<UccountDto> UpdateUccount(long id, UccountDto dto) {
