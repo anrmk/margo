@@ -89,6 +89,10 @@ namespace Core {
             #region SERVICES
             CreateMap<ServiceDto, UccountServiceEntity>().ReverseMap();
             #endregion
+
+            #region PERSONS
+            CreateMap<PersonDto, PersonEntity>().ReverseMap();
+            #endregion
         }
     }
 }
