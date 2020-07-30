@@ -24,7 +24,7 @@ namespace Core.Services.Managers {
                 .Include(x => x.Services)
                     .ThenInclude(x => x.Fields)
                 .Include(x => x.Person)
-                .Include(x => x.VendorFields)
+                .Include(x => x.Fields)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }

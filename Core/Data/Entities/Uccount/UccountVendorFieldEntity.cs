@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Core.Data.Enums;
 
 namespace Core.Data.Entities {
-    [Table(name: "UccountVendorField")]
+    [Table(name: "UccountVendorFields")]
     public class UccountVendorFieldEntity: EntityBase<long> {
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
@@ -19,4 +19,3 @@ namespace Core.Data.Entities {
         public bool IsRequired { get; set; }
     }
 }
-

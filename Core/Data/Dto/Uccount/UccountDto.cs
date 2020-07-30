@@ -13,6 +13,6 @@ namespace Core.Data.Dto {
         public UccountTypes Kind { get; set; }
         public DateTime Updated { get; set; }
         public ICollection<UccountServiceDto> Services { get; set; }
-        public ICollection<UccountVendorFieldDto> VendorFields { get; set; }
+        public ICollection<UccountVendorFieldDto> Fields { get; set; }
     }
 }

@@ -61,7 +61,6 @@ namespace Web {
                     o => o.MapFrom(s => s.Services.Select(x =>
                         new UccountServiceViewModel {
                             Id = x.Id,
-                            Group = x.Group,
                             UccountId = x.UccountId
                         })))
                 .ForMember(
@@ -79,7 +78,7 @@ namespace Web {
                 .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
                 .ForMember(
                     d => d.Kind,
-                    o => o.MapFrom(s => 
+                    o => o.MapFrom(s =>
                         s.Kind.GetAttribute<DisplayAttribute>().Name));
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();

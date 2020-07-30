@@ -17,7 +17,7 @@ namespace Core.Services.Business {
         Task<CategoryDto> CreateCategory(CategoryDto dto);
         Task<CategoryDto> UpdateCategory(long id, CategoryDto dto);
         Task<bool> DeleteCategories(long[] ids);
-        
+
         Task<bool> DeleteFields(long[] ids);
     }
 

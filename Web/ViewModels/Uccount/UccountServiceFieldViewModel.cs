@@ -10,6 +10,5 @@ namespace Web.ViewModels {
         public FieldEnum Type { get; set; }
         public string TypeName => Type.GetAttribute<DisplayAttribute>().Name;
         public bool IsRequired { get; set; }
-        public long CategoryId { get; set; }
     }
 }

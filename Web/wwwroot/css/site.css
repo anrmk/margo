@@ -2,11 +2,6 @@
   background-color: #DADADA;
 }
 
-a.a--style-none {
-  color: inherit;
-  text-decoration: inherit;
-}
-
 .flex  {
   display: flex;
 }

@@ -63,16 +63,6 @@
             }
         }
 
-        function createUccountComplete(jqXHR, status) {
-            if (status === 'success') {
-                var data = jqXHR.responseJson;
-                $('.modal').modal('hide');
-                window.location = `@(editUrl)/${data.id}`;
-                //window.SectionFieldsTable.draw('true');
-            }
-            alert(status)
-        }
-
         // Initilize dropdown (this is need to be interactive)
         $("#account-type-dropdown").dropdown();
 
@@ -130,7 +120,6 @@
                 field.typeName = convertFieldTypeToHTML(field.typeName);
                 return (
                     `<div class='field'>
-                        ${groupId ? `<input type="hidden" name="${name}[][CategoryId]" value="${groupId}" data-value-type="number">` : ''}
                         <input type="hidden" name="${name}[][Name]" value="${field.name}">
                         <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
                         <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">

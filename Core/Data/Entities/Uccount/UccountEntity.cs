@@ -24,13 +24,8 @@ namespace Core.Data.Entities {
 
         public virtual ICollection<UccountServiceEntity> Services { get; set; }
 
-        public virtual ICollection<UccountVendorFieldEntity> VendorFields { get; set; }
+        public virtual ICollection<UccountVendorFieldEntity> Fields { get; set; }
 
         public virtual ICollection<UccountSectionEntity> Sections { get; set; }
-
-        public UccountEntity() {
-            Services = new HashSet<UccountServiceEntity>();
-            VendorFields = new HashSet<UccountVendorFieldEntity>();
-        }
     }
 }

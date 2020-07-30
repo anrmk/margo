@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Core.Data.Dto
-{
-    public class PersonDto
-    {
+namespace Core.Data.Dto {
+    public class PersonDto {
         public long Id { get; set; }
         public string Name { get; set; }
         public string SurName { get; set; }

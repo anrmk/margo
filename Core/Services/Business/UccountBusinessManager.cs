@@ -126,11 +126,9 @@ namespace Core.Services.Business {
             entity = await _uccountManager.Update(newEntity);
             entity.Services = new List<UccountServiceEntity>();
 
-            foreach (var service in dto.Services)
-            {
+            foreach(var service in dto.Services) {
                 var serviceEntity = await _uccountServiceManager.Find(id);
-                if (serviceEntity == null)
-                {
+                if(serviceEntity == null) {
                     continue;
                 }
 
@@ -172,14 +170,12 @@ namespace Core.Services.Business {
             return _mapper.Map<List<UccountSectionFieldDto>>(result);
         }
 
-        public async Task<List<UccountServiceDto>> GetServices(long accountId)
-        {
+        public async Task<List<UccountServiceDto>> GetServices(long accountId) {
             var result = await _uccountServiceManager.FindAll(accountId);
             return _mapper.Map<List<UccountServiceDto>>(result);
         }
 
-        public async Task<UccountServiceDto> CreateService(UccountServiceDto dto)
-        {
+        public async Task<UccountServiceDto> CreateService(UccountServiceDto dto) {
             var result = await _uccountServiceManager.Create(_mapper.Map<UccountServiceEntity>(dto));
             return _mapper.Map<UccountServiceDto>(result);
         }

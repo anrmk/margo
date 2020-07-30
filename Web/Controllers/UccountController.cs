@@ -89,7 +89,7 @@ namespace Web.Controllers.Api {
         [HttpGet("DetailsUccount", Name = "DetailsUccount")]
         public async Task<IActionResult> DetailsUccount([FromQuery] long id) {
             var item = await _uccountBusinessManager.GetUccountWith(id);
-            if (item == null)
+            if(item == null)
                 return NotFound();
 
             var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<UccountViewModel>(item));
@@ -102,7 +102,7 @@ namespace Web.Controllers.Api {
             var vendors = await _vendorBusinessManager.GetVendors();
             var categories = await _categoryBusinessManager.GetCategories();
 
-            if (kind == UccountTypes.PERSONAL) {
+            if(kind == UccountTypes.PERSONAL) {
                 var persons = await _personBusinessManager.GetPersons();
                 var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                     { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
@@ -121,7 +121,7 @@ namespace Web.Controllers.Api {
                 };
                 html = _viewRenderService.RenderToStringAsync("_AddBusinessUccountPartial", model, viewDataDictionary).Result;
             }
-             return Ok(html);
+            return Ok(html);
         }
 
         [HttpPost("CreateUccount", Name = "CreateUccount")]
