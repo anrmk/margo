@@ -61,7 +61,7 @@ namespace Web {
                     o => o.MapFrom(s => s.Services.Select(x =>
                         new UccountServiceViewModel {
                             Id = x.Id,
-                            CategoryId = x.CategoryId,
+                            Group = x.Group,
                             UccountId = x.UccountId
                         })))
                 .ForMember(
