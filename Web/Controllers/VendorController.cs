@@ -116,6 +116,14 @@ namespace Web.Controllers.Api {
             return BadRequest("No items selected");
         }
 
+        [HttpGet("GetVendor", Name = "GetVendor")]
+        public async Task<IActionResult> GetVendor([FromQuery] long id) {
+            var item = await _vendorBusinessManager.GetVendor(id);
+            if(item == null)
+                return NotFound();
+            return Ok(_mapper.Map<VendorViewModel>(item));
+        }
+
         [HttpGet("DeleteVendorField", Name = "DeleteVendorField")]
         public async Task<IActionResult> DeleteVendorField([FromQuery] long id) {
             var result = await _vendorBusinessManager.DeleteFields(new long[] { id });
