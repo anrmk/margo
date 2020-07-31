@@ -66,7 +66,7 @@ namespace Core.Services.Business {
         #region UCCOUNT
 
         public async Task<UccountDto> GetUccount(long id) {
-            var result = await _uccountManager.Find(id);
+            var result = await _uccountManager.FindInclude(id);
             return _mapper.Map<UccountDto>(result);
         }
 

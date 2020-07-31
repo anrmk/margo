@@ -71,15 +71,13 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.Updated, o => o.MapFrom(s => s.UpdatedDate))
                 .ForMember(
-                    d => d.PersonName,
-                    o => o.MapFrom(s => s.Person == null
-                        ? null
-                        : s.Person.Name))
+                    d => d.Name,
+                    o => o.MapFrom(s => s.Person != null
+                        ? s.Person.Name
+                        : s.Company.Name))
                 .ForMember(
-                    d => d.CompanyName,
-                    o => o.MapFrom(s => s.Company == null
-                        ? null
-                        : s.Company.Name));
+                    d => d.VendorName,
+                    o => o.MapFrom(x => x.Vendor.Name));
             //.ForMember(d => d.SectionName, o => o.MapFrom(s => s.Section.Name ?? ""));
             CreateMap<UccountSectionDto, UccountSectionEntity>().ReverseMap();
             CreateMap<UccountSectionFieldDto, UccountSectionFieldEntity>().ReverseMap();

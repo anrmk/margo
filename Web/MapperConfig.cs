@@ -54,28 +54,12 @@ namespace Web {
             #endregion
 
             #region UCCOUNTS
-            CreateMap<UccountViewModel, UccountDto>()
-                .ReverseMap()
-                .ForMember(
-                    d => d.Services,
-                    o => o.MapFrom(s => s.Services.Select(x =>
-                        new UccountServiceViewModel {
-                            Id = x.Id,
-                            UccountId = x.UccountId
-                        })))
-                .ForMember(
-                    d => d.Name,
-                    o => o.MapFrom(s => s.VendorId.HasValue
-                        ? s.PersonName
-                        : s.CompanyName));
+            CreateMap<UccountViewModel, UccountDto>().ReverseMap();
             CreateMap<UccountListViewModel, UccountDto>()
                 .ReverseMap()
                 .ForMember(
-                    d => d.Name,
-                    o => o.MapFrom(s => s.VendorId.HasValue
-                        ? s.PersonName
-                        : s.CompanyName))
-                .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
+                    d => d.ServiceCount,
+                    o => o.MapFrom(s => s.Services.Count()))
                 .ForMember(
                     d => d.Kind,
                     o => o.MapFrom(s =>

@@ -1,8 +1,37 @@
 ﻿@model Web.ViewModels.UccountViewModel
-@{
-    ViewData["Title"] = "Detail";
-}
 
-<h1>Detail</h1>
+<div class="ui red card">
+    <div class="content">
+        <h3 class="ui header">
+            @Model.Name
+            <div class="sub header">Name</div>
+        </h3>
 
-@Model.Name
+        <h3 class="ui header">
+            @Model.VendorName
+            <div class="sub header">Vendor Name</div>
+        </h3>
+
+        <h4 class="ui dividing header">Fields</h4>
+        <table class="ui table">
+            @foreach(var Field in Model.Fields) {
+                <tr>
+                    <td>@Field.Name</td>
+                    <td>@Field.Value</td>
+                </tr>
+            }
+        </table>
+
+        <h4 class="ui dividing header">Services Fields</h4>
+        <table class="ui table">
+            @foreach(var Service in Model.Services) {
+                @foreach(var Field in Service.Fields) {
+                    <tr>
+                        <td>@Field.Name</td>
+                        <td>@Field.Value</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>

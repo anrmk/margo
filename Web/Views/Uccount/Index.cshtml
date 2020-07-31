@@ -45,7 +45,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        const VENDOR_FIELDS = "VendorFields";
+        const VENDOR_FIELDS = "Fields";
         const SERVICES_FIELDS = "Services[][Fields]";
         const VENDOR_FIELDS_EL_NAME = "#vendor-fields";
         const SERVICES_FIELDS_EL_NAME = "#services-fields";
@@ -115,7 +115,7 @@
             return formatingType;
         }
 
-        generateFields = function (fields, name, groupId) {
+        generateFields = function (fields, name) {
             return fields.map(field => {
                 field.typeName = convertFieldTypeToHTML(field.typeName);
                 return (
@@ -129,7 +129,6 @@
                 )
             }).join("\n ");
         }
-
 
         generateGroup = function (id, name, html) {
             const $group = $(`

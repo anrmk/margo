@@ -11,11 +11,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IUccountManager: IEntityManager<UccountEntity> {
+        Task<UccountEntity> FindInclude(long id);
         Task<List<UccountEntity>> FindAll(long[] ids);
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
         public UccountManager(IApplicationContext context) : base(context) { }
+
+        public async Task<UccountEntity> FindInclude(long id) {
+            return await DbSet
+                .Include(x => x.Company)
+                .Include(x => x.Vendor)
+                .Include(x => x.Services)
+                    .ThenInclude(x => x.Fields)
+                .Include(x => x.Person)
+                .Include(x => x.Fields)
+                .SingleOrDefaultAsync(x => x.Id == id);
+        }
 
         public async Task<List<UccountEntity>> FindAll(long[] ids) {
             return await DbSet
