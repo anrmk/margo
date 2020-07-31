@@ -9,6 +9,6 @@ namespace Web.ViewModels {
         public string Name { get; set; }
         public int ServiceCount { get; set; }
 
-        public DateTime ModifiedDate { get; set; }
+        public DateTime Updated { get; set; }
     }
 }

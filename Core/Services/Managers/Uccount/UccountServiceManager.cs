@@ -8,19 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services.Managers
-{
-    public interface IUccountServiceManager : IEntityManager<UccountServiceEntity>
-    {
+namespace Core.Services.Managers {
+    public interface IUccountServiceManager: IEntityManager<UccountServiceEntity> {
         Task<List<UccountServiceEntity>> FindAll(long accountId);
     }
 
-    public class UccountServiceManager : AsyncEntityManager<UccountServiceEntity>, IUccountServiceManager
-    {
+    public class UccountServiceManager: AsyncEntityManager<UccountServiceEntity>, IUccountServiceManager {
         public UccountServiceManager(IApplicationContext context) : base(context) { }
 
-        public async Task<List<UccountServiceEntity>> FindAll(long accountId)
-        {
+        public async Task<List<UccountServiceEntity>> FindAll(long accountId) {
             return await DbSet
                 .Where(x => x.Account.Id == accountId)
                 .ToListAsync();

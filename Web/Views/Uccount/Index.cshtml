@@ -6,7 +6,7 @@
     var listUrl = Url.RouteUrl("GetUccounts");
     var deleteUrl = Url.RouteUrl("DeleteUccounts");
     var editUrl = Url.Action("Edit");
-    var displayUrl = Url.Action("Details");
+    var detailsUrl = Url.RouteUrl("DetailsUccount");
 }
 
 @section RightSidebar {
@@ -14,7 +14,7 @@
 }
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <div class="ui floating dropdown labeled icon button">
+        <div id="account-type-dropdown" class="ui floating dropdown labeled icon button">
             <i class="plus icon"></i>
             <span class="text">Create</span>
             <div class="menu">
@@ -22,12 +22,16 @@
                     Account Types
                 </div>
                 <div id="account-types-menu" class="scrolling menu">
-                    <div class="item" data-value="0">
-                        Bussines
+                     <div class="item" data-value="0">
+                        <a class="a--style-none" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog">
+                            Bussines
+                        </a>
                     </div>
                     <div class="item" data-value="1">
-                        Person
-                    </div>
+                        <a class="a--style-none" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog">
+                            Person
+                        </a>
+                     </div>
                 </div>
             </div>
         </div>
@@ -41,23 +45,26 @@
 
 @section Scripts {
     <script type="text/javascript">
-        function createUccountComplete(jqXHR, status) {
-            if (status === 'success') {
-                var data = jqXHR.responseJson;
-                $('.modal').modal('hide');
-                window.location = `@(editUrl)/${data.id}`;
-                //window.SectionFieldsTable.draw('true');
+        const VENDOR_FIELDS = "VendorFields";
+        const SERVICES_FIELDS = "Services[][Fields]";
+        const VENDOR_FIELDS_EL_NAME = "#vendor-fields";
+        const SERVICES_FIELDS_EL_NAME = "#services-fields";
+
+        function serviceCreateOnClick (_, jqXHR, status) {
+            if(status === 'success') {
+                const data = jqXHR.responseJSON;
+                if (data && data.fields) {
+                    const { id, name, fields } = data;
+                    const generatedFields = generateFields(fields, SERVICES_FIELDS, id);
+                    const groupFields = generateGroup(id, name, generatedFields);
+
+                    $(SERVICES_FIELDS_EL_NAME).append(groupFields);
+                }
             }
-            alert(status)
         }
 
         // Initilize dropdown (this is need to be interactive)
-        const dropdown = $('.ui.dropdown').dropdown();
-        const dropdownMenu = $('#account-types-menu');
-        dropdownMenu.on('click', '.item', function() {
-            const value = $(this).data("value");
-            // api logic...
-        });
+        $("#account-type-dropdown").dropdown();
 
         $(document).ready(function () {
             window.DocumentController = new DocumentController({
@@ -69,25 +76,80 @@
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
-                { 'title': 'Name', 'className': 'collapsing', 'data': 'name' },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'modifiedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Name', 'data': 'name' },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
             ],
             'onRowClick': (e, data) => {
-                var options = {
-                    'url': '@displayUrl' + `/${data.id}`,
-                    'complete': (jqXHR, status) => {
-                        if (status === 'success') {
-                            $('#displayContainer').empty().html(jqXHR.responseText);
-                        }
-                    }
-                }
-                $.ajax(options);
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#@(tableId)_detail').html(result);
+                });
             },
             'onDblRowClick': (e, data) => {
                 location.href = '@editUrl' + `/${data.id}`;
+            }});
+        });
+
+        ajaxSubmitComplete = function (e, jqXHR, status) {
+            if (status === 'success') {
+                window.DocumentController.reload(false);
+                window.dialog.modal('hide');
             }
-        });
-        });
+        };
+
+        ajaxClick = function (e, jqXHR, status) {
+            if (status === 'success') {
+                var target = $(e.target).attr('data-target');
+                $(target).remove();
+            }
+        };
+
+        convertFieldTypeToHTML = function (type) {
+            let formatingType = type;
+
+            if (formatingType === "Date Time") {
+                formatingType = "Date";
+            }
+            formatingType = formatingType.toLowerCase();
+
+            return formatingType;
+        }
+
+        generateFields = function (fields, name, groupId) {
+            return fields.map(field => {
+                field.typeName = convertFieldTypeToHTML(field.typeName);
+                return (
+                    `<div class='field'>
+                        <input type="hidden" name="${name}[][Name]" value="${field.name}">
+                        <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
+                        <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">
+                        <input type="hidden" name="${name}[][TypeName]" value="${field.typeName}">
+                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.typeName !== "string" ? `type="${field.typeName}"` : ''} data-type="${field.type}" data-value-type="${field.typeName}" />
+                    </div>`
+                )
+            }).join("\n ");
+        }
+
+
+        generateGroup = function (id, name, html) {
+            const $group = $(`
+                <div id="${id}" class="equal width fields">
+                   <input type="hidden" name="Services[][Group]" value="${id}" data-value-type="number">
+                    <div class="field three wide flex align-center">
+                        <label>${name}</label>
+                    </div>
+                    ${html}
+                    <div class="field flex align-center justify-center">
+                       <a href="#">delete</a>
+                    </div>
+                </div>`);
+
+            $group.find("a").on("click", function (e) {
+                e.preventDefault();
+                $group.remove();
+            });
+
+            return $group;
+        }
     </script>
 }

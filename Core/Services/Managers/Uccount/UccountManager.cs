@@ -22,7 +22,9 @@ namespace Core.Services.Managers {
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
                 .Include(x => x.Services)
+                    .ThenInclude(x => x.Fields)
                 .Include(x => x.Person)
+                .Include(x => x.Fields)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }

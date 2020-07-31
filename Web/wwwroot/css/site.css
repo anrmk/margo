@@ -2,6 +2,18 @@
   background-color: #DADADA;
 }
 
+.flex  {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
 fieldset {
   min-width: 0;
   padding: 0;

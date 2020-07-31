@@ -6,6 +6,7 @@ using Core.Data.Dto.Nsi;
 using Core.Extension;
 
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Web.ViewModels;
 
@@ -53,23 +54,36 @@ namespace Web {
             #endregion
 
             #region UCCOUNTS
-            CreateMap<UccountViewModel, UccountDto>().ReverseMap();
-            CreateMap<UccountListViewModel, UccountDto>()
+            CreateMap<UccountViewModel, UccountDto>()
                 .ReverseMap()
-                .ForMember(d => d.ModifiedDate, o => o.MapFrom(s => s.Updated))
+                .ForMember(
+                    d => d.Services,
+                    o => o.MapFrom(s => s.Services.Select(x =>
+                        new UccountServiceViewModel {
+                            Id = x.Id,
+                            UccountId = x.UccountId
+                        })))
                 .ForMember(
                     d => d.Name,
-                    o => o.MapFrom(s => s.VendorId != 0
-                        ? s.VendorName
+                    o => o.MapFrom(s => s.VendorId.HasValue
+                        ? s.PersonName
+                        : s.CompanyName));
+            CreateMap<UccountListViewModel, UccountDto>()
+                .ReverseMap()
+                .ForMember(
+                    d => d.Name,
+                    o => o.MapFrom(s => s.VendorId.HasValue
+                        ? s.PersonName
                         : s.CompanyName))
                 .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
                 .ForMember(
                     d => d.Kind,
-                    o => o.MapFrom(s => s.Kind == Core.Data.Enums.UccountTypes.BUSINESS
-                        ? "Business"
-                        : "Personal"));
+                    o => o.MapFrom(s =>
+                        s.Kind.GetAttribute<DisplayAttribute>().Name));
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
+            CreateMap<UccountServiceFieldViewModel, UccountServiceFieldDto>().ReverseMap();
+            CreateMap<UccountVendorFieldViewModel, UccountVendorFieldDto>().ReverseMap();
             CreateMap<UccountServiceViewModel, UccountServiceDto>().ReverseMap();
             #endregion
 

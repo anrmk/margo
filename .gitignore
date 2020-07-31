@@ -254,9 +254,9 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# Vendor auto-generated files
-Web/wwwroot/css/vendor.min.css
-Web/wwwroot/js/vendor.min.js
+# Auto-generated files
+Web/wwwroot/*/*.min.js
+Web/wwwroot/*/*.min.css
 
 # Visual Studio Code debug configuration folder
 .vscode/

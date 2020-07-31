@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Data.Enums;
 using Core.Extension;
 using Core.Services.Managers;
 
@@ -27,7 +28,7 @@ namespace Core.Services.Business {
         Task<UccountSectionFieldDto> GetSectionField(long id);
         Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId);
 
-        Task<List<UccountServiceDto>> GetServices(long id);
+        Task<List<UccountServiceDto>> GetServices(long accountId);
         Task<UccountServiceDto> CreateService(UccountServiceDto dto);
     }
     public class UccountBusinessManager: IUccountBusinessManager {
@@ -36,24 +37,30 @@ namespace Core.Services.Business {
         private readonly IUccountSectionManager _uccountSectionManager;
         private readonly IUccountSectionFieldManager _uccountSectionFieldManager;
         private readonly IUccountServiceManager _uccountServiceManager;
+        private readonly IUccountServiceFieldManager _uccountServiceFieldManager;
 
         private readonly ICompanyManager _companyManager;
         private readonly ISectionManager _sectionManager;
+        private readonly IVendorManager _vendorManager;
 
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
             IUccountSectionManager uccountSectionManager,
             IUccountSectionFieldManager uccountSectionFieldManager,
             IUccountServiceManager uccountServiceManager,
+            IUccountServiceFieldManager uccountServiceFieldManager,
             ICompanyManager companyManager,
-            ISectionManager sectionManager) {
+            ISectionManager sectionManager,
+            IVendorManager vendorManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountSectionManager = uccountSectionManager;
             _uccountSectionFieldManager = uccountSectionFieldManager;
             _uccountServiceManager = uccountServiceManager;
+            _uccountServiceFieldManager = uccountServiceFieldManager;
             _companyManager = companyManager;
             _sectionManager = sectionManager;
+            _vendorManager = vendorManager;
         }
 
         #region UCCOUNT
@@ -70,7 +77,7 @@ namespace Core.Services.Business {
                    (true);
             //&& (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
 
-            string[] include = new string[] { "Company", "Vendor", "Services" };
+            string[] include = new string[] { "Company", "Person", "Vendor", "Services" };
 
             var tuple = await _uccountManager.Pager<UccountEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;
@@ -91,40 +98,9 @@ namespace Core.Services.Business {
         }
 
         public async Task<UccountDto> CreateUccount(UccountDto dto) {
-            //var template = await _sectionManager.FindInclude(dto.TemplateId);
-            //if(template != null) {
-            //var sectionEntity = new UccountSectionEntity() {
-            //    Code = template.Code,
-            //    Name = template.Name,
-            //    Description = template.Description
-            //};
+            var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
 
-            //sectionEntity = await _uccountSectionManager.Create(sectionEntity);
-
-            //var fieldsEntity = template.Fields.Select(x => new UccountSectionFieldEntity() {
-            //    Name = x.Name,
-            //    SectionId = sectionEntity.Id,
-            //    Type = x.Type,
-            //    Value = ""
-            //});
-            //fieldsEntity = await _uccountSectionFieldManager.Create(fieldsEntity);
-
-            //dto.SectionId = sectionEntity.Id;
-
-            //dto.Services = await GetServices(dto.Id);
-            foreach (var service in dto.Services)
-            {
-                await _uccountServiceManager.Create(new UccountServiceEntity
-                {
-                    CategoryId = service.CategoryId,
-                    AccountId = service.UccountId
-                });
-            }
-
-            var entity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
-            return _mapper.Map<UccountDto>(entity);
-            //}
-            //return null;
+            return _mapper.Map<UccountDto>(uccountEntity);
         }
 
         public async Task<UccountDto> UpdateUccount(long id, UccountDto dto) {
@@ -136,11 +112,9 @@ namespace Core.Services.Business {
             entity = await _uccountManager.Update(newEntity);
             entity.Services = new List<UccountServiceEntity>();
 
-            foreach (var service in dto.Services)
-            {
+            foreach(var service in dto.Services) {
                 var serviceEntity = await _uccountServiceManager.Find(id);
-                if (serviceEntity == null)
-                {
+                if(serviceEntity == null) {
                     continue;
                 }
 
@@ -182,14 +156,12 @@ namespace Core.Services.Business {
             return _mapper.Map<List<UccountSectionFieldDto>>(result);
         }
 
-        public async Task<List<UccountServiceDto>> GetServices(long accountId)
-        {
+        public async Task<List<UccountServiceDto>> GetServices(long accountId) {
             var result = await _uccountServiceManager.FindAll(accountId);
             return _mapper.Map<List<UccountServiceDto>>(result);
         }
 
-        public async Task<UccountServiceDto> CreateService(UccountServiceDto dto)
-        {
+        public async Task<UccountServiceDto> CreateService(UccountServiceDto dto) {
             var result = await _uccountServiceManager.Create(_mapper.Map<UccountServiceEntity>(dto));
             return _mapper.Map<UccountServiceDto>(result);
         }

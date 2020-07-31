@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 #pragma warning disable CS8618
 #nullable enable
-namespace Web.ViewModels
-{
-    public class PersonViewModel
-    {
+namespace Web.ViewModels {
+    public class PersonViewModel {
         public long Id { get; set; }
 
         [Required]

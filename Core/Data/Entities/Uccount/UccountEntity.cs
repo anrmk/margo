@@ -20,9 +20,11 @@ namespace Core.Data.Entities {
         public long? PersonId { get; set; }
         public virtual PersonEntity Person { get; set; }
 
+        public UccountTypes Kind { get; set; }
+
         public virtual ICollection<UccountServiceEntity> Services { get; set; }
 
-        public UccountTypes Kind { get; set; }
+        public virtual ICollection<UccountVendorFieldEntity> Fields { get; set; }
 
         public virtual ICollection<UccountSectionEntity> Sections { get; set; }
     }

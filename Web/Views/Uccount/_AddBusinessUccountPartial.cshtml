@@ -1,0 +1,70 @@
+﻿@model Web.ViewModels.UccountViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var companies = (List<SelectListItem>)ViewData["Companies"];
+    var vendors = (List<SelectListItem>)ViewData["Vendors"];
+    var categories = (List<SelectListItem>)ViewData["Categories"];
+    var uccountKind = (int)ViewData["Kind"];
+}
+
+<form id="@formId" class="ui form" asp-action="CreateUccount" method="post">
+    <fieldset>
+        <input type="hidden" name="Kind" value="@uccountKind" />
+
+        <div class="field">
+            <div class="two fields">
+                <div class="field required">
+                    <label asp-for="CompanyId"></label>
+                    <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
+                        <option value="" selected disabled hidden></option>
+                    </select>
+                </div>
+
+                <div class="field required">
+                    <label asp-for="VendorId"></label>
+                    <select id="vendors-select" class="ui fluid dropdown" required asp-for="VendorId" asp-items="@vendors">
+                        <option value="" selected disabled hidden></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="vendor-fields" class="fields"></div>
+
+        <div class="field">
+            <div id="services-dropdown" class="ui icon top left pointing dropdown button">
+                <i class="wrench icon"></i>
+                <div class="menu">
+                    <div class="header">Services Types</div>
+                    @foreach (var category in categories)
+                    {
+                        <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <h4 class="ui dividing header">Services</h4>
+
+        <div id="services-fields"></div>
+    </fieldset>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#vendors-select").on("change", function () {
+            const vendorId = $(this).val();
+            $.ajax({
+                url: `/api/Vendor/GetVendor?id=${vendorId}`
+            }).done((data, status, _) => {
+                if (data && data.fields) {
+                    const fields = $(generateFields(data.fields, VENDOR_FIELDS_EL_NAME, VENDOR_FIELDS));
+                    $(VENDOR_FIELDS_EL_NAME).html(fields);
+                }
+            });
+        });
+
+        // Initilize services dropdown
+        $("#services-dropdown").dropdown();
+    })
+</script>
