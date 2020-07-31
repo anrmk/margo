@@ -10,7 +10,6 @@ namespace Core.Data.Entities {
         [Column("Account_Id")]
         public long AccountId { get; set; }
         public virtual UccountEntity Account { get; set; }
-        public long Group { get; set; }
         public virtual ICollection<UccountServiceFieldEntity> Fields { get; set; }
     }
 }
