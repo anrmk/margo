@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Web.ViewModels {
     public class UccountViewModel {
         public long Id { get; set; }
-        [Required]
         public string Name { get; set; }
         [Required]
         public int Kind { get; set; }

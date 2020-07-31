@@ -16,12 +16,16 @@
             <div class="two fields">
                 <div class="field required">
                     <label asp-for="CompanyId"></label>
-                    <select id="companies-select" class="ui fluid dropdown" asp-for="CompanyId" asp-items="@companies"></select>
+                    <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
+                        <option value="" selected disabled hidden></option>
+                    </select>
                 </div>
 
                 <div class="field required">
                     <label asp-for="VendorId"></label>
-                    <select id="vendors-select" class="ui fluid dropdown" asp-for="VendorId" asp-items="@vendors"></select>
+                    <select id="vendors-select" class="ui fluid dropdown" required asp-for="VendorId" asp-items="@vendors">
+                        <option value="" selected disabled hidden></option>
+                    </select>
                 </div>
             </div>
         </div>

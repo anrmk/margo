@@ -77,7 +77,7 @@ namespace Core.Services.Business {
                    (true);
             //&& (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
 
-            string[] include = new string[] { "Company", "Vendor", "Services" };
+            string[] include = new string[] { "Company", "Person", "Vendor", "Services" };
 
             var tuple = await _uccountManager.Pager<UccountEntity>(where, sortby, filter.Start, filter.Length, include);
             var list = tuple.Item1;

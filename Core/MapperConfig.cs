@@ -71,10 +71,10 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.Updated, o => o.MapFrom(s => s.UpdatedDate))
                 .ForMember(
-                    d => d.VendorName,
+                    d => d.PersonName,
                     o => o.MapFrom(s => s.Person == null
                         ? null
-                        : s.Vendor.Name))
+                        : s.Person.Name))
                 .ForMember(
                     d => d.CompanyName,
                     o => o.MapFrom(s => s.Company == null
