@@ -12,9 +12,5 @@ namespace Core.Data.Entities {
         public virtual UccountEntity Account { get; set; }
         public long Group { get; set; }
         public virtual ICollection<UccountServiceFieldEntity> Fields { get; set; }
-
-        public UccountServiceEntity() {
-            Fields = new HashSet<UccountServiceFieldEntity>();
-        }
     }
 }

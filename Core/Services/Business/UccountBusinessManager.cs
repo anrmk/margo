@@ -15,7 +15,6 @@ namespace Core.Services.Business {
     public interface IUccountBusinessManager {
         //  UCCOUNT
         Task<UccountDto> GetUccount(long id);
-        Task<UccountDto> GetUccountWith(long id);
         Task<Pager<UccountDto>> GetUccountPage(PagerFilter filter);
         Task<List<UccountDto>> GetUccounts();
         Task<UccountDto> CreateUccount(UccountDto dto);
@@ -69,19 +68,6 @@ namespace Core.Services.Business {
         public async Task<UccountDto> GetUccount(long id) {
             var result = await _uccountManager.Find(id);
             return _mapper.Map<UccountDto>(result);
-        }
-
-        public async Task<UccountDto> GetUccountWith(long id) {
-            var uccount = await _uccountManager.Find(id);
-
-            uccount.Company = !uccount.CompanyId.HasValue
-                ? null
-                : await _companyManager.Find(uccount.CompanyId);
-            uccount.Vendor = !uccount.VendorId.HasValue
-                ? null
-                : await _vendorManager.Find(uccount.VendorId);
-
-            return _mapper.Map<UccountDto>(uccount);
         }
 
         public async Task<Pager<UccountDto>> GetUccountPage(PagerFilter filter) {

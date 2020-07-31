@@ -88,7 +88,7 @@ namespace Web.Controllers.Api {
 
         [HttpGet("DetailsUccount", Name = "DetailsUccount")]
         public async Task<IActionResult> DetailsUccount([FromQuery] long id) {
-            var item = await _uccountBusinessManager.GetUccountWith(id);
+            var item = await _uccountBusinessManager.GetUccount(id);
             if(item == null)
                 return NotFound();
 
