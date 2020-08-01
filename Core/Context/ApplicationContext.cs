@@ -23,7 +23,7 @@ namespace Core.Context {
         int SaveChanges();
     }
 
-    public class ApplicationContext: IdentityDbContext<AppNetUserEntity>, IApplicationContext {
+    public class ApplicationContext: IdentityDbContext<AspNetUserEntity>, IApplicationContext {
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
 

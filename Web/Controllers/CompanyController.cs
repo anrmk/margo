@@ -90,7 +90,7 @@ namespace Web.Controllers.Mvc {
                         return NotFound();
                     }
 
-                    await ClientNotify($"Company Id: {item.Id}: This record was modified by {item.UpdatedBy} on {item.UpdatedDate.ToString()}");
+                  //  await ClientNotify($"Company Id: {item.Id}: This record was modified by {item.UpdatedBy} on {item.UpdatedDate.ToString()}");
                 }
             } catch(Exception er) {
                 _logger.LogError(er, er.Message);

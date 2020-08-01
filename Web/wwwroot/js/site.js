@@ -10,6 +10,7 @@
         }
     });
 
+    $('.ui.dropdown').dropdown();
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
 }).ajaxSend((event, xhr, options) => {

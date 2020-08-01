@@ -29,7 +29,7 @@ namespace Core.Context {
 
         private void RoleManager() {
             var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
+            
             if(!roleManager.RoleExistsAsync("Administrator").Result) {
                 roleManager.CreateAsync(new IdentityRole() {
                     Name = "Administrator",
@@ -46,10 +46,10 @@ namespace Core.Context {
         }
 
         private void ApplicationUser() {
-            var userManager = _serviceProvider.GetRequiredService<UserManager<AppNetUserEntity>>();
+            var userManager = _serviceProvider.GetRequiredService<UserManager<AspNetUserEntity>>();
 
             if(userManager.FindByEmailAsync("test@test.com").Result == null) {
-                var user = new AppNetUserEntity() {
+                var user = new AspNetUserEntity() {
                     UserName = "test@test.com",
                     NormalizedUserName = "ADMINISTRATOR",
                     Email = "test@test.com",
@@ -63,7 +63,7 @@ namespace Core.Context {
             }
 
             if(userManager.FindByEmailAsync("user@user.com").Result == null) {
-                var user = new AppNetUserEntity() {
+                var user = new AspNetUserEntity() {
                     UserName = "user@user.com",
                     NormalizedUserName = "USER",
                     Email = "user@user.com",

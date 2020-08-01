@@ -1,15 +1,20 @@
 ﻿
+using System;
 using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
 
+using Microsoft.AspNetCore.Identity;
+
 namespace Core {
     public class MapperConfig: Profile {
         public MapperConfig() {
-            CreateMap<AppNetUserEntity, ApplicationUserDto>().ReverseMap();
+            CreateMap<AspNetUserEntity, AspNetUserDto>().ReverseMap()
+                .ForMember(d => d.Id, o => o.MapFrom(s => string.IsNullOrEmpty(s.Id) ? Guid.NewGuid().ToString() : s.Id));
             CreateMap<AppNetUserProfileEntity, UserProfileDto>().ReverseMap();
-
+            CreateMap<AspNetRoleDto, IdentityRole>().ReverseMap();
+            
             CreateMap<LogEntity, LogDto>().ReverseMap();
 
             #region COMPANY

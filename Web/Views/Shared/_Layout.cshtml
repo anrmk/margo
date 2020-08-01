@@ -1,14 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Core.Data.Entities
 
-@inject SignInManager<AppNetUserEntity> SignInManager
-@inject UserManager<AppNetUserEntity> UserManager
+@inject SignInManager<AspNetUserEntity> SignInManager
+@inject UserManager<AspNetUserEntity> UserManager
 
 @{
     var userName = UserManager.GetUserName(User);
     ViewData["UserName"] = userName;
+
     var isSignIn = SignInManager.IsSignedIn(User);
     ViewData["IsSignIn"] = isSignIn;
+
+    //var roles = await UserManager.GetRolesAsync(User.R);
 }
 
 <!DOCTYPE html>

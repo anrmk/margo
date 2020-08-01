@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Extension;
+using Core.Services;
 using Core.Services.Business;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.Models.AccountViewModel;
@@ -23,6 +29,10 @@ namespace Web.Controllers.Mvc {
         public AccountController(ILogger<AccountController> logger, IMapper mapper,
          IAccountBusinessService accountBusinessService) : base(logger, mapper) {
             _accountBusinessService = accountBusinessService;
+        }
+
+        public IActionResult Index() {
+            return View();
         }
 
         public IActionResult Activity() {
@@ -104,15 +114,15 @@ namespace Web.Controllers.Mvc {
             ViewData["ReturnUrl"] = returnUrl;
             if(ModelState.IsValid) {
                 try {
-                    var user = new ApplicationUserDto { UserName = model.Email, Email = model.Email };
+                    var user = new AspNetUserDto { UserName = model.Email, Email = model.Email };
                     var result = await _accountBusinessService.CreateUser(user, model.Password);
                     if(result != null) {
                         _logger.LogInformation("User created a new account with password.");
-                        var code = await _accountBusinessService.GenerateEmailConfirmationTokenAsync(result);
+                        var code = await _accountBusinessService.GenerateEmailConfirmationTokenAsync(result.Id);
                         //var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                         //await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                        await _accountBusinessService.SignInAsync(result, isPersistent: false);
+                        await _accountBusinessService.SignInAsync(result.Id, isPersistent: false);
                         _logger.LogInformation("User created a new account with password.");
                         return RedirectToLocal(returnUrl);
                     }
@@ -139,15 +149,86 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
+        private readonly IViewRenderService _viewRenderService;
         private readonly ISectionBusinessManager _crudBusinessManager;
         private readonly IAccountBusinessService _accountBusinessService;
 
-        public AccountController(IMapper mapper, ISectionBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
+        public AccountController(IMapper mapper, IViewRenderService viewRenderService,
+            ISectionBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
             _mapper = mapper;
+            _viewRenderService = viewRenderService;
             _crudBusinessManager = businessManager;
             _accountBusinessService = accountBusinessService;
             //_telegramBotClient = telegramBotClient;
         }
+
+        [HttpGet("GetAppNetUsers", Name = "GetAppNetUsers")]
+        public async Task<Pager<AppNetUserListViewModel>> GetAppNetUsers([FromQuery] PagerFilterViewModel model) {
+            var result = await _accountBusinessService.GetUserPage(_mapper.Map<PagerFilter>(model));
+            return new Pager<AppNetUserListViewModel>(_mapper.Map<List<AppNetUserListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        }
+
+        [HttpGet("DetailsAspNetUser", Name = "DetailsAspNetUser")]
+        public async Task<IActionResult> DetailsAspNetUser([FromQuery] string id) {
+            var item = await _accountBusinessService.GetUser(id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<AspNetUserViewModel>(item));
+            return Ok(html);
+        }
+
+
+        [HttpGet("AddAspNetUser", Name = "AddAspNetUser")]
+        public async Task<IActionResult> AddAspNetUser() {
+            var roles = await _accountBusinessService.GetUserRoles();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }) }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new AspNetUserViewModel(), viewData);
+            return Ok(html);
+        }
+
+        [HttpPost("CreateAspNetUser", Name = "CreateAspNetUser")]
+        public async Task<IActionResult> CreateAspNetUser([FromBody] AspNetUserViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _accountBusinessService.CreateUser(_mapper.Map<AspNetUserDto>(model), "1Q2w3E4r");
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<AspNetUserViewModel>(item));
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("EditAspNetUser", Name = "EditAspNetUser")]
+        public async Task<IActionResult> EditPerson([FromQuery] string id) {
+            var item = await _accountBusinessService.GetUser(id);
+            if(item == null)
+                return NotFound();
+
+            var roles = await _accountBusinessService.GetUserRoles();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<AspNetUserViewModel>(item), viewData);
+            return Ok(html);
+        }
+
+        [HttpPut("UpdateAspNetUser", Name = "UpdateAspNetUser")]
+        public async Task<IActionResult> UpdateAspNetUser([FromQuery] string id, [FromBody] AspNetUserViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _accountBusinessService.UpdateUser(id, _mapper.Map<AspNetUserDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<AspNetUserViewModel>(item));
+            }
+            return BadRequest();
+        }
+
 
         [HttpGet]
         [Route("activity")]

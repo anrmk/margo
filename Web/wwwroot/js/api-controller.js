@@ -75,6 +75,7 @@ $.fn.dialog = function (opt) {
                 var $form = $modal.find('form');
                 if ($form.length) {
                     $form.ajaxSubmit();
+                    $form.find('.ui.dropdown').dropdown();
                     $form.find('a[data-request=ajax]').ajaxClick();
                     $modal.find('button.submit').attr('form', $form.attr('id'));
                 }
@@ -110,6 +111,10 @@ $.fn.formatDate = function (data, type, row) {
 
 $.fn.renderDatatableAction = function (data, type, row) {
     return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}'> <label></label></div>`;
+}
+
+$.fn.renderDatatableCollection = function (data, type, row) {
+    return data.map((x) => `<span class='ui blue label'>${x}</span>`).join(' ');;
 }
 
 $.fn.addField = function (target) {

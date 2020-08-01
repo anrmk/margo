@@ -1,0 +1,31 @@
+﻿@model Web.ViewModels.AspNetUserViewModel
+
+@{
+    var formId = Guid.NewGuid();
+}
+
+<form id="@formId" class="ui form" asp-action="UpdateAspNetUser" asp-route-id="@Model.Id" method="put" autocomplete="off">
+    <fieldset>
+        <input type="hidden" asp-for="Id" />
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" required autocomplete="off">
+            </div>
+            <div class="field required">
+                <label asp-for="Roles"></label>
+                <select asp-for="Roles" asp-items="ViewBag.Roles" name="Roles[]" class="ui dropdown" required></select>
+            </div>
+        </div>
+        <div class="three fields">
+            <div class="field required">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" required />
+            </div>
+            <div class="field">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" data-value-type="string" />
+            </div>
+        </div>
+    </fieldset>
+</form>

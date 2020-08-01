@@ -23,14 +23,14 @@ namespace Web.Controllers {
         public bool IsAjaxRequest => HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
         public string CurrentUser => User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        /*
+                public async Task ClientNotify(string msg) {
 
-        public async Task ClientNotify(string msg) {
-            /*
-            if(_notificationHub != null)
-                await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
-            */
-        }
+                    if(_notificationHub != null)
+                        await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
 
+                }
+         */
 
         [NonAction]
         public override void OnActionExecuting(ActionExecutingContext context) {

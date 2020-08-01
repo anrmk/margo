@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -52,9 +53,7 @@ namespace Core.Services.Business {
 
             string[] include = new string[] { "Fields" };
 
-            var tuple = await _categoryManager.Pager<CategoryEntity>(where, sortby, filter.Start, filter.Length, include);
-            var list = tuple.Item1;
-            var count = tuple.Item2;
+            var (list, count) = await _categoryManager.Pager<CategoryEntity>(where, sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
                 return new Pager<CategoryDto>(new List<CategoryDto>(), 0, filter.Start, filter.Length);

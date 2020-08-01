@@ -33,8 +33,9 @@
         </div>
     </div>
 
+    @if(User.IsInRole("Administrator")) {
     <div class="item">
-        <div class="header">Settings</div>
+        <div class="header">Admin settings</div>
         <div class="menu">
             <a class="item @(url.Contains("/person") ? "active" : "")" asp-controller="Person" asp-action="Index">
                 Persons
@@ -48,9 +49,17 @@
             <a class="item @(url.Contains("/vendor") ? "active" : "")" asp-controller="Vendor" asp-action="Index">
                 Vendors
             </a>
-            <a class="item @(url.Contains("/account") ? "active" : "") " asp-controller="Account" asp-action="Activity">
+        </div>
+
+        <div class="header">Accounts</div>
+        <div class="menu">
+            <a class="item @(url.Contains("/account") ? "active" : "") " asp-controller="Account" asp-action="Index">
+                Users
+            </a>
+            <a class="item @(url.Contains("/account/activity") ? "active" : "") " asp-controller="Account" asp-action="Activity">
                 Activity
             </a>
         </div>
     </div>
+    }
 </div>

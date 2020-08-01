@@ -27,7 +27,7 @@
                     $(row).find('input[type=checkbox]').attr('checked', true)
                     //$(row).addClass('active');
                 }
-            },
+            }
         });
 
         this.initialize();

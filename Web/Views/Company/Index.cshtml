@@ -34,12 +34,14 @@
 }
 
 <div>
+    @if(User.IsInRole("Administrator")) {
     <div id="toolbar" class="ui secondary menu">
         <a asp-controller="Company" asp-action="Create" class="ui button" data-action="create"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
     </div>
+    }
 
     <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>

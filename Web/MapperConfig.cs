@@ -24,6 +24,14 @@ namespace Web {
         public MapperConfig() {
             CreateMap<PagerFilterViewModel, PagerFilter>();
 
+            CreateMap<AspNetUserViewModel, AspNetUserDto>()
+                .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => new AspNetRoleDto() { Id = x})))
+                .ReverseMap()
+                .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Id)));
+            CreateMap<AppNetUserListViewModel, AspNetUserDto>().ReverseMap()
+                .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Name)));
+            CreateMap<AspNetRoleViewModel, AspNetRoleDto>().ReverseMap();
+
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();
 

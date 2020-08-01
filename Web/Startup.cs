@@ -37,7 +37,7 @@ namespace Web {
             #endregion
 
             #region Identity
-            services.AddIdentity<AppNetUserEntity, IdentityRole>()
+            services.AddIdentity<AspNetUserEntity, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 

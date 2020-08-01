@@ -1,0 +1,26 @@
+﻿@model Web.ViewModels.AspNetUserViewModel
+
+@{
+    ViewData["Title"] = "";
+}
+
+<div class="ui card">
+    <div class="content">
+        <div class="header">@Model.UserName</div>
+        <div class="description">
+            <dl>
+                <dt><label asp-for="NormalizedUserName"></label></dt>
+                <dd>@Model.NormalizedUserName</dd>
+
+                <dt><label asp-for="UserName"></label></dt>
+                <dd>@Model.UserName</dd>
+
+                <dt><label asp-for="Email"></label></dt>
+                <dd>@Model.Email</dd>
+
+                <dt><label asp-for="PhoneNumber"></label></dt>
+                <dd>@Model.PhoneNumber</dd>
+            </dl>
+        </div>
+    </div>
+</div>
