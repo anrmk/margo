@@ -66,8 +66,8 @@ namespace Core.Services.Business {
                 return null;
 
             var userRoles = await _userManager.GetRolesAsync(entity);
-            var roles =  _roleManager.Roles.Where(x => userRoles.Any(y => x.Name.Equals(y))).ToList();
-            
+            var roles = _roleManager.Roles.Where(x => userRoles.Any(y => x.Name.Equals(y))).ToList();
+
             var dto = _mapper.Map<AspNetUserDto>(entity);
             dto.Roles = _mapper.Map<List<AspNetRoleDto>>(roles);
 
@@ -89,7 +89,7 @@ namespace Core.Services.Business {
             query = string.IsNullOrEmpty(sortby) ?
              query.OrderBy(x => Guid.NewGuid().ToString()).Skip(filter.Start) :
              SortExtension.OrderByDynamic(query, sortby, true).Skip(filter.Start);
-            
+
             var roleNames = await _roleManager.Roles.ToListAsync();
 
             var list = await query.Take(filter.Length).ToListAsync();
@@ -97,7 +97,7 @@ namespace Core.Services.Business {
             foreach(var user in list) {
                 var userRoleNames = await _userManager.GetRolesAsync(user);
                 var userRoles = roleNames.Where(x => userRoleNames.Any(y => x.Name.Equals(y, StringComparison.OrdinalIgnoreCase))).ToList();
-                
+
                 var model = _mapper.Map<AspNetUserDto>(user);
                 model.Roles = _mapper.Map<List<AspNetRoleDto>>(userRoles);
                 result.Add(model);
@@ -115,7 +115,11 @@ namespace Core.Services.Business {
 
                 if(result.Succeeded) {
                     // Add user to new roles
-                    var roleNames = await _roleManager.Roles.Where(x => dto.Roles.Any(y => y.Id == x.Id)).Select(x => x.Name).ToArrayAsync();
+                    var allRoles = await _roleManager.Roles.ToListAsync();
+                    var roleNames = allRoles
+                        .Where(x => dto.Roles.Any(y => y.Id.Equals(x.Id, StringComparison.OrdinalIgnoreCase)))
+                        .Select(x => x.Name).ToList();
+
                     await _userManager.AddToRolesAsync(entity, roleNames);
                     return _mapper.Map<AspNetUserDto>(entity);
                 } else {
