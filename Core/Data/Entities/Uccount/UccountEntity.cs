@@ -12,7 +12,7 @@ namespace Core.Data.Entities {
 
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
-        public long? VendorId { get; set; }
+        public long VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
 
         [ForeignKey("Person")]
@@ -24,8 +24,8 @@ namespace Core.Data.Entities {
 
         public virtual ICollection<UccountServiceEntity> Services { get; set; }
 
-        public virtual ICollection<UccountVendorFieldEntity> Fields { get; set; }
+        public virtual ICollection<InvoiceEntity> Invoices { get; set; }
 
-        public virtual ICollection<UccountSectionEntity> Sections { get; set; }
+        public virtual ICollection<UccountVendorFieldEntity> Fields { get; set; }
     }
 }

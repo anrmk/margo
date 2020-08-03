@@ -8,5 +8,7 @@ namespace Core.Data.Dto {
         public string MiddleName { get; set; }
         public string Description { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public string FullName =>
+            $"{SurName} {MiddleName} {Name}";
     }
 }

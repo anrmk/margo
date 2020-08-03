@@ -82,10 +82,13 @@ namespace Web {
             #region INVOICE
             CreateMap<InvoiceListViewModel, InvoiceDto>()
                .ReverseMap()
+               .ForMember(d => d.AmountDecimal, o => o.MapFrom(s => s.Amount))
                .ForMember(d => d.Amount, o => o.MapFrom(s => s.Amount.ToCurrency()))
-               .ForMember(d => d.BalanceAmount, o => o.MapFrom(s => (s.Amount - (s.PaymentAmount ?? 0)).ToCurrency()));
+               .ForMember(d => d.BalanceAmountDecimal, o => o.MapFrom(s => s.Amount - (s.PaymentAmount ?? default)))
+               .ForMember(d => d.BalanceAmount, o => o.MapFrom(s => (s.Amount - (s.PaymentAmount ?? default)).ToCurrency()));
             CreateMap<InvoiceViewModel, InvoiceDto>().ReverseMap();
             CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
+            CreateMap<InvoiceServiceViewModel, InvoiceServiceDto>().ReverseMap();
             #endregion
 
             CreateMap<PaymentViewModel, PaymentDto>().ReverseMap();

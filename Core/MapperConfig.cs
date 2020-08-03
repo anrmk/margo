@@ -38,13 +38,11 @@ namespace Core {
 
             #region INVOICE
             CreateMap<InvoiceDto, InvoiceEntity>()
-                .ForMember(d => d.Company, o => o.Ignore())
-                .ForMember(d => d.Vendor, o => o.Ignore())
                 .ReverseMap()
-                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company.Name))
-                .ForMember(d => d.VendorName, o => o.MapFrom(s => s.Vendor.Name))
-                ;
-
+                .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Account.Company != null
+                    ? s.Account.Company.Name
+                    : $"{s.Account.Person.SurName} {s.Account.Person.MiddleName} {s.Account.Person.Name}"));
+            CreateMap<InvoiceServiceDto, InvoiceServiceEntity>().ReverseMap();
             #endregion
 
             CreateMap<PaymentDto, PaymentEntity>()

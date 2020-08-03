@@ -20,9 +20,5 @@ namespace Core.Data.Entities {
         public string Description { get; set; }
 
         public virtual ICollection<UccountEntity> Accounts { get; set; }
-
-        public PersonEntity() {
-            Accounts = new HashSet<UccountEntity>();
-        }
     }
 }

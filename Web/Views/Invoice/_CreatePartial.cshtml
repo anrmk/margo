@@ -1,0 +1,79 @@
+﻿@model Web.ViewModels.InvoiceViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var accounts = (IEnumerable<SelectListItem>)ViewData["Accounts"];
+
+    var services = new List<Web.ViewModels.UccountServiceViewModel>();
+}
+
+<form id="@formId" class="ui form" asp-action="CreateInvoice" method="post">
+    <input type="hidden" tabindex="0">
+    <div class="field">
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="AccountId"></label>
+                <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
+                    <option value="" selected disabled hidden>Choose here</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <fieldset>
+        <div class="field required">
+            <label asp-for="No"></label>
+            <input asp-for="No" data-value-type="string" required>
+        </div>
+        <div class="two fields">
+            <div class="six width field required">
+                <label asp-for="Amount"></label>
+                <input asp-for="Amount" data-value-type="number" required>
+            </div>
+            <div class="twelve width field required">
+                <label asp-for="TaxRate"></label>
+                <input asp-for="TaxRate" data-value-type="number" required>
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="six width field required">
+                <label asp-for="Date"></label>
+                <input asp-for="Date" type="date" required>
+            </div>
+            <div class="twelve width field required">
+                <label asp-for="DueDate"></label>
+                <input asp-for="DueDate" type="date" required>
+            </div>
+        </div>
+
+        <div id="@(formId)_toolbar" class="ui secondary menu">
+            <div class="ui floating dropdown labeled icon button">
+                <i class="plus icon"></i>
+                <span class="text">Service</span>
+                <div class="menu">
+                    <div class="header">
+                        Add service
+                    </div>
+                    <div id="service-dropdown" class="scrolling menu">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Fields</h4>
+        <div id="@(formId)_container" class="ui form"></div>
+    </fieldset>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#account-select').on('change', function () {
+            $.fn.fillInvoiceServiceNames('#service-dropdown', $(this).val());
+        });
+
+        $('#service-dropdown').on('click', '.item', function () {
+            const value = $(this)[0].textContent;
+            $.fn.addInvoiceServices('#@(formId)_container', value);
+        });
+    });
+</script>

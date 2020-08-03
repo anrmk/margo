@@ -147,3 +147,54 @@ $.fn.addField = function (target) {
         $section.appendTo(target);
     });
 }
+
+/**
+ * @deprecated Only for temp use.
+ */
+$.fn.addInvoiceServices = function (target, name) {
+    console.warn("Calling obsolete function!");
+    var $section = $(`<div class="inline fields">
+        <div class="four fields">
+            <div class="four width field required">
+                <label>Service name</label>
+                <input name="Services[][Name]" data-value-type="string" value="${name}" readonly required>
+            </div>
+            <div class="four width field required">
+                <label>Amount</label>
+                <input name="Services[][Amount]" data-value-type="number" value="0.00" required>
+            </div>
+            <div class="four width field required">
+                <label>Count</label>
+                <input name="Services[][Count]" data-value-type="number" value="0.00" required>
+            </div>
+            <div class="four width field required">
+                <label>Tax rate</label>
+                <input name="Services[][TaxRate]" data-value-type="number" value="0.00" required>
+            </div>
+        </div>
+        <div class="one wide field">
+            <a href="#">delete</a>
+        </div>
+    </div>`);
+
+    $section.find('a').on('click', (e) => {
+        e.preventDefault();
+        $section.remove();
+    });
+
+    $section.appendTo(target);
+}
+
+/**
+ * @deprecated Only for temp use.
+ */
+$.fn.fillInvoiceServiceNames = function (target, id) {
+    $.get(`/api/uccount/getuccount?id=${id}`, { cache: true }).done((res, status) => {
+        console.warn("Calling obsolete function!");
+        var $services = $(res.services
+            .map(service =>
+                `<div class="item" data-value="${service.id}">${service.id}</div>`)
+            .join("\n "));
+        $(target).html($services);
+    });
+}

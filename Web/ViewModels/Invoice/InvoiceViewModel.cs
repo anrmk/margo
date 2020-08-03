@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
@@ -15,6 +16,7 @@ namespace Web.ViewModels {
         public decimal Amount { get; set; }
 
         [Display(Name = "Tax Rate")]
+        [Range(0, 100)]
         public decimal TaxRate { get; set; }
 
         [Required]
@@ -26,18 +28,11 @@ namespace Web.ViewModels {
         [Display(Name = "Due date")]
         public DateTime DueDate { get; set; }
 
-        public bool IsPayd { get; set; }
+        public bool IsDraft { get; set; } = false;
 
-        [DataType(DataType.Date)]
-        [Display(Name = "Payment date")]
-        public DateTime? PaymentDate { get; set; }
+        public IEnumerable<InvoiceServiceViewModel> Services { get; set; }
 
-        [Display(Name = "Vendor")]
-        public long? VendorId { get; set; }
-
-        [Display(Name = "Company")]
-        public long? CompanyId { get; set; }
-
-        public bool IsDraft { get; set; }
+        [Display(Name = "Account")]
+        public long AccountId { get; set; }
     }
 }

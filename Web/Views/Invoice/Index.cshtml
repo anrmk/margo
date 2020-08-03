@@ -1,130 +1,105 @@
-﻿@model Web.ViewModels.InvoiceFilterViewModel
-@{
+﻿@{
     ViewData["Title"] = "Invoices";
+
+    var tableId = Guid.NewGuid();
+
+    var listUrl = Url.RouteUrl("GetInvoices");
+    var deleteUrl = Url.RouteUrl("DeleteInvoices");
+    var detailsUrl = Url.RouteUrl("DetailsInvoice");
+    var editUrl = Url.RouteUrl("EditInvoice");
+    var displayUrl = Url.Action("Details");
 }
 
-<div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-        <div class="card-icon">
-            <i class="material-icons">list_alt</i>
-        </div>
-        <h4 class="card-title">Payment List</h4>
-        <span class="text-muted">You can pay for invoices by credit card or ACH bank transfer. All you have to do is tap the button in the list of invoices.</span>
-    </div>
+@section RightSidebar {
+    <div id="@(tableId)_detail"></div>
+}
 
-    <div class="card-body">
-        <form id="filterForm">
-            <fieldset>
-                <div class="form-group row mb-3">
-                    <div class="col">
-                        <label asp-for="CompanyId" class="control-label"></label>
-                        <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-style="btn btn-link">
-                            <option>Select Company</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <label asp-for="VendorId"></label>
-                        <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker" data-style="btn btn-link">
-                            <option>Select Vendor</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <label asp-for="Unpaid"></label>
-                        <div class="togglebutton">
-                            <label>
-                                <input type="checkbox" @(Model.Unpaid ? "checked" : "") name="Unpaid:boolean" id="Unpaid" data-val="true" data-value-type="boolean" />
-                                <span class="toggle"></span> Unpaid Status
-                            </label>
-                        </div>
-                    </div>
+@*For filtering feature*@
+<!--<form id="filterForm">
+    <fieldset>
+        <div class="form-group row mb-3">
+            <div class="col">
+                <label asp-for="CompanyId" class="control-label"></label>
+                <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-style="btn btn-link">
+                    <option>Select Company</option>
+                </select>
+            </div>
+            <div class="col">
+                <label asp-for="VendorId"></label>
+                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker" data-style="btn btn-link">
+                    <option>Select Vendor</option>
+                </select>
+            </div>
+            <div class="col">
+                <label asp-for="Unpaid"></label>
+                <div class="togglebutton">
+                    <label>
+                        <input type="checkbox" @@(Model.Unpaid ? "checked" : "") name="Unpaid:boolean" id="Unpaid" data-val="true" data-value-type="boolean" />
+                        <span class="toggle"></span> Unpaid Status
+                    </label>
                 </div>
-            </fieldset>
-        </form>
-
-        <div id="tableToolbar">
-            <a asp-controller="Invoice" asp-action="Create" class="btn btn-primary"><i class="material-icons">add</i> Create</a>
-            <button id="bulkDeleteBtn" class="btn btn-danger" disabled><i class="material-icons">delete_outline</i> Remove</button>
+            </div>
         </div>
+    </fieldset>
+</form>-->
 
-        <table id="datatable" data-toggle="table" data-url="/api/invoice" data-query-params="queryParams">
-            <thead>
-                <tr>
-                    <th data-checkbox="true"></th>
-                    <th data-field="no" data-sortable="true">Invoice</th>
-                    <th data-field="companyName">Company</th>
-                    <th data-field="vendorName">Vendor</th>
-                    <th data-field="date" data-formatter="$.fn.bootstrapTable.formatDate">Statement Date</th>
-                    <th data-field="dueDate" data-formatter="$.fn.bootstrapTable.formatDate">Due Date</th>
-
-                    <th data-field="balanceAmount">Balance</th>
-                    <th data-field="amount">Amount</th>
-
-                    <th data-field="isPayd" data-formatter="isPaydFormatter">Payment</th>
-                    <th data-formatter="actionFormatter" class="text-right"></th>
-                </tr>
-            </thead>
-        </table>
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-route="AddInvoice" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
     </div>
+
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 @section Scripts {
     <script type="text/javascript">
-        function queryParams(params) {
-            if (!params.search) {
-                params.search = $('div.search input').val();
+    $(document).ready(function () {
+        window.DocumentController = new DocumentController({
+            'table': '#@tableId',
+            'controller': {
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
+            },
+            'columns': [
+                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': 'No ', 'className': 'collapsing', 'data': 'no', 'orderable': true },
+                { 'title': 'Customer name', 'data': 'customerName' },
+                { 'title': 'Date', 'className': 'collapsing', 'data': 'date', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Due date', 'className': 'collapsing', 'data': 'dueDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Amount', 'className': 'collapsing', 'data': 'amount' },
+                { 'title': 'Balance', 'className': 'collapsing', 'data': 'balanceAmount' },
+                { 'title': 'Status', 'className': 'collapsing', 'data': 'status' },
+                { 'title': 'Payment date', 'className': 'collapsing', 'data': 'paymentDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+            ],
+            'onRowClick': (e, data) => {
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#@(tableId)_detail').html(result);
+                });
+            },
+            'onDblRowClick': (e, data) => {
+                 $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                });
             }
-            var filterForm = $('#filterForm').serializeJSON({ parseNumbers: true });
-
-            return $.extend({}, params, filterForm);
-        }
-
-        function isPaydFormatter(value, row) {
-            if (row['isPayd'] == true) {
-                return `<span class='text-success d-block'><i class='material-icons align-bottom mr-1'>check_circle_outline</i> Paid</span>` +
-                    `<small>${$.fn.bootstrapTable.formatDate(row['paymentDate'])}</small>`;
-            } else {
-                return `<a href='/payment/create/${row.id}' data-target='modal' class='btn btn-sm btn-round btn-primary'><i class='material-icons mr-1'>attach_money</i> Pay</a>`
-            }
-        }
-
-        function actionFormatter(value, row) {
-            return `<a href='/invoice/edit/${row.id}'><i class="material-icons">chevron_right</i></a>`;
-        }
-
-        $(document).ready(function () {
-            var $table = $('#datatable');
-
-            $bulkDeleteBtn = $('#bulkDeleteBtn').click(e => {
-                e.preventDefault();
-
-                if (!confirm('Are you sure want to delete this?')) { return false; }
-
-                var selections = $table.bootstrapTable('getSelections');
-                var ids = selections.map(x => x.id);
-
-                if (ids.length > 0) {
-                    var options = {
-                        'type': 'post',
-                        'url': '/api/invoice/delete',
-                        'data': JSON.stringify(ids),
-                        'contentType': 'application/json; charset=utf-8'
-                    };
-
-                    $.ajax(options).done((data, status, jqXHR) => {
-                        if (data == true) {
-                            $bulkDeleteBtn.prop('disabled', true);
-                            $table.bootstrapTable('refresh');
-                        }
-                    });
-                }
-            });
-
-            $table.on('dbl-click-row.bs.table', (e, row, $element) => {
-                location.href = `/invoice/edit/${row.id}`;
-            }).on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
-                var selections = $table.bootstrapTable('getSelections');
-                $bulkDeleteBtn.prop('disabled', !selections.length);
-            });
         });
+    });
+
+    ajaxSubmitComplete = function (e, jqXHR, status) {
+        if (status === 'success') {
+            window.DocumentController.reload(false);
+            window.dialog.modal('hide');
+        }
+    };
+
+    ajaxClick = function (e, jqXHR, status) {
+        if (status === 'success') {
+            var target = $(e.target).attr('data-target');
+            $(target).remove();
+        }
+    };
     </script>
 }

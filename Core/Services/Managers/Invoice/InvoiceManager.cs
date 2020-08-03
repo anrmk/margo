@@ -19,8 +19,11 @@ namespace Core.Services.Managers {
         public InvoiceManager(IApplicationContext context) : base(context) { }
         public async Task<InvoiceEntity> FindInclude(long id) {
             return await DbSet
-                .Include(x => x.Company)
-                .Include(x => x.Vendor)
+                .Include(x => x.Account)
+                    .ThenInclude(x=>x.Person)
+                .Include(x => x.Account)
+                    .ThenInclude(x => x.Company)
+                .Include(x => x.Services)
                 .Include(x => x.Payments)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
@@ -32,8 +35,8 @@ namespace Core.Services.Managers {
 
         public async Task<List<InvoiceEntity>> FindByIds(long[] ids) {
             return await DbSet
-                .Include(x => x.Company)
-                .Include(x => x.Vendor)
+                .Include(x => x.Account)
+                .Include(x => x.Services)
                 .Include(x => x.Payments)
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();

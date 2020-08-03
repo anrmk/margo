@@ -13,6 +13,7 @@ namespace Core.Services.Managers {
     public interface IUccountManager: IEntityManager<UccountEntity> {
         Task<UccountEntity> FindInclude(long id);
         Task<List<UccountEntity>> FindAll(long[] ids);
+        Task<List<UccountEntity>> FindAll();
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
@@ -38,6 +39,13 @@ namespace Core.Services.Managers {
                 .Include(x => x.Person)
                 .Include(x => x.Fields)
                 .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
+        public async Task<List<UccountEntity>> FindAll() {
+            return await DbSet
+                .Include(x => x.Company)
+                .Include(x => x.Person)
                 .ToListAsync();
         }
     }

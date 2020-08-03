@@ -96,6 +96,15 @@ namespace Web.Controllers.Api {
             return Ok(html);
         }
 
+        [HttpGet("GetUccount", Name = "GetUccount")]
+        public async Task<IActionResult> GetUccount([FromQuery] long id) {
+            var item = await _uccountBusinessManager.GetUccount(id);
+            if(item == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<UccountViewModel>(item));
+        }
+
         public async Task<IActionResult> AddUccount([FromQuery] UccountTypes kind) {
             string html;
             var model = new UccountViewModel();

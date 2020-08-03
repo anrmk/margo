@@ -26,51 +26,38 @@ namespace Core.Data.Entities {
         [DataType(DataType.Date)]
         public DateTime DueDate { get; set; }
 
-        [NotMapped]
-        public bool IsPayd {
-            get {
-                if(Payments != null && Payments.Count > 0) {
-                    var result = Payments.Sum(x => x.Amount);
-                    return Amount == result;
-                }
-                return false;
-            }
-        }
-
-        [NotMapped]
-        public DateTime? PaymentDate {
-            get {
-                if(Payments != null && Payments.Count > 0) {
-                    var result = Payments.OrderByDescending(x => x.Date).FirstOrDefault();
-                    return result?.Date;
-                }
-                return (DateTime?)null;
-            }
-        }
-
-        [NotMapped]
-        public decimal? PaymentAmount {
-            get {
-                if(Payments != null && Payments.Count > 0) {
-                    var result = Payments.Sum(x => x.Amount);
-                    return result;
-                }
-                return (decimal?)null;
-            }
-        }
-
         public bool IsDraft { get; set; } = true;
 
-        [ForeignKey("Company")]
-        [Column("Company_Id")]
-        public long? CompanyId { get; set; }
-        public CompanyEntity Company { get; set; }
+        [ForeignKey("Account")]
+        [Column("Account_Id")]
+        public long AccountId { get; set; }
+        public virtual UccountEntity Account { get; set; }
 
-        [ForeignKey("Vendor")]
-        [Column("Vendor_Id")]
-        public long? VendorId { get; set; }
-        public VendorEntity Vendor { get; set; }
+        public virtual ICollection<PaymentEntity> Payments { get; set; }
 
-        public virtual List<PaymentEntity> Payments { get; set; }
+        public virtual ICollection<InvoiceServiceEntity> Services { get; set; }
+
+
+        //[NotMapped]
+        //public DateTime? PaymentDate {
+        //    get {
+        //        if(Payments != null && Payments.Count > 0) {
+        //            var result = Payments.OrderByDescending(x => x.Date).FirstOrDefault();
+        //            return result?.Date;
+        //        }
+        //        return (DateTime?)null;
+        //    }
+        //}
+
+        //[NotMapped]
+        //public decimal? PaymentAmount {
+        //    get {
+        //        if(Payments != null && Payments.Count > 0) {
+        //            var result = Payments.Sum(x => x.Amount);
+        //            return result;
+        //        }
+        //        return (decimal?)null;
+        //    }
+        //}
     }
 }

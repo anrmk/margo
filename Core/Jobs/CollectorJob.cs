@@ -33,22 +33,19 @@ namespace Core.Jobs {
                     var dbset = dbContext.Set<InvoiceEntity>();
                     var invoiceList = new List<InvoiceEntity>();
 
-                    var companies = await dbContext.Set<CompanyEntity>().ToListAsync();
-                    var vendors = await dbContext.Set<VendorEntity>().ToListAsync();
+                    var accounts = await dbContext.Set<UccountEntity>().ToListAsync();
 
                     var rnd = new Random();
                     var count = rnd.Next(5, 15);
 
                     for(var i = 0; i < count; i++) {
-                        var company = companies[rnd.Next(0, companies.Count)];
-                        var vendor = vendors[rnd.Next(0, vendors.Count)];
+                        var account = accounts[rnd.Next(0, accounts.Count)];
                         var date = rnd.NextDate(DateTime.Now.AddYears(-1), DateTime.Now);
 
                         invoiceList.Add(new InvoiceEntity() {
                             No = DateTime.Now.ToString($"DDMMYYYY_{rnd.Next(555)}"),
                             Amount = rnd.NextDecimal(300, 5999),
-                            CompanyId = company.Id,
-                            VendorId = vendor.Id,
+                            AccountId = account.Id,
                             Date = date,
                             DueDate = date.AddMonths(1),
                         });
