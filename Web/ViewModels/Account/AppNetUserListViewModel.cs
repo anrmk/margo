@@ -12,6 +12,10 @@ namespace Web.ViewModels {
 
         public string PhoneNumber { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
+
+        public DateTimeOffset? LockoutEnd { get; set; }
+        public bool IsLocked => LockoutEnd.HasValue;
+
         public List<string> Roles { get; set; }
 
         public long? ProfileId { get; set; }

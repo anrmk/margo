@@ -255,8 +255,7 @@ ModelManifest.xml
 .fake/
 
 # Auto-generated files
-Web/wwwroot/*/*.min.js
-Web/wwwroot/*/*.min.css
+*.min.*
 
 # Visual Studio Code debug configuration folder
 .vscode/

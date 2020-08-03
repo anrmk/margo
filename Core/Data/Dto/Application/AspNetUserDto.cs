@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AutoMapper.Configuration.Annotations;
 
@@ -13,5 +14,7 @@ namespace Core.Data.Dto {
         public bool PhoneNumberConfirmed { get; set; }
         public List<AspNetRoleDto> Roles { get; set; }
         public long ProfileId { get; set; }
+
+        public DateTimeOffset? LockoutEnd { get; set; }
     }
 }

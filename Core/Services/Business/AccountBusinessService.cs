@@ -20,6 +20,7 @@ namespace Core.Services.Business {
         Task<Pager<AspNetUserDto>> GetUserPage(PagerFilter filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
         Task<AspNetUserDto> UpdateUser(string id, AspNetUserDto dto);
+        Task<bool> LockUser(string id, bool locked);
 
         Task<AspNetUserDto> UpdateUserProfile(string id, UserProfileDto dto);
 
@@ -169,6 +170,17 @@ namespace Core.Services.Business {
             return null;
         }
 
+        public async Task<bool> LockUser(string id, bool locked) {
+            var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if(entity == null) {
+                return false;
+            }
+
+            entity.LockoutEnd = locked ? new DateTimeOffset(new DateTime(2999, 01, 01)) : (DateTimeOffset?)null;
+            var result = await _userManager.UpdateAsync(entity);
+            return result.Succeeded ? locked : !locked;
+
+        }
         #endregion
 
         #region ROLES
@@ -237,6 +249,6 @@ namespace Core.Services.Business {
             return null;
         }
 
-
+        
     }
 }

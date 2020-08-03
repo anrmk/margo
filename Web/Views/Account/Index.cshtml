@@ -4,7 +4,7 @@
     var tableId = Guid.NewGuid();
 
     var listUrl = Url.RouteUrl("GetAppNetUsers");
-    var deleteUrl = Url.RouteUrl("DeleteAspNetUser");
+    var lockUrl = Url.RouteUrl("LockoutAspNetUser");
     var detailsUrl = Url.RouteUrl("DetailsAspNetUser");
     var editUrl = Url.RouteUrl("EditAspNetUser");
 }
@@ -31,10 +31,13 @@
             'table': '#@tableId',
             'controller': {
                 'list': '@listUrl',
-              // 'delete': '@deleteUrl'
             },
             'columns': [
-                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                {
+                    'title': 'Is locked', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                        return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}' ${row.isLocked ? 'checked' : ''} ><label></label></div>`;
+                    }
+                },
                 { 'title': 'User name', 'className': 'collapsing', 'data': 'userName' },
                 { 'title': 'Phone number', 'data': 'phoneNumber' },
                 { 'title': 'Email', 'data': 'email' },
@@ -46,8 +49,13 @@
                 });
             },
             'onDblRowClick': (e, data) => {
-                 $.get('@editUrl', { 'id': data.id }).done(result => {
+                $.get('@editUrl', { 'id': data.id }).done(result => {
                     $(result).dialog();
+                });
+            },
+            'onRowChange': (e, data) => {
+                $.get('@lockUrl', { 'id': data.id, 'locked': $(e.currentTarget).is(':checked') }).done(result => {
+                    //$(e.currentTarget).parent('div.checkbox').checkbox(result ? 'check' : 'uncheck');
                 });
             }
         });

@@ -7,7 +7,8 @@
             'columns': [],
             'selected': [],
             'onRowClick': (e, data) => { },
-            'onDblRowClick': (e, data) => { }
+            'onDblRowClick': (e, data) => { },
+            'onRowChange': (e, data) => { }
         }, options);
 
         this.table = $(this.options.table);
@@ -62,7 +63,10 @@
 
         tbody.on('change', 'input', (e) => {
             var $input = $(e.currentTarget);
-            var value = Number($input.val());
+            var row = this.datatable.row($($input).parents('tr'));
+
+            //var value = Number($input.val());
+            var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
             var index = $.inArray(value, this.options.selected);
 
             if (index === -1) {
@@ -76,6 +80,8 @@
             } else {
                 this.toolbar.find('button[data-action=delete]').disabled();
             }
+
+            this.options.onRowChange(e, row.data());
         })
     }
 

@@ -229,6 +229,11 @@ namespace Web.Controllers.Api {
             return BadRequest();
         }
 
+        [HttpGet("LockoutAspNetUser", Name = "LockoutAspNetUser")]
+        public async Task<IActionResult> LockoutAspNetUser([FromQuery] string id, [FromQuery] bool locked) {
+            var item = await _accountBusinessService.LockUser(id, locked);
+            return Ok(item);
+        }
 
         [HttpGet]
         [Route("activity")]
