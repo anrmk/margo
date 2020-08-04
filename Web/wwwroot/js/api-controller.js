@@ -114,7 +114,7 @@ $.fn.renderDatatableAction = function (data, type, row) {
 }
 
 $.fn.renderDatatableCollection = function (data, type, row) {
-    return data.map((x) => `<span class='ui blue label'>${x}</span>`).join(' ');;
+    return data.map((x) => `<span class='ui orange label'>${x}</span>`).join(' ');;
 }
 
 $.fn.addField = function (target) {

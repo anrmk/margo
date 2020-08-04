@@ -126,6 +126,10 @@ fieldset {
   -webkit-overflow-scrolling: touch;
 }
 
+#mainbody .ui.vertical.menu .item > .menu {
+  margin: .5em 0;
+}
+
 /* Hidden Items */
 #mainbody #toc .hide.item {
   display: none;

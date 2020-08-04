@@ -34,7 +34,11 @@ namespace Web.ViewModels {
         [Display(Name = "Roles")]
         public List<string> Roles { get; set; }
 
+        public DateTimeOffset? LockoutEnd { get; set; }
+
         [Display(Name = "Profile")]
         public long? ProfileId { get; set; }
+
+        public virtual AspNetUserProfileViewModel Profile { get; set; }
     }
 }

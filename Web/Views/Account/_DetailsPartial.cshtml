@@ -5,22 +5,44 @@
 }
 
 <div class="ui card">
+    <div class="image">
+        <img src="~/images/elliot.jpg">
+    </div>
     <div class="content">
-        <div class="header">@Model.UserName</div>
+        <div class="header">@Model.Profile.FullName</div>
+        @if(Model.LockoutEnd.HasValue) {
+            <div class="meta">
+                <span class="date">Locked until @Model.LockoutEnd.Value.ToString("MM.dd.yyyy HH:mm")</span>
+            </div>
+        }
+
         <div class="description">
-            <dl>
-                <dt><label asp-for="NormalizedUserName"></label></dt>
-                <dd>@Model.NormalizedUserName</dd>
-
-                <dt><label asp-for="UserName"></label></dt>
-                <dd>@Model.UserName</dd>
-
-                <dt><label asp-for="Email"></label></dt>
-                <dd>@Model.Email</dd>
-
-                <dt><label asp-for="PhoneNumber"></label></dt>
-                <dd>@Model.PhoneNumber</dd>
-            </dl>
+            <p>@Model.Profile?.Description</p>
         </div>
+
+        <h4 class="ui sub header">Profile</h4>
+        <table>
+            <tr>
+                <td><label asp-for="NormalizedUserName"></label></td>
+                <td>@Model.NormalizedUserName</td>
+            </tr>
+            <tr>
+                <td><label asp-for="UserName"></label></td>
+                <td>@Model.UserName</td>
+            </tr>
+            <tr>
+                <td><label asp-for="Email"></label></td>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <td><label asp-for="PhoneNumber"></label></td>
+                <td>@Model.PhoneNumber <br />
+                    @Model.Profile?.PhoneNumber
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="extra content">
+        <a>Activity</a>
     </div>
 </div>

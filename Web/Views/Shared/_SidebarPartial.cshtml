@@ -53,7 +53,7 @@
 
         <div class="header">Accounts</div>
         <div class="menu">
-            <a class="item @(url.Contains("/account") ? "active" : "") " asp-controller="Account" asp-action="Index">
+            <a class="item @(url.Equals("/account") ? "active" : "") " asp-controller="Account" asp-action="Index">
                 Users
             </a>
             <a class="item @(url.Contains("/account/activity") ? "active" : "") " asp-controller="Account" asp-action="Activity">

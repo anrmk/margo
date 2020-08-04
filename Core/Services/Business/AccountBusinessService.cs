@@ -66,7 +66,9 @@ namespace Core.Services.Business {
         }
         #region ACCOUNT
         public async Task<AspNetUserDto> GetUser(string id) {
-            var entity = await _userManager.Users.Where(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            var entity = await _userManager.Users
+                .Include(x => x.Profile)
+                .Where(x => x.Id.Equals(id)).FirstOrDefaultAsync();
             if(entity == null)
                 return null;
 
