@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+using Core.Data.Enums;
+
 namespace Web.ViewModels {
     public class UccountViewModel {
         public long Id { get; set; }
         public string Name { get; set; }
         [Required]
-        public int Kind { get; set; }
+        public UccountTypes Kind { get; set; }
 
         [Display(Name = "Company")]
         public long? CompanyId { get; set; }

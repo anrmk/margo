@@ -8,7 +8,7 @@ namespace Web.ViewModels {
         public string Name { get; set; }
         public string Value { get; set; }
         public FieldEnum Type { get; set; }
-        public string TypeName => Type.GetAttribute<DisplayAttribute>().Name;
+        public string TypeName => Type.GetAttribute<DisplayAttribute>().Name.ToLower();
         public bool IsRequired { get; set; }
     }
 }

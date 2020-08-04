@@ -9,6 +9,10 @@ namespace Core.Data.Entities {
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
         public long VendorId { get; set; }
+        [ForeignKey("Account")]
+        [Column("Account_Id")]
+        public long AccountId { get; set; }
+        public virtual UccountEntity Account { get; set; }
         public FieldEnum Type { get; set; }
         [Required]
         [MaxLength(24)]

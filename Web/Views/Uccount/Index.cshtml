@@ -5,7 +5,7 @@
 
     var listUrl = Url.RouteUrl("GetUccounts");
     var deleteUrl = Url.RouteUrl("DeleteUccounts");
-    var editUrl = Url.Action("Edit");
+    var editUrl = Url.RouteUrl("EditUccount");
     var detailsUrl = Url.RouteUrl("DetailsUccount");
 }
 
@@ -63,8 +63,13 @@
             }
         }
 
-        // Initilize dropdown (this is need to be interactive)
-        $("#account-type-dropdown").dropdown();
+        function serviceDeleteOnClick(e, jqXHR, status) {
+            if(status === 'success') {
+                var link = $(e.target);
+                var target = $(link.data('target')).remove();
+                window.DocumentController.reload(false);
+            }
+        }
 
         $(document).ready(function () {
             window.DocumentController = new DocumentController({
@@ -86,7 +91,9 @@
                 });
             },
             'onDblRowClick': (e, data) => {
-                location.href = '@editUrl' + `/${data.id}`;
+                $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                });
             }});
         });
 
@@ -107,8 +114,8 @@
         convertFieldTypeToHTML = function (type) {
             let formatingType = type;
 
-            if (formatingType === "Date Time") {
-                formatingType = "Date";
+            if (formatingType === "date time") {
+                formatingType = "date";
             }
             formatingType = formatingType.toLowerCase();
 
@@ -124,7 +131,7 @@
                         <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
                         <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">
                         <input type="hidden" name="${name}[][TypeName]" value="${field.typeName}">
-                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.typeName !== "string" ? `type="${field.typeName}"` : ''} data-type="${field.type}" data-value-type="${field.typeName}" />
+                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.typeName !== "string" ? `type="${field.typeName}"` : ''} data-value-type="string" />
                     </div>`
                 )
             }).join("\n ");
@@ -132,9 +139,9 @@
 
         generateGroup = function (id, name, html) {
             const $group = $(`
-                <div id="${id}" class="equal width fields">
-                   <input type="hidden" name="Services[][Group]" value="${id}" data-value-type="number">
-                    <div class="field three wide flex align-center">
+                <div id="${id}" class="fields">
+                    <input type="hidden" name="Services[][Name]" value="${name}" data-value-type="string">
+                    <div class="field two wide flex align-center">
                         <label>${name}</label>
                     </div>
                     ${html}

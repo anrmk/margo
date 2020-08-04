@@ -6,7 +6,7 @@ namespace Web.ViewModels {
         public long Id { get; set; }
         [Display(Name = "Uccount")]
         public long? UccountId { get; set; }
-        [Display(Name = "Category")]
+        public string Name { get; set; }
         public IEnumerable<UccountServiceFieldViewModel> Fields { get; set; }
     }
 }

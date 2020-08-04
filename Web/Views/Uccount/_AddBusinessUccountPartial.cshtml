@@ -8,7 +8,7 @@
     var uccountKind = (int)ViewData["Kind"];
 }
 
-<form id="@formId" class="ui form" asp-action="CreateUccount" method="post">
+<form id="@formId" class="ui form" asp-route="CreateUccount" method="post" data-request="ajax">
     <fieldset>
         <input type="hidden" name="Kind" value="@uccountKind" />
 
@@ -63,8 +63,5 @@
                 }
             });
         });
-
-        // Initilize services dropdown
-        $("#services-dropdown").dropdown();
     })
 </script>

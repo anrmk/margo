@@ -22,6 +22,7 @@ namespace Core.Services.Business {
         Task<UccountDto> UpdateUccount(long id, UccountDto dto);
         Task<bool> DeleteUccount(long id);
         Task<bool> DeleteUccount(long[] ids);
+        Task<bool> DeleteService(long id);
 
         //  UCCOUNT SECTION 
         Task<UccountSectionDto> GetSection(long id);
@@ -110,23 +111,14 @@ namespace Core.Services.Business {
         }
 
         public async Task<UccountDto> UpdateUccount(long id, UccountDto dto) {
-            var entity = await _uccountManager.Find(id);
-            if(entity == null) {
+            var entity = await _uccountManager.FindInclude(id);
+
+            if (entity == null) {
                 return null;
             }
+
             var newEntity = _mapper.Map(dto, entity);
             entity = await _uccountManager.Update(newEntity);
-            entity.Services = new List<UccountServiceEntity>();
-
-            foreach(var service in dto.Services) {
-                var serviceEntity = await _uccountServiceManager.Find(id);
-                if(serviceEntity == null) {
-                    continue;
-                }
-
-                var newServiceEntity = _mapper.Map(service, serviceEntity);
-                entity.Services.Add(await _uccountServiceManager.Update(newServiceEntity));
-            }
 
             return _mapper.Map<UccountDto>(entity);
         }
@@ -144,6 +136,14 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
+        public async Task<bool> DeleteService(long id) {
+            var entity = await _uccountServiceManager.FindInclude(id);
+            if(entity == null)
+                throw new Exception("We did not find field records for this request!");
+
+            int result = await _uccountServiceManager.Delete(entity);
+            return result != 0;
+        }
 
         #endregion
 

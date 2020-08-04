@@ -1,0 +1,130 @@
+﻿@model Web.ViewModels.UccountViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var persons = (List<SelectListItem>)ViewData["persons"];
+    var companies = (List<SelectListItem>)ViewData["Companies"];
+    var vendors = (List<SelectListItem>)ViewData["Vendors"];
+    var categories = (List<SelectListItem>)ViewData["Categories"];
+    var uccountKind = (int)ViewData["Kind"];
+}
+   
+
+<form id="@formId" class="ui form" asp-route="UpdateUccount" asp-route-id="@Model.Id" method="put" data-request="ajax">
+    <fieldset>
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="Kind" value="@uccountKind" />
+
+        <div class="field">
+            <div class="two fields">
+                @if (Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
+                    <div class="field required">
+                        <label asp-for="CompanyId"></label>
+                        <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                } else {
+                    <div class="field required">
+                        <label asp-for="PersonId"></label>
+                        <select id="persons-select" class="ui fluid dropdown" required asp-for="PersonId" asp-items="@persons">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                }
+
+                <div class="field required">
+                    <label asp-for="VendorId"></label>
+                    <select id="vendors-select" class="ui fluid dropdown" required asp-for="VendorId" asp-items="@vendors">
+                        <option value="" selected disabled hidden></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="vendor-fields" class="fields">
+            @foreach (var Field in Model.Fields)
+            {
+                string type = "";
+                @if (Field.TypeName == "date time") {
+                    type = "date";
+                } else if (Field.TypeName == "string") {
+                    type = "text";
+                } else {
+                    type = Field.TypeName;
+                }
+                <div class="field">
+                    <input type="hidden" name="Fields[][Name]" value="@Field.Name">
+                    <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
+                    <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
+                    <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
+                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="@Field.TypeName" />
+                </div>
+            }
+        </div>
+
+        <div class="field">
+            <div id="services-dropdown" class="ui icon top left pointing dropdown button">
+                <i class="wrench icon"></i>
+                <div class="menu">
+                    <div class="header">Services Types</div>
+                    @foreach (var category in categories)
+                    {
+                        <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Services</h4>
+        <div id="services-fields">
+            @foreach (var Service in Model.Services)
+            {
+                <div id="@Service.Id" class="fields">
+                    <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
+                    <div class="field two wide flex align-center">
+                        <label>@Service.Name</label>
+                    </div>
+                    @foreach (var Field in Service.Fields)
+                    {
+                        string type = "";
+                        @if (Field.TypeName == "date time") {
+                            type = "date";
+                        } else if (Field.TypeName == "string") {
+                            type = "text";
+                        } else {
+                            type = Field.TypeName;
+                        }
+                        <div class="field">
+                            <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
+                            <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
+                            <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
+                            <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
+                            <input name="Services[][Fields][][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="string" />
+                        </div>
+                    }
+                    <div class="field flex align-center justify-center">
+                        <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a> 
+                    </div>
+                </div>
+            }
+        </div>
+    </fieldset>
+</form>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#vendors-select").on("change", function () {
+            const vendorId = $(this).val();
+            $.ajax({
+                url: `/api/Vendor/GetVendor?id=${vendorId}`
+            }).done((data, status, _) => {
+                if (data && data.fields) {
+                    const fields = $(generateFields(data.fields, VENDOR_FIELDS));
+                    $(VENDOR_FIELDS_EL_NAME).html(fields);
+                }
+            });
+        });
+    })
+</script>

@@ -92,7 +92,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<UccountViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<UccountViewModel>(item));
             return Ok(html);
         }
 
@@ -145,6 +145,39 @@ namespace Web.Controllers.Api {
             return Ok();
         }
 
+        [HttpPut("UpdateUccount", Name = "UpdateUccount")]
+        public async Task<IActionResult> UpdateUccount([FromQuery] long id, [FromBody] UccountViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _uccountBusinessManager.UpdateUccount(id, _mapper.Map<UccountDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<UccountViewModel>(item));
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("EditUccount", Name = "EditUccount")]
+        public async Task<IActionResult> EditUccount([FromQuery] long id) {
+            var item = await _uccountBusinessManager.GetUccount(id);
+            if(item == null)
+                return NotFound();
+
+            var persons = await _personBusinessManager.GetPersons();
+            var companies = await _companyBusinessManager.GetCompanies();
+            var vendors = await _vendorBusinessManager.GetVendors();
+            var categories = await _categoryBusinessManager.GetCategories();
+            var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Kind", item.Kind }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<UccountViewModel>(item), viewDataDictionary);
+            return Ok(html);
+        }
+
         [HttpGet("DeleteUccounts", Name = "DeleteUccounts")]
         public async Task<ActionResult> DeleteUccounts([FromQuery] long[] id) {
             if(id.Length > 0) {
@@ -152,6 +185,15 @@ namespace Web.Controllers.Api {
                 if(result)
                     return Ok(id);
             }
+            return BadRequest("No items selected");
+        }
+
+        [HttpGet("DeleteService", Name = "DeleteService")]
+        public async Task<ActionResult> DeleteService([FromQuery] long id) {
+            var result = await _uccountBusinessManager.DeleteService(id);
+            if(result)
+                return Ok(id);
+
             return BadRequest("No items selected");
         }
     }

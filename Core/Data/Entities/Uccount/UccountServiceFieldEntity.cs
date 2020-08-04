@@ -9,6 +9,7 @@ namespace Core.Data.Entities {
         [ForeignKey("Service")]
         [Column("Service_Id")]
         public long ServiceId { get; set; }
+        public virtual UccountServiceEntity Service { get; set; }
 
         public FieldEnum Type { get; set; }
         [Required]
