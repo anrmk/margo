@@ -31,11 +31,12 @@ namespace Core.Data.Entities {
 
         public string CEO { get; set; }
 
-        public string IsStarred { get; set; }
-
         [ForeignKey("Address")]
         [Column("CompanyAddress_Id")]
         public long? AddressId { get; set; }
         public virtual CompanyAddressEntity Address { get; set; }
+
+        [MaxLength(2048)]
+        public string Description { get; set; }
     }
 }

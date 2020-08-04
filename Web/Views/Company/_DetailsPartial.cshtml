@@ -1,0 +1,38 @@
+﻿@model Web.ViewModels.CompanyViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="ui card">
+    <div class="content">
+        <div class="header">@Model.Name</div>
+        <div class="description">
+            <dl>
+                <dt><label asp-for="Website"></label></dt>
+                <dd>@Model.Website</dd>
+
+                <dt><label asp-for="PhoneNumber"></label></dt>
+                <dd>@Model.PhoneNumber</dd>
+
+                <dt><label asp-for="Email"></label></dt>
+                <dd>@Model.Email</dd>
+
+                <dt><label asp-for="CEO"></label></dt>
+                <dd>@Model.CEO</dd>
+
+                <dt><label asp-for="EIN"></label></dt>
+                <dd>@Model.EIN</dd>
+
+                <dt><label asp-for="DB"></label></dt>
+                <dd>@Model.DB</dd>
+
+                <dt><label asp-for="Founded"></label></dt>
+                <dd>@Model.Founded</dd>
+
+                <dt><label asp-for="Address"></label></dt>
+                <dd>@(Model.Address.Address + " " + Model.Address.Country + " " + Model.Address.State + " " + Model.Address.City + " " + Model.Address.ZipCode)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

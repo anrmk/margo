@@ -49,25 +49,6 @@ namespace Web.Controllers.Mvc {
             return View(model);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CompanyGeneralViewModel model) {
-            try {
-                if(ModelState.IsValid) {
-                    var item = await _companyBusinessManager.CreateCompany(_mapper.Map<CompanyGeneralDto>(model));
-                    if(item == null) {
-                        return BadRequest();
-                    }
-
-                    return RedirectToAction(nameof(Edit), new { Id = item.Id });
-                }
-            } catch(Exception er) {
-                BadRequest(er);
-            }
-
-            return View(model);
-        }
-
         public async Task<ActionResult> Edit(long id) {
             var item = await _companyBusinessManager.GetCompany(id);
             if(item == null) {
@@ -78,25 +59,6 @@ namespace Web.Controllers.Mvc {
             ViewBag.Sections = _mapper.Map<List<CompanySectionViewModel>>(sections).ToList();
 
             return View(_mapper.Map<CompanyViewModel>(item));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(long id, CompanyGeneralViewModel model) {
-            try {
-                if(ModelState.IsValid) {
-                    var item = await _companyBusinessManager.UpdateCompany(id, _mapper.Map<CompanyGeneralDto>(model));
-                    if(item == null) {
-                        return NotFound();
-                    }
-
-                  //  await ClientNotify($"Company Id: {item.Id}: This record was modified by {item.UpdatedBy} on {item.UpdatedDate.ToString()}");
-                }
-            } catch(Exception er) {
-                _logger.LogError(er, er.Message);
-                BadRequest(er);
-            }
-            return RedirectToAction(nameof(Edit), new { Id = id });
         }
 
         public async Task<ActionResult> Delete(long id) {
@@ -369,6 +331,64 @@ namespace Web.Controllers.Api {
             return BadRequest("");
         }
 
+        [HttpGet("DetailsCompany", Name = "DetailsCompany")]
+        public async Task<IActionResult> DetailsCompany([FromQuery] long id) {
+            var item = await _companyBusinessManager.GetCompany(id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item));
+            return Ok(html);
+        }
+
+        [HttpGet("AddCompany", Name = "AddCompany")]
+        public async Task<IActionResult> AddCompany() {
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel());
+
+            return Ok(html);
+        }
+
+        [HttpPost("CreateCompany", Name = "CreateCompany")]
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyViewModel model) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
+                var item = await _companyBusinessManager.CreateCompany(_mapper.Map<CompanyDto>(model));
+                if(item == null)
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
+                return Ok(_mapper.Map<CompanyViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
+            }
+        }
+
+        [HttpGet("EditCompany", Name = "EditCompany")]
+        public async Task<IActionResult> EditCompany([FromQuery] long id) {
+            var item = await _companyBusinessManager.GetCompany(id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item));
+            return Ok(html);
+        }
+
+        [HttpPost("UpdateCompany", Name = "UpdateCompany")]
+        public async Task<IActionResult> UpdateCompany([FromQuery] long id, [FromBody] CompanyViewModel model) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
+                var item = await _companyBusinessManager.UpdateCompany(id, _mapper.Map<CompanyDto>(model));
+                if(item == null)
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
+                return Ok(_mapper.Map<CompanyViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
+            }
+        }
 
     }
 }

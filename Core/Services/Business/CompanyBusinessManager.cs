@@ -16,8 +16,8 @@ namespace Core.Services.Business {
         Task<CompanyDto> GetCompany(long id);
         Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter);
         Task<List<CompanyDto>> GetCompanies();
-        Task<CompanyDto> CreateCompany(CompanyGeneralDto dto);
-        Task<CompanyDto> UpdateCompany(long id, CompanyGeneralDto dto);
+        Task<CompanyDto> CreateCompany(CompanyDto dto);
+        Task<CompanyDto> UpdateCompany(long id, CompanyDto dto);
         Task<bool> DeleteCompany(long id);
         Task<bool> DeleteCompany(long[] ids);
 
@@ -98,12 +98,12 @@ namespace Core.Services.Business {
             return _mapper.Map<List<CompanyDto>>(result);
         }
 
-        public async Task<CompanyDto> CreateCompany(CompanyGeneralDto dto) {
+        public async Task<CompanyDto> CreateCompany(CompanyDto dto) {
             var entity = await _companyManager.Create(_mapper.Map<CompanyEntity>(dto));
             return _mapper.Map<CompanyDto>(entity);
         }
 
-        public async Task<CompanyDto> UpdateCompany(long id, CompanyGeneralDto dto) {
+        public async Task<CompanyDto> UpdateCompany(long id, CompanyDto dto) {
             var entity = await _companyManager.Find(id);
             if(entity == null) {
                 return null;

@@ -1,131 +1,97 @@
 ﻿@model Web.ViewModels.CompanyViewModel
 
 @{
-    ViewData["Title"] = "Edit Company";
     var guid = Guid.NewGuid();
-    var sections = (List<Web.ViewModels.CompanySectionViewModel>)ViewBag.Sections;
 }
 
-@section RightSidebar {
-    <div class="ui sticky">
-        <div class="ui clearing">
-            <h4 class="ui header">Sections</h4>
-            <a asp-action="AddCompanySection" asp-route-id="@Model.Id" data-request="ajax" rel="dialog"><i class="plus icon"></i> Create</a>
-        </div>
-        <div id="sectionsContainer" class="ui vertical following fluid accordion text menu">
-            @foreach(var section in sections) {
-                <a class="item" href="#section_@(section.Id)">@(section.SectionName)</a>
-            }
-        </div>
-    </div>
-}
-
-<div role="toolbar" class="ui secondary menu">
-    <div class="right menu">
-        <form asp-action="Delete" asp-route-Id="@Model.Id" method="delete" >
-            <button type="submit" class="red ui button" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="trash icon"></i> Remove</button>
-        </form>
-    </div>
-</div>
-
-<div class="ui raised segment">
-    <form id="@guid" class="ui form" asp-action="Edit" method="post">
-        <fieldset>
-            <h4 class="ui dividing header">General</h4>
-            <input type="hidden" name="Id" value="@Model.Id" />
-            <div class="two fields">
-                <div class="field required">
-                    <label asp-for="General.No"></label>
-                    <input asp-for="General.No" name="No" required />
-                    <span asp-validation-for="General.No"></span>
-                </div>
-                <div class="field required">
-                    <label asp-for="General.Name"></label>
-                    <input asp-for="General.Name" name="Name" required />
-                    <span asp-validation-for="General.Name"></span>
-                </div>
+<form id="@guid" class="ui form" asp-route="UpdateCompany" asp-route-id="@Model.Id" method="post" data-request="ajax">
+    <fieldset>
+        <h4 class="ui dividing header">General</h4>
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="two fields">
+            <div class="six wide field required">
+                <label asp-for="No"></label>
+                <input asp-for="No" name="No" required data-value-type="string" />
+                <span asp-validation-for="No"></span>
             </div>
-            <div class="three fields">
-                <div class="field">
-                    <label asp-for="General.Website"></label>
-                    <input asp-for="General.Website" name="Website" placeholder="http://" />
-                    <span asp-validation-for="General.Website"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="General.PhoneNumber"></label>
-                    <input asp-for="General.PhoneNumber" name="PhoneNumber" />
-                    <span asp-validation-for="General.PhoneNumber"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="General.Email"></label>
-                    <input asp-for="General.Email" name="Email" />
-                    <span asp-validation-for="General.Email"></span>
-                </div>
-            </div>
-            <div class="four fields">
-                <div class="field">
-                    <label asp-for="General.CEO"></label>
-                    <input asp-for="General.CEO" name="CEO" />
-                </div>
-                <div class="field">
-                    <label asp-for="General.EIN"></label>
-                    <input asp-for="General.EIN" name="EIN" />
-                </div>
-                <div class="field">
-                    <label asp-for="General.DB"></label>
-                    <input asp-for="General.DB" name="DB" />
-                    <span asp-validation-for="General.DB"></span>
-                </div>
-                <div class="field">
-                    <label asp-for="General.Founded"></label>
-                    <input asp-for="General.Founded" type="date" name="Founded" />
-                </div>
-            </div>
-            <button type="submit" class="ui submit button">Save</button>
-        </fieldset>
-    </form>
-</div>
-
-<div id="cardContainer" class="ui cards">
-    @foreach(var section in sections) {
-    <div class="card" id="section_@(section.Id)">
-        <div class="content">
-            <form asp-action="DeleteCompanySection" asp-route-id="@(section.Id)" data-request="ajax" rel="deleteCompanySectionComplete" method="delete">
-                <button class="mini ui icon button right floated" onclick="if (!confirm('Are you sure want to delete this?')) { return false; }"><i class="close icon"></i></button>
-            </form>
-            <div class="header">@(section.SectionName)</div>
-            <div class="meta">@(section.SectionDescription)</div>
-            <div class="description">
-                <p></p>
+            <div class="ten wide field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" name="Name" required data-value-type="string" />
+                <span asp-validation-for="Name"></span>
             </div>
         </div>
-        <a class="ui bottom attached button" asp-action="AddCompanySectionField" asp-route-id="@(section.Id)" data-request="ajax" rel="dialog">
-            <i class="add icon"></i> Add
-        </a>
-    </div>
-    }
-</div>
-
-@section Scripts {
-    <script type="text/javascript">
-        function createCompanySectionComplete(jqXHR, status) {
-            if (status === 'success') {
-                var data = jqXHR.responseJSON;
-                $('#sectionsContainer').append(`<a class='item' href='#${data.sectionCode}'>${data.sectionName}</a>`);
-                $('#cardContainer').append(``);
-                $('.modal').modal('hide');
-            }
-        }
-
-        function deleteCompanySectionComplete(jqXHR, status) {
-            if (status === 'success') {
-                var data = jqXHR.responseJSON;
-                $(`#section_${data}`).remove();
-            }
-        }
-
-        $(document).ready(function () {
-
-        });
-    </script>
-}
+        <div class="three fields">
+            <div class="field">
+                <label asp-for="Website"></label>
+                <input asp-for="Website" name="Website" placeholder="http://" data-value-type="string" />
+                <span asp-validation-for="Website"></span>
+            </div>
+            <div class="field">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" name="PhoneNumber" placeholder="xxx-xxx-xxxx" data-value-type="string" />
+                <span asp-validation-for="PhoneNumber"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" name="Email" placeholder=@("sample@mail.com") />
+                <span asp-validation-for="Email"></span>
+            </div>
+        </div>
+        <div class="four fields">
+            <div class="field">
+                <label asp-for="CEO"></label>
+                <input asp-for="CEO" name="CEO" data-value-type="string" />
+            </div>
+            <div class="field">
+                <label asp-for="EIN"></label>
+                <input asp-for="EIN" name="EIN" data-value-type="string" />
+            </div>
+            <div class="field">
+                <label asp-for="DB"></label>
+                <input asp-for="DB" name="DB" data-value-type="string" />
+                <span asp-validation-for="DB"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Founded"></label>
+                <input asp-for="Founded" type="date" name="Founded" data-value-type="string" />
+            </div>
+        </div>
+        <div class="field">
+            <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
+            <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
+        </div>
+        <h4 class="ui dividing header">Address</h4>
+        <div class="six fields">
+            <div class="field">
+                <label asp-for="Address.Address"></label>
+                <input asp-for="Address.Address" name="Address[Address]" data-value-type="string" />
+                <span asp-validation-for="Address.Address"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.Address2"></label>
+                <input asp-for="Address.Address2" name="Address[Address2]" data-value-type="string" />
+                <span asp-validation-for="Address.Address2"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.City"></label>
+                <input asp-for="Address.City" name="Address[City]" data-value-type="string" />
+                <span asp-validation-for="Address.City"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.State"></label>
+                <input asp-for="Address.State" name="Address[State]" data-value-type="string" />
+                <span asp-validation-for="Address.State"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.ZipCode"></label>
+                <input asp-for="Address.ZipCode" name="Address[ZipCode]" data-value-type="string" />
+                <span asp-validation-for="Address.ZipCode"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Address.Country"></label>
+                <input asp-for="Address.Country" name="Address[Country]" data-value-type="string" />
+                <span asp-validation-for="Address.Country"></span>
+            </div>
+        </div>
+    </fieldset>
+</form>

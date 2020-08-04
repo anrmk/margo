@@ -38,20 +38,7 @@ namespace Web {
 
             #region COMPANY
             CreateMap<CompanyViewModel, CompanyDto>().ReverseMap();
-            CreateMap<CompanyViewModel, CompanyGeneralViewModel>()
-                .ReverseMap()
-                .ForMember(d => d.General, o => o.MapFrom(s => new CompanyGeneralViewModel() {
-                    Id = s.Id,
-                    Name = s.Name,
-                    No = s.No,
-                    PhoneNumber = s.PhoneNumber,
-                    Website = s.Website,
-                    Email = s.Email,
-                    CEO = s.CEO,
-                    DB = s.DB,
-                    EIN = s.EIN,
-                    Founded = s.Founded
-                }));
+            CreateMap<CompanyViewModel, CompanyGeneralViewModel>().ReverseMap();
 
             CreateMap<CompanyGeneralViewModel, CompanyGeneralDto>().ReverseMap();
             CreateMap<CompanyAddressViewModel, CompanyAddressDto>().ReverseMap();

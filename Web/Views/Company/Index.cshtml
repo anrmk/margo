@@ -5,38 +5,20 @@
 
     var listUrl = Url.RouteUrl("GetCompanies");
     var deleteUrl = Url.RouteUrl("DeleteCompanies");
-    var editUrl = Url.Action("Edit");
-    var displayUrl = Url.Action("Details");
+    var editUrl = Url.RouteUrl("EditCompany");
+    var detailsUrl = Url.RouteUrl("DetailsCompany");
 }
 
 @section RightSidebar {
     <div class="ui sticky">
         <div id="displayContainer"></div>
-
-        <h4 class="ui header">Sidebar</h4>
-
-        <div class="ui vertical following fluid accordion text menu">
-            <div class="item active">
-                <a class="title active">
-                    <i class="dropdown icon"></i> <b>Examples</b>
-                </a>
-                <div class="content menu active">
-                    <a class="item" href="#transitions">Transitions</a>
-                    <a class="item active" href="#displaying-multiple">Displaying Multiple</a>
-                    <a class="item" href="#using-a-custom-context">Using a custom context</a>
-                    <a class="item" href="#triggering-showhide-with-other-content">Triggering show/hide with other content</a>
-                    <a class="item" href="#triggering-custom-behavior-with-other-content">Triggering custom behavior with other content</a>
-                    <a class="item" href="#starting-visible">Starting Visible</a>
-                </div>
-            </div>
-        </div>
     </div>
 }
 
 <div>
     @if(User.IsInRole("Administrator")) {
     <div id="toolbar" class="ui secondary menu">
-        <a asp-controller="Company" asp-action="Create" class="ui button" data-action="create"><i class="fa fa-plus mr-1"></i> Create</a>
+        <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
@@ -49,6 +31,13 @@
 @section Scripts {
     <script type="text/javascript">
     $(document).ready(function () {
+        ajaxSubmitComplete = function (e, jqXHR, status) {
+            if (status === 'success') {
+                window.DocumentController.reload(false);
+                window.dialog.modal('hide');
+            }
+        };
+
         window.DocumentController = new DocumentController({
             'table': '#@tableId',
             'controller': {
@@ -62,18 +51,14 @@
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
             ],
             'onRowClick': (e, data) => {
-                var options = {
-                    'url': '@displayUrl' + `/${data.id}`,
-                    'complete': (jqXHR, status) => {
-                        if (status === 'success') {
-                            $('#displayContainer').empty().html(jqXHR.responseText);
-                        }
-                    }
-                }
-                $.ajax(options);
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#displayContainer').html(result);
+                });
             },
             'onDblRowClick': (e, data) => {
-                location.href = '@editUrl' + `/${data.id}`;
+                $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                });
             }
         });
     });
