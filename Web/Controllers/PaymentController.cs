@@ -1,149 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
 using Core.Extension;
+using Core.Services;
 using Core.Services.Business;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
+    [Authorize]
     public class PaymentController: BaseController<PaymentController> {
-        private readonly ISectionBusinessManager _crudBusinessManager;
-
-        public PaymentController(ILogger<PaymentController> logger, IMapper mapper,
-            ISectionBusinessManager crudBusinessManager) : base(logger, mapper) {
-            _crudBusinessManager = crudBusinessManager;
-        }
+        public PaymentController(ILogger<PaymentController> logger, IMapper mapper)
+            : base(logger, mapper) { }
 
         public IActionResult Index() {
             return View();
-        }
-
-        public async Task<ActionResult> Details(long id) {
-            var item = await _crudBusinessManager.GetPayment(id);
-            if(item == null) {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<PaymentViewModel>(item));
-        }
-
-        public async Task<IActionResult> Create(long id) {
-            var item = await _crudBusinessManager.GetInvoice(id);
-            if(item == null) {
-                return NotFound();
-            }
-
-            var rnd = new Random();
-
-            var model = new PaymentViewModel() {
-                Date = DateTime.Now,
-                InvoiceId = item.Id,
-                InvoiceNo = item.No,
-                Amount = item.Amount - (item.PaymentAmount ?? 0),
-                No = string.Format("{0}-{1}-{2}", DateTime.Now.ToString("yyyyMMdd"), rnd.Next(0, 99), Guid.NewGuid().ToString().Substring(0, 5))
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PaymentViewModel model) {
-            try {
-                if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.CreatePayment(_mapper.Map<PaymentDto>(model));
-                    if(item == null) {
-                        return BadRequest();
-                    }
-                    if(IsAjaxRequest) {
-                        return Ok(_mapper.Map<PaymentDto>(item));
-                    }
-                    return RedirectToAction("Index", "Invoice", new { Id = item.Id });
-                }
-            } catch(Exception er) {
-                _logger.LogError(er, er.Message);
-                return BadRequest(er);
-            }
-            return View(model);
-        }
-
-        public async Task<ActionResult> Edit(long id) {
-            var item = await _crudBusinessManager.GetPayment(id);
-            if(item == null) {
-                return NotFound();
-            }
-
-            return View(_mapper.Map<PaymentViewModel>(item));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(long id, PaymentViewModel model) {
-            try {
-                if(ModelState.IsValid) {
-                    var item = await _crudBusinessManager.UpdatePayment(id, _mapper.Map<PaymentDto>(model));
-                    if(item == null) {
-                        return NotFound();
-                    }
-                    return RedirectToAction(nameof(Edit), new { Id = id });
-                }
-            } catch(Exception er) {
-                _logger.LogError(er, er.Message);
-                BadRequest(er);
-            }
-
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(long id) {
-            try {
-                var item = await _crudBusinessManager.DeletePayment(id);
-                if(item == false) {
-                    return NotFound();
-                }
-                return RedirectToAction(nameof(Index));
-
-            } catch(Exception er) {
-                _logger.LogError(er, er.Message);
-                return BadRequest(er);
-            }
         }
     }
 }
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
-    //[ApiController]
+    [ApiController]
     public class PaymentController: ControllerBase {
         private readonly IMapper _mapper;
-        private readonly ISectionBusinessManager _crudBusinessManager;
-        public PaymentController(IMapper mapper, ISectionBusinessManager businessManager) {
+        private readonly IViewRenderService _viewRenderService;
+        private readonly IPaymentBusinessManager _paymentBusinessManager;
+        private readonly IInvoiceBusinessManager _invoiceBusinessManager;
+
+        public PaymentController(
+            IMapper mapper, 
+            IViewRenderService viewRenderService, 
+            IPaymentBusinessManager paymentBusinessManager,
+            IInvoiceBusinessManager invoiceBusinessManager) {
             _mapper = mapper;
-            _crudBusinessManager = businessManager;
+            _viewRenderService = viewRenderService;
+            _paymentBusinessManager = paymentBusinessManager;
+            _invoiceBusinessManager = invoiceBusinessManager;
         }
 
-        [HttpGet]
-        public async Task<Pager<PaymentViewModel>> GetPayments([FromQuery] PaymentFilterViewModel model) {
-            var result = await _crudBusinessManager.GetPaymentPager(_mapper.Map<PaymentFilterDto>(model));
-            return new Pager<PaymentViewModel>(_mapper.Map<List<PaymentViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        [HttpGet("GetPayments", Name = "GetPayments")]
+        public async Task<Pager<PaymentListViewModel>> GetPayments([FromQuery] PaymentFilterViewModel model) {
+            var result = await _paymentBusinessManager.GetPaymentPager(_mapper.Map<PaymentFilterDto>(model));
+            return new Pager<PaymentListViewModel>(
+                _mapper.Map<List<PaymentListViewModel>>(result.Data),
+                result.RecordsTotal,
+                result.Start,
+                result.PageSize);
         }
 
-        [HttpPost]
-        [Route("delete")]
-        public async Task<ActionResult> Delete([FromBody] List<long> id) {
+        [HttpGet("DetailsPayment", Name = "DetailsPayment")]
+        public async Task<IActionResult> DetailsPayment([FromQuery] long id) {
+            var payment = await _paymentBusinessManager.GetPayment(id);
+            if(payment == null)
+                return NotFound();
+            var html = await _viewRenderService.RenderToStringAsync(
+                "_DetailsPartial",
+                _mapper.Map<PaymentListViewModel>(payment));
+            return Ok(html);
+        }
+
+        [HttpGet("AddPayment", Name = "AddPayment")]
+        public async Task<IActionResult> AddPayment() {
+            var invoices = await _invoiceBusinessManager.GetInvoices();
+            var viewData = new ViewDataDictionary(
+                new EmptyModelMetadataProvider(),
+                new ModelStateDictionary()) {
+                {
+                    "Invoices",
+                    _mapper.Map<List<InvoiceViewModel>>(invoices)
+                        .Select(x=> new SelectListItem {
+                            Text = x.No,
+                            Value = x.Id.ToString()
+                        })
+                },
+                {
+                    "PaymentMethods",
+                    EnumExtension.GetAll<PaymentMethodEnum>()
+                        .Select(x=> new SelectListItem {
+                            Text = x.Name,
+                            Value = x.Id.ToString()
+                        })
+                }};
+
+            var html = await _viewRenderService.RenderToStringAsync(
+                "_CreatePartial", new PaymentViewModel(), viewData);
+
+            return Ok(html);
+        }
+
+        [HttpPost("CreatePayment", Name = "CreatePayment")]
+        public async Task<IActionResult> CreatePayment([FromBody] PaymentViewModel model) {
             try {
-                if(id.Count > 0) {
-                    var result = await _crudBusinessManager.DeletePayment(id.ToArray());
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
+                var item = await _paymentBusinessManager.CreatePayment(_mapper.Map<PaymentDto>(model));
+                if(item == null)
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
+                return Ok(_mapper.Map<PaymentViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
+            }
+        }
+
+        [HttpGet("EditPayment", Name = "EditPayment")]
+        public async Task<IActionResult> EditPayment([FromQuery] long id) {
+            var item = await _paymentBusinessManager.GetPayment(id);
+            if(item == null)
+                return NotFound();
+
+            var viewData = new ViewDataDictionary(
+                new EmptyModelMetadataProvider(),
+                new ModelStateDictionary()) {
+                {
+                    "PaymentMethods",
+                    EnumExtension.GetAll<PaymentMethodEnum>()
+                        .Select(x=> new SelectListItem {
+                            Text = x.Name,
+                            Value = x.Id.ToString()
+                        })
+                }};
+
+            var html = await _viewRenderService.RenderToStringAsync(
+                "_EditPartial", _mapper.Map<PaymentViewModel>(item), viewData);
+            return Ok(html);
+        }
+
+        [HttpPut("UpdatePayment", Name = "UpdatePayment")]
+        public async Task<IActionResult> UpdatePayment([FromQuery] long id, [FromBody] PaymentViewModel model) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
+                var item = await _paymentBusinessManager.UpdatePayment(id, _mapper.Map<PaymentDto>(model));
+                if(item == null)
+                    throw new Exception("No records have been updated!");
+
+                return Ok(_mapper.Map<PaymentViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
+            }
+        }
+
+        [HttpGet("DeletePayments", Name = "DeletePayments")]
+        public async Task<IActionResult> DeletePayments([FromQuery] long[] id) {
+            try {
+                if(id.Length > 0) {
+                    var result = await _paymentBusinessManager.DeletePayments(id);
                     return Ok(result);
                 }
             } catch(Exception er) {

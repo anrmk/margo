@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "Payments")]
@@ -22,7 +23,7 @@ namespace Core.Data.Entities {
         public string Note { get; set; }
 
         [Column("Invoice_Id")]
-        public long? InvoiceId { get; set; }
+        public long InvoiceId { get; set; }
         public virtual InvoiceEntity Invoice { get; set; }
     }
 }

@@ -65,6 +65,8 @@ namespace Core.Services {
             services.AddTransient<IPersonBusinessManager, PersonBusinessManager>();
 
             services.AddTransient<IInvoiceBusinessManager, InvoiceBusinessManager>();
+
+            services.AddTransient<IPaymentBusinessManager, PaymentBusinessManager>();
         }
     }
 }

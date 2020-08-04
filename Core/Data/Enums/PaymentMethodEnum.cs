@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Core.Data {
+namespace Core.Data.Enums {
     public enum PaymentMethodEnum {
         [Display(Name = "Other")]
         OTHER = 0,

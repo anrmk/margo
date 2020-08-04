@@ -1,0 +1,46 @@
+﻿@model PaymentViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var unpaidInvoices = (IEnumerable<SelectListItem>)ViewData["Invoices"];
+    var paymentMethods = (IEnumerable<SelectListItem>)ViewData["PaymentMethods"];
+}
+
+<form id="@formId" class="ui form" method="POST" asp-action="CreatePayment">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <div class="field required">
+        <label asp-for="InvoiceId"></label>
+        <select class="ui search dropdown" asp-for="InvoiceId" asp-items="@unpaidInvoices" required>
+        </select>
+    </div>
+
+    <fieldset>
+        <div class="two fields">
+            <div class="six width field required">
+                <label asp-for="No"></label>
+                <input asp-for="No" type="text" data-value-type="string" required>
+            </div>
+            <div class="six width field required">
+                <label asp-for="Date"></label>
+                <input asp-for="Date" type="date" required>
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="six width field required">
+                <label asp-for="Method"></label>
+                <select class="ui search dropdown" asp-for="Method" asp-items="@paymentMethods" required>
+                </select>
+            </div>
+            <div class="six width field required">
+                <label asp-for="Amount"></label>
+                <input asp-for="Amount" data-value-type="number" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label asp-for="Note"></label>
+            <textarea asp-for="Note" rows="2" type="text" data-value-type="string"></textarea>
+        </div>
+    </fieldset>
+</form>

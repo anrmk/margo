@@ -30,6 +30,7 @@
         <div class="header">Payment</div>
         <div class="menu">
             <a class="item @(url.Contains("/invoice") ? "active" : "")" asp-controller="Invoice" asp-action="Index">Invoices</a>
+            <a class="item @(url.Contains("/payment") ? "active" : "")" asp-controller="Payment" asp-action="Index">Payments</a>
         </div>
     </div>
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
+using Core.Data;
 using Core.Data.Enums;
 using Core.Extension;
 
 namespace Web.ViewModels {
-    public class PaymentViewModel {
+    public class PaymentListViewModel {
         public long Id { get; set; }
 
         [Display(Name = "Reference no.")]
@@ -33,5 +34,9 @@ namespace Web.ViewModels {
 
         [Display(Name = "Invoice No")]
         public string InvoiceNo { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Modified date")]
+        public DateTime UpdatedDate { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace Core.Services.Managers {
     public interface IPaymentManager: IEntityManager<PaymentEntity> {
         Task<PaymentEntity> FindInclude(long id);
         Task<List<PaymentEntity>> FindAllByInvoiceId(long id);
+        Task<List<PaymentEntity>> FindByIds(long[] ids);
     }
 
     public class PaymentManager: AsyncEntityManager<PaymentEntity>, IPaymentManager {
@@ -27,6 +28,13 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Include(x => x.Invoice)
                 .Where(x => x.InvoiceId == id)
+                .ToListAsync();
+        }
+
+        public async Task<List<PaymentEntity>> FindByIds(long[] ids) {
+            return await DbSet
+                .Include(x => x.Invoice)
+                .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }
     }

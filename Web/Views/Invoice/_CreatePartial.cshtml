@@ -1,4 +1,4 @@
-﻿@model Web.ViewModels.InvoiceViewModel
+﻿@model InvoiceViewModel
 @{
     var formId = Guid.NewGuid();
 
@@ -6,15 +6,11 @@
 }
 
 <form id="@formId" class="ui form" asp-action="CreateInvoice" method="post">
-    <div class="field">
-        <div class="two fields">
-            <div class="field required">
-                <label asp-for="AccountId"></label>
-                <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
-                    <option value="" selected disabled hidden>Choose here</option>
-                </select>
-            </div>
-        </div>
+    <div class="field required">
+        <label asp-for="AccountId"></label>
+        <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
+            <option value="" selected disabled hidden>Choose here</option>
+        </select>
     </div>
 
     <fieldset>

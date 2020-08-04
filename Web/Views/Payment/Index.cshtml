@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Payments";
+
+    var tableId = Guid.NewGuid();
+
+    var listUrl = Url.RouteUrl("GetPayments");
+    var deleteUrl = Url.RouteUrl("DeletePayments");
+    var detailsUrl = Url.RouteUrl("DetailsPayment");
+    var editUrl = Url.RouteUrl("EditPayment");
+    var displayUrl = Url.Action("Details");
+}
+
+@section RightSidebar {
+    <div id="@(tableId)_detail"></div>
+}
+
+<div>
+    <div id="toolbar" class="ui secondary menu">
+        <a asp-route="AddPayment" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
+        <div class="right menu">
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>
+    </div>
+
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        window.DocumentController = new DocumentController({
+            'table': '#@tableId',
+            'controller': {
+                'list': '@listUrl',
+                'delete': '@deleteUrl'
+            },
+            'columns': [
+                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                { 'title': 'No ', 'data': 'no', 'orderable': true },
+                { 'title': 'Invoice', 'data': 'invoiceNo' },
+                { 'title': 'Method', 'data': 'methodName' },
+                { 'title': 'Amount', 'data': 'amount' },
+                { 'title': 'Date', 'className': 'collapsing', 'data': 'date', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                { 'title': 'Modified date', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+            ],
+            'onRowClick': (e, data) => {
+                $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                    $('#@(tableId)_detail').html(result);
+                });
+            },
+            'onDblRowClick': (e, data) => {
+                 $.get('@editUrl', { 'id': data.id }).done(result => {
+                    $(result).dialog();
+                });
+            }
+        });
+    });
+
+    ajaxSubmitComplete = function (e, jqXHR, status) {
+        if (status === 'success') {
+            window.DocumentController.reload(false);
+            window.dialog.modal('hide');
+        }
+    };
+
+    ajaxClick = function (e, jqXHR, status) {
+        if (status === 'success') {
+            var target = $(e.target).attr('data-target');
+            $(target).remove();
+        }
+    };
+    </script>
+}

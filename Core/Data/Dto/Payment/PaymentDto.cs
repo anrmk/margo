@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Data.Enums;
 
 namespace Core.Data.Dto {
     public class PaymentDto {
@@ -13,7 +14,9 @@ namespace Core.Data.Dto {
 
         public string Note { get; set; }
 
-        public long? InvoiceId { get; set; }
+        public long InvoiceId { get; set; }
         public string InvoiceNo { get; set; }
+
+        public DateTime UpdatedDate { get; set; }
     }
 }

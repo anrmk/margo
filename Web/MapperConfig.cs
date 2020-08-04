@@ -80,6 +80,7 @@ namespace Web {
             #endregion
 
             CreateMap<PaymentViewModel, PaymentDto>().ReverseMap();
+            CreateMap<PaymentListViewModel, PaymentDto>().ReverseMap();
             CreateMap<PaymentFilterViewModel, PaymentFilterDto>().ReverseMap();
 
             #region SECTIONS

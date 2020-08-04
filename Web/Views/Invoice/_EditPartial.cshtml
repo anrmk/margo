@@ -1,8 +1,5 @@
-﻿@model Web.ViewModels.InvoiceViewModel
+﻿@model InvoiceViewModel
 @{
-    ViewData["Title"] = "Edit Invoice";
-    ViewData["SubTitle"] = "Please provide all required details to edit invoice";
-
     var formId = Guid.NewGuid();
 
     var accountName = (string)ViewData["AccountName"];

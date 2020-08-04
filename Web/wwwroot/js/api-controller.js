@@ -191,7 +191,7 @@ $.fn.fillInvoiceServiceNames = function (target, id, fieldContainerId) {
         console.warn("Calling obsolete function!");
         var $services = $(res.services
             .map(service =>
-                `<div class="item" data-value="${service.id}">${service.id}</div>`)
+                `<div class="item" data-value="${service.id}">${service.name}</div>`)
             .join("\n "));
         $(target).html($services);
     });
