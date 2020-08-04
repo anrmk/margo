@@ -8,6 +8,6 @@ namespace Core.Data.Entities {
         [ForeignKey("Profile")]
         [Column("ProfileId")]
         public long? Profile_Id { get; set; }
-        public virtual AppNetUserProfileEntity Profile { get; set; }
+        public virtual AspNetUserProfileEntity Profile { get; set; }
     }
 }

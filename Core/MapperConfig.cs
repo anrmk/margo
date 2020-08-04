@@ -12,9 +12,10 @@ namespace Core {
         public MapperConfig() {
             CreateMap<AspNetUserEntity, AspNetUserDto>().ReverseMap()
                 .ForMember(d => d.Id, o => o.MapFrom(s => string.IsNullOrEmpty(s.Id) ? Guid.NewGuid().ToString() : s.Id));
-            CreateMap<AppNetUserProfileEntity, UserProfileDto>().ReverseMap();
+            CreateMap<AspNetUserProfileEntity, AspNetUserProfileDto>().ReverseMap();
             CreateMap<AspNetRoleDto, IdentityRole>().ReverseMap();
-            
+            CreateMap<AspNetUserProfileDto, AspNetUserProfileEntity>().ReverseMap();
+
             CreateMap<LogEntity, LogDto>().ReverseMap();
 
             #region COMPANY

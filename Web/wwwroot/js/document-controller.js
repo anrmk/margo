@@ -29,6 +29,8 @@
                     //$(row).addClass('active');
                 }
             }
+        }).on('draw', (e, settings) => {
+            $(e.currentTarget).find('a[data-request=ajax]').ajaxClick();
         });
 
         this.initialize();

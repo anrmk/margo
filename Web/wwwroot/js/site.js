@@ -14,7 +14,7 @@
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
 }).ajaxSend((event, xhr, options) => {
-    //xhr.setRequestHeader("Authorization", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
+    xhr.setRequestHeader("ApiKey", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {
     $('form fieldset').attr('disabled', 'disabled');
 }).ajaxStop(() => {

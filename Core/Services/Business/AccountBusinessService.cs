@@ -22,11 +22,15 @@ namespace Core.Services.Business {
         Task<AspNetUserDto> UpdateUser(string id, AspNetUserDto dto);
         Task<bool> LockUser(string id, bool locked);
 
-        Task<AspNetUserDto> UpdateUserProfile(string id, UserProfileDto dto);
-
+        //  ROLES
         Task<List<AspNetRoleDto>> GetUserRoles();
 
-        //Task<ApplicationUserDto> GetUserProfile(string name);
+        //  PROFILE
+        Task<AspNetUserProfileDto> GetUserProfile(long id);
+        Task<AspNetUserProfileDto> UpdateUserProfile(long id, AspNetUserProfileDto dto);
+
+
+        //
         //Task<ApplicationUserDto> UpdateUserProfile(string userId, ApplicationUserProfileDto model);
         //Task<IdentityResult> UpdatePassword(string userId, string oldPassword, string newPassword);
         Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe);
@@ -112,6 +116,8 @@ namespace Core.Services.Business {
         public async Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password) {
             try {
                 var entity = _mapper.Map<AspNetUserEntity>(dto);
+                entity.Profile = new AspNetUserProfileEntity(); // init profile
+
                 var result = await _userManager.CreateAsync(entity, password);
 
                 if(result.Succeeded) {
@@ -190,6 +196,26 @@ namespace Core.Services.Business {
         }
         #endregion
 
+        #region USER PROFILE
+        public async Task<AspNetUserProfileDto> GetUserProfile(long id) {
+            var entity = await _userProfileManager.Find(id);
+            return _mapper.Map<AspNetUserProfileDto>(entity);
+        }
+
+        public async Task<AspNetUserProfileDto> UpdateUserProfile(long id, AspNetUserProfileDto dto) {
+            var entity = await _userProfileManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+
+            var newEntity = _mapper.Map(dto, entity);
+            var result = await _userProfileManager.Update(newEntity);
+
+            return _mapper.Map<AspNetUserProfileDto>(result);
+        }
+
+        #endregion
+
         public async Task<string> GenerateEmailConfirmationTokenAsync(string id) {
             var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
             return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
@@ -233,20 +259,6 @@ namespace Core.Services.Business {
 
         public async Task SignOutAsync() {
             await _signInManager.SignOutAsync();
-        }
-
-        public async Task<AspNetUserDto> UpdateUserProfile(string id, UserProfileDto dto) {
-            try {
-                var item1 = await _userProfileManager.Create(new AppNetUserProfileEntity() {
-                    Name = dto.Name,
-                    SurName = dto.SurName,
-                    MiddleName = dto.MiddleName
-                });
-                return null;
-            } catch(Exception e) {
-                Console.WriteLine(e.Message);
-            }
-            return null;
         }
 
         

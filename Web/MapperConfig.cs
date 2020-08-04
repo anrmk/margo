@@ -31,6 +31,7 @@ namespace Web {
             CreateMap<AppNetUserListViewModel, AspNetUserDto>().ReverseMap()
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Name)));
             CreateMap<AspNetRoleViewModel, AspNetRoleDto>().ReverseMap();
+            CreateMap<AspNetUserProfileViewModel, AspNetUserProfileDto>().ReverseMap();
 
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();

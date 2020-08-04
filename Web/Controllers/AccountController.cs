@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-
+using Web.Filters;
 using Web.Models.AccountViewModel;
 using Web.ViewModels;
 
@@ -147,6 +147,8 @@ namespace Web.Controllers.Mvc {
 
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Roles ="Administrator")]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
@@ -177,7 +179,6 @@ namespace Web.Controllers.Api {
             var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<AspNetUserViewModel>(item));
             return Ok(html);
         }
-
 
         [HttpGet("AddAspNetUser", Name = "AddAspNetUser")]
         public async Task<IActionResult> AddAspNetUser() {
@@ -235,6 +236,31 @@ namespace Web.Controllers.Api {
             return Ok(item);
         }
 
+        [HttpGet("EditAspNetUserProfile", Name = "EditAspNetUserProfile")]
+        public async Task<IActionResult> EditAspNetUserProfile([FromQuery] long id) {
+            var item = await _accountBusinessService.GetUserProfile(id);
+            if(item == null)
+                return NotFound();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+            //    { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditProfilePartial", _mapper.Map<AspNetUserProfileViewModel>(item), viewData);
+            return Ok(html);
+        }
+
+        [HttpPut("UpdateAspNetUserProfile", Name = "UpdateAspNetUserProfile")]
+        public async Task<IActionResult> UpdateAspNetUserProfile([FromQuery] long id, [FromBody] AspNetUserProfileViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _accountBusinessService.UpdateUserProfile(id, _mapper.Map<AspNetUserProfileDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<AspNetUserProfileViewModel>(item));
+            }
+            return BadRequest();
+        }
+        
         [HttpGet]
         [Route("activity")]
         public async Task<Pager<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {

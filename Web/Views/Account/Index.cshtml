@@ -7,6 +7,8 @@
     var lockUrl = Url.RouteUrl("LockoutAspNetUser");
     var detailsUrl = Url.RouteUrl("DetailsAspNetUser");
     var editUrl = Url.RouteUrl("EditAspNetUser");
+
+    var editProfileUrl = Url.RouteUrl("EditAspNetUserProfile");
 }
 
 @section RightSidebar {
@@ -41,7 +43,12 @@
                 { 'title': 'User name', 'className': 'collapsing', 'data': 'userName' },
                 { 'title': 'Phone number', 'data': 'phoneNumber' },
                 { 'title': 'Email', 'data': 'email' },
-                { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) }
+                { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) },
+                {
+                    'title': 'Action', 'data': 'profileId', 'className': 'collapsing', 'render': (data, type, row) => {
+                        return `<a href='@(editProfileUrl)?id=${data}' data-request='ajax' rel='dialog'><i class="id card icon"></i></a>`;
+                    }
+                }
             ],
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {

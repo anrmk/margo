@@ -1,0 +1,37 @@
+﻿@model Web.ViewModels.AspNetUserProfileViewModel
+
+@{
+    var formId = Guid.NewGuid();
+}
+
+<form id="@formId" class="ui form" asp-action="UpdateAspNetUserProfile" asp-route-id="@Model.Id" method="put" autocomplete="off">
+    <fieldset>
+        <input type="hidden" asp-for="Id" />
+        <div class="three fields">
+            <div class="field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" required>
+            </div>
+            <div class="field">
+                <label asp-for="SurName"></label>
+                <input asp-for="SurName">
+            </div>
+            <div class="field">
+                <label asp-for="MiddleName"></label>
+                <input asp-for="MiddleName">
+            </div>
+        </div>
+
+        <div class="field">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="3" ></textarea>
+        </div>
+
+        <div class="three fields">
+            <div class="field">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" data-value-type="string" />
+            </div>
+        </div>
+    </fieldset>
+</form>

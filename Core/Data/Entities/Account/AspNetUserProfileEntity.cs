@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
     [Table(name: "AppNetUserProfiles")]
-    public class AppNetUserProfileEntity: AuditableEntity<long> {
+    public class AspNetUserProfileEntity: AuditableEntity<long> {
         [MaxLength(64)]
         public string Name { get; set; }
 
