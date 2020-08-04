@@ -3,12 +3,9 @@
     var formId = Guid.NewGuid();
 
     var accounts = (IEnumerable<SelectListItem>)ViewData["Accounts"];
-
-    var services = new List<Web.ViewModels.UccountServiceViewModel>();
 }
 
 <form id="@formId" class="ui form" asp-action="CreateInvoice" method="post">
-    <input type="hidden" tabindex="0">
     <div class="field">
         <div class="two fields">
             <div class="field required">
@@ -68,7 +65,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#account-select').on('change', function () {
-            $.fn.fillInvoiceServiceNames('#service-dropdown', $(this).val());
+            $.fn.fillInvoiceServiceNames('#service-dropdown', $(this).val(), '#@(formId)_container');
         });
 
         $('#service-dropdown').on('click', '.item', function () {

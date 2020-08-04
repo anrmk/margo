@@ -116,7 +116,16 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<InvoiceViewModel>(item));
+            var viewData = new ViewDataDictionary(
+                new EmptyModelMetadataProvider(),
+                new ModelStateDictionary()) {
+            {
+                "AccountName",
+                item.Account.Name
+            }};
+
+            var html = await _viewRenderService.RenderToStringAsync(
+                "_EditPartial", _mapper.Map<InvoiceViewModel>(item), viewData);
             return Ok(html);
         }
 
