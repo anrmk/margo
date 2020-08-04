@@ -10,21 +10,21 @@
         <div class="three fields">
             <div class="field required">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" required>
+                <input asp-for="Name" required data-value-type="string">
             </div>
             <div class="field">
                 <label asp-for="SurName"></label>
-                <input asp-for="SurName">
+                <input asp-for="SurName" data-value-type="string">
             </div>
             <div class="field">
                 <label asp-for="MiddleName"></label>
-                <input asp-for="MiddleName">
+                <input asp-for="MiddleName" data-value-type="string">
             </div>
         </div>
 
         <div class="field">
             <label asp-for="Description"></label>
-            <textarea asp-for="Description" rows="3" ></textarea>
+            <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
         </div>
 
         <div class="three fields">

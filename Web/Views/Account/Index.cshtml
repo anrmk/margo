@@ -46,7 +46,7 @@
                 { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) },
                 {
                     'title': 'Action', 'data': 'profileId', 'className': 'collapsing', 'render': (data, type, row) => {
-                        return `<a href='@(editProfileUrl)?id=${data}' data-request='ajax' rel='dialog'><i class="id card icon"></i></a>`;
+                        return `<a href='@(editProfileUrl)?id=${data}' class='ui icon animated mini button' data-request='ajax' rel='dialog'><div class="hidden content">Card</div><div class="visible content"><i class="id card icon"></i></div></a>`;
                     }
                 }
             ],
