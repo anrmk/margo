@@ -58,7 +58,7 @@
                     <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                     <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
                     <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
-                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="@Field.TypeName" />
+                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="string" />
                 </div>
             }
         </div>

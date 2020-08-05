@@ -119,7 +119,7 @@ namespace Web.Controllers.Api {
                     { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                     { "Kind", kind }
                 };
-                html = _viewRenderService.RenderToStringAsync("_AddPersonUccountPartial", model, viewDataDictionary).Result;
+                html = _viewRenderService.RenderToStringAsync("_CreatePartial", model, viewDataDictionary).Result;
             } else {
                 var companies = await _companyBusinessManager.GetCompanies();
                 var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
@@ -128,7 +128,7 @@ namespace Web.Controllers.Api {
                     { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                     { "Kind", kind }
                 };
-                html = _viewRenderService.RenderToStringAsync("_AddBusinessUccountPartial", model, viewDataDictionary).Result;
+                html = _viewRenderService.RenderToStringAsync("_CreatePartial", model, viewDataDictionary).Result;
             }
             return Ok(html);
         }

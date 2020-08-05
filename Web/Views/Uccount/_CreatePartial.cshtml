@@ -3,23 +3,33 @@
     var formId = Guid.NewGuid();
 
     var persons = (List<SelectListItem>)ViewData["Persons"];
+    var companies = (List<SelectListItem>)ViewData["Companies"];
     var vendors = (List<SelectListItem>)ViewData["Vendors"];
     var categories = (List<SelectListItem>)ViewData["Categories"];
-    var uccountKind = (int)ViewData["Kind"];
+    var uccountKind = (Core.Data.Enums.UccountTypes)ViewData["Kind"];
 }
 
 <form id="@formId" class="ui form" asp-route="CreateUccount" method="post" data-request="ajax">
     <fieldset>
-        <input type="hidden" name="Kind" value="@uccountKind" />
+        <input type="hidden" name="Kind" value="@((int)uccountKind)" />
 
         <div class="field">
             <div class="two fields">
-                <div class="field required">
-                    <label asp-for="PersonId"></label>
-                    <select id="persons-select" class="ui fluid dropdown" required asp-for="PersonId" asp-items="@persons">
-                        <option value="" selected disabled hidden></option>
-                    </select>
-                </div>
+                @if (uccountKind == Core.Data.Enums.UccountTypes.BUSINESS) {
+                    <div class="field required">
+                        <label asp-for="CompanyId"></label>
+                        <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                } else {
+                    <div class="field required">
+                        <label asp-for="PersonId"></label>
+                        <select id="persons-select" class="ui fluid dropdown" required asp-for="PersonId" asp-items="@persons">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                }
 
                 <div class="field required">
                     <label asp-for="VendorId"></label>
