@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Data.Entities {
-  //  [Table(name: "ApplicationUsers")]
+    [Table(name: "AspNetUsers")]
     public class AspNetUserEntity: IdentityUser {
         [ForeignKey("Profile")]
         [Column("ProfileId")]

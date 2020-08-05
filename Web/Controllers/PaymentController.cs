@@ -10,6 +10,7 @@ using Core.Data.Enums;
 using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -41,8 +42,8 @@ namespace Web.Controllers.Api {
         private readonly IInvoiceBusinessManager _invoiceBusinessManager;
 
         public PaymentController(
-            IMapper mapper, 
-            IViewRenderService viewRenderService, 
+            IMapper mapper,
+            IViewRenderService viewRenderService,
             IPaymentBusinessManager paymentBusinessManager,
             IInvoiceBusinessManager invoiceBusinessManager) {
             _mapper = mapper;

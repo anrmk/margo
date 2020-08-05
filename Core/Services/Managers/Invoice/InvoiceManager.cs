@@ -21,7 +21,7 @@ namespace Core.Services.Managers {
         public async Task<InvoiceEntity> FindInclude(long id) {
             return await DbSet
                 .Include(x => x.Account)
-                    .ThenInclude(x=>x.Person)
+                    .ThenInclude(x => x.Person)
                 .Include(x => x.Account)
                     .ThenInclude(x => x.Company)
                 .Include(x => x.Services)

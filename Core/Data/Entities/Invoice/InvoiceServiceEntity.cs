@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
+    [Table(name: "InvoiceServices")]
     public class InvoiceServiceEntity: EntityBase<long> {
-
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; }

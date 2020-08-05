@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Data.Dto {
+﻿namespace Core.Data.Dto {
     public class InvoiceServiceDto {
         public long Id { get; set; }
         public decimal Amount { get; set; }

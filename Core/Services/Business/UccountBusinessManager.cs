@@ -7,7 +7,6 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Data.Enums;
 using Core.Extension;
 using Core.Services.Managers;
 
@@ -113,7 +112,7 @@ namespace Core.Services.Business {
         public async Task<UccountDto> UpdateUccount(long id, UccountDto dto) {
             var entity = await _uccountManager.FindInclude(id);
 
-            if (entity == null) {
+            if(entity == null) {
                 return null;
             }
 

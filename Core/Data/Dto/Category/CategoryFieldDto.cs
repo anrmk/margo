@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Data.Enums;
+﻿using Core.Data.Enums;
 
 namespace Core.Data.Dto {
     public class CategoryFieldDto {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
 using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
@@ -18,7 +19,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
-using Core.Data.Enums;
 
 namespace Web.Controllers.Mvc {
     [Authorize]

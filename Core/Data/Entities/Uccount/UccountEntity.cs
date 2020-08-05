@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using Core.Data.Enums;
 
 namespace Core.Data.Entities {

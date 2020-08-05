@@ -96,7 +96,7 @@ namespace Web {
             MapperConfig.Register(services);
 
             services.AddControllersWithViews();
-            
+
 
         }
 

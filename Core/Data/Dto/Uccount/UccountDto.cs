@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Core.Data.Enums;
 
 namespace Core.Data.Dto {

@@ -45,7 +45,7 @@ namespace Web.Controllers.Mvc {
         }
 
         public ActionResult Create() {
-            var model = new CompanyGeneralViewModel();
+            var model = new CompanyViewModel();
             return View(model);
         }
 

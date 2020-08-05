@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
-    [Table(name: "Services")]
+    [Table(name: "UccountServices")]
     public class UccountServiceEntity: EntityBase<long> {
         [ForeignKey("Account")]
         [Column("Account_Id")]

@@ -24,8 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\InvoiceController.cs" />
-    <Compile Remove="Controllers\PaymentController.cs" />
     <Compile Remove="ViewModels\Vendor\VendorSectionViewModel.cs" />
   </ItemGroup>
 

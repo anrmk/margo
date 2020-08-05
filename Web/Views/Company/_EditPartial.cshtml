@@ -22,27 +22,6 @@
         </div>
         <div class="three fields">
             <div class="field">
-                <label asp-for="Website"></label>
-                <input asp-for="Website" name="Website" placeholder="http://" data-value-type="string" />
-                <span asp-validation-for="Website"></span>
-            </div>
-            <div class="field">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" name="PhoneNumber" placeholder="xxx-xxx-xxxx" data-value-type="string" />
-                <span asp-validation-for="PhoneNumber"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" name="Email" placeholder=@("sample@mail.com") />
-                <span asp-validation-for="Email"></span>
-            </div>
-        </div>
-        <div class="four fields">
-            <div class="field">
-                <label asp-for="CEO"></label>
-                <input asp-for="CEO" name="CEO" data-value-type="string" />
-            </div>
-            <div class="field">
                 <label asp-for="EIN"></label>
                 <input asp-for="EIN" name="EIN" data-value-type="string" />
             </div>
@@ -59,39 +38,6 @@
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
             <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
-        </div>
-        <h4 class="ui dividing header">Address</h4>
-        <div class="six fields">
-            <div class="field">
-                <label asp-for="Address.Address"></label>
-                <input asp-for="Address.Address" name="Address[Address]" data-value-type="string" />
-                <span asp-validation-for="Address.Address"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.Address2"></label>
-                <input asp-for="Address.Address2" name="Address[Address2]" data-value-type="string" />
-                <span asp-validation-for="Address.Address2"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.City"></label>
-                <input asp-for="Address.City" name="Address[City]" data-value-type="string" />
-                <span asp-validation-for="Address.City"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.State"></label>
-                <input asp-for="Address.State" name="Address[State]" data-value-type="string" />
-                <span asp-validation-for="Address.State"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.ZipCode"></label>
-                <input asp-for="Address.ZipCode" name="Address[ZipCode]" data-value-type="string" />
-                <span asp-validation-for="Address.ZipCode"></span>
-            </div>
-            <div class="field">
-                <label asp-for="Address.Country"></label>
-                <input asp-for="Address.Country" name="Address[Country]" data-value-type="string" />
-                <span asp-validation-for="Address.Country"></span>
-            </div>
         </div>
     </fieldset>
 </form>

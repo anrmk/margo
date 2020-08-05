@@ -21,11 +21,6 @@ namespace Core.Services.Business {
         Task<bool> DeleteCompany(long id);
         Task<bool> DeleteCompany(long[] ids);
 
-        //  COMPANY ADDRESS
-        Task<CompanyAddressDto> GetAddress(long id);
-        Task<CompanyAddressDto> CreateAddress(CompanyAddressDto dto);
-        Task<CompanyAddressDto> UpdateAddress(long companyId, CompanyAddressDto dto);
-
         //  COMPANY SECTIONS
         Task<CompanySectionDto> GetSection(long id);
         Task<List<CompanySectionDto>> GetSections(long companyId);
@@ -45,14 +40,12 @@ namespace Core.Services.Business {
     public class CompanyBusinessManager: ICompanyBusinessManager {
         private readonly IMapper _mapper;
         private readonly ICompanyManager _companyManager;
-        private readonly ICompanyAddressManager _companyAddressManager;
         private readonly ICompanySectionManager _companySectionManager;
         private readonly ICompanySectionFieldManager _companySectionFieldManager;
 
         public CompanyBusinessManager(IMapper mapper,
            ISectionManager sectionManager,
            ICompanyManager companyManager,
-           ICompanyAddressManager companyAddressManager,
            ICompanySectionManager companySectionManager,
            ICompanySectionFieldManager companySectionFieldManager) {
             _mapper = mapper;
@@ -60,7 +53,6 @@ namespace Core.Services.Business {
             //_sectionManager = sectionManager;
 
             _companyManager = companyManager;
-            _companyAddressManager = companyAddressManager;
             _companySectionManager = companySectionManager;
             _companySectionFieldManager = companySectionFieldManager;
         }
@@ -78,9 +70,9 @@ namespace Core.Services.Business {
                    (true)
                    && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
 
-            string[] include = new string[] { "Address" };
+            string[] include = new string[] {  };
 
-            var tuple = await _companyManager.Pager<CompanyEntity>(where, sortby, filter.Start, filter.Length, include);
+            var tuple = await _companyManager.Pager<CompanyEntity>(where, sortby, filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
@@ -125,41 +117,6 @@ namespace Core.Services.Business {
 
             int result = await _companyManager.Delete(entities);
             return result != 0;
-        }
-        #endregion
-
-        #region COMPANY ADRESS
-        public async Task<CompanyAddressDto> GetAddress(long id) {
-            var result = await _companyAddressManager.Find(id);
-            return _mapper.Map<CompanyAddressDto>(result);
-        }
-
-        public async Task<CompanyAddressDto> CreateAddress(CompanyAddressDto dto) {
-            var settings = await _companyAddressManager.Find(dto.Id);
-            if(settings == null) {
-                return null;
-            }
-
-            var newEntity = _mapper.Map<CompanyAddressEntity>(dto);
-            var entity = await _companyAddressManager.Create(newEntity);
-            return _mapper.Map<CompanyAddressDto>(entity);
-        }
-
-        public async Task<CompanyAddressDto> UpdateAddress(long companyId, CompanyAddressDto dto) {
-            var entity = await _companyAddressManager.Find(dto.Id);
-
-            if(entity == null) {
-                entity = await _companyAddressManager.Create(_mapper.Map<CompanyAddressEntity>(dto));
-
-                var company = await _companyManager.Find(companyId);
-                company.AddressId = entity.Id;
-                await _companyManager.Update(company);
-            } else {
-                var updateEntity = _mapper.Map(dto, entity);
-                entity = await _companyAddressManager.Update(updateEntity);
-            }
-
-            return _mapper.Map<CompanyAddressDto>(entity);
         }
         #endregion
 

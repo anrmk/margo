@@ -1,4 +1,7 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -6,8 +9,7 @@ using Core.Data.Dto.Nsi;
 using Core.Extension;
 
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+
 using Web.ViewModels;
 
 namespace Web {
@@ -25,7 +27,7 @@ namespace Web {
             CreateMap<PagerFilterViewModel, PagerFilter>();
 
             CreateMap<AspNetUserViewModel, AspNetUserDto>()
-                .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => new AspNetRoleDto() { Id = x})))
+                .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => new AspNetRoleDto() { Id = x })))
                 .ReverseMap()
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Id)));
             CreateMap<AppNetUserListViewModel, AspNetUserDto>().ReverseMap()
@@ -38,10 +40,6 @@ namespace Web {
 
             #region COMPANY
             CreateMap<CompanyViewModel, CompanyDto>().ReverseMap();
-            CreateMap<CompanyViewModel, CompanyGeneralViewModel>().ReverseMap();
-
-            CreateMap<CompanyGeneralViewModel, CompanyGeneralDto>().ReverseMap();
-            CreateMap<CompanyAddressViewModel, CompanyAddressDto>().ReverseMap();
 
             CreateMap<CompanyListViewModel, CompanyDto>().ReverseMap();
 

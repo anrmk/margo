@@ -22,7 +22,7 @@ namespace Web.ViewModels {
         public PaymentMethodEnum Method { get; set; }
 
         [Display(Name = "Payment method")]
-        public string MethodName => 
+        public string MethodName =>
             Method.GetAttribute<DisplayAttribute>().Name;
 
         [Display(Name = "Memo")]

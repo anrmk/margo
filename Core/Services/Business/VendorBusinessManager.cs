@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -60,7 +61,7 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Length, filter.Start);
+                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 

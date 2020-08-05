@@ -34,10 +34,10 @@ namespace Core.Services.Managers {
         }
 
         public async Task<List<CategoryEntity>> FindAll(long[] ids) {
-                return await DbSet
-                .Include(x => x.Fields)
-                .Where(x => ids.Contains(x.Id))
-                .ToListAsync();
+            return await DbSet
+            .Include(x => x.Fields)
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 using Core.Data.Enums;
 using Core.Extension;
 

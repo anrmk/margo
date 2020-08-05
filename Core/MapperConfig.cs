@@ -1,5 +1,6 @@
 ﻿
 using System;
+
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -22,8 +23,7 @@ namespace Core {
             CreateMap<CompanyDto, CompanyEntity>()
                 .ReverseMap()
               ;
-            CreateMap<CompanyGeneralDto, CompanyEntity>().ReverseMap();
-            CreateMap<CompanyAddressDto, CompanyAddressEntity>().ReverseMap();
+
             CreateMap<CompanySectionDto, CompanySectionEntity>()
                 .ForMember(d => d.Company, o => o.Ignore())
                 .ForMember(d => d.Section, o => o.Ignore())

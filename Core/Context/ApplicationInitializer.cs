@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading;
 using Core.Data.Entities;
 using Core.Data.Enums;
 
@@ -20,28 +20,29 @@ namespace Core.Context {
             _serviceProvider = serviceProvider;
 
             RoleManager();
+            Thread.Sleep(2000);
             ApplicationUser();
-
+            Thread.Sleep(2000);
             Initialize();
 
-            string rootPath = System.IO.Directory.GetCurrentDirectory();
+            //string rootPath = System.IO.Directory.GetCurrentDirectory();
         }
 
         private void RoleManager() {
             var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            
+
             if(!roleManager.RoleExistsAsync("Administrator").Result) {
                 roleManager.CreateAsync(new IdentityRole() {
                     Name = "Administrator",
                     NormalizedName = "ADMINISTRATOR"
-                });
+                }).Wait(1000);
             }
 
             if(!roleManager.RoleExistsAsync("User").Result) {
                 roleManager.CreateAsync(new IdentityRole() {
                     Name = "User",
                     NormalizedName = "USER"
-                });
+                }).Wait(1000);
             }
         }
 
@@ -53,12 +54,16 @@ namespace Core.Context {
                     UserName = "test@test.com",
                     NormalizedUserName = "ADMINISTRATOR",
                     Email = "test@test.com",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Profile = new AspNetUserProfileEntity() {
+                        Name = "Team",
+                        SurName = "Fu"
+                    }
                 };
 
                 var result = userManager.CreateAsync(user, "123qweAS1!").Result;
                 if(result.Succeeded) {
-                    userManager.AddToRoleAsync(user, "Administrator").Wait();
+                    userManager.AddToRoleAsync(user, "Administrator").Wait(1000);
                 }
             }
 
@@ -67,12 +72,16 @@ namespace Core.Context {
                     UserName = "user@user.com",
                     NormalizedUserName = "USER",
                     Email = "user@user.com",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Profile = new AspNetUserProfileEntity() {
+                        Name = "Matt",
+                        SurName = "Giampietro"
+                    }
                 };
 
-                var result = userManager.CreateAsync(user, "123qweAS1!").Result;
+                var result = userManager.CreateAsync(user, "!q2w3e4r").Result;
                 if(result.Succeeded) {
-                    userManager.AddToRoleAsync(user, "User").Wait();
+                    userManager.AddToRoleAsync(user, "User").Wait(1000);
                 }
             }
         }
@@ -134,23 +143,23 @@ namespace Core.Context {
                 _context.SaveChanges();
             }
 
-            var vendors = _context.Vendors.ToList();
-            if(vendors.Count == 0) {
-                var newVendors = new List<VendorEntity>() {
-                    new VendorEntity() { No="045554823",  Name = "T Roberts Fabrics INC" },
-                    new VendorEntity() { No="622824209",  Name = "Water Purification Consultants", Fields = new List<VendorFieldEntity>() {
-                        new VendorFieldEntity() {IsRequired = true, Name = "Field 1", Type = FieldEnum.TEXT },
-                        new VendorFieldEntity() {IsRequired = true, Name = "Field 2", Type = FieldEnum.NUMBER },
-                        new VendorFieldEntity() {IsRequired = true, Name = "Field 3", Type = FieldEnum.DATE },
-                        new VendorFieldEntity() {IsRequired = false, Name = "Field 1", Type = FieldEnum.TEXT },
-                        }
-                    },
-                    new VendorEntity() { No="Not Specified",  Name = "Springs Enterprises LLC" },
+            //var vendors = _context.Vendors.ToList();
+            //if(vendors.Count == 0) {
+            //    var newVendors = new List<VendorEntity>() {
+            //        new VendorEntity() { No="045554823",  Name = "T Roberts Fabrics INC" },
+            //        new VendorEntity() { No="622824209",  Name = "Water Purification Consultants", Fields = new List<VendorFieldEntity>() {
+            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 1", Type = FieldEnum.TEXT },
+            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 2", Type = FieldEnum.NUMBER },
+            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 3", Type = FieldEnum.DATE },
+            //            new VendorFieldEntity() {IsRequired = false, Name = "Field 1", Type = FieldEnum.TEXT },
+            //            }
+            //        },
+            //        new VendorEntity() { No="Not Specified",  Name = "Springs Enterprises LLC" },
 
-                };
-                _context.Vendors.AddRange(newVendors);
-                _context.SaveChanges();
-            }
+            //    };
+            //    _context.Vendors.AddRange(newVendors);
+            //    _context.SaveChanges();
+            //}
         }
     }
 }

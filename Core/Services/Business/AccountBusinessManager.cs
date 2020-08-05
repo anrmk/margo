@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Business {
-    public interface IAccountBusinessService {
+    public interface IAccountBusinessManager {
         Task<AspNetUserDto> GetUser(string id);
         Task<Pager<AspNetUserDto>> GetUserPage(PagerFilter filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
@@ -43,7 +43,7 @@ namespace Core.Services.Business {
         Task<LogDto> GetLog(long id);
     }
 
-    public class AccountBusinessService: BaseBusinessManager, IAccountBusinessService {
+    public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
         private readonly IMapper _mapper;
         private readonly UserManager<AspNetUserEntity> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -52,7 +52,7 @@ namespace Core.Services.Business {
         private readonly IUserProfileManager _userProfileManager;
         private readonly ILogManager _logManager;
 
-        public AccountBusinessService(IMapper mapper,
+        public AccountBusinessManager(IMapper mapper,
             UserManager<AspNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<AspNetUserEntity> signInManager,
@@ -263,6 +263,6 @@ namespace Core.Services.Business {
             await _signInManager.SignOutAsync();
         }
 
-        
+
     }
 }

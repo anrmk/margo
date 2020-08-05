@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using AutoMapper.Configuration.Annotations;
-
 namespace Core.Data.Dto {
     public class AspNetUserDto {
         public string Id { get; set; }

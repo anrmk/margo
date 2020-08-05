@@ -31,12 +31,11 @@ namespace Core.Context {
         //public DbSet<LogEntity> Logs { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
-        public DbSet<CompanyAddressEntity> CompanyAddresses { get; set; }
         public DbSet<CompanySectionEntity> CompanySections { get; set; }
         public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 
-        public DbSet<SectionEntity> Sections { get; set; }
-        public DbSet<SectionFieldEntity> SectionFields { get; set; }
+        //public DbSet<SectionEntity> Sections { get; set; }
+        //public DbSet<SectionFieldEntity> SectionFields { get; set; }
 
         public DbSet<VendorEntity> Vendors { get; set; }
         //public DbSet<VendorSectionEntity> VendorSections { get; set; }

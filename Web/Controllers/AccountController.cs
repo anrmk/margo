@@ -18,16 +18,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-using Web.Filters;
+
 using Web.Models.AccountViewModel;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     public class AccountController: BaseController<AccountController> {
-        private readonly IAccountBusinessService _accountBusinessService;
+        private readonly IAccountBusinessManager _accountBusinessService;
 
         public AccountController(ILogger<AccountController> logger, IMapper mapper,
-         IAccountBusinessService accountBusinessService) : base(logger, mapper) {
+         IAccountBusinessManager accountBusinessService) : base(logger, mapper) {
             _accountBusinessService = accountBusinessService;
         }
 
@@ -148,15 +148,15 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
         private readonly ISectionBusinessManager _crudBusinessManager;
-        private readonly IAccountBusinessService _accountBusinessService;
+        private readonly IAccountBusinessManager _accountBusinessService;
 
         public AccountController(IMapper mapper, IViewRenderService viewRenderService,
-            ISectionBusinessManager businessManager, IAccountBusinessService accountBusinessService) {
+            ISectionBusinessManager businessManager, IAccountBusinessManager accountBusinessService) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _crudBusinessManager = businessManager;
@@ -243,7 +243,7 @@ namespace Web.Controllers.Api {
                 return NotFound();
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-            //    { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
+                //    { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
             };
 
             var html = await _viewRenderService.RenderToStringAsync("_EditProfilePartial", _mapper.Map<AspNetUserProfileViewModel>(item), viewData);
@@ -260,7 +260,7 @@ namespace Web.Controllers.Api {
             }
             return BadRequest();
         }
-        
+
         [HttpGet]
         [Route("activity")]
         public async Task<Pager<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {

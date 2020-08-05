@@ -19,7 +19,17 @@
                 'url': this.options.controller.list,
                 'contentType': 'application/json; charset=utf-8',
                 'data': (d) => {
-                    return d;// $.extend({}, d, this.filter.serializeJSON());
+                    var options = {
+                        'draw': d.draw,
+                        'start': d.start,
+                        'length': d.length,
+                        'search': {
+                            'value': d.search.value
+                        },
+                    }
+
+                    return options;
+                    // return d; $.extend({}, d, this.filter.serializeJSON());
                 }
             },
             'columns': this.options.columns,

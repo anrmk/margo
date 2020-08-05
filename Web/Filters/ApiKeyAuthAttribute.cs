@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,7 @@ namespace Web.Filters {
     public class ApiKeyAuthAttribute: Attribute, IAsyncActionFilter {
         private const string ApiKeyHeaderName = "ApiKey";
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next) {
-            
+
             if(!context.HttpContext.Request.Headers.TryGetValue(ApiKeyHeaderName, out var potentialApiKey)) {
                 context.Result = new UnauthorizedResult();
                 return;

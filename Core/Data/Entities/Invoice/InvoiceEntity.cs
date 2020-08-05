@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace Core.Data.Entities {
     [Table(name: "Invoices")]
@@ -36,28 +35,5 @@ namespace Core.Data.Entities {
         public virtual ICollection<PaymentEntity> Payments { get; set; }
 
         public virtual ICollection<InvoiceServiceEntity> Services { get; set; }
-
-
-        //[NotMapped]
-        //public DateTime? PaymentDate {
-        //    get {
-        //        if(Payments != null && Payments.Count > 0) {
-        //            var result = Payments.OrderByDescending(x => x.Date).FirstOrDefault();
-        //            return result?.Date;
-        //        }
-        //        return (DateTime?)null;
-        //    }
-        //}
-
-        //[NotMapped]
-        //public decimal? PaymentAmount {
-        //    get {
-        //        if(Payments != null && Payments.Count > 0) {
-        //            var result = Payments.Sum(x => x.Amount);
-        //            return result;
-        //        }
-        //        return (decimal?)null;
-        //    }
-        //}
     }
 }

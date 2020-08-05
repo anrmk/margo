@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Data.Enums;
 using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
@@ -55,11 +54,7 @@ namespace Web.Controllers.Api {
         [HttpGet("GetInvoices", Name = "GetInvoices")]
         public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] PagerFilterViewModel model) {
             var result = await _invoiceBusinessManager.GetInvoicePager(_mapper.Map<PagerFilter>(model));
-            return new Pager<InvoiceListViewModel>(
-                _mapper.Map<List<InvoiceListViewModel>>(result.Data),
-                result.RecordsTotal,
-                result.Start,
-                result.PageSize);
+            return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 
         [HttpGet("DetailsInvoice", Name = "DetailsInvoice")]
@@ -116,16 +111,12 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var viewData = new ViewDataDictionary(
-                new EmptyModelMetadataProvider(),
-                new ModelStateDictionary()) {
-            {
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {{
                 "AccountName",
                 item.Account.Name
             }};
 
-            var html = await _viewRenderService.RenderToStringAsync(
-                "_EditPartial", _mapper.Map<InvoiceViewModel>(item), viewData);
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<InvoiceViewModel>(item), viewData);
             return Ok(html);
         }
 

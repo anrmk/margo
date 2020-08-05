@@ -48,6 +48,9 @@
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'No ', 'data': 'no', 'className': 'collapsing', 'orderable': true },
                 { 'title': 'Name', 'data': 'name' },
+                { 'title': 'EIN', 'data': 'ein' },
+                { 'title': 'DB', 'data': 'db' },
+                { 'title': 'Founded', 'className': 'collapsing', 'data': 'founded', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
             ],
             'onRowClick': (e, data) => {

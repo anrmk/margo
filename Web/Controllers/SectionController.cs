@@ -120,7 +120,7 @@ namespace Web.Controllers.Api {
 
         [HttpGet("GetFieldTypes", Name = "GetFieldTypes")]
         public IActionResult GetFieldTypes() {
-            var cast = Enum.GetValues(typeof(FieldEnum)).Cast<FieldEnum>().Select(x => new { Name = Enum.GetName(typeof(FieldEnum), x), Id =  x, Title =  x.GetAttribute<DisplayAttribute>().Name}).ToList();
+            var cast = Enum.GetValues(typeof(FieldEnum)).Cast<FieldEnum>().Select(x => new { Name = Enum.GetName(typeof(FieldEnum), x), Id = x, Title = x.GetAttribute<DisplayAttribute>().Name }).ToList();
             return Ok(cast);
         }
 

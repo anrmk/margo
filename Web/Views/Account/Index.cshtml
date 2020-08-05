@@ -40,7 +40,7 @@
                         return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}' ${row.isLocked ? 'checked' : ''} ><label></label></div>`;
                     }
                 },
-                { 'title': 'User name', 'className': 'collapsing', 'data': 'userName' },
+                { 'title': 'User name', 'className': 'collapsing', 'data': 'userName', 'orderable': true },
                 { 'title': 'Phone number', 'data': 'phoneNumber' },
                 { 'title': 'Email', 'data': 'email' },
                 { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) },

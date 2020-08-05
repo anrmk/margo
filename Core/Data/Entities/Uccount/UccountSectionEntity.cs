@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
+    [Table(name: "UccountSections")]
     public class UccountSectionEntity: EntityBase<long> {
         public int Sort { get; set; }
 

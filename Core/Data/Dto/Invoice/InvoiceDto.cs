@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Core.Data.Entities;
 
 namespace Core.Data.Dto {
     public class InvoiceDto {
