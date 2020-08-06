@@ -5,13 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.ViewModels {
     public class InvoiceFilterViewModel: PagerFilterViewModel {
-        [Display(Name = "Company")]
-        public long? CompanyId { get; set; }
 
+        [FromQuery(Name = "customer")]
+        [Display(Name = "Customer")]
+        public string Customer { get; set; }
+
+        public long? CustomerId =>
+            long.TryParse(Customer, out var customerId) ? customerId : (long?)null;
+
+        [FromQuery(Name = "isPerson")]
+        public bool IsPerson { get; set; }
+
+        [FromQuery(Name = "vendor")]
         [Display(Name = "Vendor")]
         public long? VendorId { get; set; }
 
-        [Display(Name = "Date")]
         [DataType(DataType.Date)]
         public DateTime? Date { get; set; }
 

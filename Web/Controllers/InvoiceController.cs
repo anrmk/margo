@@ -22,10 +22,43 @@ using Web.ViewModels;
 namespace Web.Controllers.Mvc {
     [Authorize]
     public class InvoiceController: BaseController<InvoiceController> {
-        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper)
-            : base(logger, mapper) { }
+        private readonly IPersonBusinessManager _personBusinessManager;
+        private readonly ICompanyBusinessManager _companyBusinessManager;
+        private readonly IVendorBusinessManager _vendorsBusinessManager;
 
-        public IActionResult Index() {
+        public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper,
+            IPersonBusinessManager personBusinessManager,
+            ICompanyBusinessManager companyBusinessManager,
+            IVendorBusinessManager vendorsBusinessManager)
+            : base(logger, mapper) {
+            _personBusinessManager = personBusinessManager;
+            _companyBusinessManager = companyBusinessManager;
+            _vendorsBusinessManager = vendorsBusinessManager;
+        }
+
+        public async Task<IActionResult> Index() {
+            var persons = await _personBusinessManager.GetPersons();
+            var companies = await _companyBusinessManager.GetCompanies();
+
+            var personsUnified = persons.Select(x => (
+                x.Id, x.FullName, "person"));
+            var companiesUnified = companies.Select(x => (
+                x.Id, x.Name, "company"));
+
+            ViewBag.CompaniesAndPersons = personsUnified
+                .Union(companiesUnified)
+                .Select(x => new SelectListItem {
+                    Text = x.Item2,
+                    Value = $"{x.Item3}_{x.Item1}"
+                });
+
+            var vendors = await _vendorsBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors
+                .Select(x => new SelectListItem {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                });
+
             return View();
         }
     }
@@ -52,8 +85,8 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetInvoices", Name = "GetInvoices")]
-        public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] PagerFilterViewModel model) {
-            var result = await _invoiceBusinessManager.GetInvoicePager(_mapper.Map<PagerFilter>(model));
+        public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
+            var result = await _invoiceBusinessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
             return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 

@@ -11,37 +11,34 @@
 }
 
 @section RightSidebar {
-    <div id="@(tableId)_detail"></div>
-}
+    <form id="table-filter" class="ui form">
+        <h1>Filters</h1>
+        <input id="@(tableId)_is_person" type="hidden" name="isPerson" data-value-type="boolean" />
+        <input id="@(tableId)_customer_id" type="hidden" name="customer" data-value-type="string" />
 
-@*For filtering feature*@
-<!--<form id="filterForm">
-    <fieldset>
-        <div class="form-group row mb-3">
-            <div class="col">
-                <label asp-for="CompanyId" class="control-label"></label>
-                <select asp-for="CompanyId" asp-items="@ViewBag.Companies" class="form-control selectpicker" data-style="btn btn-link">
-                    <option>Select Company</option>
-                </select>
-            </div>
-            <div class="col">
-                <label asp-for="VendorId"></label>
-                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="form-control selectpicker" data-style="btn btn-link">
-                    <option>Select Vendor</option>
-                </select>
-            </div>
-            <div class="col">
-                <label asp-for="Unpaid"></label>
-                <div class="togglebutton">
-                    <label>
-                        <input type="checkbox" @@(Model.Unpaid ? "checked" : "") name="Unpaid:boolean" id="Unpaid" data-val="true" data-value-type="boolean" />
-                        <span class="toggle"></span> Unpaid Status
-                    </label>
-                </div>
+        <div class="field">
+            <label>Unpaid</label>
+        </div>
+        <div class="field">
+            <div class="ui slider checkbox">
+                <input id="@(tableId)_unpaid-checkbox" name="unpaid" type="checkbox" data-value-type="boolean" />
+                <label />
             </div>
         </div>
-    </fieldset>
-</form>-->
+        <div class="field">
+            <label>Vendor</label>
+            <select id="@(tableId)_vendors-select" name="vendor" asp-items="@ViewBag.Vendors" class="ui fluid dropdown">
+                <option value="" selected disabled hidden>Select vendor</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Customer</label>
+            <select id="@(tableId)_companies-persons-select" asp-items="@ViewBag.CompaniesAndPersons" class="ui fluid dropdown">
+                <option value="" selected disabled hidden>Select customer</option>
+            </select>
+        </div>
+    </form>
+}
 
 <div>
     <div id="toolbar" class="ui secondary menu">
@@ -56,50 +53,67 @@
 
 @section Scripts {
     <script type="text/javascript">
-    $(document).ready(function () {
-        window.DocumentController = new DocumentController({
-            'table': '#@tableId',
-            'controller': {
-                'list': '@listUrl',
-                'delete': '@deleteUrl'
-            },
-            'columns': [
-                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                { 'title': 'No ', 'className': 'collapsing', 'data': 'no' },
-                { 'title': 'Customer name', 'data': 'customerName' },
-                { 'title': 'Date', 'className': 'collapsing', 'data': 'date', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                { 'title': 'Due date', 'className': 'collapsing', 'data': 'dueDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                { 'title': 'Amount', 'className': 'collapsing', 'data': 'amount' },
-                { 'title': 'Balance', 'className': 'collapsing', 'data': 'balanceAmount' },
-                { 'title': 'Status', 'className': 'collapsing', 'data': 'status' },
-                { 'title': 'Payment date', 'className': 'collapsing', 'data': 'paymentDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
-            ],
-            'onRowClick': (e, data) => {
-                $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_detail').html(result);
-                });
-            },
-            'onDblRowClick': (e, data) => {
-                 $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog();
-                });
-            }
+        $(document).ready(function () {
+            window.DocumentController = new DocumentController({
+                'table': '#@tableId',
+                'controller': {
+                    'list': '@listUrl',
+                    'delete': '@deleteUrl'
+                },
+                'columns': [
+                    { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                    { 'title': 'No ', 'className': 'collapsing', 'data': 'no' },
+                    { 'title': 'Customer name', 'data': 'customerName' },
+                    { 'title': 'Date', 'className': 'collapsing', 'data': 'date', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Due date', 'className': 'collapsing', 'data': 'dueDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Amount', 'className': 'collapsing', 'data': 'amount' },
+                    { 'title': 'Balance', 'className': 'collapsing', 'data': 'balanceAmount' },
+                    { 'title': 'Status', 'className': 'collapsing', 'data': 'status' },
+                    { 'title': 'Payment date', 'className': 'collapsing', 'data': 'paymentDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+                ],
+                'onDblRowClick': (e, data) => {
+                    $.get('@editUrl', { 'id': data.id }).done(result => {
+                        $(result).dialog();
+                    });
+                }
+            });
+
+            $('#@(tableId)_companies-persons-select').on('change', function () {
+                let valueData = $(this).find(':selected').val().split('_');
+
+                $('#@(tableId)_customer_id').val(valueData[1]);
+
+                switch (valueData[0]) {
+                    case "person":
+                        $('#@(tableId)_is_person').val(true);
+                        break;
+                    case "company":
+                        $('#@(tableId)_is_person').val(false);
+                        break;
+                }
+                window.DocumentController.reload(false);
+            });
+            $('#@(tableId)_vendors-select').on('change', function () {
+                window.DocumentController.reload(false);
+            });
+            $('#@(tableId)_unpaid-checkbox').on('change', function () {
+                window.DocumentController.reload(false);
+            });
         });
-    });
 
-    ajaxSubmitComplete = function (e, jqXHR, status) {
-        if (status === 'success') {
-            window.DocumentController.reload(false);
-            window.dialog.modal('hide');
-        }
-    };
+        ajaxSubmitComplete = function (e, jqXHR, status) {
+            if (status === 'success') {
+                window.DocumentController.reload(false);
+                window.dialog.modal('hide');
+            }
+        };
 
-    ajaxClick = function (e, jqXHR, status) {
-        if (status === 'success') {
-            var target = $(e.target).attr('data-target');
-            $(target).remove();
-        }
-    };
+        ajaxClick = function (e, jqXHR, status) {
+            if (status === 'success') {
+                var target = $(e.target).attr('data-target');
+                $(target).remove();
+            }
+        };
     </script>
 }

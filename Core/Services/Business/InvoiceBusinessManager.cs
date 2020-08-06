@@ -15,7 +15,7 @@ namespace Core.Services.Business {
         Task<InvoiceDto> GetInvoice(long id);
         Task<List<InvoiceDto>> GetInvoices();
         Task<List<InvoiceDto>> GetUnpaidInvoices();
-        Task<Pager<InvoiceDto>> GetInvoicePager(PagerFilter filter);
+        Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
         Task<bool> DeleteInvoices(long[] ids);
@@ -45,12 +45,17 @@ namespace Core.Services.Business {
             return _mapper.Map<List<InvoiceDto>>(entity);
         }
 
-        public async Task<Pager<InvoiceDto>> GetInvoicePager(PagerFilter filter) {
+        public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
             var sortby = "Id";
 
-            string[] include = new string[] { "Account", "Account.Person", "Account.Company" };
+            string[] include = new string[] { "Account", "Account.Person", "Account.Company", "Payments" };
 
-            var (list, count) = await _invoiceManager.Pager<InvoiceEntity>(x => true, sortby, filter.Start, filter.Length, include);
+            var (list, count) = await _invoiceManager.Pager<InvoiceEntity>(
+                x => (!filter.CompanyId.HasValue || x.Account.CompanyId == filter.CompanyId)
+                    && (!filter.PersonId.HasValue || x.Account.PersonId == filter.PersonId)
+                    && (!filter.VendorId.HasValue || x.Account.VendorId == filter.VendorId)
+                    && (!filter.Unpaid || (x.Amount > 0 && !x.Payments.Any()) || (x.Amount - x.Payments.Sum(x => x.Amount) > 0)),
+                sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
                 return new Pager<InvoiceDto>(new List<InvoiceDto>(), 0, filter.Start, filter.Length);

@@ -1,6 +1,6 @@
 ﻿
 using System;
-
+using System.Linq;
 using AutoMapper;
 
 using Core.Data.Dto;
@@ -42,7 +42,9 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Account.Company != null
                     ? s.Account.Company.Name
-                    : $"{s.Account.Person.SurName} {s.Account.Person.MiddleName} {s.Account.Person.Name}"));
+                    : $"{s.Account.Person.SurName} {s.Account.Person.MiddleName} {s.Account.Person.Name}"))
+                .ForMember(d => d.PaymentAmount, o => o.MapFrom(s => s.Payments.Sum(p => p.Amount)))
+                .ForMember(d => d.PaymentDate, o => o.MapFrom(s => s.Payments.Any() ? s.Payments.Max(p => p.Date) : (DateTime?)null));
             CreateMap<InvoiceServiceDto, InvoiceServiceEntity>().ReverseMap();
             #endregion
 

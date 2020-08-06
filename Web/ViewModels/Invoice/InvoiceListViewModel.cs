@@ -45,7 +45,7 @@ namespace Web.ViewModels {
         public string Status =>
              BalanceAmountDecimal switch
              {
-                 var balance when balance == AmountDecimal =>
+                 var balance when balance > 0 && balance == AmountDecimal =>
                      PayStatusEnum.Unpaid.GetAttribute<DisplayAttribute>().Name,
                  var balance when balance > 0 =>
                      PayStatusEnum.PartiallyPaid.GetAttribute<DisplayAttribute>().Name,

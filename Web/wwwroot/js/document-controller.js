@@ -25,11 +25,10 @@
                         'length': d.length,
                         'search': {
                             'value': d.search.value
-                        },
+                        }
                     }
 
-                    return options;
-                    // return d; $.extend({}, d, this.filter.serializeJSON());
+                    return $.extend({}, options, this.filter.serializeJSON());
                 }
             },
             'columns': this.options.columns,

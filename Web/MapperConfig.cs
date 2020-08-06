@@ -73,7 +73,9 @@ namespace Web {
                .ForMember(d => d.BalanceAmountDecimal, o => o.MapFrom(s => s.Amount - (s.PaymentAmount ?? default)))
                .ForMember(d => d.BalanceAmount, o => o.MapFrom(s => (s.Amount - (s.PaymentAmount ?? default)).ToCurrency()));
             CreateMap<InvoiceViewModel, InvoiceDto>().ReverseMap();
-            CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>().ReverseMap();
+            CreateMap<InvoiceFilterViewModel, InvoiceFilterDto>()
+                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.IsPerson ? null : s.CustomerId))
+                .ForMember(d => d.PersonId, o => o.MapFrom(s => s.IsPerson ? s.CustomerId : null));
             CreateMap<InvoiceServiceViewModel, InvoiceServiceDto>().ReverseMap();
             #endregion
 
