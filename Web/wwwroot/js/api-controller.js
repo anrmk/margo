@@ -35,8 +35,8 @@ $.fn.ajaxSubmit = function (opt = {}) {
 $.fn.ajaxClick = function (opt = {}) {
     this.on('click', (e) => {
         e.preventDefault();
-        var $link = $(e.currentTarget);
-        var options = $.extend({
+        let $link = $(e.currentTarget);
+        let options = $.extend({
             'url': $link.attr('href'),
             'complete': (jqXHR, status) => {
                 $link.trigger('ajaxClick', [jqXHR, status]);
@@ -45,10 +45,11 @@ $.fn.ajaxClick = function (opt = {}) {
         $.ajax(options);
     }).on('ajaxClick', (e, jqXHR, status) => {
         e.preventDefault();
-        var func = $(e.currentTarget).attr('rel') || 'ajaxClick';
+        let $target = $(e.currentTarget);
+        let func = $target.attr('rel') || 'ajaxClick';
         if (func === 'dialog') {
             if (status === 'success') {
-                $(`<div>${jqXHR.responseText}</div>`).dialog();
+                $(`<div>${jqXHR.responseText}</div>`).dialog($target.data());
             }
         } else if (typeof window[func] === 'function') {
             window[func](e, jqXHR, status);
@@ -63,7 +64,7 @@ $.fn.dialog = function (opt) {
 
     if (!window.dialog) {
         var $mc = $(`<div class="ui large modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
-            `<div class="scrolling content">${options.content.html()}</div>` +
+            `<div class="content">${options.content.html()}</div>` +
             `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green submit">OK</button></div>` +
             `</div>`);
 

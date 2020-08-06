@@ -14,27 +14,12 @@
 }
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <div id="account-type-dropdown" class="ui floating dropdown labeled icon button">
-            <i class="plus icon"></i>
-            <span class="text">Create</span>
-            <div class="menu">
-                <div class="header">
-                    Account Types
-                </div>
-                <div id="account-types-menu" class="scrolling menu">
-                     <div class="item" data-value="0">
-                        <a class="a--style-none" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog">
-                            Bussines
-                        </a>
-                    </div>
-                    <div class="item" data-value="1">
-                        <a class="a--style-none" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog">
-                            Person
-                        </a>
-                     </div>
-                </div>
-            </div>
+        <div class="ui buttons">
+            <a class="ui button" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog" data-title="Create business account">Bussines</a>
+            <div class="or"></div>
+            <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Person</a>
         </div>
+
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
@@ -81,6 +66,7 @@
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
+                { 'title': 'Vendor', 'className': 'collapsing', 'data': 'vendorName' },
                 { 'title': 'Name', 'data': 'name' },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }

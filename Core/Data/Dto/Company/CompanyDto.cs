@@ -4,7 +4,6 @@ namespace Core.Data.Dto {
     public class CompanyDto {
         public long Id { get; set; }
 
-        public string No { get; set; }
         public string Name { get; set; }
        
         public DateTime? Founded { get; set; }

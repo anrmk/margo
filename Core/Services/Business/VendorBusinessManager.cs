@@ -51,7 +51,6 @@ namespace Core.Services.Business {
                    (true)
                 && (string.IsNullOrEmpty(filter.Search)
                     || x.Name.ToLower().Contains(filter.Search.ToLower())
-                    || x.No.ToLower().Contains(filter.Search.ToLower())
                     || x.Description.ToLower().Contains(filter.Search.ToLower()));
 
             string[] include = new string[] { "Fields" };

@@ -6,7 +6,6 @@ namespace Web.ViewModels {
 
         public string IsStarred { get; set; }
 
-        public string No { get; set; }
         public string Name { get; set; }
 
         public DateTime? Founded { get; set; }

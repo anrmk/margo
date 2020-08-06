@@ -46,10 +46,10 @@ namespace Web.ViewModels {
              BalanceAmountDecimal switch
              {
                  var balance when balance > 0 && balance == AmountDecimal =>
-                     PayStatusEnum.Unpaid.GetAttribute<DisplayAttribute>().Name,
+                     PayStatusEnum.UNPAID.GetAttribute<DisplayAttribute>().Name,
                  var balance when balance > 0 =>
-                     PayStatusEnum.PartiallyPaid.GetAttribute<DisplayAttribute>().Name,
-                 _ => PayStatusEnum.Paid.GetAttribute<DisplayAttribute>().Name
+                     PayStatusEnum.PARTIALLY.GetAttribute<DisplayAttribute>().Name,
+                 _ => PayStatusEnum.PAID.GetAttribute<DisplayAttribute>().Name
              };
 
         public bool IsDraft { get; set; }

@@ -64,11 +64,15 @@ namespace Core.Services.Business {
         }
 
         public async Task<Pager<CompanyDto>> GetCompanyPage(PagerFilter filter) {
-            var sortby = "Name";
+            var sortby = "Id";
 
             Expression<Func<CompanyEntity, bool>> where = x =>
                    (true)
-                   && (string.IsNullOrEmpty(filter.Search) || (x.No.ToLower().Contains(filter.Search.ToLower()) || x.Name.ToLower().Contains(filter.Search.ToLower())));
+                   && (string.IsNullOrEmpty(filter.Search) 
+                        || (x.Name.ToLower().Contains(filter.Search.ToLower())
+                        || x.EIN.ToLower().Contains(filter.Search.ToLower())
+                        || x.DB.ToLower().Contains(filter.Search.ToLower())
+                        ));
 
             string[] include = new string[] {  };
 

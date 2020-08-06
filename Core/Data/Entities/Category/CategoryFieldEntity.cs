@@ -14,6 +14,10 @@ namespace Core.Data.Entities {
 
         public bool IsRequired { get; set; }
 
+        public int Sort { get; set; }
+
+        public bool IsHidden { get; set; }
+
         [ForeignKey("Category")]
         [Column("Category_Id")]
         public long CategoryId { get; set; }

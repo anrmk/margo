@@ -12,10 +12,12 @@ namespace Web.ViewModels {
 
         [Display(Name = "Company")]
         public long? CompanyId { get; set; }
+
         [Required]
         [Display(Name = "Vendor")]
         public long VendorId { get; set; }
         public string VendorName { get; set; }
+
         [Display(Name = "Person")]
         public long? PersonId { get; set; }
 

@@ -6,54 +6,49 @@
 }
 
 <form id="@formId" class="ui form" asp-action="CreateInvoice" method="post">
-    <div class="field required">
-        <label asp-for="AccountId"></label>
-        <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
-            <option value="" selected disabled hidden>Choose here</option>
-        </select>
-    </div>
-
     <fieldset>
-        <div class="field required">
-            <label asp-for="No"></label>
-            <input asp-for="No" data-value-type="string" required>
-        </div>
         <div class="two fields">
-            <div class="six width field required">
+            <div class="six wide field required">
+                <label asp-for="No"></label>
+                <input asp-for="No" data-value-type="string" required>
+            </div>
+
+            <div class="ten wide field required">
+                <label asp-for="AccountId"></label>
+                <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
+                    <option value="" selected disabled hidden>Choose here</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="four fields">
+            <div class="field required">
                 <label asp-for="Amount"></label>
                 <input asp-for="Amount" data-value-type="number" required>
             </div>
-            <div class="twelve width field required">
+            <div class="field required">
                 <label asp-for="TaxRate"></label>
                 <input asp-for="TaxRate" data-value-type="number" required>
             </div>
-        </div>
-        <div class="two fields">
-            <div class="six width field required">
+            <div class="field required">
                 <label asp-for="Date"></label>
                 <input asp-for="Date" type="date" required>
             </div>
-            <div class="twelve width field required">
+            <div class="field required">
                 <label asp-for="DueDate"></label>
                 <input asp-for="DueDate" type="date" required>
             </div>
         </div>
 
-        <div id="@(formId)_toolbar" class="ui secondary menu">
-            <div class="ui floating dropdown labeled icon button">
-                <i class="plus icon"></i>
-                <span class="text">Service</span>
-                <div class="menu">
-                    <div class="header">
-                        Add service
-                    </div>
-                    <div id="service-dropdown" class="scrolling menu">
-                    </div>
-                </div>
+        <div class="ui right floated vertical dropdown mini icon button" tabindex="0">
+            <i class="plus icon"></i>
+            <div class="menu">
+                <div class="header">Services Types</div>
+                <div id="service-dropdown" class="scrolling menu"></div>
             </div>
         </div>
 
-        <h4 class="ui dividing header">Fields</h4>
+        <h4 class="ui dividing header">Services</h4>
         <div id="@(formId)_container" class="ui form"></div>
     </fieldset>
 </form>

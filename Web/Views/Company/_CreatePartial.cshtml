@@ -8,17 +8,10 @@
     <fieldset>
         <h4 class="ui dividing header">General</h4>
         <input type="hidden" name="Id" value="@Model.Id" />
-        <div class="two fields">
-            <div class="six wide field required">
-                <label asp-for="No"></label>
-                <input asp-for="No" name="No" required data-value-type="string" />
-                <span asp-validation-for="No"></span>
-            </div>
-            <div class="ten wide field required">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" name="Name" required data-value-type="string" />
-                <span asp-validation-for="Name"></span>
-            </div>
+        <div class="field required">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" name="Name" required data-value-type="string" />
+            <span asp-validation-for="Name"></span>
         </div>
         <div class="three fields">
             <div class="field">

@@ -59,13 +59,13 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<VendorViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<VendorViewModel>(item));
             return Ok(html);
         }
 
         [HttpGet("AddVendor", Name = "AddVendor")]
         public async Task<IActionResult> AddVendor() {
-            var html = await _viewRenderService.RenderToStringAsync("Create", new VendorViewModel());
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new VendorViewModel());
             return Ok(html);
         }
 
@@ -86,7 +86,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Edit", _mapper.Map<VendorViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<VendorViewModel>(item));
             return Ok(html);
         }
 

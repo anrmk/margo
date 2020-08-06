@@ -59,7 +59,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<PersonViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<PersonViewModel>(item));
             return Ok(html);
         }
 

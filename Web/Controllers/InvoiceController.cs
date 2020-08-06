@@ -53,8 +53,7 @@ namespace Web.Controllers.Mvc {
                 });
 
             var vendors = await _vendorsBusinessManager.GetVendors();
-            ViewBag.Vendors = vendors
-                .Select(x => new SelectListItem {
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem {
                     Text = x.Name,
                     Value = x.Id.ToString()
                 });

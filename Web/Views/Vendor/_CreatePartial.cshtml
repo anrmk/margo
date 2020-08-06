@@ -1,0 +1,25 @@
+﻿@model Web.ViewModels.VendorViewModel
+
+@{
+    var formId = Guid.NewGuid();
+}
+
+<form id="@formId" class="ui form" asp-action="CreateVendor" method="post">
+    <fieldset>
+        <div class="field required">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" type="text" required>
+        </div>
+        <div class="field">
+            <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
+            <textarea asp-for="Description" rows="3"></textarea>
+        </div>
+
+        <div class="ui right floated mini icon button" tabindex="0" onclick="javascript: $.fn.addField('#@(formId)_container');">
+            <i class="plus icon"></i>
+        </div>
+
+        <h4 class="ui dividing header">Fields</h4>
+        <div id="@(formId)_container" class="ui form"></div>
+    </fieldset>
+</form>

@@ -15,18 +15,18 @@
 
         <div class="field">
             <div class="two fields">
-                @if (uccountKind == Core.Data.Enums.UccountTypes.BUSINESS) {
+                @if(uccountKind == Core.Data.Enums.UccountTypes.BUSINESS) {
                     <div class="field required">
                         <label asp-for="CompanyId"></label>
-                        <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
-                            <option value="" selected disabled hidden></option>
+                        <select id="companies-select" class="ui fluid dropdown" required asp-for="CompanyId" asp-items="@companies">
+                            @*<option value="" selected disabled hidden></option>*@
                         </select>
                     </div>
                 } else {
                     <div class="field required">
                         <label asp-for="PersonId"></label>
                         <select id="persons-select" class="ui fluid dropdown" required asp-for="PersonId" asp-items="@persons">
-                            <option value="" selected disabled hidden></option>
+                            @*<option value="" selected disabled hidden></option>*@
                         </select>
                     </div>
                 }
@@ -42,16 +42,13 @@
 
         <div id="vendor-fields" class="fields"></div>
 
-        <div class="ui right floated field">
-            <div id="services-dropdown" class="ui icon top left pointing dropdown button">
-                <i class="plus icon"></i>
-                <div class="menu">
-                    <div class="header">Services Types</div>
-                    @foreach (var category in categories)
-                    {
-                        <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
-                    }
-                </div>
+        <div class="ui right floated dropdown mini icon button" tabindex="0" >
+            <i class="plus icon"></i>
+            <div class="menu">
+                <div class="header">Services Types</div>
+                @foreach(var category in categories) {
+                    <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                }
             </div>
         </div>
 

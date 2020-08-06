@@ -7,5 +7,7 @@ namespace Core.Data.Dto {
         public string Name { get; set; }
         public bool IsRequired { get; set; }
         public long CategoryId { get; set; }
+        public int Sort { get; set; }
+        public bool IsHidden { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace Web.Controllers.Mvc {
         }
 
         public ActionResult Create() {
-            var model = new CompanyViewModel();
+            var model = new CompanyViewModel() { Founded = DateTime.Now };
             return View(model);
         }
 
@@ -343,7 +343,7 @@ namespace Web.Controllers.Api {
 
         [HttpGet("AddCompany", Name = "AddCompany")]
         public async Task<IActionResult> AddCompany() {
-            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel());
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel() { Founded = DateTime.Now });
 
             return Ok(html);
         }

@@ -4,12 +4,12 @@ namespace Core.Data.Enums {
     public enum PayStatusEnum {
 
         [Display(Name = "Unpaid")]
-        Unpaid,
+        UNPAID,
 
         [Display(Name = "Partially paid")]
-        PartiallyPaid,
+        PARTIALLY,
 
         [Display(Name = "Paid")]
-        Paid
+        PAID
     }
 }

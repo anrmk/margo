@@ -51,13 +51,8 @@ namespace Web {
             CreateMap<UccountViewModel, UccountDto>().ReverseMap();
             CreateMap<UccountListViewModel, UccountDto>()
                 .ReverseMap()
-                .ForMember(
-                    d => d.ServiceCount,
-                    o => o.MapFrom(s => s.Services.Count()))
-                .ForMember(
-                    d => d.Kind,
-                    o => o.MapFrom(s =>
-                        s.Kind.GetAttribute<DisplayAttribute>().Name));
+                .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
+                .ForMember(d => d.Kind, o => o.MapFrom(s => s.Kind.GetAttribute<DisplayAttribute>().Name));
             CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
             CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
             CreateMap<UccountServiceFieldViewModel, UccountServiceFieldDto>().ReverseMap();

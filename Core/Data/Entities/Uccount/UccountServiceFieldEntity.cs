@@ -18,6 +18,7 @@ namespace Core.Data.Entities {
         [Required]
         [MaxLength(256)]
         public string Value { get; set; }
+
         public bool IsRequired { get; set; }
     }
 }

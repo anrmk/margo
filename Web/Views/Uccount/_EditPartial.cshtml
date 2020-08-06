@@ -8,7 +8,7 @@
     var categories = (List<SelectListItem>)ViewData["Categories"];
     var uccountKind = (int)ViewData["Kind"];
 }
-   
+
 
 <form id="@formId" class="ui form" asp-route="UpdateUccount" asp-route-id="@Model.Id" method="put" data-request="ajax">
     <fieldset>
@@ -17,7 +17,7 @@
 
         <div class="field">
             <div class="two fields">
-                @if (Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
+                @if(Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
                     <div class="field required">
                         <label asp-for="CompanyId"></label>
                         <select id="companies-select" class="ui fluid dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
@@ -43,8 +43,7 @@
         </div>
 
         <div id="vendor-fields" class="fields">
-            @foreach (var Field in Model.Fields)
-            {
+            @foreach(var Field in Model.Fields) {
                 <div class="field">
                     <label>@Field.Name</label>
                     <input type="hidden" name="Fields[][Name]" value="@Field.Name">
@@ -56,30 +55,25 @@
             }
         </div>
 
-        <div class="field">
-            <div id="services-dropdown" class="ui icon top left pointing dropdown button">
-                <i class="wrench icon"></i>
-                <div class="menu">
-                    <div class="header">Services Types</div>
-                    @foreach (var category in categories)
-                    {
-                        <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
-                    }
-                </div>
+        <div class="ui right floated dropdown mini icon button" tabindex="0" >
+            <i class="plus icon"></i>
+            <div class="menu">
+                <div class="header">Services Types</div>
+                @foreach(var category in categories) {
+                    <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                }
             </div>
         </div>
-
         <h4 class="ui dividing header">Services</h4>
+
         <div id="services-fields">
-            @foreach (var Service in Model.Services)
-            {
+            @foreach(var Service in Model.Services) {
                 <div id="@Service.Id" class="fields">
                     <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
                     <div class="field two wide flex align-center">
                         <label>@Service.Name</label>
                     </div>
-                    @foreach (var Field in Service.Fields)
-                    {
+                    @foreach(var Field in Service.Fields) {
                         <div class="field">
                             <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
                             <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
@@ -89,7 +83,7 @@
                         </div>
                     }
                     <div class="field flex align-center justify-center">
-                        <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a> 
+                        <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
                     </div>
                 </div>
             }
@@ -98,7 +92,6 @@
 </form>
 
 <script type="text/javascript">
-
     $(document).ready(function () {
         $("#vendors-select").on("change", function () {
             const vendorId = $(this).val();

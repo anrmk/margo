@@ -7,11 +7,6 @@ namespace Web.ViewModels {
         public long Id { get; set; }
 
         [Required]
-        [MaxLength(8)]
-        [Display(Name = "Supplier No")]
-        public string No { get; set; }
-
-        [Required]
         [MaxLength(256)]
         [Display(Name = "Business Name")]
         public string Name { get; set; }

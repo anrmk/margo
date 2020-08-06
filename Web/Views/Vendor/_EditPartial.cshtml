@@ -7,26 +7,17 @@
 <form id="@formId" class="ui form" asp-action="UpdateVendor" asp-route-id="@Model.Id" method="put">
     <fieldset>
         <input type="hidden" asp-for="Id" />
-        <div class="two fields">
-            <div class="six width field required">
-                <label asp-for="No"></label>
-                <input asp-for="No" data-value-type="string" required>
-            </div>
-            <div class="twelve width field required">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" required>
-            </div>
+        <div class="field required">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" required>
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
             <textarea asp-for="Description" rows="3"></textarea>
         </div>
 
-        <div class="ui right floated vertical animated mini button" onclick="javascript: $.fn.addField('#@(formId)_container');">
-            <div class="hidden content">Add</div>
-            <div class="visible content">
-                <i class="plus icon"></i>
-            </div>
+        <div class="ui right floated mini icon button" onclick="javascript: $.fn.addField('#@(formId)_container');">
+            <i class="plus icon"></i>
         </div>
 
         <h4 class="ui dividing header">Fields</h4>

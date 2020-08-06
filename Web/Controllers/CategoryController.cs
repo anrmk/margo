@@ -72,7 +72,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("Details", _mapper.Map<CategoryViewModel>(item));
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CategoryViewModel>(item));
             return Ok(html);
         }
 
@@ -85,7 +85,7 @@ namespace Web.Controllers.Api {
                 { "Categories", categoryList }
             };
 
-            var html = await _viewRenderService.RenderToStringAsync("Create", new CategoryViewModel(), viewData);
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CategoryViewModel(), viewData);
             return Ok(html);
         }
 
@@ -122,7 +122,7 @@ namespace Web.Controllers.Api {
                 { "Categories", categoryList }
             };
 
-            var html = await _viewRenderService.RenderToStringAsync("Edit", _mapper.Map<CategoryViewModel>(item), viewData);
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CategoryViewModel>(item), viewData);
             return Ok(html);
         }
 

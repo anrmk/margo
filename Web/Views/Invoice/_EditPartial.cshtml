@@ -9,50 +9,47 @@
     <fieldset>
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="AccountId" />
-        <div class="field">
-            <label asp-for="AccountId"></label>
-            <input value="@accountName" readonly>
-        </div>
-        <div class="field required">
-            <label asp-for="No">Number</label>
-            <input asp-for="No" data-value-type="string" required>
-        </div>
         <div class="two fields">
-            <div class="six width field required">
+            <div class="six wide field required">
+                <label asp-for="No">Number</label>
+                <input asp-for="No" data-value-type="string" required>
+            </div>
+
+            <div class="ten wide field required">
+                <label asp-for="AccountId"></label>
+                <input value="@accountName" readonly>
+            </div>
+        </div>
+
+        <div class="four fields">
+            <div class="field required">
                 <label asp-for="Amount"></label>
                 <input asp-for="Amount" data-value-type="number" required>
             </div>
-            <div class="twelve width field required">
+            <div class="field required">
                 <label asp-for="TaxRate">Tax rate</label>
                 <input asp-for="TaxRate" data-value-type="number" required>
             </div>
-        </div>
-        <div class="two fields">
-            <div class="six width field required">
+            <div class="field required">
                 <label asp-for="Date"></label>
                 <input asp-for="Date" type="date" required>
             </div>
-            <div class="twelve width field required">
+            <div class="field required">
                 <label asp-for="DueDate">Due date</label>
                 <input asp-for="DueDate" type="date" required>
             </div>
         </div>
 
-        <div id="@(formId)_toolbar" class="ui secondary menu">
-            <div class="ui floating dropdown labeled icon button">
-                <i class="plus icon"></i>
-                <span class="text">Service</span>
-                <div class="menu">
-                    <div class="header">
-                        Add service
-                    </div>
-                    <div id="service-dropdown" class="scrolling menu">
-                    </div>
-                </div>
+        <div class="ui right floated vertical dropdown mini icon button" tabindex="0">
+            <i class="plus icon"></i>
+            <div class="menu">
+                <div class="header">Services Types</div>
+                <div id="service-dropdown" class="scrolling menu"></div>
             </div>
         </div>
 
-        <h4 class="ui dividing header">Fields</h4>
+        <h4 class="ui dividing header">Services</h4>
+
         <div id="@(formId)_container" class="ui form">
             @foreach(var service in Model.Services) {
                 <div id="@(formId +"_"+ service.Id)" class="inline fields">
