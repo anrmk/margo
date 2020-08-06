@@ -45,20 +45,13 @@
         <div id="vendor-fields" class="fields">
             @foreach (var Field in Model.Fields)
             {
-                string type = "";
-                @if (Field.TypeName == "date time") {
-                    type = "date";
-                } else if (Field.TypeName == "string") {
-                    type = "text";
-                } else {
-                    type = Field.TypeName;
-                }
                 <div class="field">
+                    <label>@Field.Name</label>
                     <input type="hidden" name="Fields[][Name]" value="@Field.Name">
                     <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                     <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
                     <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
-                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="string" />
+                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
                 </div>
             }
         </div>
@@ -87,20 +80,12 @@
                     </div>
                     @foreach (var Field in Service.Fields)
                     {
-                        string type = "";
-                        @if (Field.TypeName == "date time") {
-                            type = "date";
-                        } else if (Field.TypeName == "string") {
-                            type = "text";
-                        } else {
-                            type = Field.TypeName;
-                        }
                         <div class="field">
                             <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
                             <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                             <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
                             <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
-                            <input name="Services[][Fields][][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@type" value="@Field.Value" data-value-type="string" />
+                            <input name="Services[][Fields][][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
                         </div>
                     }
                     <div class="field flex align-center justify-center">
@@ -121,7 +106,7 @@
                 url: `/api/Vendor/GetVendor?id=${vendorId}`
             }).done((data, status, _) => {
                 if (data && data.fields) {
-                    const fields = $(generateFields(data.fields, VENDOR_FIELDS));
+                    const fields = $(generateFields(data.fields, VENDOR_FIELDS, true));
                     $(VENDOR_FIELDS_EL_NAME).html(fields);
                 }
             });

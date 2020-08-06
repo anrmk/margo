@@ -69,7 +69,7 @@
                 url: `/api/Vendor/GetVendor?id=${vendorId}`
             }).done((data, status, _) => {
                 if (data && data.fields) {
-                    const fields = $(generateFields(data.fields, VENDOR_FIELDS));
+                    const fields = $(generateFields(data.fields, VENDOR_FIELDS, true));
                     $(VENDOR_FIELDS_EL_NAME).html(fields);
                 }
             });

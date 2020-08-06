@@ -55,7 +55,7 @@
                 const data = jqXHR.responseJSON;
                 if (data && data.fields) {
                     const { id, name, fields } = data;
-                    const generatedFields = generateFields(fields, SERVICES_FIELDS, id);
+                    const generatedFields = generateFields(fields, SERVICES_FIELDS);
                     const groupFields = generateGroup(id, name, generatedFields);
 
                     $(SERVICES_FIELDS_EL_NAME).append(groupFields);
@@ -111,27 +111,16 @@
             }
         };
 
-        convertFieldTypeToHTML = function (type) {
-            let formatingType = type;
-
-            if (formatingType === "date time") {
-                formatingType = "date";
-            }
-            formatingType = formatingType.toLowerCase();
-
-            return formatingType;
-        }
-
-        generateFields = function (fields, name) {
+        generateFields = function (fields, name, label=false) {
             return fields.map(field => {
-                field.typeName = convertFieldTypeToHTML(field.typeName);
                 return (
                     `<div class='field'>
+                        ${label ? `<label>${field.name}</label>` : ''}
                         <input type="hidden" name="${name}[][Name]" value="${field.name}">
                         <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
                         <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">
                         <input type="hidden" name="${name}[][TypeName]" value="${field.typeName}">
-                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.typeName !== "string" ? `type="${field.typeName}"` : ''} data-value-type="string" />
+                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
                     </div>`
                 )
             }).join("\n ");
