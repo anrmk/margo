@@ -2,7 +2,7 @@
 
 namespace Web.ViewModels {
     public class CompanyListViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public string IsStarred { get; set; }
 

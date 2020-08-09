@@ -7,19 +7,18 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface ICategoryBusinessManager {
-        Task<CategoryDto> GetCategory(long id);
+        Task<CategoryDto> GetCategory(Guid id);
         Task<List<CategoryDto>> GetCategories();
-        Task<Pager<CategoryDto>> GetCategoryPage(PagerFilter filter);
+        Task<PagerDto<CategoryDto>> GetCategoryPage(PagerFilterDto filter);
         Task<CategoryDto> CreateCategory(CategoryDto dto);
-        Task<CategoryDto> UpdateCategory(long id, CategoryDto dto);
-        Task<bool> DeleteCategories(long[] ids);
+        Task<CategoryDto> UpdateCategory(Guid id, CategoryDto dto);
+        Task<bool> DeleteCategories(Guid[] ids);
 
-        Task<bool> DeleteFields(long[] ids);
+        Task<bool> DeleteFields(Guid[] ids);
     }
 
     public class CategoryBusinessManager: BaseBusinessManager, ICategoryBusinessManager {
@@ -34,7 +33,7 @@ namespace Core.Services.Business {
             _categoryFieldManager = categoryFieldManager;
         }
 
-        public async Task<CategoryDto> GetCategory(long id) {
+        public async Task<CategoryDto> GetCategory(Guid id) {
             var result = await _categoryManager.FindInclude(id);
             return _mapper.Map<CategoryDto>(result);
         }
@@ -44,7 +43,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<CategoryDto>>(result);
         }
 
-        public async Task<Pager<CategoryDto>> GetCategoryPage(PagerFilter filter) {
+        public async Task<PagerDto<CategoryDto>> GetCategoryPage(PagerFilterDto filter) {
             var sortby = "Name";
 
             Expression<Func<CategoryEntity, bool>> where = x =>
@@ -56,12 +55,12 @@ namespace Core.Services.Business {
             var (list, count) = await _categoryManager.Pager<CategoryEntity>(where, sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
-                return new Pager<CategoryDto>(new List<CategoryDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<CategoryDto>(new List<CategoryDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<CategoryDto>>(list);
-            return new Pager<CategoryDto>(result, count, page, filter.Length);
+            return new PagerDto<CategoryDto>(result, count, page, filter.Length);
         }
 
         public async Task<CategoryDto> CreateCategory(CategoryDto dto) {
@@ -70,7 +69,7 @@ namespace Core.Services.Business {
             return _mapper.Map<CategoryDto>(entity);
         }
 
-        public async Task<CategoryDto> UpdateCategory(long id, CategoryDto dto) {
+        public async Task<CategoryDto> UpdateCategory(Guid id, CategoryDto dto) {
             var entity = await _categoryManager.FindInclude(id);
             if(entity == null) {
                 return null;
@@ -81,7 +80,7 @@ namespace Core.Services.Business {
             return _mapper.Map<CategoryDto>(entity);
         }
 
-        public async Task<bool> DeleteCategories(long[] ids) {
+        public async Task<bool> DeleteCategories(Guid[] ids) {
             var entities = await _categoryManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("We did not find records for this request!");
@@ -90,7 +89,7 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
-        public async Task<bool> DeleteFields(long[] ids) {
+        public async Task<bool> DeleteFields(Guid[] ids) {
             var entities = await _categoryFieldManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("We did not find records for this request!");

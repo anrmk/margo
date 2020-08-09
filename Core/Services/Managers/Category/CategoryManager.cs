@@ -11,19 +11,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface ICategoryManager: IEntityManager<CategoryEntity> {
-        Task<CategoryEntity> FindInclude(long id);
+        Task<CategoryEntity> FindInclude(Guid id);
         Task<List<CategoryEntity>> FindAll();
-        Task<List<CategoryEntity>> FindAll(long[] ids);
+        Task<List<CategoryEntity>> FindAll(Guid[] ids);
     }
 
     public class CategoryManager: AsyncEntityManager<CategoryEntity>, ICategoryManager {
         public CategoryManager(IApplicationContext context) : base(context) { }
 
-        public async Task<CategoryEntity> FindInclude(long id) {
+        public async Task<CategoryEntity> FindInclude(Guid id) {
             return await DbSet
                 .Include(x => x.Parent)
                 .Include(x => x.Fields)
-                .Where(x => x.Id == id)
+                .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
@@ -33,7 +33,7 @@ namespace Core.Services.Managers {
                 .ToListAsync();
         }
 
-        public async Task<List<CategoryEntity>> FindAll(long[] ids) {
+        public async Task<List<CategoryEntity>> FindAll(Guid[] ids) {
             return await DbSet
             .Include(x => x.Fields)
             .Where(x => ids.Contains(x.Id))

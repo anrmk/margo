@@ -119,7 +119,7 @@ $.fn.renderDatatableCollection = function (data, type, row) {
 }
 
 $.fn.addField = function (target) {
-    $.get('/api/section/getfieldtypes', { cache: true }).done(res => {
+    $.get('/api/category/getfieldtypes', { cache: true }).done(res => {
         var $section = $(`<div class="inline fields">
             <div class="eight wide field required">
                 <input name="Fields[][Name]" required placeholder="Name" data-value-type="string" />

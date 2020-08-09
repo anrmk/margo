@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Web.ViewModels.UccountFilterViewModel
+@{
     ViewData["Title"] = "Accounts";
 
     var tableId = Guid.NewGuid();
@@ -10,6 +11,29 @@
 }
 
 @section RightSidebar {
+    <div class="ui stacked segment">
+        <form id="table-filter" class="ui form">
+            <h3>Filters</h3>
+            <div class="field">
+                <label asp-for="Kind"></label>
+                <select asp-for="Kind" asp-items="@Html.GetEnumSelectList<Core.Data.Enums.UccountTypes>()" class="ui dropdown">
+                    <option value="" selected>Select account type</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="VendorId"></label>
+                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui search dropdown">
+                    <option value="" selected>Select vendor</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="CustomerId"></label>
+                <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui search dropdown">
+                    <option value="" selected>Select customers</option>
+                </select>
+            </div>
+        </form>
+    </div>
     <div id="@(tableId)_detail"></div>
 }
 <div>
@@ -17,7 +41,7 @@
         <div class="ui buttons">
             <a class="ui button" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog" data-title="Create business account">Bussines</a>
             <div class="or"></div>
-            <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Person</a>
+            <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Personal</a>
         </div>
 
         <div class="right menu">
@@ -65,9 +89,8 @@
             },
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                { 'title': 'Type', 'className': 'collapsing', 'data': 'kind' },
                 { 'title': 'Vendor', 'className': 'collapsing', 'data': 'vendorName' },
-                { 'title': 'Name', 'data': 'name' },
+                { 'title': 'Customer', 'data': 'name', 'render': (data, type, row) => { return `<span>${data}<br/>${row.kind}</span>` } },
                 { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                 { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
             ],

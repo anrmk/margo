@@ -31,8 +31,8 @@ namespace Core.Context {
         //public DbSet<LogEntity> Logs { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
-        public DbSet<CompanySectionEntity> CompanySections { get; set; }
-        public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
+        //public DbSet<CompanySectionEntity> CompanySections { get; set; }
+        //public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 
         //public DbSet<SectionEntity> Sections { get; set; }
         //public DbSet<SectionFieldEntity> SectionFields { get; set; }
@@ -44,8 +44,8 @@ namespace Core.Context {
         //public DbSet<VendorMediaEntity> VendorMedias { get; set; }
 
         public DbSet<UccountEntity> Uccounts { get; set; }
-        public DbSet<UccountSectionEntity> UccountSections { get; set; }
-        public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
+        //public DbSet<UccountSectionEntity> UccountSections { get; set; }
+        //public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
 
         public DbSet<UccountServiceEntity> Services { get; set; }
 

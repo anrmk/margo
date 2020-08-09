@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 #pragma warning disable CS8618
 #nullable enable
 namespace Web.ViewModels {
     public class PersonViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(64, MinimumLength = 1)]

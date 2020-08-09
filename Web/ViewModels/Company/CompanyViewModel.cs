@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class CompanyViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [MaxLength(256)]
@@ -14,7 +14,7 @@ namespace Web.ViewModels {
         [Display(Name = "Founded")]
         [DataType(DataType.Date)]
         public DateTime Founded { get; set; }
-        
+
         [Required]
         [MaxLength(60)]
         [Display(Name = "EIN")]

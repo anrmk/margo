@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -152,22 +151,20 @@ namespace Web.Controllers.Api {
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
-        private readonly ISectionBusinessManager _crudBusinessManager;
+
         private readonly IAccountBusinessManager _accountBusinessService;
 
-        public AccountController(IMapper mapper, IViewRenderService viewRenderService,
-            ISectionBusinessManager businessManager, IAccountBusinessManager accountBusinessService) {
+        public AccountController(IMapper mapper, IViewRenderService viewRenderService, IAccountBusinessManager accountBusinessService) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
-            _crudBusinessManager = businessManager;
             _accountBusinessService = accountBusinessService;
             //_telegramBotClient = telegramBotClient;
         }
 
         [HttpGet("GetAppNetUsers", Name = "GetAppNetUsers")]
-        public async Task<Pager<AppNetUserListViewModel>> GetAppNetUsers([FromQuery] PagerFilterViewModel model) {
-            var result = await _accountBusinessService.GetUserPage(_mapper.Map<PagerFilter>(model));
-            return new Pager<AppNetUserListViewModel>(_mapper.Map<List<AppNetUserListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<AppNetUserListViewModel>> GetAppNetUsers([FromQuery] PagerFilterViewModel model) {
+            var result = await _accountBusinessService.GetUserPage(_mapper.Map<PagerFilterDto>(model));
+            return new PagerDto<AppNetUserListViewModel>(_mapper.Map<List<AppNetUserListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 
         [HttpGet("DetailsAspNetUser", Name = "DetailsAspNetUser")]
@@ -263,7 +260,7 @@ namespace Web.Controllers.Api {
 
         [HttpGet]
         [Route("activity")]
-        public async Task<Pager<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {
+        public async Task<PagerDto<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {
             return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
             //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }

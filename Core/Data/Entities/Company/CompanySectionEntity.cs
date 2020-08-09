@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
@@ -6,7 +7,7 @@ namespace Core.Data.Entities {
     public class CompanySectionEntity: EntityBase<long> {
         [ForeignKey("Company")]
         [Column("Company_Id")]
-        public long? CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
         public virtual CompanyEntity Company { get; set; }
 
         [Column("Section_Id")]

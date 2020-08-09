@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,22 +11,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IUccountServiceManager: IEntityManager<UccountServiceEntity> {
-        Task<UccountServiceEntity> FindInclude(long id);
-        Task<List<UccountServiceEntity>> FindAll(long accountId);
+        Task<UccountServiceEntity> FindInclude(Guid id);
+        Task<List<UccountServiceEntity>> FindAll(Guid accountId);
     }
 
     public class UccountServiceManager: AsyncEntityManager<UccountServiceEntity>, IUccountServiceManager {
         public UccountServiceManager(IApplicationContext context) : base(context) { }
-        public async Task<UccountServiceEntity> FindInclude(long id) {
+        public async Task<UccountServiceEntity> FindInclude(Guid id) {
             return await DbSet
                 .Include(x => x.Fields)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .SingleOrDefaultAsync(x => x.Id.Equals(id));
         }
 
-        public async Task<List<UccountServiceEntity>> FindAll(long id) {
+        public async Task<List<UccountServiceEntity>> FindAll(Guid id) {
             return await DbSet
                 .Include(x => x.Fields)
-                .Where(x => x.Account.Id == id)
+                .Where(x => x.Account.Id.Equals(id))
                 .ToListAsync();
         }
     }

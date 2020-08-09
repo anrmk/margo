@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "VendorFields")]
-    public class VendorFieldEntity: EntityBase<long> {
+    public class VendorFieldEntity: EntityBase<Guid> {
         [Required]
         [MaxLength(64)]
         public string Name { get; set; }
@@ -20,7 +21,7 @@ namespace Core.Data.Entities {
 
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
-        public long VendorId { get; set; }
+        public Guid VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
     }
 }

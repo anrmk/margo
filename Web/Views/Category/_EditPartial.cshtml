@@ -14,8 +14,8 @@
             </div>
             <div class="field required">
                 <label asp-for="ParentId"></label>
-                <select asp-for="ParentId" asp-items="@ViewBag.Categories" data-value-type="number">
-                    <option>No parent</option>
+                <select asp-for="ParentId" asp-items="@ViewBag.Categories" class="ui search dropdown" data-value-type="string:nullable">
+                    <option value="" selected>No parent</option>
                 </select>
             </div>
         </div>

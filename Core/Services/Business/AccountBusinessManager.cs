@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Business {
     public interface IAccountBusinessManager {
         Task<AspNetUserDto> GetUser(string id);
-        Task<Pager<AspNetUserDto>> GetUserPage(PagerFilter filter);
+        Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
         Task<AspNetUserDto> UpdateUser(string id, AspNetUserDto dto);
         Task<bool> LockUser(string id, bool locked);
@@ -39,7 +39,7 @@ namespace Core.Services.Business {
         Task<string> GenerateEmailConfirmationTokenAsync(string id);
 
 
-        Task<Pager<LogDto>> GetLogPager(LogFilterDto filter);
+        Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
     }
 
@@ -81,7 +81,7 @@ namespace Core.Services.Business {
             return dto;
         }
 
-        public async Task<Pager<AspNetUserDto>> GetUserPage(PagerFilter filter) {
+        public async Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter) {
             var sortby = "UserName";
 
             var query = _userManager.Users
@@ -91,7 +91,7 @@ namespace Core.Services.Business {
 
             var count = await query.CountAsync();
             if(count == 0)
-                return new Pager<AspNetUserDto>(new List<AspNetUserDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<AspNetUserDto>(new List<AspNetUserDto>(), 0, filter.Start, filter.Length);
 
             query = string.IsNullOrEmpty(sortby) ?
              query.OrderBy(x => Guid.NewGuid().ToString()).Skip(filter.Start) :
@@ -112,7 +112,7 @@ namespace Core.Services.Business {
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
-            return new Pager<AspNetUserDto>(result, count, page, filter.Length);
+            return new PagerDto<AspNetUserDto>(result, count, page, filter.Length);
         }
 
         public async Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password) {
@@ -223,7 +223,7 @@ namespace Core.Services.Business {
             return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
         }
 
-        public async Task<Pager<LogDto>> GetLogPager(LogFilterDto filter) {
+        public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {
             var sortby = "Logged";
 
             Expression<Func<LogEntity, bool>> where = x =>
@@ -237,12 +237,12 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<LogDto>(new List<LogDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<LogDto>(new List<LogDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<LogDto>>(list);
-            return new Pager<LogDto>(result, count, page, filter.Start);
+            return new PagerDto<LogDto>(result, count, page, filter.Start);
         }
 
         public async Task<LogDto> GetLog(long id) {

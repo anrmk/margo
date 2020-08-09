@@ -7,18 +7,17 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface IInvoiceBusinessManager {
-        Task<InvoiceDto> GetInvoice(long id);
+        Task<InvoiceDto> GetInvoice(Guid id);
         Task<List<InvoiceDto>> GetInvoices();
         Task<List<InvoiceDto>> GetUnpaidInvoices();
-        Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
+        Task<PagerDto<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
-        Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto);
-        Task<bool> DeleteInvoices(long[] ids);
+        Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto);
+        Task<bool> DeleteInvoices(Guid[] ids);
     }
 
     public class InvoiceBusinessManager: BaseBusinessManager, IInvoiceBusinessManager {
@@ -30,7 +29,7 @@ namespace Core.Services.Business {
             _invoiceManager = invoiceManager;
         }
 
-        public async Task<InvoiceDto> GetInvoice(long id) {
+        public async Task<InvoiceDto> GetInvoice(Guid id) {
             var result = await _invoiceManager.FindInclude(id);
             return _mapper.Map<InvoiceDto>(result);
         }
@@ -45,7 +44,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<InvoiceDto>>(entity);
         }
 
-        public async Task<Pager<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
+        public async Task<PagerDto<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter) {
             var sortby = "Id";
 
             string[] include = new string[] { "Account", "Account.Person", "Account.Company", "Payments" };
@@ -58,12 +57,12 @@ namespace Core.Services.Business {
                 sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
-                return new Pager<InvoiceDto>(new List<InvoiceDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<InvoiceDto>(new List<InvoiceDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<InvoiceDto>>(list);
-            return new Pager<InvoiceDto>(result, count, page, filter.Length);
+            return new PagerDto<InvoiceDto>(result, count, page, filter.Length);
         }
 
         public async Task<InvoiceDto> CreateInvoice(InvoiceDto dto) {
@@ -72,7 +71,7 @@ namespace Core.Services.Business {
             return _mapper.Map<InvoiceDto>(entity);
         }
 
-        public async Task<InvoiceDto> UpdateInvoice(long id, InvoiceDto dto) {
+        public async Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto) {
             var entity = await _invoiceManager.FindInclude(id);
             if(entity == null) {
                 return null;
@@ -84,7 +83,7 @@ namespace Core.Services.Business {
             return _mapper.Map<InvoiceDto>(entity);
         }
 
-        public async Task<bool> DeleteInvoices(long[] ids) {
+        public async Task<bool> DeleteInvoices(Guid[] ids) {
             var entities = await _invoiceManager.FindByIds(ids);
             if(entities?.Any() != true)
                 throw new Exception("Did not find any records.");

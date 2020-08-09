@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -45,18 +44,15 @@ namespace Web.Controllers.Mvc {
             var companiesUnified = companies.Select(x => (
                 x.Id, x.Name, "company"));
 
-            ViewBag.CompaniesAndPersons = personsUnified
-                .Union(companiesUnified)
-                .Select(x => new SelectListItem {
-                    Text = x.Item2,
-                    Value = $"{x.Item3}_{x.Item1}"
-                });
+            ViewBag.CompaniesAndPersons = persons.Select(x => new SelectListItem() { Text = x.FullName, Value = $"person_{x.Id}" })
+                .Union(companies.Select(x => new SelectListItem { Text = x.Name, Value = $"company_{x.Id}" }));
+     
 
             var vendors = await _vendorsBusinessManager.GetVendors();
             ViewBag.Vendors = vendors.Select(x => new SelectListItem {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                });
+                Text = x.Name,
+                Value = x.Id.ToString()
+            });
 
             return View();
         }
@@ -84,13 +80,13 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetInvoices", Name = "GetInvoices")]
-        public async Task<Pager<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
+        public async Task<PagerDto<InvoiceListViewModel>> GetInvoices([FromQuery] InvoiceFilterViewModel model) {
             var result = await _invoiceBusinessManager.GetInvoicePager(_mapper.Map<InvoiceFilterDto>(model));
-            return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+            return new PagerDto<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
         }
 
         [HttpGet("DetailsInvoice", Name = "DetailsInvoice")]
-        public async Task<IActionResult> DetailsInvoice([FromQuery] long id) {
+        public async Task<IActionResult> DetailsInvoice([FromQuery] Guid id) {
             var invoice = await _invoiceBusinessManager.GetInvoice(id);
             if(invoice == null)
                 return NotFound();
@@ -138,7 +134,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditInvoice", Name = "EditInvoice")]
-        public async Task<IActionResult> EditInvoice([FromQuery] long id) {
+        public async Task<IActionResult> EditInvoice([FromQuery] Guid id) {
             var item = await _invoiceBusinessManager.GetInvoice(id);
             if(item == null)
                 return NotFound();
@@ -153,7 +149,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdateInvoice", Name = "UpdateInvoice")]
-        public async Task<IActionResult> UpdateInvoice([FromQuery] long id, [FromBody] InvoiceViewModel model) {
+        public async Task<IActionResult> UpdateInvoice([FromQuery] Guid id, [FromBody] InvoiceViewModel model) {
             try {
                 if(!ModelState.IsValid) {
                     throw new Exception("Form is not valid!");
@@ -169,7 +165,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteInvoices", Name = "DeleteInvoices")]
-        public async Task<IActionResult> DeleteInvoices([FromQuery] long[] id) {
+        public async Task<IActionResult> DeleteInvoices([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _invoiceBusinessManager.DeleteInvoices(id);
                 if(result)

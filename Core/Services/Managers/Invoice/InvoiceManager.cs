@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,15 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IInvoiceManager: IEntityManager<InvoiceEntity> {
-        Task<InvoiceEntity> FindInclude(long id);
+        Task<InvoiceEntity> FindInclude(Guid id);
         Task<List<InvoiceEntity>> FindAll();
         Task<List<InvoiceEntity>> FindAllUnpaid();
-        Task<List<InvoiceEntity>> FindByIds(long[] ids);
+        Task<List<InvoiceEntity>> FindByIds(Guid[] ids);
     }
 
     public class InvoiceManager: AsyncEntityManager<InvoiceEntity>, IInvoiceManager {
         public InvoiceManager(IApplicationContext context) : base(context) { }
-        public async Task<InvoiceEntity> FindInclude(long id) {
+        public async Task<InvoiceEntity> FindInclude(Guid id) {
             return await DbSet
                 .Include(x => x.Account)
                     .ThenInclude(x => x.Person)
@@ -26,7 +27,7 @@ namespace Core.Services.Managers {
                     .ThenInclude(x => x.Company)
                 .Include(x => x.Services)
                 .Include(x => x.Payments)
-                .Where(x => x.Id == id)
+                .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
@@ -40,7 +41,7 @@ namespace Core.Services.Managers {
                 .ToListAsync();
         }
 
-        public async Task<List<InvoiceEntity>> FindByIds(long[] ids) {
+        public async Task<List<InvoiceEntity>> FindByIds(Guid[] ids) {
             return await DbSet
                 .Include(x => x.Account)
                 .Include(x => x.Services)

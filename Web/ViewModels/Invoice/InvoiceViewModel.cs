@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class InvoiceViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [MaxLength(16)]
@@ -33,6 +33,6 @@ namespace Web.ViewModels {
         public IEnumerable<InvoiceServiceViewModel> Services { get; set; }
 
         [Display(Name = "Account")]
-        public long AccountId { get; set; }
+        public Guid AccountId { get; set; }
     }
 }

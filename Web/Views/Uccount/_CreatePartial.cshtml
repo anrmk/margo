@@ -18,22 +18,22 @@
                 @if(uccountKind == Core.Data.Enums.UccountTypes.BUSINESS) {
                     <div class="field required">
                         <label asp-for="CompanyId"></label>
-                        <select id="companies-select" class="ui fluid dropdown" required asp-for="CompanyId" asp-items="@companies">
-                            @*<option value="" selected disabled hidden></option>*@
+                        <select id="companies-select" class="ui search dropdown" required asp-for="CompanyId" asp-items="@companies">
+                            <option value="" selected>Select customers</option>
                         </select>
                     </div>
                 } else {
                     <div class="field required">
                         <label asp-for="PersonId"></label>
-                        <select id="persons-select" class="ui fluid dropdown" required asp-for="PersonId" asp-items="@persons">
-                            @*<option value="" selected disabled hidden></option>*@
+                        <select id="persons-select" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
+                            <option value="" selected disabled hidden>Select vendor</option>
                         </select>
                     </div>
                 }
 
                 <div class="field required">
                     <label asp-for="VendorId"></label>
-                    <select id="vendors-select" class="ui fluid dropdown" required asp-for="VendorId" asp-items="@vendors">
+                    <select id="vendors-select" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
                         <option value="" selected disabled hidden></option>
                     </select>
                 </div>

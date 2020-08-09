@@ -18,7 +18,7 @@ namespace Web.ViewModels {
 
         [FromQuery(Name = "vendor")]
         [Display(Name = "Vendor")]
-        public long? VendorId { get; set; }
+        public Guid? VendorId { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? Date { get; set; }

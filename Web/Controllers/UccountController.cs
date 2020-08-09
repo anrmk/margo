@@ -7,7 +7,6 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Enums;
-using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -24,30 +23,46 @@ namespace Web.Controllers.Mvc {
     [Authorize]
     public class UccountController: BaseController<UccountController> {
         private readonly IUccountBusinessManager _uccountBusinessManager;
+        private readonly IPersonBusinessManager _personBusinessManager;
+        private readonly ICompanyBusinessManager _companyBusinessManager;
+        private readonly IVendorBusinessManager _vendorBusinessManager;
         public UccountController(ILogger<UccountController> logger, IMapper mapper,
-            IUccountBusinessManager uccountBusinessManager) : base(logger, mapper) {
+            IUccountBusinessManager uccountBusinessManager,
+            IPersonBusinessManager personBusinessManager,
+            ICompanyBusinessManager companyBusinessManager,
+            IVendorBusinessManager vendorBusinessManager) : base(logger, mapper) {
             _uccountBusinessManager = uccountBusinessManager;
+            _personBusinessManager = personBusinessManager;
+            _companyBusinessManager = companyBusinessManager;
+            _vendorBusinessManager = vendorBusinessManager;
         }
 
-        public IActionResult Index() {
-            return View();
+        public async Task<IActionResult> Index() {
+            var vendors = await _vendorBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+
+            var persons = await _personBusinessManager.GetPersons();
+            var companies = await _companyBusinessManager.GetCompanies();
+            //var stateGroups = Enum.GetNames(typeof(UccountTypes)).Select(x => new SelectListGroup() { Name = x }).ToList();
+
+            ViewBag.Customers = persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() })
+                .Union(companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }));
+
+            var model = new UccountFilterViewModel();
+            return View(model);
         }
 
-        //public async Task<IActionResult> Details(long id) {
-        //    return View();
+        //public async Task<IActionResult> Edit(long id) {
+        //    var item = await _uccountBusinessManager.GetUccount(id);
+        //    if(item == null) {
+        //        return NotFound();
+        //    }
+
+        //    var services = await _uccountBusinessManager.GetServices(id);
+        //    ViewBag.Services = _mapper.Map<List<UccountServiceViewModel>>(services).ToList();
+
+        //    return View(_mapper.Map<UccountViewModel>(item));
         //}
-
-        public async Task<IActionResult> Edit(long id) {
-            var item = await _uccountBusinessManager.GetUccount(id);
-            if(item == null) {
-                return NotFound();
-            }
-
-            var services = await _uccountBusinessManager.GetServices(id);
-            ViewBag.Services = _mapper.Map<List<UccountServiceViewModel>>(services).ToList();
-
-            return View(_mapper.Map<UccountViewModel>(item));
-        }
     }
 }
 
@@ -62,7 +77,6 @@ namespace Web.Controllers.Api {
         private readonly ICategoryBusinessManager _categoryBusinessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
         private readonly IPersonBusinessManager _personBusinessManager;
-
 
         public UccountController(IMapper mapper, IViewRenderService viewRenderService,
             IUccountBusinessManager uccountBusinessManager,
@@ -80,14 +94,14 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetUccounts", Name = "GetUccounts")]
-        public async Task<Pager<UccountListViewModel>> GetUccounts([FromQuery] PagerFilterViewModel model) {
-            var result = await _uccountBusinessManager.GetUccountPage(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<UccountListViewModel>(_mapper.Map<List<UccountListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<UccountListViewModel>> GetUccounts([FromQuery] UccountFilterViewModel model) {
+            var result = await _uccountBusinessManager.GetUccountPage(_mapper.Map<UccountFilterDto>(model));
+            var pager = new PagerDto<UccountListViewModel>(_mapper.Map<List<UccountListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 
         [HttpGet("DetailsUccount", Name = "DetailsUccount")]
-        public async Task<IActionResult> DetailsUccount([FromQuery] long id) {
+        public async Task<IActionResult> DetailsUccount([FromQuery] Guid id) {
             var item = await _uccountBusinessManager.GetUccount(id);
             if(item == null)
                 return NotFound();
@@ -97,7 +111,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetUccount", Name = "GetUccount")]
-        public async Task<IActionResult> GetUccount([FromQuery] long id) {
+        public async Task<IActionResult> GetUccount([FromQuery] Guid id) {
             var item = await _uccountBusinessManager.GetUccount(id);
             if(item == null)
                 return NotFound();
@@ -146,7 +160,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdateUccount", Name = "UpdateUccount")]
-        public async Task<IActionResult> UpdateUccount([FromQuery] long id, [FromBody] UccountViewModel model) {
+        public async Task<IActionResult> UpdateUccount([FromQuery] Guid id, [FromBody] UccountViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _uccountBusinessManager.UpdateUccount(id, _mapper.Map<UccountDto>(model));
                 if(item == null)
@@ -157,7 +171,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditUccount", Name = "EditUccount")]
-        public async Task<IActionResult> EditUccount([FromQuery] long id) {
+        public async Task<IActionResult> EditUccount([FromQuery] Guid id) {
             var item = await _uccountBusinessManager.GetUccount(id);
             if(item == null)
                 return NotFound();
@@ -179,7 +193,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteUccounts", Name = "DeleteUccounts")]
-        public async Task<ActionResult> DeleteUccounts([FromQuery] long[] id) {
+        public async Task<ActionResult> DeleteUccounts([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _uccountBusinessManager.DeleteUccount(id);
                 if(result)
@@ -189,7 +203,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteService", Name = "DeleteService")]
-        public async Task<ActionResult> DeleteService([FromQuery] long id) {
+        public async Task<ActionResult> DeleteService([FromQuery] Guid id) {
             var result = await _uccountBusinessManager.DeleteService(id);
             if(result)
                 return Ok(id);

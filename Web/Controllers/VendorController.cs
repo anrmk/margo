@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -39,7 +39,7 @@ namespace Web.Controllers.Api {
         private readonly IVendorBusinessManager _vendorBusinessManager;
 
         public VendorController(IMapper mapper, IViewRenderService viewRenderService,
-            ISectionBusinessManager businessManager,
+            //ISectionBusinessManager businessManager,
             IVendorBusinessManager vendorBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
@@ -47,14 +47,14 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetVendors", Name = "GetVendors")]
-        public async Task<Pager<VendorListViewModel>> GetVendors([FromQuery] PagerFilterViewModel model) {
-            var result = await _vendorBusinessManager.GetVendorPager(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<VendorListViewModel>> GetVendors([FromQuery] PagerFilterViewModel model) {
+            var result = await _vendorBusinessManager.GetVendorPager(_mapper.Map<PagerFilterDto>(model));
+            var pager = new PagerDto<VendorListViewModel>(_mapper.Map<List<VendorListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 
         [HttpGet("DetailsVendor", Name = "DetailsVendor")]
-        public async Task<IActionResult> DetailsVendor([FromQuery] long id) {
+        public async Task<IActionResult> DetailsVendor([FromQuery] Guid id) {
             var item = await _vendorBusinessManager.GetVendor(id);
             if(item == null)
                 return NotFound();
@@ -81,7 +81,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditVendor", Name = "EditVendor")]
-        public async Task<IActionResult> EditVendor([FromQuery] long id) {
+        public async Task<IActionResult> EditVendor([FromQuery] Guid id) {
             var item = await _vendorBusinessManager.GetVendor(id);
             if(item == null)
                 return NotFound();
@@ -91,7 +91,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdateVendor", Name = "UpdateVendor")]
-        public async Task<IActionResult> UpdateVendor([FromQuery] long id, [FromBody] VendorViewModel model) {
+        public async Task<IActionResult> UpdateVendor([FromQuery] Guid id, [FromBody] VendorViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _vendorBusinessManager.UpdateVendor(id, _mapper.Map<VendorDto>(model));
                 if(item == null)
@@ -102,7 +102,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteVendors", Name = "DeleteVendors")]
-        public async Task<IActionResult> DeleteVendors([FromQuery] long[] id) {
+        public async Task<IActionResult> DeleteVendors([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _vendorBusinessManager.DeleteVendors(id);
                 if(result)
@@ -112,7 +112,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetVendor", Name = "GetVendor")]
-        public async Task<IActionResult> GetVendor([FromQuery] long id) {
+        public async Task<IActionResult> GetVendor([FromQuery] Guid id) {
             var item = await _vendorBusinessManager.GetVendor(id);
             if(item == null)
                 return NotFound();
@@ -120,8 +120,8 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteVendorField", Name = "DeleteVendorField")]
-        public async Task<IActionResult> DeleteVendorField([FromQuery] long id) {
-            var result = await _vendorBusinessManager.DeleteFields(new long[] { id });
+        public async Task<IActionResult> DeleteVendorField([FromQuery] Guid id) {
+            var result = await _vendorBusinessManager.DeleteFields(new Guid[] { id });
             if(result)
                 return Ok(id);
             return BadRequest("No item selected");

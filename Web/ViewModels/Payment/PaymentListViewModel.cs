@@ -6,7 +6,7 @@ using Core.Extension;
 
 namespace Web.ViewModels {
     public class PaymentListViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "Reference no.")]
         public string No { get; set; }
@@ -29,7 +29,7 @@ namespace Web.ViewModels {
         public string Note { get; set; }
 
         [Display(Name = "Invoice")]
-        public long InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
 
         [Display(Name = "Invoice No")]
         public string InvoiceNo { get; set; }

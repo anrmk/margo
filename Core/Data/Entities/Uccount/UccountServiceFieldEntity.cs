@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "UccountServiceFields")]
-    public class UccountServiceFieldEntity: EntityBase<long> {
+    public class UccountServiceFieldEntity: EntityBase<Guid> {
         [ForeignKey("Service")]
         [Column("Service_Id")]
-        public long ServiceId { get; set; }
+        public Guid ServiceId { get; set; }
         public virtual UccountServiceEntity Service { get; set; }
 
         public FieldEnum Type { get; set; }

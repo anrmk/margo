@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using Core.Data.Entities;
 using Core.Data.Enums;
 
@@ -99,7 +100,9 @@ namespace Core.Context {
                         new CategoryFieldEntity() {Name="Note", Type = FieldEnum.TEXT }
                     }},
 
-                    new CategoryEntity() { Name = "Phone", Fields = new List<CategoryFieldEntity>() {
+                     new CategoryEntity() { Name = "Phone" },
+
+                    new CategoryEntity() { Name = "Mobile", Fields = new List<CategoryFieldEntity>() {
                         new CategoryFieldEntity() {Name="Phone Number", Type = FieldEnum.TEXT, IsRequired = true },
                         new CategoryFieldEntity() {Name="Provider", Type = FieldEnum.TEXT },
                         new CategoryFieldEntity() {Name="Secure Question", Type = FieldEnum.TEXT },

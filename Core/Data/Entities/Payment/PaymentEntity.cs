@@ -6,7 +6,7 @@ using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "Payments")]
-    public class PaymentEntity: AuditableEntity<long> {
+    public class PaymentEntity: AuditableEntity<Guid> {
         [Required]
         public string No { get; set; }
 
@@ -24,7 +24,7 @@ namespace Core.Data.Entities {
         public string Note { get; set; }
 
         [Column("Invoice_Id")]
-        public long InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
         public virtual InvoiceEntity Invoice { get; set; }
     }
 }

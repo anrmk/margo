@@ -7,17 +7,16 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface IPersonBusinessManager {
-        Task<PersonDto> GetPerson(long id);
+        Task<PersonDto> GetPerson(Guid id);
         Task<List<PersonDto>> GetPersons();
-        Task<Pager<PersonDto>> GetPersonPager(PagerFilter filter);
+        Task<PagerDto<PersonDto>> GetPersonPager(PagerFilterDto filter);
         Task<PersonDto> CreatePerson(PersonDto dto);
-        Task<PersonDto> UpdatePerson(long id, PersonDto dto);
-        Task<bool> DeletePersons(long[] ids);
+        Task<PersonDto> UpdatePerson(Guid id, PersonDto dto);
+        Task<bool> DeletePersons(Guid[] ids);
     }
 
     public class PersonBusinessManager: BaseBusinessManager, IPersonBusinessManager {
@@ -29,7 +28,7 @@ namespace Core.Services.Business {
             _personManager = personManager;
         }
 
-        public async Task<PersonDto> GetPerson(long id) {
+        public async Task<PersonDto> GetPerson(Guid id) {
             var result = await _personManager.FindInclude(id);
             return _mapper.Map<PersonDto>(result);
         }
@@ -39,7 +38,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<PersonDto>>(result);
         }
 
-        public async Task<Pager<PersonDto>> GetPersonPager(PagerFilter filter) {
+        public async Task<PagerDto<PersonDto>> GetPersonPager(PagerFilterDto filter) {
             var sortby = "Id";
 
             Expression<Func<PersonEntity, bool>> where = x =>
@@ -52,12 +51,12 @@ namespace Core.Services.Business {
             var (list, count) = await _personManager.Pager<PersonEntity>(where, sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
-                return new Pager<PersonDto>(new List<PersonDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<PersonDto>(new List<PersonDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<PersonDto>>(list);
-            return new Pager<PersonDto>(result, count, page, filter.Length);
+            return new PagerDto<PersonDto>(result, count, page, filter.Length);
         }
 
         public async Task<PersonDto> CreatePerson(PersonDto dto) {
@@ -66,7 +65,7 @@ namespace Core.Services.Business {
             return _mapper.Map<PersonDto>(entity);
         }
 
-        public async Task<PersonDto> UpdatePerson(long id, PersonDto dto) {
+        public async Task<PersonDto> UpdatePerson(Guid id, PersonDto dto) {
             var entity = await _personManager.FindInclude(id);
             if(entity == null) {
                 return null;
@@ -78,7 +77,7 @@ namespace Core.Services.Business {
             return _mapper.Map<PersonDto>(entity);
         }
 
-        public async Task<bool> DeletePersons(long[] ids) {
+        public async Task<bool> DeletePersons(Guid[] ids) {
             var entities = await _personManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("Did not find any records.");

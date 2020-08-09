@@ -8,10 +8,56 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Dto\Nsi\**" />
+    <Compile Remove="Data\Dto\Section\**" />
+    <Compile Remove="Data\Dto\Service\**" />
+    <Compile Remove="Data\Entities\Sections\**" />
+    <Compile Remove="Services\Managers\Section\**" />
+    <EmbeddedResource Remove="Data\Dto\Nsi\**" />
+    <EmbeddedResource Remove="Data\Dto\Section\**" />
+    <EmbeddedResource Remove="Data\Dto\Service\**" />
+    <EmbeddedResource Remove="Data\Entities\Sections\**" />
+    <EmbeddedResource Remove="Services\Managers\Section\**" />
+    <None Remove="Data\Dto\Nsi\**" />
+    <None Remove="Data\Dto\Section\**" />
+    <None Remove="Data\Dto\Service\**" />
+    <None Remove="Data\Entities\Sections\**" />
+    <None Remove="Services\Managers\Section\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Dto\Company\CompanySectionDto.cs" />
+    <Compile Remove="Data\Dto\Company\CompanySectionFieldDto.cs" />
+    <Compile Remove="Data\Dto\Uccount\UccountSectionDto.cs" />
+    <Compile Remove="Data\Dto\Uccount\UccountSectionFieldDto.cs" />
+    <Compile Remove="Data\Dto\Vendor\VendorSectionDto.cs" />
+    <Compile Remove="Data\Entities\Company\CompanySectionEntity.cs" />
+    <Compile Remove="Data\Entities\Company\CompanySectionFieldEntity.cs" />
+    <Compile Remove="Data\Entities\Uccount\UccountSectionEntity.cs" />
+    <Compile Remove="Data\Entities\Uccount\UccountSectionFieldEntity.cs" />
+    <Compile Remove="Data\Entities\Vendor\VendorMediaEntity.cs" />
+    <Compile Remove="Data\Entities\Vendor\VendorSectionEntity.cs" />
     <Compile Remove="Migrations\20200804213118_init.cs" />
     <Compile Remove="Migrations\20200804213118_init.Designer.cs" />
     <Compile Remove="Migrations\20200804214343_init.cs" />
     <Compile Remove="Migrations\20200804214343_init.Designer.cs" />
+    <Compile Remove="Migrations\20200807211330_update-ucconut-company-1.cs" />
+    <Compile Remove="Migrations\20200807211330_update-ucconut-company-1.Designer.cs" />
+    <Compile Remove="Migrations\20200807220956_init-1.cs" />
+    <Compile Remove="Migrations\20200807220956_init-1.Designer.cs" />
+    <Compile Remove="Migrations\20200807234652_init.cs" />
+    <Compile Remove="Migrations\20200807234652_init.Designer.cs" />
+    <Compile Remove="Migrations\20200807235801_init-1.cs" />
+    <Compile Remove="Migrations\20200807235801_init-1.Designer.cs" />
+    <Compile Remove="Migrations\20200809024518_inше.cs" />
+    <Compile Remove="Migrations\20200809024518_inше.Designer.cs" />
+    <Compile Remove="Services\Business\SectionBusinessManager.cs" />
+    <Compile Remove="Services\Managers\Company\CompanySectionFieldManager.cs" />
+    <Compile Remove="Services\Managers\Company\CompanySectionManager.cs" />
+    <Compile Remove="Services\Managers\Uccount\UccountSectionFieldManager.cs" />
+    <Compile Remove="Services\Managers\Uccount\UccountSectionManager.cs" />
+    <Compile Remove="Services\Managers\Vendor\VendorMediaManager.cs" />
+    <Compile Remove="Services\Managers\Vendor\VendorSectionManager.cs" />
   </ItemGroup>
 
   <ItemGroup>

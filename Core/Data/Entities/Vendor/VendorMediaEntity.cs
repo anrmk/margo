@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities.Vendor {
     [Table(name: "VendorMedias")]
     public class VendorMediaEntity: MediaEntity {
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
-        public long? VendorId { get; set; }
+        public Guid? VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
 
         /// <summary>

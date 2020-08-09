@@ -28,11 +28,11 @@ namespace Core.Services {
             services.AddTransient<IPersonManager, PersonManager>();
 
             services.AddTransient<ICompanyManager, CompanyManager>();
-            services.AddTransient<ICompanySectionManager, CompanySectionManager>();
-            services.AddTransient<ICompanySectionFieldManager, CompanySectionFieldManager>();
+            //services.AddTransient<ICompanySectionManager, CompanySectionManager>();
+            //services.AddTransient<ICompanySectionFieldManager, CompanySectionFieldManager>();
 
-            services.AddTransient<ISectionManager, SectionManager>();
-            services.AddTransient<ISectionFieldManager, SectionFieldManager>();
+            //services.AddTransient<ISectionManager, SectionManager>();
+            //services.AddTransient<ISectionFieldManager, SectionFieldManager>();
 
             services.AddTransient<ICategoryManager, CategoryManager>();
             services.AddTransient<ICategoryFieldManager, CategoryFieldManager>();
@@ -41,8 +41,8 @@ namespace Core.Services {
             services.AddTransient<IVendorFieldManager, VendorFieldManager>();
 
             services.AddTransient<IUccountManager, UccountManager>();
-            services.AddTransient<IUccountSectionManager, UccountSectionManager>();
-            services.AddTransient<IUccountSectionFieldManager, UccountSectionFieldManager>();
+            //services.AddTransient<IUccountSectionManager, UccountSectionManager>();
+            //services.AddTransient<IUccountSectionFieldManager, UccountSectionFieldManager>();
             services.AddTransient<IUccountServiceManager, UccountServiceManager>();
             services.AddTransient<IUccountServiceFieldManager, UccountServiceFieldManager>();
 
@@ -51,7 +51,7 @@ namespace Core.Services {
 
             /////Business
             services.AddTransient<IAccountBusinessManager, AccountBusinessManager>();
-            services.AddTransient<ISectionBusinessManager, SectionBusinessManager>();
+            //services.AddTransient<ISectionBusinessManager, SectionBusinessManager>();
             services.AddTransient<IPersonBusinessManager, PersonBusinessManager>();
             services.AddTransient<ICompanyBusinessManager, CompanyBusinessManager>();
             services.AddTransient<ICategoryBusinessManager, CategoryBusinessManager>();

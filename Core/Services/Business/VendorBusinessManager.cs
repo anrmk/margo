@@ -7,19 +7,18 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface IVendorBusinessManager {
-        Task<VendorDto> GetVendor(long id);
+        Task<VendorDto> GetVendor(Guid id);
         Task<List<VendorDto>> GetVendors();
-        Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter);
+        Task<PagerDto<VendorDto>> GetVendorPager(PagerFilterDto filter);
         Task<VendorDto> CreateVendor(VendorDto dto);
-        Task<VendorDto> UpdateVendor(long id, VendorDto dto);
-        Task<bool> DeleteVendors(long[] ids);
+        Task<VendorDto> UpdateVendor(Guid id, VendorDto dto);
+        Task<bool> DeleteVendors(Guid[] ids);
 
-        Task<bool> DeleteFields(long[] ids);
+        Task<bool> DeleteFields(Guid[] ids);
     }
 
     public class VendorBusinessManager: BaseBusinessManager, IVendorBusinessManager {
@@ -34,7 +33,7 @@ namespace Core.Services.Business {
             _vendorFieldManager = vendorFieldManager;
         }
 
-        public async Task<VendorDto> GetVendor(long id) {
+        public async Task<VendorDto> GetVendor(Guid id) {
             var result = await _vendorManager.FindInclude(id);
             return _mapper.Map<VendorDto>(result);
         }
@@ -44,7 +43,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<VendorDto>>(result);
         }
 
-        public async Task<Pager<VendorDto>> GetVendorPager(PagerFilter filter) {
+        public async Task<PagerDto<VendorDto>> GetVendorPager(PagerFilterDto filter) {
             var sortby = "Id";
 
             Expression<Func<VendorEntity, bool>> where = x =>
@@ -60,12 +59,12 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<VendorDto>(new List<VendorDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<VendorDto>(new List<VendorDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<VendorDto>>(list);
-            return new Pager<VendorDto>(result, count, page, filter.Length);
+            return new PagerDto<VendorDto>(result, count, page, filter.Length);
         }
 
         public async Task<VendorDto> CreateVendor(VendorDto dto) {
@@ -74,7 +73,7 @@ namespace Core.Services.Business {
             return _mapper.Map<VendorDto>(entity);
         }
 
-        public async Task<VendorDto> UpdateVendor(long id, VendorDto dto) {
+        public async Task<VendorDto> UpdateVendor(Guid id, VendorDto dto) {
             var entity = await _vendorManager.FindInclude(id);
             if(entity == null) {
                 return null;
@@ -85,7 +84,7 @@ namespace Core.Services.Business {
             return _mapper.Map<VendorDto>(entity);
         }
 
-        public async Task<bool> DeleteVendors(long[] ids) {
+        public async Task<bool> DeleteVendors(Guid[] ids) {
             var entities = await _vendorManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("We did not find records for this request!");
@@ -94,7 +93,7 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
-        public async Task<bool> DeleteFields(long[] ids) {
+        public async Task<bool> DeleteFields(Guid[] ids) {
             var entities = await _vendorFieldManager.FindAll(ids);
             if(entities == null)
                 throw new Exception("We did not find records for this request!");

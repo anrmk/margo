@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
     [Table(name: "InvoiceServices")]
-    public class InvoiceServiceEntity: EntityBase<long> {
+    public class InvoiceServiceEntity: EntityBase<Guid> {
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; }
@@ -16,7 +17,7 @@ namespace Core.Data.Entities {
 
         [ForeignKey("Invoice")]
         [Column("Invoice_Id")]
-        public long InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
         public virtual InvoiceEntity Invoice { get; set; }
     }
 }

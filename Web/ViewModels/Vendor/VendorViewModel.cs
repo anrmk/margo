@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class VendorViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [MaxLength(256)]

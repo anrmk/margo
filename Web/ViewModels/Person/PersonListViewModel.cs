@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 #nullable enable
 namespace Web.ViewModels {
     public class PersonListViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(64, MinimumLength = 1)]

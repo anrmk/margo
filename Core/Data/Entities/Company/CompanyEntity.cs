@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
     [Table(name: "Companies")]
-    public class CompanyEntity: AuditableEntity<long> {
+    public class CompanyEntity: AuditableEntity<Guid> {
         [Required]
         [MaxLength(256)]
         public string Name { get; set; }

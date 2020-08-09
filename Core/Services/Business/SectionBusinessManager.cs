@@ -7,14 +7,13 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface ISectionBusinessManager {
         //  SECTION
         Task<SectionDto> GetSection(long id);
-        Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter);
+        Task<PagerDto<SectionDto>> GetSectionPage(PagerFilterDto filter);
         Task<List<SectionDto>> GetSections();
         Task<SectionDto> CreateSection(SectionDto dto);
         Task<SectionDto> UpdateSection(long id, SectionDto dto);
@@ -24,7 +23,7 @@ namespace Core.Services.Business {
         //  SECTION FIELD
         Task<SectionFieldDto> GetSectionField(long id);
         Task<List<SectionFieldDto>> GetSectionFields(long sectionId);
-        Task<Pager<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter);
+        Task<PagerDto<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter);
         Task<SectionFieldDto> CreateSectionField(SectionFieldDto dto);
         Task<SectionFieldDto> UpdateSectionField(long id, SectionFieldDto dto);
         Task<bool> DeleteSectionField(long id);
@@ -446,7 +445,7 @@ namespace Core.Services.Business {
             return _mapper.Map<SectionDto>(result);
         }
 
-        public async Task<Pager<SectionDto>> GetSectionPage(PagerFilter filter) {
+        public async Task<PagerDto<SectionDto>> GetSectionPage(PagerFilterDto filter) {
             var sortby = "Name";
 
             Expression<Func<SectionEntity, bool>> where = x =>
@@ -458,12 +457,12 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionDto>(new List<SectionDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<SectionDto>(new List<SectionDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<SectionDto>>(list);
-            return new Pager<SectionDto>(result, count, page, filter.Length);
+            return new PagerDto<SectionDto>(result, count, page, filter.Length);
         }
 
         public async Task<List<SectionDto>> GetSections() {
@@ -513,7 +512,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<SectionFieldDto>>(result);
         }
 
-        public async Task<Pager<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter) {
+        public async Task<PagerDto<SectionFieldDto>> GetSectionFieldsPage(SectionFieldsFilterDto filter) {
             var sortby = "Name";
 
             Expression<Func<SectionFieldEntity, bool>> where = x =>
@@ -526,12 +525,12 @@ namespace Core.Services.Business {
             var count = tuple.Item2;
 
             if(count == 0)
-                return new Pager<SectionFieldDto>(new List<SectionFieldDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<SectionFieldDto>(new List<SectionFieldDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<SectionFieldDto>>(list);
-            return new Pager<SectionFieldDto>(result, count, page, filter.Length);
+            return new PagerDto<SectionFieldDto>(result, count, page, filter.Length);
         }
 
         public async Task<SectionFieldDto> CreateSectionField(SectionFieldDto dto) {

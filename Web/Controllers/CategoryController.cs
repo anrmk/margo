@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
 using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
@@ -60,14 +63,14 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetCategories", Name = "GetCategories")]
-        public async Task<Pager<CategoryListViewModel>> GetCategories([FromQuery] PagerFilterViewModel model) {
-            var result = await _categoryBusinessManager.GetCategoryPage(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<CategoryListViewModel>(_mapper.Map<List<CategoryListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<CategoryListViewModel>> GetCategories([FromQuery] PagerFilterViewModel model) {
+            var result = await _categoryBusinessManager.GetCategoryPage(_mapper.Map<PagerFilterDto>(model));
+            var pager = new PagerDto<CategoryListViewModel>(_mapper.Map<List<CategoryListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 
         [HttpGet("DetailsCategory", Name = "DetailsCategory")]
-        public async Task<IActionResult> DetailsCategory([FromQuery] long id) {
+        public async Task<IActionResult> DetailsCategory([FromQuery] Guid id) {
             var item = await _categoryBusinessManager.GetCategory(id);
             if(item == null)
                 return NotFound();
@@ -101,7 +104,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetCategory", Name = "GetCategory")]
-        public async Task<IActionResult> GetCategory([FromQuery] long id) {
+        public async Task<IActionResult> GetCategory([FromQuery] Guid id) {
             var item = await _categoryBusinessManager.GetCategory(id);
             if(item == null)
                 return NotFound();
@@ -109,13 +112,13 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditCategory", Name = "EditCategory")]
-        public async Task<IActionResult> EditCategory([FromQuery] long id) {
+        public async Task<IActionResult> EditCategory([FromQuery] Guid id) {
             var item = await _categoryBusinessManager.GetCategory(id);
             if(item == null)
                 return NotFound();
 
             var categories = await _categoryBusinessManager.GetCategories();
-            categories.Remove(item);
+            categories.Remove(item); //TODO: #129 Category: Eliminate the possibility of adding an element as a parent to itself
             var categoryList = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
@@ -127,7 +130,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdateCategory", Name = "UpdateCategory")]
-        public async Task<IActionResult> UpdateCategory([FromQuery] long id, [FromBody] CategoryViewModel model) {
+        public async Task<IActionResult> UpdateCategory([FromQuery] Guid id, [FromBody] CategoryViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _categoryBusinessManager.UpdateCategory(id, _mapper.Map<CategoryDto>(model));
                 if(item == null)
@@ -138,7 +141,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteCategories", Name = "DeleteCategories")]
-        public async Task<IActionResult> DeleteCategories([FromQuery] long[] id) {
+        public async Task<IActionResult> DeleteCategories([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _categoryBusinessManager.DeleteCategories(id);
                 if(result)
@@ -148,11 +151,17 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteCategoryField", Name = "DeleteCategoryField")]
-        public async Task<IActionResult> DeleteCategoryField([FromQuery] long id) {
-            var result = await _categoryBusinessManager.DeleteFields(new long[] { id });
+        public async Task<IActionResult> DeleteCategoryField([FromQuery] Guid id) {
+            var result = await _categoryBusinessManager.DeleteFields(new Guid[] { id });
             if(result)
                 return Ok(id);
             return BadRequest("No item selected");
+        }
+
+        [HttpGet("GetFieldTypes", Name = "GetFieldTypes")]
+        public IActionResult GetFieldTypes() {
+            var cast = Enum.GetValues(typeof(FieldEnum)).Cast<FieldEnum>().Select(x => new { Name = Enum.GetName(typeof(FieldEnum), x), Id = x, Title = x.GetAttribute<DisplayAttribute>().Name }).ToList();
+            return Ok(cast);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
     [Table(name: "Invoices")]
-    public class InvoiceEntity: AuditableEntity<long> {
+    public class InvoiceEntity: AuditableEntity<Guid> {
         [Required]
         [MaxLength(16)]
         public string No { get; set; }
@@ -29,7 +29,7 @@ namespace Core.Data.Entities {
 
         [ForeignKey("Account")]
         [Column("Account_Id")]
-        public long AccountId { get; set; }
+        public Guid AccountId { get; set; }
         public virtual UccountEntity Account { get; set; }
 
         public virtual ICollection<PaymentEntity> Payments { get; set; }

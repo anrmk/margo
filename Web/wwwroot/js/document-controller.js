@@ -13,7 +13,10 @@
 
         this.table = $(this.options.table);
         this.toolbar = $(this.table.data('toolbar'));
-        this.filter = $(this.options.filter);
+        this.filter = $(this.options.filter).on('change', (e) => {
+            e.preventDefault();
+            this.reload(true);
+        });
         this.datatable = this.table.DataTable({
             'ajax': {
                 'url': this.options.controller.list,
@@ -55,29 +58,38 @@
         this.toolbar.find('button[data-action=delete]').on('click', (e) => this.remove(e));
 
         tbody.on('click', 'tr', (e) => {
-            var target = $(e.currentTarget);
-            var row = this.datatable.row(target);
+           // e.preventDefault();
 
-            if (target.hasClass('active')) {
-                target.removeClass('active');
-            } else {
-                this.table.find('tr.active').removeClass('active');
-                target.addClass('active');
-            }
-            this.options.onRowClick(e, row.data());
+            //if (e.target.tagName === 'TR') {
+            var target = $(e.currentTarget);
+
+                var row = this.datatable.row(target);
+
+                if (target.hasClass('active')) {
+                    target.removeClass('active');
+                } else {
+                    this.table.find('tr.active').removeClass('active');
+                    target.addClass('active');
+                }
+                this.options.onRowClick(e, row.data());
+          //  }
         });
 
         tbody.on('dblclick', 'tr', (e) => {
+           // e.preventDefault();
+
             var row = this.datatable.row(e.currentTarget);
             this.options.onDblRowClick(e, row.data());
         });
 
         tbody.on('change', 'input', (e) => {
+            e.preventDefault();
+
             var $input = $(e.currentTarget);
             var row = this.datatable.row($($input).parents('tr'));
 
-            //var value = Number($input.val());
-            var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
+            var value = $input.val();
+            //var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
             var index = $.inArray(value, this.options.selected);
 
             if (index === -1) {

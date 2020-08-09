@@ -6,8 +6,9 @@ using Core.Extension;
 
 namespace Web.ViewModels {
     public class PaymentViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
+        [Required]
         [Display(Name = "Reference no.")]
         public string No { get; set; }
 
@@ -15,6 +16,7 @@ namespace Web.ViewModels {
         [Display(Name = "Payment date")]
         public DateTime Date { get; set; }
 
+        [Required]
         [Display(Name = "Amount received")]
         public decimal Amount { get; set; }
 
@@ -29,7 +31,7 @@ namespace Web.ViewModels {
         public string Note { get; set; }
 
         [Display(Name = "Invoice")]
-        public long InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
 
         [Display(Name = "Invoice No")]
         public string InvoiceNo { get; set; }

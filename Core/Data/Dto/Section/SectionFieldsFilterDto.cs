@@ -1,8 +1,5 @@
-﻿
-using Core.Extension;
-
-namespace Core.Data.Dto {
-    public class SectionFieldsFilterDto: PagerFilter {
+﻿namespace Core.Data.Dto {
+    public class SectionFieldsFilterDto: PagerFilterDto {
         public long SectionId { get; set; }
     }
 }

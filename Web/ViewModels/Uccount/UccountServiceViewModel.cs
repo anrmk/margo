@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class UccountServiceViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         [Display(Name = "Uccount")]
-        public long? UccountId { get; set; }
+        public Guid? UccountId { get; set; }
         public string Name { get; set; }
         public IEnumerable<UccountServiceFieldViewModel> Fields { get; set; }
     }

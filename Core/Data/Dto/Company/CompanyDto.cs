@@ -2,10 +2,10 @@
 
 namespace Core.Data.Dto {
     public class CompanyDto {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
-       
+
         public DateTime? Founded { get; set; }
         public string EIN { get; set; }
         public string DB { get; set; }

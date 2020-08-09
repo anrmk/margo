@@ -53,9 +53,9 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetPayments", Name = "GetPayments")]
-        public async Task<Pager<PaymentListViewModel>> GetPayments([FromQuery] PaymentFilterViewModel model) {
+        public async Task<PagerDto<PaymentListViewModel>> GetPayments([FromQuery] PaymentFilterViewModel model) {
             var result = await _paymentBusinessManager.GetPaymentPager(_mapper.Map<PaymentFilterDto>(model));
-            return new Pager<PaymentListViewModel>(
+            return new PagerDto<PaymentListViewModel>(
                 _mapper.Map<List<PaymentListViewModel>>(result.Data),
                 result.RecordsTotal,
                 result.Start,
@@ -63,7 +63,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DetailsPayment", Name = "DetailsPayment")]
-        public async Task<IActionResult> DetailsPayment([FromQuery] long id) {
+        public async Task<IActionResult> DetailsPayment([FromQuery] Guid id) {
             var payment = await _paymentBusinessManager.GetPayment(id);
             if(payment == null)
                 return NotFound();
@@ -119,7 +119,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditPayment", Name = "EditPayment")]
-        public async Task<IActionResult> EditPayment([FromQuery] long id) {
+        public async Task<IActionResult> EditPayment([FromQuery] Guid id) {
             var item = await _paymentBusinessManager.GetPayment(id);
             if(item == null)
                 return NotFound();
@@ -142,7 +142,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdatePayment", Name = "UpdatePayment")]
-        public async Task<IActionResult> UpdatePayment([FromQuery] long id, [FromBody] PaymentViewModel model) {
+        public async Task<IActionResult> UpdatePayment([FromQuery] Guid id, [FromBody] PaymentViewModel model) {
             try {
                 if(!ModelState.IsValid) {
                     throw new Exception("Form is not valid!");
@@ -158,7 +158,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeletePayments", Name = "DeletePayments")]
-        public async Task<IActionResult> DeletePayments([FromQuery] long[] id) {
+        public async Task<IActionResult> DeletePayments([FromQuery] Guid[] id) {
             try {
                 if(id.Length > 0) {
                     var result = await _paymentBusinessManager.DeletePayments(id);

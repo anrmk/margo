@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Data.Dto {
     public class InvoiceDto {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string No { get; set; }
         public decimal Amount { get; set; }
         public decimal TaxRate { get; set; }
@@ -23,7 +23,7 @@ namespace Core.Data.Dto {
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
-        public long AccountId { get; set; }
+        public Guid AccountId { get; set; }
         public UccountDto Account { get; set; }
 
         public IEnumerable<InvoiceServiceDto> Services { get; set; }

@@ -10,7 +10,7 @@
         }
     });
 
-    $('.ui.dropdown').dropdown();
+    $('.ui.dropdown').dropdown({'clearable': true});
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
 }).ajaxSend((event, xhr, options) => {

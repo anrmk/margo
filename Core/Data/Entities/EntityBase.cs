@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
     public interface IEntityBase<T> {
@@ -8,6 +9,7 @@ namespace Core.Data.Entities {
 
     public abstract class EntityBase<T>: IEntityBase<T> {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual T Id { get; set; }
     }
 

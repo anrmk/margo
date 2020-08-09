@@ -125,9 +125,9 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetSections", Name = "GetSections")]
-        public async Task<Pager<SectionListViewModel>> GetSections([FromQuery] PagerFilterViewModel model) {
-            var result = await _sectionBusinessManager.GetSectionPage(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<SectionListViewModel>> GetSections([FromQuery] PagerFilterViewModel model) {
+            var result = await _sectionBusinessManager.GetSectionPage(_mapper.Map<PagerFilterDto>(model));
+            var pager = new PagerDto<SectionListViewModel>(_mapper.Map<List<SectionListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 
@@ -148,9 +148,9 @@ namespace Web.Controllers.Api {
         //}
 
         [HttpGet("GetSectionFields", Name = "GetSectionFields")]
-        public async Task<Pager<SectionFieldViewModel>> GetSectionFields([FromQuery] SectionFieldsFilterViewModel model) {
+        public async Task<PagerDto<SectionFieldViewModel>> GetSectionFields([FromQuery] SectionFieldsFilterViewModel model) {
             var result = await _sectionBusinessManager.GetSectionFieldsPage(_mapper.Map<SectionFieldsFilterDto>(model));
-            var pager = new Pager<SectionFieldViewModel>(_mapper.Map<List<SectionFieldViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+            var pager = new PagerDto<SectionFieldViewModel>(_mapper.Map<List<SectionFieldViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 

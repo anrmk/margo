@@ -1,24 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using Core.Data.Enums;
 
 namespace Core.Data.Entities {
     [Table(name: "Uccounts")]
-    public class UccountEntity: AuditableEntity<long> {
+    public class UccountEntity: AuditableEntity<Guid> {
         [ForeignKey("Company")]
         [Column("Company_Id")]
-        public long? CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
         public virtual CompanyEntity Company { get; set; }
 
         [ForeignKey("Vendor")]
         [Column("Vendor_Id")]
-        public long VendorId { get; set; }
+        public Guid VendorId { get; set; }
         public virtual VendorEntity Vendor { get; set; }
 
         [ForeignKey("Person")]
         [Column("Person_Id")]
-        public long? PersonId { get; set; }
+        public Guid? PersonId { get; set; }
         public virtual PersonEntity Person { get; set; }
 
         public UccountTypes Kind { get; set; }

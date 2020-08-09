@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,18 +11,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IVendorManager: IEntityManager<VendorEntity> {
-        Task<VendorEntity> FindInclude(long id);
+        Task<VendorEntity> FindInclude(Guid id);
         Task<List<VendorEntity>> FindAll();
-        Task<List<VendorEntity>> FindAll(long[] ids);
+        Task<List<VendorEntity>> FindAll(Guid[] ids);
     }
 
     public class VendorManager: AsyncEntityManager<VendorEntity>, IVendorManager {
         public VendorManager(IApplicationContext context) : base(context) { }
 
-        public async Task<VendorEntity> FindInclude(long id) {
+        public async Task<VendorEntity> FindInclude(Guid id) {
             return await DbSet
                 .Include(x => x.Fields)
-                .Where(x => x.Id == id)
+                .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
@@ -31,7 +32,7 @@ namespace Core.Services.Managers {
                 .ToListAsync();
         }
 
-        public async Task<List<VendorEntity>> FindAll(long[] ids) {
+        public async Task<List<VendorEntity>> FindAll(Guid[] ids) {
             return await DbSet
                 .Include(x => x.Fields)
                 .Where(x => ids.Contains(x.Id))

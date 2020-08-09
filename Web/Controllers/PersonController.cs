@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -39,7 +39,7 @@ namespace Web.Controllers.Api {
         private readonly IPersonBusinessManager _personBusinessManager;
 
         public PersonController(IMapper mapper, IViewRenderService viewRenderService,
-            ISectionBusinessManager businessManager,
+            //ISectionBusinessManager businessManager,
             IPersonBusinessManager personBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
@@ -47,14 +47,14 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetPersons", Name = "GetPersons")]
-        public async Task<Pager<PersonListViewModel>> GetPersons([FromQuery] PagerFilterViewModel model) {
-            var result = await _personBusinessManager.GetPersonPager(_mapper.Map<PagerFilter>(model));
-            var pager = new Pager<PersonListViewModel>(_mapper.Map<List<PersonListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        public async Task<PagerDto<PersonListViewModel>> GetPersons([FromQuery] PagerFilterViewModel model) {
+            var result = await _personBusinessManager.GetPersonPager(_mapper.Map<PagerFilterDto>(model));
+            var pager = new PagerDto<PersonListViewModel>(_mapper.Map<List<PersonListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
 
         [HttpGet("DetailsPerson", Name = "DetailsPerson")]
-        public async Task<IActionResult> DetailsPerson([FromQuery] long id) {
+        public async Task<IActionResult> DetailsPerson([FromQuery] Guid id) {
             var item = await _personBusinessManager.GetPerson(id);
             if(item == null)
                 return NotFound();
@@ -81,7 +81,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("EditPerson", Name = "EditPerson")]
-        public async Task<IActionResult> EditPerson([FromQuery] long id) {
+        public async Task<IActionResult> EditPerson([FromQuery] Guid id) {
             var item = await _personBusinessManager.GetPerson(id);
             if(item == null)
                 return NotFound();
@@ -91,7 +91,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpPut("UpdatePerson", Name = "UpdatePerson")]
-        public async Task<IActionResult> UpdatePerson([FromQuery] long id, [FromBody] PersonViewModel model) {
+        public async Task<IActionResult> UpdatePerson([FromQuery] Guid id, [FromBody] PersonViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _personBusinessManager.UpdatePerson(id, _mapper.Map<PersonDto>(model));
                 if(item == null)
@@ -102,7 +102,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeletePersons", Name = "DeletePersons")]
-        public async Task<IActionResult> DeletePersons([FromQuery] long[] id) {
+        public async Task<IActionResult> DeletePersons([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _personBusinessManager.DeletePersons(id);
                 if(result)

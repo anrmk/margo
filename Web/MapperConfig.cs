@@ -5,7 +5,7 @@ using System.Linq;
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Data.Dto.Nsi;
+
 using Core.Extension;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +24,7 @@ namespace Web {
         }
 
         public MapperConfig() {
-            CreateMap<PagerFilterViewModel, PagerFilter>();
+            CreateMap<PagerFilterViewModel, PagerFilterDto>();
 
             CreateMap<AspNetUserViewModel, AspNetUserDto>()
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => new AspNetRoleDto() { Id = x })))
@@ -43,8 +43,8 @@ namespace Web {
 
             CreateMap<CompanyListViewModel, CompanyDto>().ReverseMap();
 
-            CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
-            CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
+            //CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
+            //CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
             #endregion
 
             #region UCCOUNTS
@@ -53,11 +53,12 @@ namespace Web {
                 .ReverseMap()
                 .ForMember(d => d.ServiceCount, o => o.MapFrom(s => s.Services.Count()))
                 .ForMember(d => d.Kind, o => o.MapFrom(s => s.Kind.GetAttribute<DisplayAttribute>().Name));
-            CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
-            CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
+            //CreateMap<UccountSectionViewModel, UccountSectionDto>().ReverseMap();
+            //CreateMap<UccountSectionFieldViewModel, UccountSectionFieldDto>().ReverseMap();
             CreateMap<UccountServiceFieldViewModel, UccountServiceFieldDto>().ReverseMap();
             CreateMap<UccountVendorFieldViewModel, UccountVendorFieldDto>().ReverseMap();
             CreateMap<UccountServiceViewModel, UccountServiceDto>().ReverseMap();
+            CreateMap<UccountFilterViewModel, UccountFilterDto>().ReverseMap();
             #endregion
 
             #region INVOICE
@@ -78,14 +79,12 @@ namespace Web {
             CreateMap<PaymentListViewModel, PaymentDto>().ReverseMap();
             CreateMap<PaymentFilterViewModel, PaymentFilterDto>().ReverseMap();
 
-            #region SECTIONS
-            CreateMap<SectionViewModel, SectionDto>().ReverseMap();
-            CreateMap<SectionListViewModel, SectionDto>().ReverseMap();
-            CreateMap<SectionFieldViewModel, SectionFieldDto>().ReverseMap();
-            CreateMap<SectionFieldsFilterViewModel, SectionFieldsFilterDto>().ReverseMap();
-
-
-            #endregion
+            //#region SECTIONS
+            //CreateMap<SectionViewModel, SectionDto>().ReverseMap();
+            //CreateMap<SectionListViewModel, SectionDto>().ReverseMap();
+            //CreateMap<SectionFieldViewModel, SectionFieldDto>().ReverseMap();
+            //CreateMap<SectionFieldsFilterViewModel, SectionFieldsFilterDto>().ReverseMap();
+            //#endregion
 
             CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
@@ -96,11 +95,9 @@ namespace Web {
             CreateMap<VendorFieldViewModel, VendorFieldDto>().ReverseMap();
 
 
-            CreateMap<NsiViewModel, NsiDto>().ReverseMap();
-
-            #region SERVICES
-            CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();
-            #endregion
+            //#region SERVICES
+            //CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();
+            //#endregion
 
             #region PERSONS
             CreateMap<PersonViewModel, PersonDto>().ReverseMap();

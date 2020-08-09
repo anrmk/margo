@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
 
 namespace Web.ViewModels {
     public class CompanySectionFieldViewModel {
         [Display(Name = "Section")]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "Company Section")]
-        public long CompanySectionId { get; set; }
+        public Guid CompanySectionId { get; set; }
 
         [Required]
         [Display(Name = "Input Type")]

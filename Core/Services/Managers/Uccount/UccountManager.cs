@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,15 +12,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IUccountManager: IEntityManager<UccountEntity> {
-        Task<UccountEntity> FindInclude(long id);
-        Task<List<UccountEntity>> FindAll(long[] ids);
+        Task<UccountEntity> FindInclude(Guid id);
+        Task<List<UccountEntity>> FindAll(Guid[] ids);
         Task<List<UccountEntity>> FindAll();
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
         public UccountManager(IApplicationContext context) : base(context) { }
 
-        public async Task<UccountEntity> FindInclude(long id) {
+        public async Task<UccountEntity> FindInclude(Guid id) {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
@@ -27,10 +28,10 @@ namespace Core.Services.Managers {
                     .ThenInclude(x => x.Fields)
                 .Include(x => x.Person)
                 .Include(x => x.Fields)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .SingleOrDefaultAsync(x => x.Id.Equals(id));
         }
 
-        public async Task<List<UccountEntity>> FindAll(long[] ids) {
+        public async Task<List<UccountEntity>> FindAll(Guid[] ids) {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)

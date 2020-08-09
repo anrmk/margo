@@ -7,17 +7,16 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
     public interface IPaymentBusinessManager {
-        Task<PaymentDto> GetPayment(long id);
+        Task<PaymentDto> GetPayment(Guid id);
         Task<List<PaymentDto>> GetPayments();
-        Task<Pager<PaymentDto>> GetPaymentPager(PagerFilter filter);
+        Task<PagerDto<PaymentDto>> GetPaymentPager(PagerFilterDto filter);
         Task<PaymentDto> CreatePayment(PaymentDto dto);
-        Task<PaymentDto> UpdatePayment(long id, PaymentDto dto);
-        Task<bool> DeletePayments(long[] ids);
+        Task<PaymentDto> UpdatePayment(Guid id, PaymentDto dto);
+        Task<bool> DeletePayments(Guid[] ids);
     }
 
     public class PaymentBusinessManager: BaseBusinessManager, IPaymentBusinessManager {
@@ -29,7 +28,7 @@ namespace Core.Services.Business {
             _paymentManager = paymentManager;
         }
 
-        public async Task<PaymentDto> GetPayment(long id) {
+        public async Task<PaymentDto> GetPayment(Guid id) {
             var result = await _paymentManager.FindInclude(id);
             return _mapper.Map<PaymentDto>(result);
         }
@@ -39,7 +38,7 @@ namespace Core.Services.Business {
             return _mapper.Map<List<PaymentDto>>(entities);
         }
 
-        public async Task<Pager<PaymentDto>> GetPaymentPager(PagerFilter filter) {
+        public async Task<PagerDto<PaymentDto>> GetPaymentPager(PagerFilterDto filter) {
             var sortby = "Id";
 
             string[] include = new string[] { "Invoice" };
@@ -47,12 +46,12 @@ namespace Core.Services.Business {
             var (list, count) = await _paymentManager.Pager<PaymentEntity>(x => true, sortby, filter.Start, filter.Length, include);
 
             if(count == 0)
-                return new Pager<PaymentDto>(new List<PaymentDto>(), 0, filter.Start, filter.Length);
+                return new PagerDto<PaymentDto>(new List<PaymentDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
 
             var result = _mapper.Map<List<PaymentDto>>(list);
-            return new Pager<PaymentDto>(result, count, page, filter.Length);
+            return new PagerDto<PaymentDto>(result, count, page, filter.Length);
         }
 
         public async Task<PaymentDto> CreatePayment(PaymentDto dto) {
@@ -61,7 +60,7 @@ namespace Core.Services.Business {
             return _mapper.Map<PaymentDto>(entity);
         }
 
-        public async Task<PaymentDto> UpdatePayment(long id, PaymentDto dto) {
+        public async Task<PaymentDto> UpdatePayment(Guid id, PaymentDto dto) {
             var entity = await _paymentManager.FindInclude(id);
             if(entity == null) {
                 return null;
@@ -73,7 +72,7 @@ namespace Core.Services.Business {
             return _mapper.Map<PaymentDto>(entity);
         }
 
-        public async Task<bool> DeletePayments(long[] ids) {
+        public async Task<bool> DeletePayments(Guid[] ids) {
             var entities = await _paymentManager.FindByIds(ids);
             if(entities?.Any() != true)
                 throw new Exception("Did not find any records.");

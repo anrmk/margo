@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Web.ViewModels {
     public class PaymentFilterViewModel: PagerFilterViewModel {
         [Display(Name = "Invoice")]
-        public long? InvoiceId { get; set; }
+        public Guid? InvoiceId { get; set; }
 
         [Display(Name = "Date From")]
         [DataType(DataType.Date)]

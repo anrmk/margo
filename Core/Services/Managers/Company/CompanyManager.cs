@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,17 +11,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface ICompanyManager: IEntityManager<CompanyEntity> {
-        Task<CompanyEntity> FindInclude(long id);
+        Task<CompanyEntity> FindInclude(Guid id);
         Task<List<CompanyEntity>> FindAll();
-        Task<List<CompanyEntity>> FindAll(long[] ids);
+        Task<List<CompanyEntity>> FindAll(Guid[] ids);
     }
 
     public class CompanyManager: AsyncEntityManager<CompanyEntity>, ICompanyManager {
         public CompanyManager(IApplicationContext context) : base(context) { }
 
-        public async Task<CompanyEntity> FindInclude(long id) {
+        public async Task<CompanyEntity> FindInclude(Guid id) {
             return await DbSet
-                .Where(x => x.Id == id)
+                .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }
 
@@ -29,7 +30,7 @@ namespace Core.Services.Managers {
                 .ToListAsync();
         }
 
-        public async Task<List<CompanyEntity>> FindAll(long[] ids) {
+        public async Task<List<CompanyEntity>> FindAll(Guid[] ids) {
             return await DbSet
                 .Where(x => ids.Contains(x.Id))
                 .ToListAsync();

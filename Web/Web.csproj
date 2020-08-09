@@ -17,23 +17,46 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\Section\**" />
+    <Compile Remove="ViewModels\Service\**" />
+    <Compile Remove="ViewModels\Vaccount\**" />
+    <Compile Remove="Views\Section\**" />
     <Compile Remove="wwwroot\fonts\**" />
+    <Content Remove="ViewModels\Section\**" />
+    <Content Remove="ViewModels\Service\**" />
+    <Content Remove="ViewModels\Vaccount\**" />
+    <Content Remove="Views\Section\**" />
     <Content Remove="wwwroot\fonts\**" />
+    <EmbeddedResource Remove="ViewModels\Section\**" />
+    <EmbeddedResource Remove="ViewModels\Service\**" />
+    <EmbeddedResource Remove="ViewModels\Vaccount\**" />
+    <EmbeddedResource Remove="Views\Section\**" />
     <EmbeddedResource Remove="wwwroot\fonts\**" />
+    <None Remove="ViewModels\Section\**" />
+    <None Remove="ViewModels\Service\**" />
+    <None Remove="ViewModels\Vaccount\**" />
+    <None Remove="Views\Section\**" />
     <None Remove="wwwroot\fonts\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\SectionController.cs" />
+    <Compile Remove="ViewModels\Company\CompanySectionFieldViewModel.cs" />
+    <Compile Remove="ViewModels\Company\CompanySectionViewModel.cs" />
+    <Compile Remove="ViewModels\Uccount\UccountSectionFieldViewModel.cs" />
+    <Compile Remove="ViewModels\Uccount\UccountSectionViewModel.cs" />
     <Compile Remove="ViewModels\Vendor\VendorSectionViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="Views\Company\_AddSectionFieldPartial.cshtml" />
+    <Content Remove="Views\Company\_AddSectionPartial.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
-    <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="CsvHelper" Version="13.0.0" />
     
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />

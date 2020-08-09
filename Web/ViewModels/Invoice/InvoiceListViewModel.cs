@@ -8,7 +8,7 @@ using Core.Extension;
 namespace Web.ViewModels {
     public class InvoiceListViewModel {
 
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(16, MinimumLength = 1)]

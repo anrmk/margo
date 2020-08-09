@@ -1,11 +1,13 @@
-﻿namespace Web.ViewModels {
+﻿using System;
+
+namespace Web.ViewModels {
     public class InvoiceServiceViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public decimal Amount { get; set; }
         public int Count { get; set; }
         public string Name { get; set; }
 
-        public long CategoryId { get; set; }
-        public long InvoiceId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid InvoiceId { get; set; }
     }
 }
