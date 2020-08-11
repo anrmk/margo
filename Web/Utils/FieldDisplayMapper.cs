@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-
 using Core.Extension;
 
 namespace Web.Utils {

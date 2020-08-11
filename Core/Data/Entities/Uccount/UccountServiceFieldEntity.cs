@@ -21,5 +21,7 @@ namespace Core.Data.Entities {
         public string Value { get; set; }
 
         public bool IsRequired { get; set; }
+
+        public bool IsHidden { get; set; }
     }
 }

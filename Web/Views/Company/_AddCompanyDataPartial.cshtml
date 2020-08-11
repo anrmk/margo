@@ -1,0 +1,91 @@
+﻿@model CompanyDataListViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var servicesUrl = Url.Action("GetUccount", "Uccount");
+    var dataUrl = Url.Action("GetUccountService", "Uccount");
+
+    var accounts = (SelectListItem[])ViewData["Accounts"];
+}
+
+<form id="@formId" class="ui form" asp-route="CreateCompanyData" method="post" data-request="ajax" rel="onCreateCompanyDataSubmit">
+    <input type="hidden" asp-for="CompanyId" />
+    <div class="ui horizontal segments">
+        <div class="ui segment four wide">
+            <h4>Accounts</h4>
+            <div id="@(formId)_accounts" class="ui secondary vertical menu">
+                @for(int i = 0; i < accounts.Count(); i++) {
+                    <div class="item" data-value="@accounts[i].Value">
+                        @accounts[i].Text
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="ui segment four wide">
+            <h4>Services</h4>
+            <div id="@(formId)_services" class="ui secondary vertical menu">
+            </div>
+        </div>
+        <div class="ui segment twelve wide">
+            <h4>Data</h4>
+            <div id="@(formId)_data" class="ui secondary vertical menu">
+            </div>
+        </div>
+    </div>
+    <div id="@(formId)_hidden_data">
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let lastActiveAccount = $('#@(formId)_accounts').find('.active');
+        let lastActiveService = $('#@(formId)_services').find('.active');
+
+        let getHtmlChildren = function (items) {
+            return $(items.map((item) => (
+                `<div class="item" data-value="${item.id}">
+                    ${item.name}${item.value ? ': ' + item.value : ''}
+                </div>`
+            )).join("\n "));
+        }
+
+        $('#@(formId)_accounts').on("click", "div", function () {
+            lastActiveAccount.removeClass('active');
+            $(this).addClass('active');
+            lastActiveAccount = $(this);
+
+            $.get('@servicesUrl', { 'id': $(this).data('value') }).done(result => {
+                $('#@(formId)_services').html(getHtmlChildren(result.services));
+                $('#@(formId)_data').html('');
+                $(`#@(formId)_hidden_data`).html('');
+            });
+        });
+        $('#@(formId)_services').on("click", "div", function () {
+            lastActiveService.removeClass('active');
+            $(this).addClass('active');
+            lastActiveService = $(this);
+
+            $.get('@dataUrl', { 'id': $(this).data('value') }).done(result => {
+                $('#@(formId)_data').html(getHtmlChildren(result.fields));
+                $(`#@(formId)_hidden_data`).html('');
+            });
+        });
+        $('#@(formId)_data').on("click", "div", function () {
+            if ($(this).hasClass('active')) {
+                $(`#${$(this).data('value')}`).remove();
+
+                $(this).removeClass('active');
+            }
+            else {
+                $('#@(formId)_hidden_data').append(`
+                    <div id="${$(this).data('value')}">
+                        <input type="hidden" name="Data[][FieldId]" value="${$(this).data('value')}" />
+                        <input type="hidden" name="Data[][CompanyId]" value="@Model.CompanyId" />
+                    </div>`);
+
+                $(this).addClass('active');
+            }
+        });
+    });
+</script>

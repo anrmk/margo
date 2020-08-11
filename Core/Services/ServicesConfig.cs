@@ -49,6 +49,8 @@ namespace Core.Services {
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();
 
+            services.AddTransient<ICompanyDataManager, CompanyDataManager>();
+
             /////Business
             services.AddTransient<IAccountBusinessManager, AccountBusinessManager>();
             //services.AddTransient<ISectionBusinessManager, SectionBusinessManager>();

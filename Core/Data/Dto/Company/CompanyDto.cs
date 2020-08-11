@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core.Data.Dto {
     public class CompanyDto {
         public Guid Id { get; set; }
+
+        public Guid CEOId { get; set; }
+        public string CEOName { get; set; }
 
         public string Name { get; set; }
 
@@ -11,6 +15,8 @@ namespace Core.Data.Dto {
         public string DB { get; set; }
 
         public string Description { get; set; }
+
+        public virtual ICollection<CompanyDataDto> Data { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

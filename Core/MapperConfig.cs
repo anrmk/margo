@@ -20,7 +20,9 @@ namespace Core {
             CreateMap<LogEntity, LogDto>().ReverseMap();
 
             #region COMPANY
-            CreateMap<CompanyDto, CompanyEntity>().ReverseMap();
+            CreateMap<CompanyDto, CompanyEntity>()
+                .ReverseMap()
+                .ForMember(d => d.CEOName, o => o.MapFrom(s => s.CEO.Name));
 
             //CreateMap<CompanySectionDto, CompanySectionEntity>()
             //    .ForMember(d => d.Company, o => o.Ignore())
@@ -31,7 +33,12 @@ namespace Core {
             //    .ForMember(d => d.SectionCode, o => o.MapFrom(s => s.Section.Code))
             //    .ForMember(d => d.SectionDescription, o => o.MapFrom(s => s.Section.Description));
 
-            //CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
+            // CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
+            CreateMap<CompanyDataDto, CompanyDataEntity>()
+                .ReverseMap()
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.Field.Name))
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.Field.Value));
+                
 
             #endregion
 

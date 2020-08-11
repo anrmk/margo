@@ -30,39 +30,66 @@
 
 @section Scripts {
     <script type="text/javascript">
-    $(document).ready(function () {
-        ajaxSubmitComplete = function (e, jqXHR, status) {
+        function onDeleteCompanyDataClick(e, jqXHR, status) {
+            if (status === 'success') {
+                const $link = $(e.target);
+                const $rootRow = $(`[data-label=${$link.data("root")}]`);
+                const $allRows = $rootRow.find("td[data-label=Data] table tbody");
+                const numberOfChildrens = $allRows.children().length;
+
+                if (!numberOfChildrens || numberOfChildrens <= 1) {
+                    $rootRow.remove();
+                } else {
+                    $($link.data('target')).remove();
+                }
+            }
+        }
+
+        function ajaxSubmitComplete(e, jqXHR, status) {
             if (status === 'success') {
                 window.DocumentController.reload(false);
                 window.dialog.modal('hide');
             }
         };
 
-        window.DocumentController = new DocumentController({
-            'table': '#@tableId',
-            'controller': {
-                'list': '@listUrl',
-                'delete': '@deleteUrl'
-            },
-            'columns': [
-                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                { 'title': 'Name', 'data': 'name' },
-                { 'title': 'EIN', 'data': 'ein' },
-                { 'title': 'DB', 'data': 'db' },
-                { 'title': 'Founded', 'className': 'collapsing', 'data': 'founded', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
-            ],
-            'onRowClick': (e, data) => {
+        function onCreateCompanyDataSubmit(e, jqXHR, status) {
+            if (status === 'success') {
+                var data = jqXHR.responseJSON;
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#displayContainer').html(result);
-                });
-            },
-            'onDblRowClick': (e, data) => {
-                $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog();
+                    $('#displayContainer').html(result).find("a[data-request=ajax]").ajaxClick();
+
+                    window.dialog.modal('hide');
                 });
             }
+        }
+
+        $(document).ready(function () {
+            window.DocumentController = new DocumentController({
+                'table': '#@tableId',
+                'controller': {
+                    'list': '@listUrl',
+                    'delete': '@deleteUrl'
+                },
+                'columns': [
+                    { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                    { 'title': 'Name', 'data': 'name' },
+                    { 'title': 'CEO', 'data': 'ceoName' },
+                    { 'title': 'EIN', 'data': 'ein' },
+                    { 'title': 'DB', 'data': 'db' },
+                    { 'title': 'Founded', 'className': 'collapsing', 'data': 'founded', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+                ],
+                'onRowClick': (e, data) => {
+                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                        $('#displayContainer').html(result).find("a[data-request=ajax]").ajaxClick();
+                    });
+                },
+                'onDblRowClick': (e, data) => {
+                    $.get('@editUrl', { 'id': data.id }).done(result => {
+                        $(result).dialog();
+                    });
+                }
+            });
         });
-    });
     </script>
 }

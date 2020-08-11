@@ -13,7 +13,6 @@ namespace Core.Services.Managers {
     public interface IInvoiceManager: IEntityManager<InvoiceEntity> {
         Task<InvoiceEntity> FindInclude(Guid id);
         Task<List<InvoiceEntity>> FindAll();
-        Task<List<InvoiceEntity>> FindAllUnpaid();
         Task<List<InvoiceEntity>> FindByIds(Guid[] ids);
     }
 
@@ -33,12 +32,6 @@ namespace Core.Services.Managers {
 
         public async Task<List<InvoiceEntity>> FindAll() {
             return await DbSet.ToListAsync();
-        }
-
-        public async Task<List<InvoiceEntity>> FindAllUnpaid() {
-            return await DbSet
-                .Where(x => x.Payments.Sum(z => z.Amount) < x.Amount)
-                .ToListAsync();
         }
 
         public async Task<List<InvoiceEntity>> FindByIds(Guid[] ids) {

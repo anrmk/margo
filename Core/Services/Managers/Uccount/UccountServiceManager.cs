@@ -13,6 +13,7 @@ namespace Core.Services.Managers {
     public interface IUccountServiceManager: IEntityManager<UccountServiceEntity> {
         Task<UccountServiceEntity> FindInclude(Guid id);
         Task<List<UccountServiceEntity>> FindAll(Guid accountId);
+        Task<UccountServiceEntity> FindIncludePublicData(Guid id);
     }
 
     public class UccountServiceManager: AsyncEntityManager<UccountServiceEntity>, IUccountServiceManager {
@@ -28,6 +29,17 @@ namespace Core.Services.Managers {
                 .Include(x => x.Fields)
                 .Where(x => x.Account.Id.Equals(id))
                 .ToListAsync();
+        }
+
+        public async Task<UccountServiceEntity> FindIncludePublicData(Guid id) {
+            return await DbSet
+                .Select(x => new UccountServiceEntity {
+                    Id = x.Id,
+                    Name = x.Name,
+                    AccountId = x.AccountId,
+                    Fields = x.Fields.Where(z => !z.IsHidden).ToList()
+                })
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }

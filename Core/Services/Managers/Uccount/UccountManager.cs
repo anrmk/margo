@@ -15,6 +15,7 @@ namespace Core.Services.Managers {
         Task<UccountEntity> FindInclude(Guid id);
         Task<List<UccountEntity>> FindAll(Guid[] ids);
         Task<List<UccountEntity>> FindAll();
+        Task<List<UccountEntity>> FindByCompany(Guid companyId);
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
@@ -47,6 +48,14 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Include(x => x.Company)
                 .Include(x => x.Person)
+                .ToListAsync();
+        }
+
+        public async Task<List<UccountEntity>> FindByCompany(Guid companyId) {
+            return await DbSet
+                .Include(x => x.Person)
+                .Include(x => x.Company)
+                .Where(x => x.CompanyId == companyId)
                 .ToListAsync();
         }
     }

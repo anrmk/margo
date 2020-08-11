@@ -11,6 +11,7 @@ using Core.Services.Business;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
@@ -38,12 +39,18 @@ namespace Web.Controllers.Api {
         private readonly IViewRenderService _viewRenderService;
 
         private readonly ICompanyBusinessManager _companyBusinessManager;
+        private readonly IPersonBusinessManager _personBusinessManager;
+        private readonly IUccountBusinessManager _uccountBusinessManager;
 
         public CompanyController(IMapper mapper, IViewRenderService viewRenderService,
-            ICompanyBusinessManager companyBusinessManager) {
+            ICompanyBusinessManager companyBusinessManager,
+            IPersonBusinessManager personBusinessManager,
+            IUccountBusinessManager uccountBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _companyBusinessManager = companyBusinessManager;
+            _uccountBusinessManager = uccountBusinessManager;
+            _personBusinessManager = personBusinessManager;
         }
 
         [HttpGet("GetCompanies", Name = "GetCompanies")]
@@ -63,19 +70,42 @@ namespace Web.Controllers.Api {
             return BadRequest("No items selected");
         }
 
+        [HttpGet("DeleteCompanyData", Name = "DeleteCompanyData")]
+        public async Task<ActionResult> DeleteCompanyData([FromQuery] Guid id) {
+            var result = await _companyBusinessManager.DeleteCompanyData(id);
+            if(result)
+                return Ok(id);
+
+            return BadRequest("No items deleted");
+        }
+
         [HttpGet("DetailsCompany", Name = "DetailsCompany")]
-        public async Task<IActionResult> DetailsCompany([FromQuery] Guid id) {
+        public async Task<IActionResult> DetailsCompany([FromQuery] Guid id, int full = 1) {
             var item = await _companyBusinessManager.GetCompany(id);
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item));
+            var data = await _companyBusinessManager.GetCompanyData(id);
+            var mappedData = _mapper.Map<List<CompanyDataViewModel>>(data);
+            var groupedData = from f in mappedData
+                                group f by f.Name;
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "GroupedData", groupedData },
+                { "Full", full }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
             return Ok(html);
         }
 
         [HttpGet("AddCompany", Name = "AddCompany")]
         public async Task<IActionResult> AddCompany() {
-            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel() { Founded = DateTime.Now });
+            var persons = await _personBusinessManager.GetPersons();
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+            };
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel(), viewData);
 
             return Ok(html);
         }
@@ -102,7 +132,12 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item));
+            var persons = await _personBusinessManager.GetPersons();
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item), viewData);
             return Ok(html);
         }
 
@@ -122,5 +157,45 @@ namespace Web.Controllers.Api {
             }
         }
 
+        [HttpGet("AddCompanyData", Name = "AddCompanyData")]
+        public async Task<IActionResult> AddCompanyData([FromQuery] Guid id) {
+            var item = await _companyBusinessManager.GetCompany(id);
+            if(item == null)
+                return NotFound();
+
+            var accounts = await _uccountBusinessManager.GetUccountsByCompanyId(id);
+            var html = await _viewRenderService.RenderToStringAsync(
+                "_AddCompanyDataPartial",
+                _mapper.Map<CompanyDataListViewModel>(item),
+                new ViewDataDictionary(
+                new EmptyModelMetadataProvider(),
+                new ModelStateDictionary()) {
+                {
+                    "Accounts",
+                    _mapper.Map<List<UccountListViewModel>>(accounts)
+                        .Select(x => new SelectListItem {
+                            Text = x.Name,
+                            Value = x.Id.ToString()
+                        })
+                        .ToArray()
+                }});
+            return Ok(html);
+        }
+
+        [HttpPost("CreateCompanyData", Name = "CreateCompanyData")]
+        public async Task<IActionResult> CreateCompanyData([FromBody] CompanyDataListViewModel model) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
+                var item = await _companyBusinessManager.CreateCompanyData(_mapper.Map<CompanyDataListDto>(model));
+                if(item == null)
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
+                return Ok(_mapper.Map<CompanyViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
+            }
+        }
     }
 }

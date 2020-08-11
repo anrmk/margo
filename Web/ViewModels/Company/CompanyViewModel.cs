@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
     public class CompanyViewModel {
         public Guid Id { get; set; }
+
+        [Required]
+        [Display(Name = "CEO")]
+        public Guid CEOId { get; set; }
 
         [Required]
         [MaxLength(256)]
@@ -27,6 +32,8 @@ namespace Web.ViewModels {
 
         [MaxLength(2048)]
         public string Description { get; set; }
+
+        public IEnumerable<UccountServiceFieldViewModel> Data { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

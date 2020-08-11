@@ -2,12 +2,18 @@
 
 @{
     var guid = Guid.NewGuid();
+    var persons = (List<SelectListItem>)ViewData["Persons"];
 }
 
 <form id="@guid" class="ui form" asp-route="UpdateCompany" asp-route-id="@Model.Id" method="post" data-request="ajax">
     <fieldset>
         <h4 class="ui dividing header">General</h4>
         <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="three wide field required">
+            <label asp-for="CEOId"></label>
+            <select class="ui search dropdown" required asp-for="CEOId" asp-items="@persons">
+            </select>
+        </div>
         <div class="field required">
             <label asp-for="Name"></label>
             <input asp-for="Name" name="Name" required data-value-type="string" />

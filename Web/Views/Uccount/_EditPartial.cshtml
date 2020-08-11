@@ -43,7 +43,8 @@
         </div>
 
         <div id="vendor-fields" class="fields">
-            @foreach(var Field in Model.Fields) {
+            @foreach (var Field in Model.Fields)
+            {
                 <div class="field">
                     <label>@Field.Name</label>
                     <input type="hidden" name="Fields[][Name]" value="@Field.Name">
@@ -73,7 +74,8 @@
                     <div class="field two wide flex align-center">
                         <label>@Service.Name</label>
                     </div>
-                    @foreach(var Field in Service.Fields) {
+                    @foreach (var Field in Service.Fields)
+                    {
                         <div class="field">
                             <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
                             <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">

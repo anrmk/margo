@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
 using Core.Extension;
-
 using Web.Utils;
 
 namespace Web.ViewModels {
@@ -15,6 +14,7 @@ namespace Web.ViewModels {
         public string TypeName => Type.GetAttribute<DisplayAttribute>().Name.ToLower();
         public string HTMLTypeName => Type.GetHTMLType();
         public bool IsRequired { get; set; }
+        public bool IsHidden { get; set; }
 
         public UccountServiceFieldViewModel() {
             Value = "";

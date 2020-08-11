@@ -16,6 +16,7 @@ namespace Core.Services.Business {
         Task<PagerDto<UccountDto>> GetUccountPage(UccountFilterDto filter);
         Task<List<UccountDto>> GetUccounts();
         Task<List<UccountDto>> GetUccountsInclude();
+        Task<List<UccountDto>> GetUccountsByCompanyId(Guid companyId);
         Task<UccountDto> CreateUccount(UccountDto dto);
         Task<UccountDto> UpdateUccount(Guid id, UccountDto dto);
         Task<bool> DeleteUccount(Guid id);
@@ -28,6 +29,7 @@ namespace Core.Services.Business {
         //Task<UccountSectionFieldDto> GetSectionField(long id);
         //Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId);
 
+        Task<UccountServiceDto> GetService(Guid serviceId);
         Task<List<UccountServiceDto>> GetServices(Guid accountId);
         Task<UccountServiceDto> CreateService(UccountServiceDto dto);
     }
@@ -109,6 +111,11 @@ namespace Core.Services.Business {
             return _mapper.Map<List<UccountDto>>(result);
         }
 
+        public async Task<List<UccountDto>> GetUccountsByCompanyId(Guid companyId) {
+            var result = await _uccountManager.FindByCompany(companyId);
+            return _mapper.Map<List<UccountDto>>(result);
+        }
+
         public async Task<UccountDto> CreateUccount(UccountDto dto) {
             var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
 
@@ -149,8 +156,8 @@ namespace Core.Services.Business {
             int result = await _uccountServiceManager.Delete(entity);
             return result != 0;
         }
-
         #endregion
+
         /*
         public async Task<UccountSectionDto> GetSection(long id) {
             var result = await _uccountSectionManager.Find(id);
@@ -167,6 +174,12 @@ namespace Core.Services.Business {
             return _mapper.Map<List<UccountSectionFieldDto>>(result);
         }*/
 
+        #region UCCOUNT SERVICES
+        public async Task<UccountServiceDto> GetService(Guid serviceId) {
+            var result = await _uccountServiceManager.FindIncludePublicData(serviceId);
+            return _mapper.Map<UccountServiceDto>(result);
+        }
+
         public async Task<List<UccountServiceDto>> GetServices(Guid accountId) {
             var result = await _uccountServiceManager.FindAll(accountId);
             return _mapper.Map<List<UccountServiceDto>>(result);
@@ -176,5 +189,6 @@ namespace Core.Services.Business {
             var result = await _uccountServiceManager.Create(_mapper.Map<UccountServiceEntity>(dto));
             return _mapper.Map<UccountServiceDto>(result);
         }
+        #endregion
     }
 }

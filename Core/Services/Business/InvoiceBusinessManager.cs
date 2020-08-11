@@ -13,7 +13,6 @@ namespace Core.Services.Business {
     public interface IInvoiceBusinessManager {
         Task<InvoiceDto> GetInvoice(Guid id);
         Task<List<InvoiceDto>> GetInvoices();
-        Task<List<InvoiceDto>> GetUnpaidInvoices();
         Task<PagerDto<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
         Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto);
@@ -36,11 +35,6 @@ namespace Core.Services.Business {
 
         public async Task<List<InvoiceDto>> GetInvoices() {
             var entity = await _invoiceManager.FindAll();
-            return _mapper.Map<List<InvoiceDto>>(entity);
-        }
-
-        public async Task<List<InvoiceDto>> GetUnpaidInvoices() {
-            var entity = await _invoiceManager.FindAllUnpaid();
             return _mapper.Map<List<InvoiceDto>>(entity);
         }
 

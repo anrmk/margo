@@ -37,10 +37,6 @@
     <Compile Remove="Data\Entities\Uccount\UccountSectionFieldEntity.cs" />
     <Compile Remove="Data\Entities\Vendor\VendorMediaEntity.cs" />
     <Compile Remove="Data\Entities\Vendor\VendorSectionEntity.cs" />
-    <Compile Remove="Migrations\20200804213118_init.cs" />
-    <Compile Remove="Migrations\20200804213118_init.Designer.cs" />
-    <Compile Remove="Migrations\20200804214343_init.cs" />
-    <Compile Remove="Migrations\20200804214343_init.Designer.cs" />
     <Compile Remove="Migrations\20200807211330_update-ucconut-company-1.cs" />
     <Compile Remove="Migrations\20200807211330_update-ucconut-company-1.Designer.cs" />
     <Compile Remove="Migrations\20200807220956_init-1.cs" />

@@ -17,10 +17,12 @@ namespace Core.Services.Managers {
     }
 
     public class CompanyManager: AsyncEntityManager<CompanyEntity>, ICompanyManager {
-        public CompanyManager(IApplicationContext context) : base(context) { }
+        public CompanyManager(IApplicationContext context) : base(context) {
+        }
 
         public async Task<CompanyEntity> FindInclude(Guid id) {
             return await DbSet
+                .Include(x => x.Data)
                 .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();
         }

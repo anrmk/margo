@@ -2,8 +2,10 @@
 @{
     var formId = Guid.NewGuid();
 
-    var unpaidInvoices = (IEnumerable<SelectListItem>)ViewData["Invoices"];
+    var invoices = (IEnumerable<SelectListItem>)ViewData["Invoices"];
     var paymentMethods = (IEnumerable<SelectListItem>)ViewData["PaymentMethods"];
+
+    var invoiceGetUrl = Url.Action("GetInvoice", "Invoice");
 }
 
 <form id="@formId" class="ui form" method="POST" asp-action="CreatePayment">
@@ -11,7 +13,7 @@
     
     <div class="field required">
         <label asp-for="InvoiceId"></label>
-        <select class="ui search dropdown" asp-for="InvoiceId" asp-items="@unpaidInvoices" required>
+        <select id="@(formId)_invoices" class="ui search dropdown" asp-for="InvoiceId" asp-items="@invoices" required>
         </select>
     </div>
 
@@ -34,7 +36,7 @@
             </div>
             <div class="six width field required">
                 <label asp-for="Amount"></label>
-                <input asp-for="Amount" data-value-type="number" required>
+                <input id="@(formId)_amount" asp-for="Amount" data-value-type="number" required>
             </div>
         </div>
 
@@ -44,3 +46,13 @@
         </div>
     </fieldset>
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#@(formId)_invoices').on('change', function () {
+            $.get('@invoiceGetUrl', {'id': $(this).val()}, { cache: true }).done((res) => {
+                $('#@(formId)_amount').val(res.amountDecimal);
+            });
+        });
+    });
+</script>

@@ -83,7 +83,8 @@ $.fn.dialog = function (opt) {
             },
             'onHidden': function () {
                 $(this).find('div.content').empty();
-            }
+            },
+            'autofocus': false
         });
     } else {
         window.dialog.find('div.header').html(options.title)

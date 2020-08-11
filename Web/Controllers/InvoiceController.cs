@@ -96,6 +96,14 @@ namespace Web.Controllers.Api {
             return Ok(html);
         }
 
+        [HttpGet("GetInvoice", Name = "GetInvoice")]
+        public async Task<IActionResult> GetInvoice([FromQuery] Guid id) {
+            var invoice = await _invoiceBusinessManager.GetInvoice(id);
+            if(invoice == null)
+                return NotFound();
+            return Ok(_mapper.Map<InvoiceListViewModel>(invoice));
+        }
+
         [HttpGet("AddInvoice", Name = "AddInvoice")]
         public async Task<IActionResult> AddInvoice() {
             var accounts = await _uccountBusinessManager.GetUccountsInclude();

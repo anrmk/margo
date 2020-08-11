@@ -4,6 +4,8 @@ namespace Web.ViewModels {
     public class CompanyListViewModel {
         public Guid Id { get; set; }
 
+        public string CEOName { get; set; }
+
         public string IsStarred { get; set; }
 
         public string Name { get; set; }

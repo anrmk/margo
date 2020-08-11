@@ -39,12 +39,23 @@ namespace Web {
             CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();
 
             #region COMPANY
-            CreateMap<CompanyViewModel, CompanyDto>().ReverseMap();
+            CreateMap<CompanyViewModel, CompanyDto>()
+                .ReverseMap()
+                .ForMember(d => d.Data, o => o.Ignore());
 
             CreateMap<CompanyListViewModel, CompanyDto>().ReverseMap();
 
-            //CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
-            //CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
+            CreateMap<CompanyDataViewModel, CompanyDataDto>().ReverseMap();
+
+            CreateMap<CompanyDataListViewModel, CompanyDto>()
+                .ReverseMap()
+                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.Id));
+
+            CreateMap<CompanyDataListViewModel, CompanyDataListDto>().ReverseMap();
+            CreateMap<CompanyDataListViewModel, CompanyDataDto>().ReverseMap();
+
+            // CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
+            // CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
             #endregion
 
             #region UCCOUNTS
