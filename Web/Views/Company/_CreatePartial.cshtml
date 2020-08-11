@@ -9,30 +9,33 @@
     <fieldset>
         <h4 class="ui dividing header">General</h4>
         <input type="hidden" name="Id" value="@Model.Id" />
-        <div class="three wide field required">
-            <label asp-for="CEOId"></label>
-            <select id="companies-select" class="ui search dropdown" required selected="false" asp-for="CEOId" asp-items="@persons">
-                <option value="" selected disabled hidden></option>
-            </select>
-        </div>
-        <div class="field required">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" name="Name" required data-value-type="string" />
-            <span asp-validation-for="Name"></span>
-        </div>
-        <div class="three fields">
-            <div class="field">
-                <label asp-for="EIN"></label>
-                <input asp-for="EIN" name="EIN" data-value-type="string" />
+        <div class="fields">
+            <div class="twelve wide field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" required data-value-type="string" />
             </div>
-            <div class="field">
+
+            <div class="four wide field required">
+                <label asp-for="CEOId"></label>
+                <select id="companies-select" class="ui search dropdown" required selected="false" asp-for="CEOId" asp-items="@persons">
+                    <option value="" selected disabled hidden></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="three fields">
+            <div class="field required">
+                <label asp-for="EIN"></label>
+                <input asp-for="EIN" data-value-type="string" required />
+            </div>
+            <div class="field required">
                 <label asp-for="DB"></label>
-                <input asp-for="DB" name="DB" data-value-type="string" />
+                <input asp-for="DB" data-value-type="string" required />
                 <span asp-validation-for="DB"></span>
             </div>
             <div class="field">
                 <label asp-for="Founded"></label>
-                <input asp-for="Founded" type="date" name="Founded" data-value-type="string" />
+                <input asp-for="Founded" type="date" data-value-type="string" />
             </div>
         </div>
         <div class="field">

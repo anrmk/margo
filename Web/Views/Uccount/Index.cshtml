@@ -11,7 +11,7 @@
 }
 
 @section RightSidebar {
-    <div class="ui stacked segment">
+    <div class="ui stacked secondary yellow segment">
         <form id="table-filter" class="ui form">
             <h3>Filters</h3>
             <div class="field">
@@ -80,6 +80,12 @@
             }
         }
 
+        function displayPasswordOnClick(e, jqXHR, status) {
+            if (status === 'success') {
+                $(e.target).text(jqXHR.responseText);
+            }
+        }
+
         $(document).ready(function () {
             window.DocumentController = new DocumentController({
             'table': '#@tableId',
@@ -96,7 +102,8 @@
             ],
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_detail').html(result);
+                    $('#@(tableId)_detail').html(result)
+                        .find('a[data-request=ajax]').ajaxClick();
                 });
             },
             'onDblRowClick': (e, data) => {

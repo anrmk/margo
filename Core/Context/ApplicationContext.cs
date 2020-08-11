@@ -31,6 +31,7 @@ namespace Core.Context {
         //public DbSet<LogEntity> Logs { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
+        public DbSet<CompanyDataEntity> CompanyData{ get; set; }
         //public DbSet<CompanySectionEntity> CompanySections { get; set; }
         //public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 

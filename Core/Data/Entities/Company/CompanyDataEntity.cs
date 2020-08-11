@@ -7,6 +7,7 @@ namespace Core.Data.Entities {
         [ForeignKey("Company")]
         [Column("Company_Id")]
         public Guid CompanyId { get; set; }
+        public virtual CompanyEntity Company { get; set; }
 
         [ForeignKey("UccountServiceField")]
         [Column("UccountServiceField_Id")]

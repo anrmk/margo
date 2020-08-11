@@ -51,18 +51,6 @@ namespace Web.Controllers.Mvc {
             var model = new UccountFilterViewModel();
             return View(model);
         }
-
-        //public async Task<IActionResult> Edit(long id) {
-        //    var item = await _uccountBusinessManager.GetUccount(id);
-        //    if(item == null) {
-        //        return NotFound();
-        //    }
-
-        //    var services = await _uccountBusinessManager.GetServices(id);
-        //    ViewBag.Services = _mapper.Map<List<UccountServiceViewModel>>(services).ToList();
-
-        //    return View(_mapper.Map<UccountViewModel>(item));
-        //}
     }
 }
 
@@ -202,7 +190,7 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteUccounts", Name = "DeleteUccounts")]
-        public async Task<ActionResult> DeleteUccounts([FromQuery] Guid[] id) {
+        public async Task<IActionResult> DeleteUccounts([FromQuery] Guid[] id) {
             if(id.Length > 0) {
                 var result = await _uccountBusinessManager.DeleteUccount(id);
                 if(result)
@@ -212,12 +200,18 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteService", Name = "DeleteService")]
-        public async Task<ActionResult> DeleteService([FromQuery] Guid id) {
+        public async Task<IActionResult> DeleteService([FromQuery] Guid id) {
             var result = await _uccountBusinessManager.DeleteService(id);
             if(result)
                 return Ok(id);
 
             return BadRequest("No items selected");
+        }
+
+        [HttpGet("DisplayPassword", Name = "DisplayPassword")]
+        public async Task<IActionResult> DisplayPassword([FromQuery] Guid id) {
+            var result = await _uccountBusinessManager.DisplayPassword(id);
+            return Ok(result);
         }
     }
 }

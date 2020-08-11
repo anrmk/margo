@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Entities;
+using Core.Extension;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
@@ -23,50 +24,40 @@ namespace Core.Services.Business {
         Task<bool> DeleteUccount(Guid[] ids);
         Task<bool> DeleteService(Guid id);
 
-        //  UCCOUNT SECTION 
-        //Task<UccountSectionDto> GetSection(long id);
-
-        //Task<UccountSectionFieldDto> GetSectionField(long id);
-        //Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId);
-
         Task<UccountServiceDto> GetService(Guid serviceId);
         Task<List<UccountServiceDto>> GetServices(Guid accountId);
         Task<UccountServiceDto> CreateService(UccountServiceDto dto);
+
+        Task<string> DisplayPassword(Guid fieldId);
     }
     public class UccountBusinessManager: IUccountBusinessManager {
         private readonly IMapper _mapper;
         private readonly IUccountManager _uccountManager;
-        //private readonly IUccountSectionManager _uccountSectionManager;
-        //private readonly IUccountSectionFieldManager _uccountSectionFieldManager;
         private readonly IUccountServiceManager _uccountServiceManager;
         private readonly IUccountServiceFieldManager _uccountServiceFieldManager;
 
+        private readonly IUccountVendorFieldManager _uccountVendorFieldManager;
+
         private readonly ICompanyManager _companyManager;
-        //private readonly ISectionManager _sectionManager;
         private readonly IVendorManager _vendorManager;
 
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
-            //IUccountSectionManager uccountSectionManager,
-            //IUccountSectionFieldManager uccountSectionFieldManager,
             IUccountServiceManager uccountServiceManager,
             IUccountServiceFieldManager uccountServiceFieldManager,
+            IUccountVendorFieldManager uccountVendorFieldManager,
             ICompanyManager companyManager,
-            //ISectionManager sectionManager,
             IVendorManager vendorManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
-            //_uccountSectionManager = uccountSectionManager;
-            //_uccountSectionFieldManager = uccountSectionFieldManager;
             _uccountServiceManager = uccountServiceManager;
             _uccountServiceFieldManager = uccountServiceFieldManager;
+            _uccountVendorFieldManager = uccountVendorFieldManager;
             _companyManager = companyManager;
-            //_sectionManager = sectionManager;
             _vendorManager = vendorManager;
         }
 
         #region UCCOUNT
-
         public async Task<UccountDto> GetUccount(Guid id) {
             var result = await _uccountManager.FindInclude(id);
             return _mapper.Map<UccountDto>(result);
@@ -78,7 +69,7 @@ namespace Core.Services.Business {
             Expression<Func<UccountEntity, bool>> where = x =>
                    (true)
                    && (string.IsNullOrEmpty(filter.Search)
-                        || ( x.Person.Name.ToLower().Contains(filter.Search.ToLower()))
+                        || (x.Person.Name.ToLower().Contains(filter.Search.ToLower()))
                         || (x.Company.Name.ToLower().Contains(filter.Search.ToLower()))
                         )
                    && (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
@@ -117,6 +108,22 @@ namespace Core.Services.Business {
         }
 
         public async Task<UccountDto> CreateUccount(UccountDto dto) {
+            //Encrypt vendor password field
+            foreach(var field in dto.Fields) {
+                if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                    field.Value = field.Value.Encrypt();
+                }
+            }
+
+            //Encrypt service passwod field
+            foreach(var service in dto.Services) {
+                foreach(var field in service.Fields) {
+                    if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                        field.Value = field.Value.Encrypt();
+                    }
+                }
+            }
+
             var uccountEntity = await _uccountManager.Create(_mapper.Map<UccountEntity>(dto));
 
             return _mapper.Map<UccountDto>(uccountEntity);
@@ -127,6 +134,22 @@ namespace Core.Services.Business {
 
             if(entity == null) {
                 return null;
+            }
+
+            //Encrypt vendor password field
+            foreach(var field in dto.Fields) {
+                if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                    field.Value = field.Value.Encrypt();
+                }
+            }
+
+            //Encrypt service passwod field
+            foreach(var service in dto.Services) {
+                foreach(var field in service.Fields) {
+                    if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                        field.Value = field.Value.Encrypt();
+                    }
+                }
             }
 
             var newEntity = _mapper.Map(dto, entity);
@@ -158,22 +181,6 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        /*
-        public async Task<UccountSectionDto> GetSection(long id) {
-            var result = await _uccountSectionManager.Find(id);
-            return _mapper.Map<UccountSectionDto>(result);
-        }
-
-        public async Task<UccountSectionFieldDto> GetSectionField(long id) {
-            var result = await _uccountSectionFieldManager.Find(id);
-            return _mapper.Map<UccountSectionFieldDto>(result);
-        }
-
-        public async Task<List<UccountSectionFieldDto>> GetSectionFields(long sectionId) {
-            var result = await _uccountSectionFieldManager.FindAll(sectionId);
-            return _mapper.Map<List<UccountSectionFieldDto>>(result);
-        }*/
-
         #region UCCOUNT SERVICES
         public async Task<UccountServiceDto> GetService(Guid serviceId) {
             var result = await _uccountServiceManager.FindIncludePublicData(serviceId);
@@ -190,5 +197,19 @@ namespace Core.Services.Business {
             return _mapper.Map<UccountServiceDto>(result);
         }
         #endregion
+
+        public async Task<string> DisplayPassword(Guid fieldId) {
+            var serviceField = await _uccountServiceFieldManager.Find(fieldId);
+            if(serviceField != null && serviceField.Type == Data.Enums.FieldEnum.PASSWORD) {
+                return serviceField.Value.Decrypt();
+            }
+
+            var vendorField = await _uccountVendorFieldManager.Find(fieldId);
+            if(vendorField != null && vendorField.Type == Data.Enums.FieldEnum.PASSWORD) {
+                return vendorField.Value.Decrypt();
+            }
+            return "";
+
+        }
     }
 }

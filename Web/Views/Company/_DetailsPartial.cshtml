@@ -29,12 +29,16 @@
         </table>
 
         @if((int)full != 0) {
-            <div class="ui right floated mini icon button" tabindex="0">
+            <!--<div class="ui right floated mini icon button" tabindex="0">-->
                 @*<i class="plus icon"></i>*@
-                <a asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
+                <!--<a asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
                     <i class="plus icon"></i>
                 </a>
-            </div>
+            </div>-->
+
+            <a class="ui right floated mini icon button" asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
+                <i class="plus icon"></i>
+            </a>
         }
         <h4 class="ui dividing header">Company Data</h4>
 
