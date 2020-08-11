@@ -86,7 +86,7 @@
                 },
                 'onDblRowClick': (e, data) => {
                     $.get('@editUrl', { 'id': data.id }).done(result => {
-                        $(result).dialog();
+                        $(result).dialog({ 'title': 'Edit company' });
                     });
                 }
             });

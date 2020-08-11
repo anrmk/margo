@@ -15,7 +15,7 @@
 }
 
 .text-overflow {
-  max-width: 80px;
+  max-width: 60px;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;

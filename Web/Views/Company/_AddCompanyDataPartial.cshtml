@@ -11,9 +11,9 @@
 <form id="@formId" class="ui form" asp-route="CreateCompanyData" method="post" data-request="ajax" rel="onCreateCompanyDataSubmit">
     <input type="hidden" asp-for="CompanyId" />
     <div class="ui horizontal segments">
-        <div class="ui segment four wide">
+        <div class="ui segment four wide" style="max-width: 20rem;">
             <h4>Accounts</h4>
-            <div id="@(formId)_accounts" class="ui secondary vertical menu">
+            <div id="@(formId)_accounts" class="ui secondary vertical menu" style="width: auto;">
                 @for(int i = 0; i < accounts.Count(); i++) {
                     <div class="item" data-value="@accounts[i].Value">
                         @accounts[i].Text
@@ -21,14 +21,14 @@
                 }
             </div>
         </div>
-        <div class="ui segment four wide">
+        <div class="ui segment four wide" style="max-width: 25rem;">
             <h4>Services</h4>
-            <div id="@(formId)_services" class="ui secondary vertical menu">
+            <div id="@(formId)_services" class="ui secondary vertical menu" style="width: auto;">
             </div>
         </div>
         <div class="ui segment twelve wide">
             <h4>Data</h4>
-            <div id="@(formId)_data" class="ui secondary vertical menu">
+            <div id="@(formId)_data" class="ui secondary vertical menu" style="width: auto;">
             </div>
         </div>
     </div>

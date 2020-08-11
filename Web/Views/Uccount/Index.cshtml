@@ -108,7 +108,7 @@
             },
             'onDblRowClick': (e, data) => {
                 $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog();
+                    $(result).dialog({ 'title': 'Edit account' });
                 });
             }});
         });
@@ -136,7 +136,7 @@
                         <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
                         <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">
                         <input type="hidden" name="${name}[][TypeName]" value="${field.typeName}">
-                        <input name="${name}[][Value]" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
+                        <input name="${name}[][Value]" autocomplete="new-password" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
                     </div>`
                 )
             }).join("\n ");

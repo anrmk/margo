@@ -5,10 +5,9 @@
 
     var detailsUrl = Url.RouteUrl("DetailsCompany");
     var groupedData = (IEnumerable<IGrouping<string, CompanyDataViewModel>>)ViewData["GroupedData"];
-    var full = ViewData["Full"];
 }
 
-<div class="ui card" style=@((int)full == 0 ? "width:100%;" : "")>
+<div class="ui card">
     <div class="content">
         <div class="header">@Model.Name</div>
         <table class="ui celled table">
@@ -28,34 +27,27 @@
             </tbody>
         </table>
 
-        @if((int)full != 0) {
-            <!--<div class="ui right floated mini icon button" tabindex="0">-->
-                @*<i class="plus icon"></i>*@
-                <!--<a asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
-                    <i class="plus icon"></i>
-                </a>
-            </div>-->
-
-            <a class="ui right floated mini icon button" asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
-                <i class="plus icon"></i>
-            </a>
-        }
+        <a class="ui right floated mini icon button" asp-route="AddCompanyData" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog" data-title="Add company data">
+            <i class="plus icon"></i>
+        </a>
         <h4 class="ui dividing header">Company Data</h4>
 
         <table id="@(tableId)_data" class="ui celled table">
             <tbody>
                 @foreach(var group in groupedData) {
-                    <tr data-label="@group.Key">
+                    var groupId = Guid.NewGuid();
+
+                    <tr data-label="@groupId">
                         <td data-label="Name">@group.Key</td>
                         <td data-label="Data">
                             <table>
                                 @foreach(var data in group) {
-                                    <tr id="@(data.Id)_@(data.Name)">
+                                    <tr id="@(data.Id)_filed">
                                         <td style="border: none; padding: 0px 10px 0px 10px;">
                                             <span class="text-overflow">@data.Value</span>
                                         </td>
                                         <td style="vertical-align: baseline; border: none; padding: 0 10px 0 10px;">
-                                            <a asp-route="DeleteCompanyData" asp-route-id="@data.Id" data-request="ajax" data-root="@group.Key" data-target="#@(data.Id)_@(data.Name)" rel="onDeleteCompanyDataClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
+                                            <a asp-route="DeleteCompanyData" asp-route-id="@data.Id" data-request="ajax" data-root="@groupId" data-target="#@(data.Id)_filed" rel="onDeleteCompanyDataClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
                                         </td>
                                     </tr>
                                 }
@@ -66,11 +58,9 @@
             </tbody>
         </table>
     </div>
-    @if((int)full != 0) {
-        <div class="extra content">
-            <a asp-route="DetailsCompany" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog">
-                <i class="search icon"></i>
-            </a>
-        </div>
-    }
+    <div class="extra content">
+        <a asp-route="DetailsCompany" asp-route-id="@Model.Id" asp-route-full="0" data-request="ajax" rel="dialog" data-title="Company data details">
+            <i class="search icon"></i>
+        </a>
+    </div>
 </div>

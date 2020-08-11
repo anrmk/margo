@@ -85,6 +85,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
+            string html;
             var data = await _companyBusinessManager.GetCompanyData(id);
             var mappedData = _mapper.Map<List<CompanyDataViewModel>>(data);
             var groupedData = from f in mappedData
@@ -92,10 +93,15 @@ namespace Web.Controllers.Api {
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "GroupedData", groupedData },
-                { "Full", full }
             };
 
-            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
+            
+            if (full == 1) {
+                html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
+            } else {
+                html = await _viewRenderService.RenderToStringAsync("_FullSizeDetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
+            }
+
             return Ok(html);
         }
 

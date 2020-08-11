@@ -51,7 +51,7 @@
                     <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                     <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
                     <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
-                    <input name="Fields[][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                    <input name="Fields[][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
                 </div>
             }
         </div>
@@ -81,7 +81,7 @@
                             <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                             <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
                             <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
-                            <input name="Services[][Fields][][Value]" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                            <input name="Services[][Fields][][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
                         </div>
                     }
                     <div class="field flex align-center justify-center">

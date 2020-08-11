@@ -16,7 +16,7 @@
 
 <div>
     <div id="toolbar" class="ui secondary menu">
-        <a asp-route="AddPayment" class="ui button" data-request="ajax" rel="dialog"><i class="fa fa-plus mr-1"></i> Create</a>
+        <a asp-route="AddPayment" class="ui button" data-request="ajax" rel="dialog" data-title="Add payment"><i class="fa fa-plus mr-1"></i> Create</a>
         <div class="right menu">
             <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
         </div>
@@ -50,7 +50,7 @@
             },
             'onDblRowClick': (e, data) => {
                  $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog();
+                     $(result).dialog({ 'title': 'Edit payment' });
                 });
             }
         });

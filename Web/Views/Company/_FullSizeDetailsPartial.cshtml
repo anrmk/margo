@@ -1,0 +1,53 @@
+﻿@model Web.ViewModels.CompanyViewModel
+
+@{
+    var tableId = Guid.NewGuid();
+
+    var groupedData = (IEnumerable<IGrouping<string, CompanyDataViewModel>>)ViewData["GroupedData"];
+}
+
+<div style="text-align: center;">
+    <h3 class="ui header">@Model.Name</h3>
+    <table class="ui celled table">
+        <tbody>
+            <tr>
+                <td><label asp-for="EIN"></label></td>
+                <td>@Model.EIN</td>
+            </tr>
+            <tr>
+                <td><label asp-for="DB"></label></td>
+                <td>@Model.DB</td>
+            </tr>
+            <tr>
+                <td><label asp-for="Founded"></label></td>
+                <td>@Model.Founded</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="@(tableId)_data" class="ui celled table">
+        <tbody>
+            @foreach(var group in groupedData) {
+                var groupId = Guid.NewGuid();
+
+                <tr data-label="@groupId">
+                    <td data-label="Name">@group.Key</td>
+                    <td data-label="Data">
+                        <table>
+                            @foreach(var data in group) {
+                                <tr id="@(data.Id)_filed">
+                                    <td style="border: none; padding: 0px 10px 0px 10px;">
+                                        <span>@data.Value</span>
+                                    </td>
+                                    <td style="vertical-align: baseline; border: none; padding: 0 10px 0 10px;">
+                                        <a asp-route="DeleteCompanyData" asp-route-id="@data.Id" data-request="ajax" data-root="@groupId" data-target="#@(data.Id)_filed" rel="onDeleteCompanyDataClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
