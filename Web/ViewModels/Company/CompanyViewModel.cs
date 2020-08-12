@@ -33,6 +33,7 @@ namespace Web.ViewModels {
         [MaxLength(2048)]
         public string Description { get; set; }
 
+        public IEnumerable<CompanySectionViewModel> Sections { get; set; }
         public IEnumerable<UccountServiceFieldViewModel> Data { get; set; }
 
         public DateTime CreatedDate { get; set; }

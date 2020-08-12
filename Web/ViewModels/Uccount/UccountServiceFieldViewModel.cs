@@ -9,15 +9,11 @@ namespace Web.ViewModels {
     public class UccountServiceFieldViewModel {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Value { get; set; }
+        public string Value { get; set; } = "";
         public FieldEnum Type { get; set; }
         public string TypeName => Type.GetAttribute<DisplayAttribute>().Name.ToLower();
         public string HTMLTypeName => Type.GetHTMLType();
         public bool IsRequired { get; set; }
         public bool IsHidden { get; set; }
-
-        public UccountServiceFieldViewModel() {
-            Value = "";
-        }
     }
 }

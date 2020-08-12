@@ -1,6 +1,8 @@
 ﻿@model Web.ViewModels.UccountViewModel
 @{
     var formId = Guid.NewGuid();
+    var vendorFieldsGuid = Guid.NewGuid();
+    var serviceFieldsGuid = Guid.NewGuid();
 
     var persons = (List<SelectListItem>)ViewData["persons"];
     var companies = (List<SelectListItem>)ViewData["Companies"];
@@ -42,7 +44,7 @@
             </div>
         </div>
 
-        <div id="vendor-fields" class="fields">
+        <div id="@vendorFieldsGuid" class="fields">
             @foreach (var Field in Model.Fields)
             {
                 <div class="field">
@@ -61,13 +63,13 @@
             <div class="menu">
                 <div class="header">Services Types</div>
                 @foreach(var category in categories) {
-                    <a data-request="ajax" id="@category.Value" class="item" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                    <a data-request="ajax" id="@category.Value" class="item" data-target="#@serviceFieldsGuid" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
                 }
             </div>
         </div>
         <h4 class="ui dividing header">Services</h4>
 
-        <div id="services-fields">
+        <div id="@serviceFieldsGuid">
             @foreach(var Service in Model.Services) {
                 <div id="@Service.Id" class="fields">
                     <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
@@ -101,8 +103,8 @@
                 url: `/api/Vendor/GetVendor?id=${vendorId}`
             }).done((data, status, _) => {
                 if (data && data.fields) {
-                    const fields = $(generateFields(data.fields, VENDOR_FIELDS, true));
-                    $(VENDOR_FIELDS_EL_NAME).html(fields);
+                    const fields = $($.fn.generateFields(data.fields, "Fields", true));
+                    $("@vendorFieldsGuid").html(fields);
                 }
             });
         });

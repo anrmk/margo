@@ -16,6 +16,7 @@ namespace Core.Data.Dto {
 
         public string Description { get; set; }
 
+        public virtual ICollection<CompanySectionDto> Sections { get; set; }
         public virtual ICollection<CompanyDataDto> Data { get; set; }
 
         public DateTime CreatedDate { get; set; }

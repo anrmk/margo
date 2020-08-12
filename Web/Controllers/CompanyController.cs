@@ -41,16 +41,19 @@ namespace Web.Controllers.Api {
         private readonly ICompanyBusinessManager _companyBusinessManager;
         private readonly IPersonBusinessManager _personBusinessManager;
         private readonly IUccountBusinessManager _uccountBusinessManager;
+        private readonly ICategoryBusinessManager _categoryBusinessManager;
 
         public CompanyController(IMapper mapper, IViewRenderService viewRenderService,
             ICompanyBusinessManager companyBusinessManager,
             IPersonBusinessManager personBusinessManager,
-            IUccountBusinessManager uccountBusinessManager) {
+            IUccountBusinessManager uccountBusinessManager,
+            ICategoryBusinessManager categoryBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _companyBusinessManager = companyBusinessManager;
             _uccountBusinessManager = uccountBusinessManager;
             _personBusinessManager = personBusinessManager;
+            _categoryBusinessManager = categoryBusinessManager;
         }
 
         [HttpGet("GetCompanies", Name = "GetCompanies")]
@@ -108,9 +111,13 @@ namespace Web.Controllers.Api {
         [HttpGet("AddCompany", Name = "AddCompany")]
         public async Task<IActionResult> AddCompany() {
             var persons = await _personBusinessManager.GetPersons();
+            var categories = await _categoryBusinessManager.GetCategories();
+
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
             };
+
             var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new CompanyViewModel(), viewData);
 
             return Ok(html);
@@ -139,11 +146,15 @@ namespace Web.Controllers.Api {
                 return NotFound();
 
             var persons = await _personBusinessManager.GetPersons();
+            var categories = await _categoryBusinessManager.GetCategories();
+
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
             };
 
             var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item), viewData);
+
             return Ok(html);
         }
 
@@ -202,6 +213,15 @@ namespace Web.Controllers.Api {
             } catch(Exception e) {
                 return BadRequest(e.Message ?? e.StackTrace);
             }
+        }
+
+        [HttpGet("DeleteCompanySection", Name = "DeleteCompanySection")]
+        public async Task<IActionResult> DeleteCompanySection([FromQuery] Guid id) {
+            var result = await _companyBusinessManager.DeleteSection(id);
+            if(result)
+                return Ok(id);
+
+            return BadRequest("No items selected");
         }
     }
 }

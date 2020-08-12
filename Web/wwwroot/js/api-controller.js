@@ -181,6 +181,42 @@ $.fn.addInvoiceServices = function (target, name) {
     $section.appendTo(target);
 }
 
+$.fn.generateFields = function (fields, srlzName, label=false) {
+    return fields.map(field => {
+        return (
+            `<div class='field'>
+                ${label ? `<label>${field.name}</label>` : ''}
+                <input type="hidden" name="${srlzName}[][Name]" value="${field.name}">
+                <input type="hidden" name="${srlzName}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
+                <input type="hidden" name="${srlzName}[][Type]" value="${field.type}" data-value-type="number">
+                <input type="hidden" name="${srlzName}[][TypeName]" value="${field.typeName}">
+                <input name="${srlzName}[][Value]" autocomplete="new-password" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
+            </div>`
+        )
+    }).join("\n ");
+}
+
+$.fn.generateGroup = function (id, groupName, html, srlzName) {
+    const $group = $(`
+        <div id="${id}" class="fields">
+            <input type="hidden" name="${srlzName}[][Name]" value="${groupName}" data-value-type="string">
+            <div class="field two wide flex align-center">
+                <label>${groupName}</label>
+            </div>
+            ${html}
+            <div class="field flex align-center justify-center">
+                <a href="#">delete</a>
+            </div>
+        </div>`);
+
+    $group.find("a").on("click", function (e) {
+        e.preventDefault();
+        $group.remove();
+    });
+
+    return $group;
+}
+
 /**
  * @deprecated Only for temp use.
  */

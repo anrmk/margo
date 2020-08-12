@@ -39,6 +39,8 @@ namespace Core {
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Field.Name))
                 .ForMember(d => d.Value, o => o.MapFrom(s => s.Field.Value));
                 
+            CreateMap<CompanySectionDto, CompanySectionEntity>().ReverseMap();
+            CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
 
             #endregion
 

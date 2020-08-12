@@ -29,6 +29,7 @@ namespace Core.Data.Entities {
         [MaxLength(2048)]
         public string Description { get; set; }
 
+        public virtual ICollection<CompanySectionEntity> Sections { get; set; }
         public virtual ICollection<CompanyDataEntity> Data { get; set; }
     }
 }

@@ -2,7 +2,10 @@
 
 @{
     var guid = Guid.NewGuid();
+    var serviceFieldsGuid = Guid.NewGuid();
+
     var persons = (List<SelectListItem>)ViewData["Persons"];
+    var categories = (List<SelectListItem>)ViewData["Categories"];
 }
 
 <form id="@guid" class="ui form" asp-route="CreateCompany" method="post" data-request="ajax">
@@ -42,5 +45,17 @@
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
             <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
         </div>
+        <div class="ui right floated dropdown mini icon button" tabindex="0" >
+            <i class="plus icon"></i>
+            <div class="menu">
+                @foreach(var category in categories) {
+                    <a data-request="ajax" id="@category.Value" class="item" data-target="#@serviceFieldsGuid" rel="onSectionCreateClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                }
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Fields</h4>
+
+        <div id="@serviceFieldsGuid"></div>
     </fieldset>
 </form>

@@ -54,6 +54,9 @@ namespace Web {
             CreateMap<CompanyDataListViewModel, CompanyDataListDto>().ReverseMap();
             CreateMap<CompanyDataListViewModel, CompanyDataDto>().ReverseMap();
 
+            CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
+            CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
+
             // CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
             // CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
             #endregion

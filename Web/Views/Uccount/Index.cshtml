@@ -54,20 +54,17 @@
 
 @section Scripts {
     <script type="text/javascript">
-        const VENDOR_FIELDS = "Fields";
-        const SERVICES_FIELDS = "Services[][Fields]";
-        const VENDOR_FIELDS_EL_NAME = "#vendor-fields";
-        const SERVICES_FIELDS_EL_NAME = "#services-fields";
-
-        function serviceCreateOnClick (_, jqXHR, status) {
+        function serviceCreateOnClick (e, jqXHR, status) {
             if(status === 'success') {
                 const data = jqXHR.responseJSON;
                 if (data && data.fields) {
                     const { id, name, fields } = data;
-                    const generatedFields = generateFields(fields, SERVICES_FIELDS);
-                    const groupFields = generateGroup(id, name, generatedFields);
+                    const $link = $(e.target);
+                    const $target = $($link.data('target'));
+                    const generatedFields = $.fn.generateFields(fields, "Services[][Fields]");
+                    const groupFields = $.fn.generateGroup(id, name, generatedFields, "Services");
 
-                    $(SERVICES_FIELDS_EL_NAME).append(groupFields);
+                    $target.append(groupFields);
                 }
             }
         }
@@ -126,41 +123,5 @@
                 $(target).remove();
             }
         };
-
-        generateFields = function (fields, name, label=false) {
-            return fields.map(field => {
-                return (
-                    `<div class='field'>
-                        ${label ? `<label>${field.name}</label>` : ''}
-                        <input type="hidden" name="${name}[][Name]" value="${field.name}">
-                        <input type="hidden" name="${name}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
-                        <input type="hidden" name="${name}[][Type]" value="${field.type}" data-value-type="number">
-                        <input type="hidden" name="${name}[][TypeName]" value="${field.typeName}">
-                        <input name="${name}[][Value]" autocomplete="new-password" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
-                    </div>`
-                )
-            }).join("\n ");
-        }
-
-        generateGroup = function (id, name, html) {
-            const $group = $(`
-                <div id="${id}" class="fields">
-                    <input type="hidden" name="Services[][Name]" value="${name}" data-value-type="string">
-                    <div class="field two wide flex align-center">
-                        <label>${name}</label>
-                    </div>
-                    ${html}
-                    <div class="field flex align-center justify-center">
-                       <a href="#">delete</a>
-                    </div>
-                </div>`);
-
-            $group.find("a").on("click", function (e) {
-                e.preventDefault();
-                $group.remove();
-            });
-
-            return $group;
-        }
     </script>
 }
