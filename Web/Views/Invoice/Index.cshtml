@@ -11,21 +11,21 @@
 @section RightSidebar {
     <form id="table-filter" class="ui form">
         <h1>Filters</h1>
-        <input id="@(tableId)_is_person" type="hidden" name="isPerson" data-value-type="boolean" />
-        <input id="@(tableId)_customer_id" type="hidden" name="customer" data-value-type="string" />
+        <input id="@(tableId)_is_person" type="hidden" name="IsPerson" data-value-type="boolean" />
+        <input id="@(tableId)_customer_id" type="hidden" name="Customer" data-value-type="string" />
 
         <div class="field">
             <label>Unpaid</label>
         </div>
         <div class="field">
             <div class="ui slider checkbox">
-                <input id="@(tableId)_unpaid-checkbox" name="unpaid" type="checkbox" data-value-type="boolean" />
+                <input id="@(tableId)_unpaid-checkbox" name="Unpaid" type="checkbox" data-value-type="boolean" />
                 <label />
             </div>
         </div>
         <div class="field">
             <label>Vendor</label>
-            <select id="@(tableId)_vendors-select" name="vendor" asp-items="@ViewBag.Vendors" class="ui fluid dropdown">
+            <select id="@(tableId)_vendors-select" name="Vendor" asp-items="@ViewBag.Vendors" class="ui fluid dropdown">
                 <option value="" selected disabled hidden>Select vendor</option>
             </select>
         </div>

@@ -8,10 +8,7 @@ namespace Web.ViewModels {
 
         [FromQuery(Name = "customer")]
         [Display(Name = "Customer")]
-        public string Customer { get; set; }
-
-        public long? CustomerId =>
-            long.TryParse(Customer, out var customerId) ? customerId : (long?)null;
+        public Guid? CustomerId { get; set; }
 
         [FromQuery(Name = "isPerson")]
         public bool IsPerson { get; set; }
