@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AutoMapper;
@@ -16,6 +17,9 @@ namespace Core {
             CreateMap<AspNetUserProfileEntity, AspNetUserProfileDto>().ReverseMap();
             CreateMap<AspNetRoleDto, IdentityRole>().ReverseMap();
             CreateMap<AspNetUserProfileDto, AspNetUserProfileEntity>().ReverseMap();
+
+            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserGrantEntity>().ReverseMap();
+            CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
 
             CreateMap<LogEntity, LogDto>().ReverseMap();
 

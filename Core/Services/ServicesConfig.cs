@@ -19,6 +19,7 @@ namespace Core.Services {
             ///Context
             services.AddTransient<IApplicationContext, ApplicationContext>();
             services.AddTransient<IUserProfileManager, UserProfileManager>();
+            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
             services.AddTransient<ILogManager, LogManager>();
 
             ///Extension Service

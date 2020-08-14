@@ -31,5 +31,7 @@ namespace Core.Data.Entities {
 
         public virtual ICollection<CompanySectionEntity> Sections { get; set; }
         public virtual ICollection<CompanyDataEntity> Data { get; set; }
+
+        public virtual ICollection<AspNetUserGrantEntity> Grants { get; set; }
     }
 }

@@ -41,6 +41,10 @@ namespace Core.Services.Business {
 
         Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
+
+        // GRANTS
+        Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id);
+        Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto);
     }
 
     public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
@@ -50,19 +54,25 @@ namespace Core.Services.Business {
         private readonly SignInManager<AspNetUserEntity> _signInManager;
 
         private readonly IUserProfileManager _userProfileManager;
+        private readonly IUserCompanyGrantsManager _userCompanyGrantsManager;
+        private readonly ICompanyManager _companyManager;
         private readonly ILogManager _logManager;
 
         public AccountBusinessManager(IMapper mapper,
             UserManager<AspNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<AspNetUserEntity> signInManager,
-            IUserProfileManager userProfileManager, ILogManager logManager) {
+            IUserProfileManager userProfileManager,
+            IUserCompanyGrantsManager userCompanyGrantsManager,
+            ICompanyManager companyManager, ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _userProfileManager = userProfileManager;
+            _companyManager = companyManager;
             _logManager = logManager;
+            _userCompanyGrantsManager = userCompanyGrantsManager;
         }
         #region ACCOUNT
         public async Task<AspNetUserDto> GetUser(string id) {
@@ -216,7 +226,7 @@ namespace Core.Services.Business {
             return _mapper.Map<AspNetUserProfileDto>(result);
         }
 
-        #endregion
+        #endregion        
 
         public async Task<string> GenerateEmailConfirmationTokenAsync(string id) {
             var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
@@ -263,6 +273,25 @@ namespace Core.Services.Business {
             await _signInManager.SignOutAsync();
         }
 
+        #region USER GRANTS
 
+        #region COMPANY GRANTS
+        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
+            var entities = await _companyManager.FindAllGrantsByUser(id);
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+
+        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
+            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
+            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
+            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
+
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+        #endregion
+
+        #endregion
     }
 }

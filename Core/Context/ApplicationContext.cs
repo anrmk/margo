@@ -5,7 +5,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 
 using Core.Data.Entities;
+using Core.Extension;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -26,6 +28,7 @@ namespace Core.Context {
     public class ApplicationContext: IdentityDbContext<AspNetUserEntity>, IApplicationContext {
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region DbSet
         //public DbSet<LogEntity> Logs { get; set; }
@@ -61,15 +64,29 @@ namespace Core.Context {
 
         public Database ApplicationDatabase { get; private set; }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal) : base(options) {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal, IHttpContextAccessor httpContextAccessor) : base(options) {
             _configuration = configuration;
             _principal = principal as ClaimsPrincipal;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity("Core.Data.Entities.AspNetUserGrantEntity", b =>
+            {
+                b.HasOne("Core.Data.Entities.CompanyEntity", "Company")
+                    .WithMany("Grants")
+                    .HasForeignKey("EntityId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<CompanyEntity>().HasQueryFilter(x =>
+                !x.Grants.Any(z => z.UserId == _httpContextAccessor.HttpContext.User.GetUserId())
+                || x.Grants.SingleOrDefault(z => z.UserId == _httpContextAccessor.HttpContext.User.GetUserId()).IsGranted);
         }
 
         public async Task<int> SaveChangesAsync() {

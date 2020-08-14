@@ -35,6 +35,15 @@ namespace Web {
             CreateMap<AspNetRoleViewModel, AspNetRoleDto>().ReverseMap();
             CreateMap<AspNetUserProfileViewModel, AspNetUserProfileDto>().ReverseMap();
 
+            CreateMap<AspNetUserCompanyGrantsListViewModel, AspNetUserCompanyGrantsListDto>().ReverseMap();
+            CreateMap<AspNetUserCompanyGrantsViewModel, AspNetUserCompanyGrantsDto>()
+                .ReverseMap()
+                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Company.Name))
+                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !s.IsGranted ? null : "granted"));
+
+            CreateMap<AspNetUserCompanyGrantsViewModel, AspNetUserCompanyGrantsDto>()
+                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !string.IsNullOrEmpty(s.IsGranted)));
+
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();
 

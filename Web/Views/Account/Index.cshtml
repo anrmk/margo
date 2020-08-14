@@ -9,6 +9,8 @@
     var editUrl = Url.RouteUrl("EditAspNetUser");
 
     var editProfileUrl = Url.RouteUrl("EditAspNetUserProfile");
+
+    var editCompanyGrantsUrl = Url.RouteUrl("EditAspNetUserCompanyGrants");
 }
 
 @section RightSidebar {
@@ -19,8 +21,8 @@
     <div id="toolbar" class="ui secondary menu">
         <a asp-route="AddAspNetUser" class="ui button" data-request="ajax" rel="dialog" data-title="Create user"><i class="fa fa-plus mr-1"></i> Create</a>
         @*<div class="right menu">
-                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-            </div>*@
+            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        </div>*@
     </div>
 
     <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
@@ -47,6 +49,11 @@
                 {
                     'title': 'Action', 'data': 'profileId', 'className': 'collapsing', 'render': (data, type, row) => {
                         return `<a href='@(editProfileUrl)?id=${data}' class='ui icon animated blue button' data-request='ajax' rel='dialog' data-title="Edit profile"><div class="hidden content">Card</div><div class="visible content"><i class="id card icon"></i></div></a>`;
+                    }
+                },
+                {
+                    'title': 'Access', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                        return `<a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon animated blue button' data-request='ajax' rel='dialog' data-title="Company grants" style='padding-right: 1em !important; padding-left: 2.5em;'><div class="hidden content">Companies</div><div class="visible content"><i class="users icon"></i></div></a>`;
                     }
                 }
             ],

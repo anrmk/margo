@@ -264,5 +264,26 @@ namespace Web.Controllers.Api {
             return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
             //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }
+
+        [HttpGet("EditAspNetUserCompanyGrants", Name = "EditAspNetUserCompanyGrants")]
+        public async Task<IActionResult> EditAspNetUserCompanyGrants([FromQuery] string id) {
+            var item = await _accountBusinessService.GetUserCompanyGrants(id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditCompanyGrantsPartial", _mapper.Map<AspNetUserCompanyGrantsListViewModel>(item));
+            return Ok(html);
+        }
+
+        [HttpPost("UpdateAspNetUserCompanyGrants", Name = "UpdateAspNetUserCompanyGrants")]
+        public async Task<IActionResult> UpdateAspNetUserCompanyGrants([FromQuery] string id, [FromBody] AspNetUserCompanyGrantsListViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _accountBusinessService.UpdateUserCompanyGrants(id, _mapper.Map<AspNetUserCompanyGrantsListDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<AspNetUserCompanyGrantsListViewModel>(item));
+            }
+            return BadRequest();
+        }
     }
 }
