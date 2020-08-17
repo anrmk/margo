@@ -56,6 +56,9 @@
             <a class="item @(url.Equals("/account") ? "active" : "") " asp-controller="Account" asp-action="Index">
                 Users
             </a>
+            <a class="item @(url.Contains("/account/request") ? "active" : "") " asp-controller="Account" asp-action="Request">
+                Requests
+            </a>
             <a class="item @(url.Contains("/account/activity") ? "active" : "") " asp-controller="Account" asp-action="Activity">
                 Activity
             </a>

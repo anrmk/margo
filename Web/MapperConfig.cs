@@ -30,10 +30,13 @@ namespace Web {
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => new AspNetRoleDto() { Id = x })))
                 .ReverseMap()
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Id)));
-            CreateMap<AppNetUserListViewModel, AspNetUserDto>().ReverseMap()
+            CreateMap<AspNetUserListViewModel, AspNetUserDto>().ReverseMap()
                 .ForMember(d => d.Roles, o => o.MapFrom(s => s.Roles.Select(x => x.Name)));
             CreateMap<AspNetRoleViewModel, AspNetRoleDto>().ReverseMap();
             CreateMap<AspNetUserProfileViewModel, AspNetUserProfileDto>().ReverseMap();
+            CreateMap<AspNetUserRequestViewModel, AspNetUserRequestDto>().ReverseMap();
+            CreateMap<AspNetUserRequestListViewModel, AspNetUserRequestDto>().ReverseMap();
+               
 
             CreateMap<AspNetUserCompanyGrantsListViewModel, AspNetUserCompanyGrantsListDto>().ReverseMap();
             CreateMap<AspNetUserCompanyGrantsViewModel, AspNetUserCompanyGrantsDto>()
@@ -51,20 +54,19 @@ namespace Web {
             CreateMap<CompanyViewModel, CompanyDto>()
                 .ReverseMap()
                 .ForMember(d => d.Data, o => o.Ignore());
-
             CreateMap<CompanyListViewModel, CompanyDto>().ReverseMap();
 
             CreateMap<CompanyDataViewModel, CompanyDataDto>().ReverseMap();
-
             CreateMap<CompanyDataListViewModel, CompanyDto>()
                 .ReverseMap()
                 .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.Id));
-
+            
             CreateMap<CompanyDataListViewModel, CompanyDataListDto>().ReverseMap();
             CreateMap<CompanyDataListViewModel, CompanyDataDto>().ReverseMap();
 
             CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();
             CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
+            CreateMap<CompanyFilterViewModel, CompanyFilterDto>().ReverseMap();
 
             // CreateMap<CompanySectionViewModel, CompanySectionDto>().ReverseMap();
             // CreateMap<CompanySectionFieldViewModel, CompanySectionFieldDto>().ReverseMap();

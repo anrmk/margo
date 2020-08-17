@@ -14,7 +14,7 @@ namespace Core.Services.Business {
     public interface ICompanyBusinessManager {
         //  COMPANY
         Task<CompanyDto> GetCompany(Guid id);
-        Task<PagerDto<CompanyDto>> GetCompanyPage(PagerFilterDto filter);
+        Task<PagerDto<CompanyDto>> GetCompanyPage(CompanyFilterDto filter);
         Task<List<CompanyDto>> GetCompanies();
         Task<CompanyDto> CreateCompany(CompanyDto dto);
         Task<CompanyDto> UpdateCompany(Guid id, CompanyDto dto);
@@ -39,7 +39,6 @@ namespace Core.Services.Business {
            ICompanySectionManager companySectionManager,
            ICompanyDataManager companyDataManager) {
             _mapper = mapper;
-
             _companyManager = companyManager;
             _companySectionManager = companySectionManager;
             _companyDataManager = companyDataManager;
@@ -51,7 +50,7 @@ namespace Core.Services.Business {
             return _mapper.Map<CompanyDto>(result);
         }
 
-        public async Task<PagerDto<CompanyDto>> GetCompanyPage(PagerFilterDto filter) {
+        public async Task<PagerDto<CompanyDto>> GetCompanyPage(CompanyFilterDto filter) {
             var sortby = "Id";
 
             Expression<Func<CompanyEntity, bool>> where = x =>
@@ -60,7 +59,10 @@ namespace Core.Services.Business {
                         || (x.Name.ToLower().Contains(filter.Search.ToLower())
                         || x.EIN.ToLower().Contains(filter.Search.ToLower())
                         || x.DB.ToLower().Contains(filter.Search.ToLower())
-                        ));
+                        || x.CEO.Name.ToLower().Contains(filter.Search.ToLower())
+                        || x.CEO.SurName.ToLower().Contains(filter.Search.ToLower())
+                        ))
+                   && (!filter.CEOId.HasValue || x.CEOId == filter.CEOId);
 
             string[] include = new string[] { "CEO" };
 

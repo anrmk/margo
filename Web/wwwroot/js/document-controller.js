@@ -38,7 +38,6 @@
             'rowCallback': (row, data) => {
                 if ($.inArray(data.id, this.options.selected) !== -1) {
                     $(row).find('input[type=checkbox]').attr('checked', true)
-                    //$(row).addClass('active');
                 }
             }
         }).on('draw', (e, settings) => {
@@ -58,32 +57,29 @@
         this.toolbar.find('button[data-action=delete]').on('click', (e) => this.remove(e));
 
         tbody.on('click', 'tr', (e) => {
-           // e.preventDefault();
+            //e.preventDefault();
 
-            //if (e.target.tagName === 'TR') {
             var target = $(e.currentTarget);
+            var row = this.datatable.row(target);
 
-                var row = this.datatable.row(target);
-
-                if (target.hasClass('active')) {
-                    target.removeClass('active');
-                } else {
-                    this.table.find('tr.active').removeClass('active');
-                    target.addClass('active');
-                }
-                this.options.onRowClick(e, row.data());
-          //  }
+            if (target.hasClass('active')) {
+                target.removeClass('active');
+            } else {
+                this.table.find('tr.active').removeClass('active');
+                target.addClass('active');
+            }
+            this.options.onRowClick(e, row.data());
         });
 
         tbody.on('dblclick', 'tr', (e) => {
-           // e.preventDefault();
+            //e.preventDefault();
 
             var row = this.datatable.row(e.currentTarget);
             this.options.onDblRowClick(e, row.data());
         });
 
         tbody.on('change', 'input', (e) => {
-            e.preventDefault();
+            //e.preventDefault();
 
             var $input = $(e.currentTarget);
             var row = this.datatable.row($($input).parents('tr'));

@@ -17,15 +17,29 @@
     <div id="@(tableId)_detail"></div>
 }
 
-<div>
-    <div id="toolbar" class="ui secondary menu">
-        <a asp-route="AddAspNetUser" class="ui button" data-request="ajax" rel="dialog" data-title="Create user"><i class="fa fa-plus mr-1"></i> Create</a>
-        @*<div class="right menu">
-            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-        </div>*@
-    </div>
+<div class="ui shape">
+    <div class="sides">
+        <div class="active side main">
+            <div id="toolbar" class="ui secondary menu">
+                <a asp-route="AddAspNetUser" class="ui button" data-request="ajax" rel="dialog" data-title="Create user"><i class="fa fa-plus mr-1"></i> Create</a>
+                <div class="right menu">
+                    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+                </div>
+            </div>
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        </div>
 
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        <div class="side display">
+            <div class="ui stackable grid">
+                <div class="row">
+                    <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                </div>
+                <div class="row">
+                    <div id="@(tableId)_access"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -47,15 +61,15 @@
                 { 'title': 'Email', 'data': 'email' },
                 { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) },
                 {
-                    'title': 'Action', 'data': 'profileId', 'className': 'collapsing', 'render': (data, type, row) => {
-                        return `<a href='@(editProfileUrl)?id=${data}' class='ui icon animated blue button' data-request='ajax' rel='dialog' data-title="Edit profile"><div class="hidden content">Card</div><div class="visible content"><i class="id card icon"></i></div></a>`;
+                    'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                        return `<a href='@(editProfileUrl)?id=${row.profileId}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Edit profile'>
+                                    <i class="id card icon"></i>
+                                </a>
+                                <a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Company grants'>
+                                    <i class="users icon"></i>
+                                </a>`;
                     }
                 },
-                {
-                    'title': 'Access', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
-                        return `<a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon animated blue button' data-request='ajax' rel='dialog' data-title="Company grants" style='padding-right: 1em !important; padding-left: 2.5em;'><div class="hidden content">Companies</div><div class="visible content"><i class="users icon"></i></div></a>`;
-                    }
-                }
             ],
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {

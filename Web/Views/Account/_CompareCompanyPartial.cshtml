@@ -1,0 +1,107 @@
+﻿@model AspNetUserRequestViewModel
+
+@{
+    var original = (CompanyViewModel)ViewData["Original"];
+    var unmodified = (CompanyViewModel)ViewData["Unmodified"];
+    var formId = Guid.NewGuid();
+}
+
+<div class="ui horizontal basic segments">
+    <div class="ui segment right aligned">
+        <form id="@(formId)_original" class="ui form right aligned " asp-action="DeclineAspNetUserRequest" asp-route-id="@Model.Id" method="post" data-request="ajax">
+            <h4 class="ui header">
+                Original
+                <div class="ui justified sub header">
+                    <span>@original.UpdatedBy</span>
+                    <span>@original.UpdatedDate.ToString("MM/dd/yyyy")</span>
+                </div>
+            </h4>
+
+            <div class="inline field">
+                <label asp-for="@original.Name"></label>
+                <span>@original.Name</span>
+            </div>
+            <div class="inline field">
+                <label asp-for="@original.EIN"></label>
+                <span>@original.EIN</span>
+            </div>
+            <div class="inline field">
+                <label asp-for="@original.DB"></label>
+                <span>@original.DB</span>
+            </div>
+            <div class="inline field">
+                <label asp-for="@original.Founded"></label>
+                <span>@original.Founded</span>
+            </div>
+            <div class="inline field">
+                <label asp-for="@original.Description"></label>
+                <span>@original.Description</span>
+            </div>
+        </form>
+    </div>
+    <div class="ui segment">
+        <form id="@(formId)_unmodified" class="ui form" asp-action="ConfirmAspNetUserRequest" asp-route-id="@Model.Id" method="post" data-request="ajax">
+            <h4 class="ui header">
+                Unmodified
+                <div class="ui justified sub header">
+                    <span>@unmodified.UpdatedBy</span>
+                    <span>@unmodified.UpdatedDate.ToString("MM/dd/yyyy")</span>
+                </div>
+            </h4>
+
+            <div class="inline field">
+                <label ></label>
+                <span>@original.Name</span>
+            </div>
+            <div class="inline field">
+                <label></label>
+                <span>@original.EIN</span>
+            </div>
+            <div class="inline field">
+                <label></label>
+                <span>@original.DB</span>
+            </div>
+            <div class="inline field">
+                <label></label>
+                <span>@original.Founded</span>
+            </div>
+            <div class="inline field">
+                <label ></label>
+                <span>@original.Description</span>
+            </div>
+        </form>
+    </div>
+
+    @*<div class="ui segment">
+        <form id="@(formId)_unmodified" class="ui form" asp-action="ConfirmAspNetUserRequest" asp-route-id="@Model.Id" method="post" data-request="ajax">
+            <h4 class="ui header">
+                Unmodified
+                <div class="ui justified sub header">
+                    <span>@unmodified.UpdatedBy</span>
+                    <span>@unmodified.UpdatedDate.ToString("MM/dd/yyyy")</span>
+                </div>
+            </h4>
+
+            <div class="inline field">
+                <span>@unmodified.Name</span>
+            </div>
+            <div class="inline field">
+                <span>@unmodified.EIN</span>
+            </div>
+            <div class="inline field">
+                <span>@unmodified.DB</span>
+            </div>
+            <div class="inline field">
+                <span>@unmodified.Founded</span>
+            </div>
+            <div class="inline field">
+                <span>@unmodified.Description</span>
+            </div>
+        </form>
+    </div>*@
+</div>
+
+<div class="ui two bottom attached buttons">
+    <button form="@(formId)_original" class="ui button">Confirm</button>
+    <button form="@(formId)_unmodified" class="ui primary button">Confirm</button>
+</div>

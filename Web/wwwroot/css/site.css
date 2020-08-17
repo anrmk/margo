@@ -22,6 +22,10 @@
   text-overflow:ellipsis;
 }
 
+.button.hidden {
+  display: none;
+}
+
 fieldset {
   min-width: 0;
   padding: 0;

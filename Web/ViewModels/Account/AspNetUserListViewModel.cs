@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace Web.ViewModels {
-    public class AppNetUserListViewModel {
+    public class AspNetUserListViewModel {
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }

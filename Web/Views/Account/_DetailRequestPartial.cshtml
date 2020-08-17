@@ -1,0 +1,34 @@
+﻿@model AspNetUserRequestViewModel
+
+<table class="ui orange table">
+    <tr>
+        <td class="collapsing">
+            <label asp-for="Model"></label>
+        </td>
+        <td>@Model.Model</td>
+    </tr>
+    <tr>
+        <td class="collapsing">
+            <label asp-for="CreatedBy"></label>
+        </td>
+        <td>@Model.CreatedBy</td>
+    </tr>
+    <tr>
+        <td class="collapsing">
+            <label asp-for="CreatedDate"></label>
+        </td>
+        <td>@Model.CreatedDate.ToString("MM.dd.yyyy")</td>
+    </tr>
+    <tr>
+        <td class="collapsing">
+            <label asp-for="UpdatedBy"></label>
+        </td>
+        <td>@Model.UpdatedBy</td>
+    </tr>
+    <tr>
+        <td class="collapsing">
+            <label asp-for="UpdatedDate"></label>
+        </td>
+        <td>@Model.UpdatedDate.ToString("MM.dd.yyyy")</td>
+    </tr>
+</table>

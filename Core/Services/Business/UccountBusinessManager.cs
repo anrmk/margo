@@ -38,23 +38,16 @@ namespace Core.Services.Business {
 
         private readonly IUccountVendorFieldManager _uccountVendorFieldManager;
 
-        private readonly ICompanyManager _companyManager;
-        private readonly IVendorManager _vendorManager;
-
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
             IUccountServiceManager uccountServiceManager,
             IUccountServiceFieldManager uccountServiceFieldManager,
-            IUccountVendorFieldManager uccountVendorFieldManager,
-            ICompanyManager companyManager,
-            IVendorManager vendorManager) {
+            IUccountVendorFieldManager uccountVendorFieldManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountServiceManager = uccountServiceManager;
             _uccountServiceFieldManager = uccountServiceFieldManager;
             _uccountVendorFieldManager = uccountVendorFieldManager;
-            _companyManager = companyManager;
-            _vendorManager = vendorManager;
         }
 
         #region UCCOUNT

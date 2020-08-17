@@ -31,10 +31,12 @@ namespace Core.Context {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region DbSet
+        public DbSet<AspNetUserRequestEntity> UserRequests { get; set; }
+
         //public DbSet<LogEntity> Logs { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
-        public DbSet<CompanyDataEntity> CompanyData{ get; set; }
+        public DbSet<CompanyDataEntity> CompanyData { get; set; }
         //public DbSet<CompanySectionEntity> CompanySections { get; set; }
         //public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
 
@@ -60,6 +62,7 @@ namespace Core.Context {
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
         public DbSet<PaymentEntity> Payments { get; set; }
+
         #endregion
 
         public Database ApplicationDatabase { get; private set; }
@@ -75,8 +78,7 @@ namespace Core.Context {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity("Core.Data.Entities.AspNetUserGrantEntity", b =>
-            {
+            modelBuilder.Entity("Core.Data.Entities.AspNetUserGrantEntity", b => {
                 b.HasOne("Core.Data.Entities.CompanyEntity", "Company")
                     .WithMany("Grants")
                     .HasForeignKey("EntityId")

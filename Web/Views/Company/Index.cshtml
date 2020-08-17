@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Web.ViewModels.CompanyFilterViewModel
+
+@{
     ViewData["Title"] = "Companies";
 
     var tableId = Guid.NewGuid();
@@ -10,6 +12,18 @@
 }
 
 @section RightSidebar {
+    <div class="ui stacked secondary yellow segment">
+        <form id="table-filter" class="ui form">
+            <h3>Filters</h3>
+            <div class="field">
+                <label asp-for="CEOId"></label>
+                <select asp-for="CEOId" asp-items="@ViewBag.Ceo" class="ui search dropdown">
+                    <option value="" selected>Select CEO</option>
+                </select>
+            </div>
+        </form>
+    </div>
+
     <div class="ui sticky">
         <div id="displayContainer"></div>
     </div>
@@ -17,12 +31,12 @@
 
 <div>
     @if(User.IsInRole("Administrator")) {
-    <div id="toolbar" class="ui secondary menu">
-        <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
-        <div class="right menu">
-            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+        <div id="toolbar" class="ui secondary menu">
+            <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
+            <div class="right menu">
+                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+            </div>
         </div>
-    </div>
     }
 
     <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
@@ -70,6 +84,9 @@
 
         function ajaxSubmitComplete(e, jqXHR, status) {
             if (status === 'success') {
+                if (jqXHR.responseJSON.message) {
+                    $.fn.message(jqXHR.responseJSON);
+                }
                 window.DocumentController.reload(false);
                 window.dialog.modal('hide');
             }
@@ -103,9 +120,11 @@
                     { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
                 ],
                 'onRowClick': (e, data) => {
-                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                        $('#displayContainer').html(result).find("a[data-request=ajax]").ajaxClick();
-                    });
+                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'A') {
+                       $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                            $('#displayContainer').html(result).find("a[data-request=ajax]").ajaxClick();
+                        });
+                    }
                 },
                 'onDblRowClick': (e, data) => {
                     $.get('@editUrl', { 'id': data.id }).done(result => {

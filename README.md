@@ -13,7 +13,7 @@ Simple accounting software for internal use in the company
 #Usefull links
 1. [Regex Tester](https://www.regextester.com/) - Match anything enclosed by square brackets.
 1. [Font Awesom](https://fontawesome.com/) - Get vector icons and social logos on your website with Font Awesome, the web's most popular icon set and toolkit.
-1. [Semantic-UI](https://semantic-ui.com/) - is a development framework that helps create beautiful, responsive layouts using human-friendly HTML.
+1. [Fomantic-UI](https://fomantic-ui.com/) - is a development framework that helps create beautiful, responsive layouts using human-friendly HTML.
 1. [Bootstrap](https://getbootstrap.com/) - the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.
 1. [jQuery Datatable](https://datatables.net/) - is a plug-in for the jQuery Javascript library. It is a highly flexible tool, built upon the foundations of progressive enhancement, that adds all of these advanced features to any HTML table.
 1. [Fancy Tree](https://github.com/mar10/fancytree) - is a JavaScript tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading.

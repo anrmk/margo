@@ -65,7 +65,7 @@ $.fn.dialog = function (opt) {
     if (!window.dialog) {
         var $mc = $(`<div class="ui large modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
             `<div class="content">${options.content.html()}</div>` +
-            `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green submit">OK</button></div>` +
+            `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green hidden submit">OK</button></div>` +
             `</div>`);
 
         window.dialog = $mc.modal({
@@ -78,7 +78,7 @@ $.fn.dialog = function (opt) {
                     $form.ajaxSubmit();
                     $form.find('.ui.dropdown').dropdown();
                     $form.find('a[data-request=ajax]').ajaxClick();
-                    $modal.find('button.submit').attr('form', $form.attr('id'));
+                    $modal.find('button.submit').attr('form', $form.attr('id')).removeClass('hidden');
                 }
             },
             'onHidden': function () {
@@ -94,9 +94,8 @@ $.fn.dialog = function (opt) {
 }
 
 $.fn.message = function (opt) {
-    var options = $.extend({}, { 'title': '', 'content': '', 'status': 'info' }, opt);
-    var msg = `<div class='ui floating ${options.status} message'><i class='close icon'></i> <div class='header'>${options.title}</div><p>${options.content}</p></div>`;
-    $(msg).appendTo('body').delay(1500).remove();
+    var options = $.extend({}, { 'title': 'Information', 'message': '', 'showProgress': 'bottom', 'classProgress': 'blue' }, opt);
+    $('body').toast(options);
 }
 
 $.fn.formatCurrency = function (value) {

@@ -16,25 +16,23 @@ namespace Core.Services {
 
             services.AddTransient<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>().HttpContext?.User);
 
-            ///Context
-            services.AddTransient<IApplicationContext, ApplicationContext>();
-            services.AddTransient<IUserProfileManager, UserProfileManager>();
-            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
-            services.AddTransient<ILogManager, LogManager>();
-
             ///Extension Service
             services.AddTransient<IViewRenderService, ViewRenderService>();
+            services.AddTransient<ILogManager, LogManager>();
 
+            ///Context
+            services.AddTransient<IApplicationContext, ApplicationContext>();
+
+            services.AddTransient<IUserProfileManager, UserProfileManager>();
+            services.AddTransient<IUserRequestManager, UserRequestManager>();
+            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
+       
             ///Managers
             services.AddTransient<IPersonManager, PersonManager>();
 
             services.AddTransient<ICompanyManager, CompanyManager>();
             services.AddTransient<ICompanySectionManager, CompanySectionManager>();
-            //services.AddTransient<ICompanySectionManager, CompanySectionManager>();
-            //services.AddTransient<ICompanySectionFieldManager, CompanySectionFieldManager>();
-
-            //services.AddTransient<ISectionManager, SectionManager>();
-            //services.AddTransient<ISectionFieldManager, SectionFieldManager>();
+            services.AddTransient<ICompanyDataManager, CompanyDataManager>();
 
             services.AddTransient<ICategoryManager, CategoryManager>();
             services.AddTransient<ICategoryFieldManager, CategoryFieldManager>();
@@ -43,8 +41,6 @@ namespace Core.Services {
             services.AddTransient<IVendorFieldManager, VendorFieldManager>();
 
             services.AddTransient<IUccountManager, UccountManager>();
-            //services.AddTransient<IUccountSectionManager, UccountSectionManager>();
-            //services.AddTransient<IUccountSectionFieldManager, UccountSectionFieldManager>();
             services.AddTransient<IUccountServiceManager, UccountServiceManager>();
             services.AddTransient<IUccountServiceFieldManager, UccountServiceFieldManager>();
             services.AddTransient<IUccountVendorFieldManager, UccountVendorFieldManager>();
@@ -52,11 +48,8 @@ namespace Core.Services {
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();
 
-            services.AddTransient<ICompanyDataManager, CompanyDataManager>();
-
             /////Business
             services.AddTransient<IAccountBusinessManager, AccountBusinessManager>();
-            //services.AddTransient<ISectionBusinessManager, SectionBusinessManager>();
             services.AddTransient<IPersonBusinessManager, PersonBusinessManager>();
             services.AddTransient<ICompanyBusinessManager, CompanyBusinessManager>();
             services.AddTransient<ICategoryBusinessManager, CategoryBusinessManager>();

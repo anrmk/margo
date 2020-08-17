@@ -16,11 +16,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Business {
     public interface IAccountBusinessManager {
+        //  ACCOUNT
         Task<AspNetUserDto> GetUser(string id);
         Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
         Task<AspNetUserDto> UpdateUser(string id, AspNetUserDto dto);
         Task<bool> LockUser(string id, bool locked);
+        Task SignInAsync(string id, bool isPersistent);
+        Task SignOutAsync();
+        Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe);
+        Task<string> GenerateEmailConfirmationTokenAsync(string id);
 
         //  ROLES
         Task<List<AspNetRoleDto>> GetUserRoles();
@@ -29,22 +34,22 @@ namespace Core.Services.Business {
         Task<AspNetUserProfileDto> GetUserProfile(long id);
         Task<AspNetUserProfileDto> UpdateUserProfile(long id, AspNetUserProfileDto dto);
 
+        //  REQUESTS
+        Task<AspNetUserRequestDto> GetRequest(Guid id);
+        Task<AspNetUserRequestDto> GetRequest(string userName, Guid modelId);
+        Task<PagerDto<AspNetUserRequestDto>> GetRequestPager(PagerFilterDto filter);
+        Task<AspNetUserRequestDto> CreateRequest(AspNetUserRequestDto dto);
+        Task<AspNetUserRequestDto> UpdateRequset(Guid id, AspNetUserRequestDto dto);
+        Task<bool> DeleteRequest(Guid id);
+        Task<bool> DeleteRequest(Guid[] ids);
 
-        //
-        //Task<ApplicationUserDto> UpdateUserProfile(string userId, ApplicationUserProfileDto model);
-        //Task<IdentityResult> UpdatePassword(string userId, string oldPassword, string newPassword);
-        Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe);
-        Task SignInAsync(string id, bool isPersistent);
-        Task SignOutAsync();
-        Task<string> GenerateEmailConfirmationTokenAsync(string id);
-
-
-        Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
-        Task<LogDto> GetLog(long id);
-
-        // GRANTS
+        //  GRANTS
         Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id);
         Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto);
+
+        //  LOGS
+        Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
+        Task<LogDto> GetLog(long id);
     }
 
     public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
@@ -54,6 +59,7 @@ namespace Core.Services.Business {
         private readonly SignInManager<AspNetUserEntity> _signInManager;
 
         private readonly IUserProfileManager _userProfileManager;
+        private readonly IUserRequestManager _userRequestManager;
         private readonly IUserCompanyGrantsManager _userCompanyGrantsManager;
         private readonly ICompanyManager _companyManager;
         private readonly ILogManager _logManager;
@@ -62,18 +68,18 @@ namespace Core.Services.Business {
             UserManager<AspNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<AspNetUserEntity> signInManager,
-            IUserProfileManager userProfileManager,
-            IUserCompanyGrantsManager userCompanyGrantsManager,
-            ICompanyManager companyManager, ILogManager logManager) {
+            IUserProfileManager userProfileManager, IUserRequestManager userRequestManager, IUserCompanyGrantsManager userCompanyGrantsManager, ICompanyManager companyManager, ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _userProfileManager = userProfileManager;
+            _userRequestManager = userRequestManager;
             _companyManager = companyManager;
             _logManager = logManager;
             _userCompanyGrantsManager = userCompanyGrantsManager;
         }
+
         #region ACCOUNT
         public async Task<AspNetUserDto> GetUser(string id) {
             var entity = await _userManager.Users
@@ -199,6 +205,24 @@ namespace Core.Services.Business {
             return result.Succeeded ? locked : !locked;
 
         }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string id) {
+            var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
+        }
+
+        public async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe) {
+            return await _signInManager.PasswordSignInAsync(userName, password, rememberMe, false);
+        }
+
+        public async Task SignInAsync(string id, bool isPersistent) {
+            var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+            await _signInManager.SignInAsync(entity, isPersistent);
+        }
+
+        public async Task SignOutAsync() {
+            await _signInManager.SignOutAsync();
+        }
         #endregion
 
         #region ROLES
@@ -225,14 +249,88 @@ namespace Core.Services.Business {
 
             return _mapper.Map<AspNetUserProfileDto>(result);
         }
+        #endregion
 
-        #endregion        
-
-        public async Task<string> GenerateEmailConfirmationTokenAsync(string id) {
-            var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
-            return await _userManager.GenerateEmailConfirmationTokenAsync(entity);
+        #region USER REQUESTS
+        public async Task<AspNetUserRequestDto> GetRequest(Guid id) {
+            var entity = await _userRequestManager.Find(id);
+            return _mapper.Map<AspNetUserRequestDto>(entity);
         }
 
+        public async Task<AspNetUserRequestDto> GetRequest(string userName, Guid modelId) {
+            var entity = await _userRequestManager.FindInclude(userName, modelId);
+            return _mapper.Map<AspNetUserRequestDto>(entity);
+        }
+
+        public async Task<PagerDto<AspNetUserRequestDto>> GetRequestPager(PagerFilterDto filter) {
+            var sortby = "Id";
+
+            Expression<Func<AspNetUserRequestEntity, bool>> where = x =>
+                   (true)
+                && (string.IsNullOrEmpty(filter.Search) || x.UpdatedBy.ToLower().Contains(filter.Search.ToLower()))
+                //&& (!string.IsNullOrEmpty(x.UserName))
+                ;
+
+            var (list, count) = await _userRequestManager.Pager<AspNetUserRequestEntity>(where, sortby, filter.Start, filter.Length);
+            if(count == 0)
+                return new PagerDto<AspNetUserRequestDto>(new List<AspNetUserRequestDto>(), 0, filter.Start, filter.Length);
+
+            var page = (filter.Start + filter.Length) / filter.Length;
+
+            return new PagerDto<AspNetUserRequestDto>(_mapper.Map<List<AspNetUserRequestDto>>(list), count, page, filter.Length);
+        }
+
+        public async Task<AspNetUserRequestDto> CreateRequest(AspNetUserRequestDto dto) {
+            var entity = await _userRequestManager.Create(_mapper.Map<AspNetUserRequestEntity>(dto));
+            return _mapper.Map<AspNetUserRequestDto>(entity);
+        }
+
+        public async Task<AspNetUserRequestDto> UpdateRequset(Guid id, AspNetUserRequestDto dto) {
+            var entity = await _userRequestManager.Find(id);
+            if(entity == null) {
+                return null;
+            }
+
+            var newEntity = _mapper.Map(dto, entity);
+            var result = await _userRequestManager.Update(newEntity);
+
+            return _mapper.Map<AspNetUserRequestDto>(result);
+        }
+
+        public async Task<bool> DeleteRequest(Guid id) {
+            return await DeleteRequest(new Guid[] { id });
+        }
+
+        public async Task<bool> DeleteRequest(Guid[] ids) {
+            var entities = await _userRequestManager.FindAll(ids);
+            if(entities == null)
+                throw new Exception("We did not find field records for this request!");
+
+            int result = await _userRequestManager.Delete(entities);
+            return result != 0;
+        }
+        #endregion
+
+        #region COMPANY GRANTS
+        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
+            var entities = await _companyManager.FindAllGrantsByUser(id);
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+
+        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
+            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
+            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
+            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
+
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+        #endregion
+
+        
+
+        #region LOGS
         public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {
             var sortby = "Logged";
 
@@ -259,39 +357,7 @@ namespace Core.Services.Business {
             var item = await _logManager.Find(id);
             return _mapper.Map<LogDto>(item);
         }
-
-        public async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe) {
-            return await _signInManager.PasswordSignInAsync(userName, password, rememberMe, false);
-        }
-
-        public async Task SignInAsync(string id, bool isPersistent) {
-            var entity = await _userManager.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
-            await _signInManager.SignInAsync(entity, isPersistent);
-        }
-
-        public async Task SignOutAsync() {
-            await _signInManager.SignOutAsync();
-        }
-
-        #region USER GRANTS
-
-        #region COMPANY GRANTS
-        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
-            var entities = await _companyManager.FindAllGrantsByUser(id);
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
-        }
-
-        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
-            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
-            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
-            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
-
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
-        }
         #endregion
 
-        #endregion
     }
 }

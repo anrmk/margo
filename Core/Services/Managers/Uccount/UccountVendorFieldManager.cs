@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Context;
+﻿using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
 

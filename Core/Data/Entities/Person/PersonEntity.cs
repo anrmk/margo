@@ -17,6 +17,8 @@ namespace Core.Data.Entities {
         [MaxLength(64)]
         public string MiddleName { get; set; }
 
+        public string FullName => Name + " " + SurName;
+
         [MaxLength(2048)]
         public string Description { get; set; }
 

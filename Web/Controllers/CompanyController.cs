@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -9,6 +11,7 @@ using Core.Data.Dto;
 using Core.Services;
 using Core.Services.Business;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,15 +21,21 @@ using Microsoft.Extensions.Logging;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
+    [Authorize]
     public class CompanyController: BaseController<CompanyController> {
-        private readonly ICompanyBusinessManager _companyBusinessManager;
+        private readonly IPersonBusinessManager _personBusinessManager;
 
-        public CompanyController(ILogger<CompanyController> logger, IMapper mapper, ICompanyBusinessManager companyBusinessManager) : base(logger, mapper) {
-            _companyBusinessManager = companyBusinessManager;
+        public CompanyController(ILogger<CompanyController> logger, IMapper mapper,
+            IPersonBusinessManager personBusinessManager) : base(logger, mapper) {
+            _personBusinessManager = personBusinessManager;
         }
 
-        public IActionResult Index() {
-            return View();
+        public async Task<IActionResult> Index() {
+            var persons = await _personBusinessManager.GetPersons();
+            ViewBag.Ceo = persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+
+            var model = new CompanyFilterViewModel();
+            return View(model);
         }
     }
 }
@@ -38,18 +47,22 @@ namespace Web.Controllers.Api {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
 
+        private readonly IAccountBusinessManager _accountBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
         private readonly IPersonBusinessManager _personBusinessManager;
         private readonly IUccountBusinessManager _uccountBusinessManager;
         private readonly ICategoryBusinessManager _categoryBusinessManager;
 
         public CompanyController(IMapper mapper, IViewRenderService viewRenderService,
+            IAccountBusinessManager accountBusinessManager,
             ICompanyBusinessManager companyBusinessManager,
             IPersonBusinessManager personBusinessManager,
             IUccountBusinessManager uccountBusinessManager,
-            ICategoryBusinessManager categoryBusinessManager) {
+            ICategoryBusinessManager categoryBusinessManager
+            ) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
+            _accountBusinessManager = accountBusinessManager;
             _companyBusinessManager = companyBusinessManager;
             _uccountBusinessManager = uccountBusinessManager;
             _personBusinessManager = personBusinessManager;
@@ -57,8 +70,8 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetCompanies", Name = "GetCompanies")]
-        public async Task<PagerDto<CompanyListViewModel>> GetCompanies([FromQuery] PagerFilterViewModel model) {
-            var result = await _companyBusinessManager.GetCompanyPage(_mapper.Map<PagerFilterDto>(model));
+        public async Task<PagerDto<CompanyListViewModel>> GetCompanies([FromQuery] CompanyFilterViewModel model) {
+            var result = await _companyBusinessManager.GetCompanyPage(_mapper.Map<CompanyFilterDto>(model));
             var pager = new PagerDto<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }
@@ -92,14 +105,13 @@ namespace Web.Controllers.Api {
             var data = await _companyBusinessManager.GetCompanyData(id);
             var mappedData = _mapper.Map<List<CompanyDataViewModel>>(data);
             var groupedData = from f in mappedData
-                                group f by f.Name;
+                              group f by f.Name;
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "GroupedData", groupedData },
             };
 
-            
-            if (full == 1) {
+            if(full == 1) {
                 html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
             } else {
                 html = await _viewRenderService.RenderToStringAsync("_FullSizeDetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
@@ -154,7 +166,6 @@ namespace Web.Controllers.Api {
             };
 
             var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item), viewData);
-
             return Ok(html);
         }
 
@@ -164,11 +175,23 @@ namespace Web.Controllers.Api {
                 if(!ModelState.IsValid) {
                     throw new Exception("Form is not valid!");
                 }
-                var item = await _companyBusinessManager.UpdateCompany(id, _mapper.Map<CompanyDto>(model));
-                if(item == null)
-                    throw new Exception("No records have been created! Please, fill the required fields!");
+                var dto = _mapper.Map<CompanyDto>(model);
+                if(!User.IsInRole("Administrator")) {
 
-                return Ok(_mapper.Map<CompanyViewModel>(item));
+                    await CreateOrUpdateRequest(User.FindFirst(ClaimTypes.Name).Value, new AspNetUserRequestDto() {
+                        ModelId = model.Id,
+                        ModelType = dto.GetType(),
+                        Model = JsonSerializer.Serialize(dto)
+                    });
+
+                    return Ok(new { Message = "Changes will be published after padding moderation!" });
+                } else {
+                    var item = await _companyBusinessManager.UpdateCompany(id, dto);
+                    if(item == null)
+                        throw new Exception("No records have been created! Please, fill the required fields!");
+
+                    return Ok(_mapper.Map<CompanyViewModel>(item));
+                }
             } catch(Exception e) {
                 return BadRequest(e.Message ?? e.StackTrace);
             }
@@ -222,6 +245,18 @@ namespace Web.Controllers.Api {
                 return Ok(id);
 
             return BadRequest("No items selected");
+        }
+
+        private async Task<AspNetUserRequestDto> CreateOrUpdateRequest(string userName, AspNetUserRequestDto dto) {
+            var item = await _accountBusinessManager.GetRequest(userName, dto.ModelId);
+            if(item == null)
+                return await _accountBusinessManager.CreateRequest(dto);
+            else {
+                dto.Id = item.Id;
+                return await _accountBusinessManager.UpdateRequset(item.Id, dto);
+            }
+
+            //return Ok(new { Message = "Changes will be published after padding moderation!" });
         }
     }
 }

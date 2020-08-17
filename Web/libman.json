@@ -48,7 +48,6 @@
       "provider": "unpkg",
       "library": "jquery.fancytree@2.35.0",
       "destination": "wwwroot/lib/jquery-fancytree/"
-      
     },
     {
       "library": "moment.js@2.26.0",
@@ -56,13 +55,12 @@
       "files": [ "moment.min.js" ]
     },
     {
-      "library": "semantic-ui@2.4.1",
-      "destination": "wwwroot/lib/semantic"
-    },
-
-    {
       "library": "aspnet-signalr@1.1.4",
       "destination": "wwwroot/lib/aspnet-signalr/"
+    },
+    {
+      "library": "fomantic-ui@2.8.6",
+      "destination": "wwwroot/lib/fomantic-ui/"
     }
   ]
 }

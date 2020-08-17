@@ -19,9 +19,6 @@ namespace Core.Services.Base {
             _context = context;
         }
 
-        public AsyncEntityManager() {
-        }
-
         protected DbSet<T> DbSet => _context.Set<T>();
 
         public virtual Task<int> Count => DbSet.CountAsync();
