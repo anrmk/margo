@@ -7,6 +7,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Data.Enums;
+using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -83,7 +84,8 @@ namespace Web.Controllers.Api {
 
         [HttpGet("GetUccounts", Name = "GetUccounts")]
         public async Task<PagerDto<UccountListViewModel>> GetUccounts([FromQuery] UccountFilterViewModel model) {
-            var result = await _uccountBusinessManager.GetUccountPage(_mapper.Map<UccountFilterDto>(model));
+            var result = await _uccountBusinessManager.GetUccountPage(_mapper.Map<UccountFilterDto>(model, opts =>
+                opts.AfterMap((_, dest) => (dest as UccountFilterDto).UserId = User.GetUserId())));
             var pager = new PagerDto<UccountListViewModel>(_mapper.Map<List<UccountListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }

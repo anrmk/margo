@@ -54,15 +54,16 @@ namespace Core.Services.Business {
             var sortby = "Id";
 
             Expression<Func<CompanyEntity, bool>> where = x =>
-                   (true)
-                   && (string.IsNullOrEmpty(filter.Search)
-                        || (x.Name.ToLower().Contains(filter.Search.ToLower())
-                        || x.EIN.ToLower().Contains(filter.Search.ToLower())
-                        || x.DB.ToLower().Contains(filter.Search.ToLower())
-                        || x.CEO.Name.ToLower().Contains(filter.Search.ToLower())
-                        || x.CEO.SurName.ToLower().Contains(filter.Search.ToLower())
-                        ))
-                   && (!filter.CEOId.HasValue || x.CEOId == filter.CEOId);
+                (string.IsNullOrEmpty(filter.Search)
+                    || (x.Name.ToLower().Contains(filter.Search.ToLower())
+                    || x.EIN.ToLower().Contains(filter.Search.ToLower())
+                    || x.DB.ToLower().Contains(filter.Search.ToLower())
+                    || x.CEO.Name.ToLower().Contains(filter.Search.ToLower())
+                    || x.CEO.SurName.ToLower().Contains(filter.Search.ToLower())
+                    ))
+                && (!filter.CEOId.HasValue || x.CEOId == filter.CEOId)
+                && (!x.Grants.Any(z => z.UserId == filter.UserId)
+                    || x.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
 
             string[] include = new string[] { "CEO" };
 

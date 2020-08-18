@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Extension;
 using Core.Services;
 using Core.Services.Business;
 
@@ -80,7 +81,8 @@ namespace Web.Controllers.Api {
 
         [HttpGet("GetCompanies", Name = "GetCompanies")]
         public async Task<PagerDto<CompanyListViewModel>> GetCompanies([FromQuery] CompanyFilterViewModel model) {
-            var result = await _companyBusinessManager.GetCompanyPage(_mapper.Map<CompanyFilterDto>(model));
+            var result = await _companyBusinessManager.GetCompanyPage(_mapper.Map<CompanyFilterDto>(model, opts =>
+                opts.AfterMap((_, dest) => (dest as CompanyFilterDto).UserId = User.GetUserId())));
             var pager = new PagerDto<CompanyListViewModel>(_mapper.Map<List<CompanyListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }

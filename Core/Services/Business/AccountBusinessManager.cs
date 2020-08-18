@@ -44,13 +44,20 @@ namespace Core.Services.Business {
         Task<bool> DeleteRequest(Guid id);
         Task<bool> DeleteRequest(Guid[] ids);
 
-        //  GRANTS
-        Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id);
-        Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto);
+        //
+        //Task<ApplicationUserDto> UpdateUserProfile(string userId, ApplicationUserProfileDto model);
+        //Task<IdentityResult> UpdatePassword(string userId, string oldPassword, string newPassword);
 
         //  LOGS
         Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
+
+        // GRANTS
+        Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id);
+        Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto);
+
+        Task<AspNetUserCategoryGrantsListDto> GetUserCategoryGrants(string id);
+        Task<AspNetUserCategoryGrantsListDto> UpdateUserCategoryGrants(string id, AspNetUserCategoryGrantsListDto dto);
     }
 
     public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
@@ -61,24 +68,34 @@ namespace Core.Services.Business {
 
         private readonly IUserProfileManager _userProfileManager;
         private readonly IUserRequestManager _userRequestManager;
+        private readonly ILogManager _logManager;
+
         private readonly IUserCompanyGrantsManager _userCompanyGrantsManager;
         private readonly ICompanyManager _companyManager;
-        private readonly ILogManager _logManager;
+        private readonly IUserCategoryGrantsManager _userCategoryGrantsManager;
+        private readonly ICategoryManager _categoryManager;
 
         public AccountBusinessManager(IMapper mapper,
             UserManager<AspNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<AspNetUserEntity> signInManager,
-            IUserProfileManager userProfileManager, IUserRequestManager userRequestManager, IUserCompanyGrantsManager userCompanyGrantsManager, ICompanyManager companyManager, ILogManager logManager) {
+            IUserProfileManager userProfileManager,
+            IUserRequestManager userRequestManager,
+            IUserCompanyGrantsManager userCompanyGrantsManager,
+            ICompanyManager companyManager,
+            IUserCategoryGrantsManager userCategoryGrantsManager,
+            ICategoryManager categoryManager, ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _userProfileManager = userProfileManager;
             _userRequestManager = userRequestManager;
-            _companyManager = companyManager;
             _logManager = logManager;
+            _companyManager = companyManager;
             _userCompanyGrantsManager = userCompanyGrantsManager;
+            _categoryManager = categoryManager;
+            _userCategoryGrantsManager = userCategoryGrantsManager;
         }
 
         #region ACCOUNT
@@ -321,25 +338,6 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        #region COMPANY GRANTS
-        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
-            var entities = await _companyManager.FindAllGrantsByUser(id);
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
-        }
-
-        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
-            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
-            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
-            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
-
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
-        }
-        #endregion
-
-
-
         #region LOGS
         public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {
             var sortby = "Logged";
@@ -369,5 +367,42 @@ namespace Core.Services.Business {
         }
         #endregion
 
+        #region USER GRANTS
+
+        #region COMPANY GRANTS
+        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
+            var entities = await _companyManager.FindAllGrantsByUser(id);
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+
+        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
+            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
+            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
+            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
+
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
+            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        }
+        #endregion
+
+        #region CATEGORY GRANTS
+        public async Task<AspNetUserCategoryGrantsListDto> GetUserCategoryGrants(string id) {
+            var entities = await _categoryManager.FindAllGrantsByUser(id);
+            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(entities);
+            return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
+        }
+
+        public async Task<AspNetUserCategoryGrantsListDto> UpdateUserCategoryGrants(string id, AspNetUserCategoryGrantsListDto dto) {
+            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
+            await _userCategoryGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
+            grantEntities = await _userCategoryGrantsManager.Create(grantEntities);
+
+            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(grantEntities);
+            return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
+        }
+        #endregion
+
+        #endregion
     }
 }

@@ -36,15 +36,25 @@ namespace Web {
             CreateMap<AspNetUserProfileViewModel, AspNetUserProfileDto>().ReverseMap();
             CreateMap<AspNetUserRequestViewModel, AspNetUserRequestDto>().ReverseMap();
             CreateMap<AspNetUserRequestListViewModel, AspNetUserRequestDto>().ReverseMap();
-               
 
-            CreateMap<AspNetUserCompanyGrantsListViewModel, AspNetUserCompanyGrantsListDto>().ReverseMap();
-            CreateMap<AspNetUserCompanyGrantsViewModel, AspNetUserCompanyGrantsDto>()
+            CreateMap<AspNetUserGrantsListViewModel, AspNetUserCompanyGrantsListDto>().ReverseMap();
+            CreateMap<AspNetUserGrantsViewModel, AspNetUserCompanyGrantsDto>()
                 .ReverseMap()
+                .ForMember(d => d.EntityId, o => o.MapFrom(s => s.CompanyId))
                 .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Company.Name))
                 .ForMember(d => d.IsGranted, o => o.MapFrom(s => !s.IsGranted ? null : "granted"));
+            CreateMap<AspNetUserGrantsViewModel, AspNetUserCompanyGrantsDto>()
+                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.EntityId))
+                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !string.IsNullOrEmpty(s.IsGranted)));
 
-            CreateMap<AspNetUserCompanyGrantsViewModel, AspNetUserCompanyGrantsDto>()
+            CreateMap<AspNetUserGrantsListViewModel, AspNetUserCategoryGrantsListDto>().ReverseMap();
+            CreateMap<AspNetUserGrantsViewModel, AspNetUserCategoryGrantsDto>()
+                .ReverseMap()
+                .ForMember(d => d.EntityId, o => o.MapFrom(s => s.CategoryId))
+                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Category.Name))
+                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !s.IsGranted ? null : "granted"));
+            CreateMap<AspNetUserGrantsViewModel, AspNetUserCategoryGrantsDto>()
+                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.EntityId))
                 .ForMember(d => d.IsGranted, o => o.MapFrom(s => !string.IsNullOrEmpty(s.IsGranted)));
 
             CreateMap<LogViewModel, LogDto>().ReverseMap();
@@ -114,6 +124,7 @@ namespace Web {
             CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryFieldViewModel, CategoryFieldDto>().ReverseMap();
+            CreateMap<CategoryFilterViewModel, CategoryFilterDto>().ReverseMap();
 
             CreateMap<VendorViewModel, VendorDto>().ReverseMap();
             CreateMap<VendorListViewModel, VendorDto>().ReverseMap();

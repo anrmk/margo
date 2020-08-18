@@ -11,6 +11,7 @@
     var editProfileUrl = Url.RouteUrl("EditAspNetUserProfile");
 
     var editCompanyGrantsUrl = Url.RouteUrl("EditAspNetUserCompanyGrants");
+    var editCategoryGrantsUrl = Url.RouteUrl("EditAspNetUserCategoryGrants");
 }
 
 @section RightSidebar {
@@ -67,9 +68,12 @@
                                 </a>
                                 <a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Company grants'>
                                     <i class="users icon"></i>
+                                </a>
+                                <a href='@(editCategoryGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Category grants'>
+                                    <i class="list alternate outline icon"></i>
                                 </a>`;
                     }
-                },
+                }
             ],
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {

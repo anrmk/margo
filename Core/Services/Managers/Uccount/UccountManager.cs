@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
-
+using Core.Services.Grants;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
@@ -19,10 +19,14 @@ namespace Core.Services.Managers {
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
-        public UccountManager(IApplicationContext context) : base(context) { }
+        private readonly GrantService<UccountEntity> _grantService;
+
+        public UccountManager(IApplicationContext context, GrantService<UccountEntity> grantService) : base(context) {
+            _grantService = grantService;
+        }
 
         public async Task<UccountEntity> FindInclude(Guid id) {
-            return await DbSet
+            return await _grantService.Filter(DbSet)
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
                 .Include(x => x.Services)
@@ -33,7 +37,7 @@ namespace Core.Services.Managers {
         }
 
         public async Task<List<UccountEntity>> FindAll(Guid[] ids) {
-            return await DbSet
+            return await _grantService.Filter(DbSet)
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
                 .Include(x => x.Services)
@@ -45,14 +49,14 @@ namespace Core.Services.Managers {
         }
 
         public async Task<List<UccountEntity>> FindAll() {
-            return await DbSet
+            return await _grantService.Filter(DbSet)
                 .Include(x => x.Company)
                 .Include(x => x.Person)
                 .ToListAsync();
         }
 
         public async Task<List<UccountEntity>> FindByCompany(Guid companyId) {
-            return await DbSet
+            return await _grantService.Filter(DbSet)
                 .Include(x => x.Person)
                 .Include(x => x.Company)
                 .Where(x => x.CompanyId == companyId)

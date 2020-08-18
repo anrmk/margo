@@ -1,7 +1,9 @@
 ﻿using System.Security.Principal;
 
 using Core.Context;
+using Core.Data.Entities;
 using Core.Services.Business;
+using Core.Services.Grants;
 using Core.Services.Managers;
 
 using Microsoft.AspNetCore.Http;
@@ -25,8 +27,14 @@ namespace Core.Services {
 
             services.AddTransient<IUserProfileManager, UserProfileManager>();
             services.AddTransient<IUserRequestManager, UserRequestManager>();
-            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
        
+            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
+            services.AddTransient<IUserCategoryGrantsManager, UserCategoryGrantsManager>();
+            services.AddTransient<ILogManager, LogManager>();
+
+            ///Extension Service
+            services.AddTransient<IViewRenderService, ViewRenderService>();
+
             ///Managers
             services.AddTransient<IPersonManager, PersonManager>();
 
@@ -57,6 +65,11 @@ namespace Core.Services {
             services.AddTransient<IVendorBusinessManager, VendorBusinessManager>();
             services.AddTransient<IInvoiceBusinessManager, InvoiceBusinessManager>();
             services.AddTransient<IPaymentBusinessManager, PaymentBusinessManager>();
+
+            ///Grants by user
+            services.AddTransient<GrantService<UccountEntity>, UccountGrantService>();
+            services.AddTransient<GrantService<CompanyEntity>, CompanyGrantService>();
+            services.AddTransient<GrantService<CategoryEntity>, CategoryGrantService>();
         }
     }
 }

@@ -1,0 +1,39 @@
+﻿@model AspNetUserGrantsListViewModel
+@{
+    var formId = Guid.NewGuid();
+
+    var type = (GrantEntityEnum)ViewBag.Type;
+}
+
+<form id="@formId" class="ui form" asp-action="@(type switch { GrantEntityEnum.Company => "UpdateAspNetUserCompanyGrants", GrantEntityEnum.Category => "UpdateAspNetUserCategoryGrants" })" asp-route-id="@Model.UserId" method="post">
+    <table class="ui celled unstackable orange table">
+        <thead>
+            <tr>
+                <th>@(type switch { GrantEntityEnum.Company => "Company", GrantEntityEnum.Category => "Category" }) name</th>
+                <th>Access granted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var entityGrant in Model.Grants) {
+                <tr>
+                    <td>@entityGrant.EntityName</td>
+                    <td>
+                        <input type='hidden' name='Grants[][Id]' value='@entityGrant.Id'>
+                        <input type='hidden' name='Grants[][UserId]' value='@entityGrant.UserId'>
+                        <input type='hidden' name='Grants[][EntityId]' value='@entityGrant.EntityId'>
+                        <div class='ui slider checkbox'>
+                            <input type='checkbox' @(!string.IsNullOrEmpty(entityGrant.IsGranted) ? "checked='checked'" : "") name='Grants[][IsGranted]' value='granted'>
+                            <label></label>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.checkbox').checkbox()
+    });
+</script>

@@ -11,9 +11,13 @@ namespace Core.Data.Entities {
         public string UserId { get; set; }
         public virtual AspNetUserEntity User { get; set; }
 
-        [Column("Entity_Id")]
-        public Guid EntityId { get; set; }
+        [Column("Company_Id")]
+        public Guid? CompanyId { get; set; }
         public CompanyEntity Company { get; set; }
+
+        [Column("Category_Id")]
+        public Guid? CategoryId { get; set; }
+        public CategoryEntity Category { get; set; }
 
         [Column("Granted")]
         public bool IsGranted { get; set; }

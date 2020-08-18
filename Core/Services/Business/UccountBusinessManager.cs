@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ using AutoMapper;
 using Core.Data.Dto;
 using Core.Data.Entities;
 using Core.Extension;
+using Core.Services.Grants;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
@@ -38,16 +40,20 @@ namespace Core.Services.Business {
 
         private readonly IUccountVendorFieldManager _uccountVendorFieldManager;
 
+        private readonly GrantService<UccountEntity> _grantService;
+
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
             IUccountServiceManager uccountServiceManager,
             IUccountServiceFieldManager uccountServiceFieldManager,
-            IUccountVendorFieldManager uccountVendorFieldManager) {
+            IUccountVendorFieldManager uccountVendorFieldManager,
+            GrantService<UccountEntity> grantService) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountServiceManager = uccountServiceManager;
             _uccountServiceFieldManager = uccountServiceFieldManager;
             _uccountVendorFieldManager = uccountVendorFieldManager;
+            _grantService = grantService;
         }
 
         #region UCCOUNT
@@ -60,15 +66,14 @@ namespace Core.Services.Business {
             var sortby = "Id";
 
             Expression<Func<UccountEntity, bool>> where = x =>
-                   (true)
-                   && (string.IsNullOrEmpty(filter.Search)
-                        || (x.Person.Name.ToLower().Contains(filter.Search.ToLower()))
-                        || (x.Company.Name.ToLower().Contains(filter.Search.ToLower()))
-                        )
-                   && (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
-                   && (!filter.Kind.HasValue || x.Kind == filter.Kind)
-                   && (!filter.CustomerId.HasValue || x.CompanyId == filter.CustomerId || x.PersonId == filter.CustomerId)
-                   ;
+                (string.IsNullOrEmpty(filter.Search)
+                    || x.Person.Name.ToLower().Contains(filter.Search.ToLower())
+                    || x.Company.Name.ToLower().Contains(filter.Search.ToLower()))
+                && (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
+                && (!filter.Kind.HasValue || x.Kind == filter.Kind)
+                && (!filter.CustomerId.HasValue || x.CompanyId == filter.CustomerId || x.PersonId == filter.CustomerId)
+                && (!x.Company.Grants.Any(z => z.UserId == filter.UserId)
+                    || x.Company.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
 
             string[] include = new string[] { "Company", "Person", "Vendor", "Services" };
 

@@ -77,18 +77,6 @@ namespace Core.Context {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity("Core.Data.Entities.AspNetUserGrantEntity", b => {
-                b.HasOne("Core.Data.Entities.CompanyEntity", "Company")
-                    .WithMany("Grants")
-                    .HasForeignKey("EntityId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-            });
-
-            modelBuilder.Entity<CompanyEntity>().HasQueryFilter(x =>
-                !x.Grants.Any(z => z.UserId == _httpContextAccessor.HttpContext.User.GetUserId())
-                || x.Grants.SingleOrDefault(z => z.UserId == _httpContextAccessor.HttpContext.User.GetUserId()).IsGranted);
         }
 
         public async Task<int> SaveChangesAsync() {

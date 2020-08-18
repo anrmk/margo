@@ -63,8 +63,9 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("GetCategories", Name = "GetCategories")]
-        public async Task<PagerDto<CategoryListViewModel>> GetCategories([FromQuery] PagerFilterViewModel model) {
-            var result = await _categoryBusinessManager.GetCategoryPage(_mapper.Map<PagerFilterDto>(model));
+        public async Task<PagerDto<CategoryListViewModel>> GetCategories([FromQuery] CategoryFilterViewModel model) {
+            var result = await _categoryBusinessManager.GetCategoryPage(_mapper.Map<CategoryFilterDto>(model, opts =>
+                opts.AfterMap((_, dest) => (dest as CategoryFilterDto).UserId = User.GetUserId())));
             var pager = new PagerDto<CategoryListViewModel>(_mapper.Map<List<CategoryListViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
             return pager;
         }

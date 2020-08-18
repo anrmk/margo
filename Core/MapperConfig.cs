@@ -26,6 +26,12 @@ namespace Core {
             CreateMap<AspNetUserCompanyGrantsDto, AspNetUserGrantEntity>().ReverseMap();
             CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
 
+            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserGrantEntity>().ReverseMap();
+            CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
+
+            CreateMap<AspNetUserCategoryGrantsDto, AspNetUserGrantEntity>().ReverseMap();
+            CreateMap<AspNetUserEntity, AspNetUserCategoryGrantsListDto>().ReverseMap();
+
             CreateMap<LogEntity, LogDto>().ReverseMap();
 
             #region COMPANY

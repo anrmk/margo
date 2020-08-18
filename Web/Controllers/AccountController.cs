@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
 using Core.Services;
 using Core.Services.Business;
 
@@ -376,17 +377,46 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditCompanyGrantsPartial", _mapper.Map<AspNetUserCompanyGrantsListViewModel>(item));
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Type", GrantEntityEnum.Company }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditGrantsPartial", _mapper.Map<AspNetUserGrantsListViewModel>(item), viewData);
             return Ok(html);
         }
 
         [HttpPost("UpdateAspNetUserCompanyGrants", Name = "UpdateAspNetUserCompanyGrants")]
-        public async Task<IActionResult> UpdateAspNetUserCompanyGrants([FromQuery] string id, [FromBody] AspNetUserCompanyGrantsListViewModel model) {
+        public async Task<IActionResult> UpdateAspNetUserCompanyGrants([FromQuery] string id, [FromBody] AspNetUserGrantsListViewModel model) {
             if(ModelState.IsValid) {
                 var item = await _accountBusinessService.UpdateUserCompanyGrants(id, _mapper.Map<AspNetUserCompanyGrantsListDto>(model));
                 if(item == null)
                     return BadRequest();
-                return Ok(_mapper.Map<AspNetUserCompanyGrantsListViewModel>(item));
+                return Ok(_mapper.Map<AspNetUserGrantsListViewModel>(item));
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("EditAspNetUserCategoryGrants", Name = "EditAspNetUserCategoryGrants")]
+        public async Task<IActionResult> EditAspNetUserCategoryGrants([FromQuery] string id) {
+            var item = await _accountBusinessService.GetUserCategoryGrants(id);
+            if(item == null)
+                return NotFound();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Type", GrantEntityEnum.Category }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditGrantsPartial", _mapper.Map<AspNetUserGrantsListViewModel>(item), viewData);
+            return Ok(html);
+        }
+
+        [HttpPost("UpdateAspNetUserCategoryGrants", Name = "UpdateAspNetUserCategoryGrants")]
+        public async Task<IActionResult> UpdateAspNetUserCategoryGrants([FromQuery] string id, [FromBody] AspNetUserGrantsListViewModel model) {
+            if(ModelState.IsValid) {
+                var item = await _accountBusinessService.UpdateUserCategoryGrants(id, _mapper.Map<AspNetUserCategoryGrantsListDto>(model));
+                if(item == null)
+                    return BadRequest();
+                return Ok(_mapper.Map<AspNetUserGrantsListViewModel>(item));
             }
             return BadRequest();
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Core.Services.Business {
     public interface ICategoryBusinessManager {
         Task<CategoryDto> GetCategory(Guid id);
         Task<List<CategoryDto>> GetCategories();
-        Task<PagerDto<CategoryDto>> GetCategoryPage(PagerFilterDto filter);
+        Task<PagerDto<CategoryDto>> GetCategoryPage(CategoryFilterDto filter);
         Task<CategoryDto> CreateCategory(CategoryDto dto);
         Task<CategoryDto> UpdateCategory(Guid id, CategoryDto dto);
         Task<bool> DeleteCategories(Guid[] ids);
@@ -43,12 +44,13 @@ namespace Core.Services.Business {
             return _mapper.Map<List<CategoryDto>>(result);
         }
 
-        public async Task<PagerDto<CategoryDto>> GetCategoryPage(PagerFilterDto filter) {
+        public async Task<PagerDto<CategoryDto>> GetCategoryPage(CategoryFilterDto filter) {
             var sortby = "Name";
 
             Expression<Func<CategoryEntity, bool>> where = x =>
-                   (true)
-                   && (string.IsNullOrEmpty(filter.Search) || (x.Name.ToLower().Contains(filter.Search.ToLower())));
+                (string.IsNullOrEmpty(filter.Search) || (x.Name.ToLower().Contains(filter.Search.ToLower())))
+                && (!x.Grants.Any(z => z.UserId == filter.UserId)
+                    || x.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
 
             string[] include = new string[] { "Fields" };
 

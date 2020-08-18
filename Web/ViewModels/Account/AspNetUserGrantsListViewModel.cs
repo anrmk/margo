@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.ViewModels {
-    public class AspNetUserCompanyGrantsListViewModel {
+    public class AspNetUserGrantsListViewModel {
         [Display(Name = "User")]
         public string UserId { get; set; }
         
-        public IEnumerable<AspNetUserCompanyGrantsViewModel> Grants { get; set; }
+        public IEnumerable<AspNetUserGrantsViewModel> Grants { get; set; }
     }
 }
