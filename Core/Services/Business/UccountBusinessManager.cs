@@ -59,6 +59,23 @@ namespace Core.Services.Business {
         #region UCCOUNT
         public async Task<UccountDto> GetUccount(Guid id) {
             var result = await _uccountManager.FindInclude(id);
+
+            // Decrypt vendor password field
+            foreach(var field in result.Fields) {
+                if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                    field.Value = field.Value.Decrypt();
+                }
+            }
+
+            // Decrypt service password field
+            foreach(var service in result.Services) {
+                foreach(var field in service.Fields) {
+                    if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                        field.Value = field.Value.Decrypt();
+                    }
+                }
+            }
+
             return _mapper.Map<UccountDto>(result);
         }
 
@@ -92,6 +109,7 @@ namespace Core.Services.Business {
 
         public async Task<List<UccountDto>> GetUccounts() {
             var result = await _uccountManager.All();
+
             return _mapper.Map<List<UccountDto>>(result);
         }
 
