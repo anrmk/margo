@@ -8,14 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200813164041_update-tasks.cs" />
-    <Compile Remove="Migrations\20200813164041_update-tasks.Designer.cs" />
-    <Compile Remove="Migrations\20200813171157_upae-task.cs" />
-    <Compile Remove="Migrations\20200813171157_upae-task.Designer.cs" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
