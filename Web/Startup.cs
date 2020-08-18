@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Web.Hubs;
 
 namespace Web {
     public class Startup {
@@ -59,6 +60,11 @@ namespace Web {
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.Configure<SecurityStampValidatorOptions>(options =>{
+                // enables immediate logout, after updating the user's stat.
+                options.ValidationInterval = TimeSpan.Zero;
+            });
+
             services.ConfigureApplicationCookie(options => {
                 options.ExpireTimeSpan = TimeSpan.FromHours(24);
                 // Cookie settings
@@ -74,7 +80,7 @@ namespace Web {
             });
             #endregion
 
-            //services.AddSignalR();
+            services.AddSignalR();
 
             services.Configure<FormOptions>(options => {
                 options.ValueCountLimit = int.MaxValue;
@@ -96,8 +102,6 @@ namespace Web {
             MapperConfig.Register(services);
 
             services.AddControllersWithViews();
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -123,7 +127,7 @@ namespace Web {
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
-                //endpoints.MapHub<NotificationHub>("/notificationHub");
+                endpoints.MapHub<NotificationHub>("/notification");
 
                 endpoints.MapControllerRoute(
                     name: "default",

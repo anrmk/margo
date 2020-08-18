@@ -16,8 +16,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
+using Telegram.Bot.Requests.Abstractions;
+
+using Web.Hubs;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -43,8 +47,10 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CompanyController: ControllerBase {
         private readonly IMapper _mapper;
+        private readonly IHubContext<NotificationHub> _notificationHub;
         private readonly IViewRenderService _viewRenderService;
 
         private readonly IAccountBusinessManager _accountBusinessManager;
@@ -53,7 +59,9 @@ namespace Web.Controllers.Api {
         private readonly IUccountBusinessManager _uccountBusinessManager;
         private readonly ICategoryBusinessManager _categoryBusinessManager;
 
-        public CompanyController(IMapper mapper, IViewRenderService viewRenderService,
+        public CompanyController(IMapper mapper,
+            IHubContext<NotificationHub> notificationHub,
+            IViewRenderService viewRenderService,
             IAccountBusinessManager accountBusinessManager,
             ICompanyBusinessManager companyBusinessManager,
             IPersonBusinessManager personBusinessManager,
@@ -61,6 +69,7 @@ namespace Web.Controllers.Api {
             ICategoryBusinessManager categoryBusinessManager
             ) {
             _mapper = mapper;
+            _notificationHub = notificationHub;
             _viewRenderService = viewRenderService;
             _accountBusinessManager = accountBusinessManager;
             _companyBusinessManager = companyBusinessManager;
@@ -178,11 +187,14 @@ namespace Web.Controllers.Api {
                 var dto = _mapper.Map<CompanyDto>(model);
                 if(!User.IsInRole("Administrator")) {
 
-                    await CreateOrUpdateRequest(User.FindFirst(ClaimTypes.Name).Value, new AspNetUserRequestDto() {
+                    var item = await CreateOrUpdateRequest(User.FindFirst(ClaimTypes.Name).Value, new AspNetUserRequestDto() {
                         ModelId = model.Id,
                         ModelType = dto.GetType(),
                         Model = JsonSerializer.Serialize(dto)
                     });
+
+                    if(item != null)
+                        await _notificationHub.Clients.Group("adminGroup").SendAsync("receiveMessage", new { Message = "Company data change request!" });
 
                     return Ok(new { Message = "Changes will be published after padding moderation!" });
                 } else {

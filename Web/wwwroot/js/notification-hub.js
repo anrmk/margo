@@ -9,10 +9,22 @@
     }
 
     initialize() {
-        this.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
-        this.connection.on("notificationResult", (data) => {
-            this.notify(data);
+        this.connection = new signalR.HubConnectionBuilder().withUrl("/notification").build();
+
+        this.connection.on("receiveMessage", (data) => {
+            $.fn.message(data);
         });
+
+        this.connection.on("signout", (data) => {
+            $('body').dimmer({
+                    displayLoader: true,
+                    loaderVariation: 'slow orange medium elastic',
+                    loaderText: ' Your account has been desabled, please contact your System Administrator!'
+                })
+                .dimmer('show')
+            //$.post('/account/logout', );
+        });
+
         //this.connection.connectionClosed(async () => { setTimeout(() => this.start(), 10000); });
         this.connection.onclose(async () => { setTimeout(() => this.start(), 10000); });
 

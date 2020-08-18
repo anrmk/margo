@@ -24,6 +24,7 @@ namespace Core.Services.Business {
         Task<bool> LockUser(string id, bool locked);
         Task SignInAsync(string id, bool isPersistent);
         Task SignOutAsync();
+        Task SignOutAsync(string id);
         Task<SignInResult> PasswordSignInAsync(string userName, string password, bool rememberMe);
         Task<string> GenerateEmailConfirmationTokenAsync(string id);
 
@@ -223,6 +224,15 @@ namespace Core.Services.Business {
         public async Task SignOutAsync() {
             await _signInManager.SignOutAsync();
         }
+
+        public async Task SignOutAsync(string id) {
+            var entity = await _userManager.Users
+                .Include(x => x.Profile)
+                .Where(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+
+            if(entity != null)
+                await _userManager.UpdateSecurityStampAsync(entity);
+        }
         #endregion
 
         #region ROLES
@@ -328,7 +338,7 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        
+
 
         #region LOGS
         public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {

@@ -17,8 +17,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
+using Web.Hubs;
 using Web.Models.AccountViewModel;
 using Web.ViewModels;
 
@@ -156,14 +158,18 @@ namespace Web.Controllers.Api {
     [Authorize(Roles = "Administrator")]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
+        private readonly IHubContext<NotificationHub> _notificationHub;
         private readonly IViewRenderService _viewRenderService;
 
         private readonly IAccountBusinessManager _accountBusinessService;
         private readonly ICompanyBusinessManager _companyBusinessManager;
 
-        public AccountController(IMapper mapper, IViewRenderService viewRenderService, IAccountBusinessManager accountBusinessService,
+        public AccountController(IMapper mapper,
+            IHubContext<NotificationHub> notificationHub,
+            IViewRenderService viewRenderService, IAccountBusinessManager accountBusinessService,
             ICompanyBusinessManager companyBusinessManager) {
             _mapper = mapper;
+            _notificationHub = notificationHub;
             _viewRenderService = viewRenderService;
             _accountBusinessService = accountBusinessService;
             _companyBusinessManager = companyBusinessManager;
@@ -238,6 +244,11 @@ namespace Web.Controllers.Api {
         [HttpGet("LockoutAspNetUser", Name = "LockoutAspNetUser")]
         public async Task<IActionResult> LockoutAspNetUser([FromQuery] string id, [FromQuery] bool locked) {
             var item = await _accountBusinessService.LockUser(id, locked);
+            if(item) {
+                await _accountBusinessService.SignOutAsync(id);
+                await _notificationHub.Clients.User(id).SendAsync("signout");
+            }
+
             return Ok(item);
         }
 
@@ -325,6 +336,10 @@ namespace Web.Controllers.Api {
                     return NotFound();
 
                 var result = await _accountBusinessService.DeleteRequest(id);
+
+                if(result)
+                    await _notificationHub.Clients.All.SendAsync("receiveMessage", new { Message = $"{company.Name} company data was applied!" });
+
                 return Ok(result);
             } else if(item.ModelType == typeof(UccountDto)) {
 
@@ -341,9 +356,9 @@ namespace Web.Controllers.Api {
         [HttpGet("DeleteAspNetUserRequest", Name = "DeleteAspNetUserRequest")]
         public async Task<IActionResult> DeleteAspNetUserRequest([FromQuery] Guid[] id) {
             var result = await _accountBusinessService.DeleteRequest(id);
-            if(result)
+            if(result) {
                 return Ok(id);
-
+            }
             return BadRequest("No items selected");
         }
         #endregion
