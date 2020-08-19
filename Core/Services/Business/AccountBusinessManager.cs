@@ -44,10 +44,6 @@ namespace Core.Services.Business {
         Task<bool> DeleteRequest(Guid id);
         Task<bool> DeleteRequest(Guid[] ids);
 
-        //
-        //Task<ApplicationUserDto> UpdateUserProfile(string userId, ApplicationUserProfileDto model);
-        //Task<IdentityResult> UpdatePassword(string userId, string oldPassword, string newPassword);
-
         //  LOGS
         Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
@@ -371,34 +367,72 @@ namespace Core.Services.Business {
 
         #region COMPANY GRANTS
         public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
-            var entities = await _companyManager.FindAllGrantsByUser(id);
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(entities);
+            var companyEntities = (await _companyManager.All()).ToList();
+            var companyGrantEntities = (await _userCompanyGrantsManager.FindByUserId(id)).ToList();
+            var companyDeniedIds = companyGrantEntities.Select(x => x.CompanyId);
+
+            companyEntities.ForEach(x => {
+                if(!companyDeniedIds.Contains(x.Id)) {
+                    companyGrantEntities.Add(new AspNetUserCompanyGrantEntity {
+                        CompanyId = x.Id,
+                        Company = x,
+                        IsGranted = true,
+                        UserId = id
+                    });
+                }
+            });
+
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(companyGrantEntities);
             return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
         }
 
         public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
-            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
-            await _userCompanyGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
-            grantEntities = await _userCompanyGrantsManager.Create(grantEntities);
+            var newGrantEntities = _mapper.Map<IEnumerable<AspNetUserCompanyGrantEntity>>(dto.Grants.Where(x => !x.IsGranted));
+            var oldGrantEntities = await _userCompanyGrantsManager.FindByUserId(id);
+            var intersectionEntities = CompareExtension.Intersect<AspNetUserCompanyGrantEntity, Guid>(oldGrantEntities, newGrantEntities);
 
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(grantEntities);
+            await _userCompanyGrantsManager.Delete(
+                CompareExtension.Exclude<AspNetUserCompanyGrantEntity, Guid>(oldGrantEntities, intersectionEntities));
+            await _userCompanyGrantsManager.Create(
+                CompareExtension.Exclude<AspNetUserCompanyGrantEntity, Guid>(newGrantEntities, intersectionEntities));
+
+            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(newGrantEntities);
             return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
         }
         #endregion
 
         #region CATEGORY GRANTS
         public async Task<AspNetUserCategoryGrantsListDto> GetUserCategoryGrants(string id) {
-            var entities = await _categoryManager.FindAllGrantsByUser(id);
-            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(entities);
+            var categoryEntities = (await _categoryManager.All()).ToList();
+            var categoryGrantEntities = (await _userCategoryGrantsManager.FindByUserId(id)).ToList();
+            var categoryDeniedIds = categoryGrantEntities.Select(x => x.CategoryId);
+
+            categoryEntities.ForEach(x => {
+                if(!categoryDeniedIds.Contains(x.Id)) {
+                    categoryGrantEntities.Add(new AspNetUserCategoryGrantEntity {
+                        CategoryId = x.Id,
+                        Category = x,
+                        IsGranted = true,
+                        UserId = id
+                    });
+                }
+            });
+
+            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(categoryGrantEntities);
             return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
         }
 
         public async Task<AspNetUserCategoryGrantsListDto> UpdateUserCategoryGrants(string id, AspNetUserCategoryGrantsListDto dto) {
-            var grantEntities = _mapper.Map<IEnumerable<AspNetUserGrantEntity>>(dto.Grants);
-            await _userCategoryGrantsManager.Delete(grantEntities.Where(x => x.Id != Guid.Empty));
-            grantEntities = await _userCategoryGrantsManager.Create(grantEntities);
+            var newGrantEntities = _mapper.Map<IEnumerable<AspNetUserCategoryGrantEntity>>(dto.Grants.Where(x => !x.IsGranted));
+            var oldGrantEntities = await _userCategoryGrantsManager.FindByUserId(id);
+            var intersectionEntities = CompareExtension.Intersect<AspNetUserCategoryGrantEntity, Guid>(oldGrantEntities, newGrantEntities);
 
-            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(grantEntities);
+            await _userCategoryGrantsManager.Delete(
+                CompareExtension.Exclude<AspNetUserCategoryGrantEntity, Guid>(oldGrantEntities, intersectionEntities));
+            await _userCategoryGrantsManager.Create(
+                CompareExtension.Exclude<AspNetUserCategoryGrantEntity, Guid>(newGrantEntities, intersectionEntities));
+
+            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(newGrantEntities);
             return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
         }
         #endregion

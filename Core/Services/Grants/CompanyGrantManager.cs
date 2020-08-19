@@ -2,9 +2,9 @@
 using Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Services.Grants {
-    public class CompanyGrantService: GrantService<CompanyEntity> {
-        public CompanyGrantService(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) {
+namespace Core.Services {
+    public class CompanyGrantManager: GrantManager<CompanyEntity> {
+        public CompanyGrantManager(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor) {
         }
 
         public override IQueryable<CompanyEntity> Filter(IQueryable<CompanyEntity> query) {

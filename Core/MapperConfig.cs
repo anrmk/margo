@@ -23,13 +23,10 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.ModelType, o => o.MapFrom(s => Type.GetType(s.ModelType)));
 
-            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserGrantEntity>().ReverseMap();
+            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserCompanyGrantEntity>().ReverseMap();
             CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
 
-            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserGrantEntity>().ReverseMap();
-            CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
-
-            CreateMap<AspNetUserCategoryGrantsDto, AspNetUserGrantEntity>().ReverseMap();
+            CreateMap<AspNetUserCategoryGrantsDto, AspNetUserCategoryGrantEntity>().ReverseMap();
             CreateMap<AspNetUserEntity, AspNetUserCategoryGrantsListDto>().ReverseMap();
 
             CreateMap<LogEntity, LogDto>().ReverseMap();

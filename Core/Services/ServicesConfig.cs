@@ -3,7 +3,6 @@
 using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Business;
-using Core.Services.Grants;
 using Core.Services.Managers;
 
 using Microsoft.AspNetCore.Http;
@@ -67,9 +66,10 @@ namespace Core.Services {
             services.AddTransient<IPaymentBusinessManager, PaymentBusinessManager>();
 
             ///Grants by user
-            services.AddTransient<GrantService<UccountEntity>, UccountGrantService>();
-            services.AddTransient<GrantService<CompanyEntity>, CompanyGrantService>();
-            services.AddTransient<GrantService<CategoryEntity>, CategoryGrantService>();
+            services.AddTransient<GrantManager<UccountEntity>, UccountGrantManager>();
+            services.AddTransient<GrantManager<CompanyEntity>, CompanyGrantManager>();
+            services.AddTransient<GrantManager<CategoryEntity>, CategoryGrantManager>();
+            services.AddTransient<UccountServiceGrantManager>();
         }
     }
 }

@@ -9,7 +9,6 @@ using AutoMapper;
 using Core.Data.Dto;
 using Core.Data.Entities;
 using Core.Extension;
-using Core.Services.Grants;
 using Core.Services.Managers;
 
 namespace Core.Services.Business {
@@ -40,25 +39,28 @@ namespace Core.Services.Business {
 
         private readonly IUccountVendorFieldManager _uccountVendorFieldManager;
 
-        private readonly GrantService<UccountEntity> _grantService;
+        private readonly UccountServiceGrantManager _uccountServiceGrantsManager;
 
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
             IUccountServiceManager uccountServiceManager,
             IUccountServiceFieldManager uccountServiceFieldManager,
             IUccountVendorFieldManager uccountVendorFieldManager,
-            GrantService<UccountEntity> grantService) {
+            UccountServiceGrantManager uccountServiceGrantsManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountServiceManager = uccountServiceManager;
             _uccountServiceFieldManager = uccountServiceFieldManager;
             _uccountVendorFieldManager = uccountVendorFieldManager;
-            _grantService = grantService;
+            _uccountServiceGrantsManager = uccountServiceGrantsManager;
         }
 
         #region UCCOUNT
         public async Task<UccountDto> GetUccount(Guid id) {
             var result = await _uccountManager.FindInclude(id);
+
+            // Filter services by user
+            await _uccountServiceGrantsManager.FilterByUser(result);
 
             // Decrypt vendor password field
             foreach(var field in result.Fields) {
@@ -102,6 +104,9 @@ namespace Core.Services.Business {
                 return new PagerDto<UccountDto>(new List<UccountDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
+
+            // Filter services by user
+            await _uccountServiceGrantsManager.FilterByUser(list);
 
             var result = _mapper.Map<List<UccountDto>>(list);
             return new PagerDto<UccountDto>(result, count, page, filter.Length);

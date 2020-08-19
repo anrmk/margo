@@ -11,5 +11,8 @@ namespace Core.Data.Entities {
         public virtual UccountEntity Account { get; set; }
         public string Name { get; set; }
         public virtual ICollection<UccountServiceFieldEntity> Fields { get; set; }
+
+        [Column("Category_Id")]
+        public Guid? CategoryId { get; set; }
     }
 }

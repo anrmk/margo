@@ -6,26 +6,24 @@ using System.Threading.Tasks;
 using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
-using Core.Services.Grants;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface ICompanyManager: IEntityManager<CompanyEntity> {
         Task<CompanyEntity> FindInclude(Guid id);
-        Task<List<CompanyEntity>> FindAll(bool ignoreQueryFilters = false);
+        Task<List<CompanyEntity>> FindAll();
         Task<List<CompanyEntity>> FindAll(Guid[] ids);
-        Task<List<AspNetUserGrantEntity>> FindAllGrantsByUser(string userId);
     }
 
     public class CompanyManager: AsyncEntityManager<CompanyEntity>, ICompanyManager {
-        private readonly GrantService<CompanyEntity> _grantService;
+        private readonly GrantManager<CompanyEntity> _grantManager;
 
-        public CompanyManager(IApplicationContext context, GrantService<CompanyEntity> grantService) : base(context) {
-            _grantService = grantService;
+        public CompanyManager(IApplicationContext context, GrantManager<CompanyEntity> grantManager) : base(context) {
+            _grantManager = grantManager;
         }
 
         public async Task<CompanyEntity> FindInclude(Guid id) {
-            return await _grantService.Filter(DbSet)
+            return await _grantManager.Filter(DbSet)
                 .Include(x => x.Sections)
                     .ThenInclude(x => x.Fields)
                 .Include(x => x.Data)
@@ -33,30 +31,14 @@ namespace Core.Services.Managers {
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<CompanyEntity>> FindAll(bool ignoreQueryFilters) {
-            return await (ignoreQueryFilters
-                ? DbSet.AsQueryable()
-                : _grantService.Filter(DbSet)).ToListAsync();
-        }
-
-        public async Task<List<CompanyEntity>> FindAll(Guid[] ids) {
-            return await _grantService.Filter(DbSet)
-                .Where(x => ids.Contains(x.Id))
+        public async Task<List<CompanyEntity>> FindAll() {
+            return await _grantManager.Filter(DbSet)
                 .ToListAsync();
         }
 
-        public async Task<List<AspNetUserGrantEntity>> FindAllGrantsByUser(string userId) {
-            return await DbSet
-                .Include(x => x.Grants)
-                .Select(x => !x.Grants.Any(z => z.UserId == userId)
-                    ? new AspNetUserGrantEntity {
-                        CompanyId = x.Id,
-                        Company = x,
-                        IsGranted = true,
-                        UserId = userId
-                    }
-                    : x.Grants.SingleOrDefault(z => z.UserId == userId))
-                .IgnoreQueryFilters()
+        public async Task<List<CompanyEntity>> FindAll(Guid[] ids) {
+            return await _grantManager.Filter(DbSet)
+                .Where(x => ids.Contains(x.Id))
                 .ToListAsync();
         }
     }

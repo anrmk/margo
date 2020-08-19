@@ -198,6 +198,7 @@ $.fn.generateFields = function (fields, srlzName, label=false) {
 $.fn.generateGroup = function (id, groupName, html, srlzName) {
     const $group = $(`
         <div id="${id}" class="fields">
+            <input type="hidden" name="${srlzName}[][CategoryId]" value="${id}" data-value-type="string">
             <input type="hidden" name="${srlzName}[][Name]" value="${groupName}" data-value-type="string">
             <div class="field two wide flex align-center">
                 <label>${groupName}</label>
