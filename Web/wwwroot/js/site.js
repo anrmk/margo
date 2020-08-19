@@ -9,17 +9,16 @@
             $('.fixed.menu').transition('fade out');
         }
     });
+
     $('.ui.shape').find('button[data-target]').on('click', (e) => {
         e.preventDefault();
         $('.shape').shape('set next side', $(e.currentTarget).data('target')).shape('flip over');
     });
-
     $('.ui.dropdown').dropdown({ 'clearable': true });
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
 
     window.Hub = new NotificationHub();
-
 }).ajaxSend((event, xhr, options) => {
     xhr.setRequestHeader("ApiKey", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {

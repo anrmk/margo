@@ -1,20 +1,30 @@
 ﻿@model Web.ViewModels.UccountViewModel
 
-<div class="ui red card">
-    <div class="content">
-        <h3 class="ui header">
-            @Model.Name
-            <span class="sub header">Name</span>
-        </h3>
+<div class="ui piled segment">
+    <h3 class="ui header">
+        @Model.Name
+        <span class="sub header"> @Model.VendorName</span>
+    </h3>
 
-        <h3 class="ui header">
-            @Model.VendorName
-            <span class="sub header">Vendor Name</span>
-        </h3>
+    <table class="ui very basic compact table">
+        @foreach(var field in Model.Fields) {
+            <tr>
+                <td>@field.Name</td>
+                @if(field.Type != FieldEnum.PASSWORD) {
+                    <td>@field.Value</td>
+                } else {
+                    <td>
+                        <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
 
-        <h4 class="ui dividing header">Fields</h4>
-        <table class="ui very basic compact table">
-            @foreach(var field in Model.Fields) {
+    <h4 class="ui dividing header">Services Fields</h4>
+    <table class="ui very basic compact table">
+        @foreach(var Service in Model.Services) {
+            @foreach(var field in Service.Fields) {
                 <tr>
                     <td>@field.Name</td>
                     @if(field.Type != FieldEnum.PASSWORD) {
@@ -26,24 +36,7 @@
                     }
                 </tr>
             }
-        </table>
+        }
+    </table>
 
-        <h4 class="ui dividing header">Services Fields</h4>
-        <table class="ui very basic compact table">
-            @foreach(var Service in Model.Services) {
-                @foreach(var field in Service.Fields) {
-                    <tr>
-                        <td>@field.Name</td>
-                        @if(field.Type != FieldEnum.PASSWORD) {
-                            <td>@field.Value</td>
-                        } else {
-                            <td>
-                                <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
-                            </td>
-                        }
-                    </tr>
-                }
-            }
-        </table>
-    </div>
 </div>

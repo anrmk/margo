@@ -17,21 +17,19 @@
 
         this.connection.on("signout", (data) => {
             $('body').dimmer({
-                    displayLoader: true,
-                    loaderVariation: 'slow orange medium elastic',
-                    loaderText: ' Your account has been desabled, please contact your System Administrator!'
-                })
-                .dimmer('show')
-            //$.post('/account/logout', );
+                'displayLoader': true,
+                'loaderVariation': 'slow orange medium elastic',
+                'loaderText': ' Your account has been desabled, please contact your System Administrator!',
+                'onShow': (e) => { setTimeout(() => location.reload(), 2500); }
+            }).dimmer('show');
         });
 
-        //this.connection.connectionClosed(async () => { setTimeout(() => this.start(), 10000); });
         this.connection.onclose(async () => { setTimeout(() => this.start(), 10000); });
 
         this.start();
     }
 
-    start = function () {
+    start() {
         var hub = this;
         try {
             this.connection.start().then((e) => {
@@ -45,12 +43,6 @@
             });
         } catch (e) {
             console.log(e);
-        }
-    }
-
-    notify = function (data) {
-        if (data != null) {
-            $.fn.alert(data)
         }
     }
 }

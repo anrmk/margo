@@ -33,6 +33,11 @@ fieldset {
   border: 0;
 }
 
+.shape.full-width {
+  display: block;
+  width: 100%;
+}
+
 #mainbody .pusher > .full.height {
   display: -webkit-box;
   display: -webkit-flex;

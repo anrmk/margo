@@ -69,7 +69,7 @@
             }).done((data, status, _) => {
                 if (data && data.fields) {
                     const fields = $($.fn.generateFields(data.fields, "Fields", true));
-                    $("@vendorFieldsGuid").html(fields);
+                    $("#@vendorFieldsGuid").html(fields);
                 }
             });
         });

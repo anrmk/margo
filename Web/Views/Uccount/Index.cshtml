@@ -34,22 +34,35 @@
             </div>
         </form>
     </div>
-    <div id="@(tableId)_detail"></div>
 }
-<div>
-    <div id="toolbar" class="ui secondary menu">
-        <div class="ui buttons">
-            <a class="ui button" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog" data-title="Create business account">Bussines</a>
-            <div class="or"></div>
-            <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Personal</a>
-        </div>
+<div class="ui shape full-width">
+    <div class="sides">
+        <div class="active side main">
+            <div id="toolbar" class="ui secondary menu">
+                <div class="ui buttons">
+                    <a class="ui button" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog" data-title="Create business account">Bussines</a>
+                    <div class="or"></div>
+                    <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Personal</a>
+                </div>
 
-        <div class="right menu">
-            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+                <div class="right menu">
+                    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+                </div>
+            </div>
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        </div>
+        <div class="side details">
+            <div class="ui stackable grid">
+                <div class="row">
+                    <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                </div>
+                <div class="row">
+                    <div class="column" id="@(tableId)_details">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 @section Scripts {
@@ -83,33 +96,6 @@
             }
         }
 
-        $(document).ready(function () {
-            window.DocumentController = new DocumentController({
-            'table': '#@tableId',
-            'controller': {
-                'list': '@listUrl',
-                'delete': '@deleteUrl'
-            },
-            'columns': [
-                { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
-                { 'title': 'Vendor', 'className': 'collapsing', 'data': 'vendorName' },
-                { 'title': 'Customer', 'data': 'name', 'render': (data, type, row) => { return `<span>${data}<br/>${row.kind}</span>` } },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' }
-            ],
-            'onRowClick': (e, data) => {
-                $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_detail').html(result)
-                        .find('a[data-request=ajax]').ajaxClick();
-                });
-            },
-            'onDblRowClick': (e, data) => {
-                $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog({ 'title': 'Edit account' });
-                });
-            }});
-        });
-
         ajaxSubmitComplete = function (e, jqXHR, status) {
             if (status === 'success') {
                 window.DocumentController.reload(false);
@@ -123,5 +109,36 @@
                 $(target).remove();
             }
         };
+
+        $(document).ready(function () {
+            window.DocumentController = new DocumentController({
+                'table': '#@tableId',
+                'controller': {
+                    'list': '@listUrl',
+                    'delete': '@deleteUrl'
+                },
+                'columns': [
+                    { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                    { 'title': 'Vendor', 'className': 'collapsing', 'data': 'vendorName' },
+                    { 'title': 'Customer', 'data': 'name', 'render': (data, type, row) => { return `<span>${data}<br/>${row.kind}</span>` } },
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' },
+                    {
+                        'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                            return `<a class='ui icon mini blue button' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit'>
+                                    <i class="pencil icon"></i>
+                                </a>`;
+                        }
+                    }
+                ],
+                'onRowClick': (e, data) => { },
+                'onDblRowClick': (e, data) => {
+                   $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                       $('#@(tableId)_details').html(result).find('a[data-request=ajax]').ajaxClick();
+                       $('.shape').shape('set next side', '.side.details').shape('flip over');
+                    });
+                }
+            });
+        })
     </script>
 }
