@@ -37,25 +37,19 @@ namespace Web {
             CreateMap<AspNetUserRequestViewModel, AspNetUserRequestDto>().ReverseMap();
             CreateMap<AspNetUserRequestListViewModel, AspNetUserRequestDto>().ReverseMap();
 
-            CreateMap<AspNetUserGrantsListViewModel, AspNetUserCompanyGrantsListDto>().ReverseMap();
-            CreateMap<AspNetUserGrantsViewModel, AspNetUserCompanyGrantsDto>()
+            CreateMap<AspNetUserDenyAccessViewModel, AspNetUserDenyAccessCompanyDto>()
                 .ReverseMap()
                 .ForMember(d => d.EntityId, o => o.MapFrom(s => s.CompanyId))
-                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Company.Name))
-                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !s.IsGranted ? null : "granted"));
-            CreateMap<AspNetUserGrantsViewModel, AspNetUserCompanyGrantsDto>()
-                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.EntityId))
-                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !string.IsNullOrEmpty(s.IsGranted)));
+                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Company.Name));
+            CreateMap<AspNetUserDenyAccessViewModel, AspNetUserDenyAccessCompanyDto>()
+                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.EntityId));
 
-            CreateMap<AspNetUserGrantsListViewModel, AspNetUserCategoryGrantsListDto>().ReverseMap();
-            CreateMap<AspNetUserGrantsViewModel, AspNetUserCategoryGrantsDto>()
+            CreateMap<AspNetUserDenyAccessViewModel, AspNetUserDenyAccessCategoryDto>()
                 .ReverseMap()
                 .ForMember(d => d.EntityId, o => o.MapFrom(s => s.CategoryId))
-                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Category.Name))
-                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !s.IsGranted ? null : "granted"));
-            CreateMap<AspNetUserGrantsViewModel, AspNetUserCategoryGrantsDto>()
-                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.EntityId))
-                .ForMember(d => d.IsGranted, o => o.MapFrom(s => !string.IsNullOrEmpty(s.IsGranted)));
+                .ForMember(d => d.EntityName, o => o.MapFrom(s => s.Category.Name));
+            CreateMap<AspNetUserDenyAccessViewModel, AspNetUserDenyAccessCategoryDto>()
+                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.EntityId));
 
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();

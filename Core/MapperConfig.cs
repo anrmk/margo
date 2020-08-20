@@ -23,11 +23,8 @@ namespace Core {
                 .ReverseMap()
                 .ForMember(d => d.ModelType, o => o.MapFrom(s => Type.GetType(s.ModelType)));
 
-            CreateMap<AspNetUserCompanyGrantsDto, AspNetUserCompanyGrantEntity>().ReverseMap();
-            CreateMap<AspNetUserEntity, AspNetUserCompanyGrantsListDto>().ReverseMap();
-
-            CreateMap<AspNetUserCategoryGrantsDto, AspNetUserCategoryGrantEntity>().ReverseMap();
-            CreateMap<AspNetUserEntity, AspNetUserCategoryGrantsListDto>().ReverseMap();
+            CreateMap<AspNetUserDenyAccessCompanyDto, AspNetUserDenyAccessCompanyEntity>().ReverseMap();
+            CreateMap<AspNetUserDenyAccessCategoryDto, AspNetUserDenyAccessCategoryEntity>().ReverseMap();
 
             CreateMap<LogEntity, LogDto>().ReverseMap();
 
@@ -78,7 +75,7 @@ namespace Core {
             #region UCCOUNTS
             CreateMap<UccountDto, UccountEntity>()
                 .ReverseMap()
-                .ForMember(d => d.Updated, o => o.MapFrom(s => s.UpdatedDate))
+                .ForMember(d => d.UpdatedDate, o => o.MapFrom(s => s.UpdatedDate))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Person != null ? s.Person.Name : s.Company.Name))
                 .ForMember(d => d.VendorName, o => o.MapFrom(x => x.Vendor.Name));
             CreateMap<UccountServiceDto, UccountServiceEntity>().ReverseMap();

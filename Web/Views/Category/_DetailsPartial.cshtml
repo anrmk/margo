@@ -1,18 +1,40 @@
 ﻿@model Web.ViewModels.CategoryViewModel
 
-<div class="ui red card">
-    <div class="content">
-        <div class="header">@Model.Name</div>
-        <div class="meta">@Model.ParentName</div>
-        <h4 class="ui dividing header">Fields</h4>
-        <table class="ui table">
-            @foreach(var field in Model.Fields) {
+<div class="ui attached orange segment">
+    <h3 class="ui header">
+        @Model.Name
+        <span class="sub header">@Model.ParentName</span>
+    </h3>
+    @if(Model.Fields.Count() > 0) {
+        <a class="ui red ribbon label">Fields</a>
+        <table class="ui single line very compact table">
+            <thead>
                 <tr>
-                    <td>@field.Name</td>
-                    <td>@field.TypeName</td>
-                    <td>@field.IsRequired</td>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th class="collapsing"></th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach(var field in Model.Fields) {
+                    <tr>
+                        <td>@field.Name</td>
+                        <td>@field.TypeName</td>
+                        <td>
+                            @if(field.IsRequired) {
+                                <i class="icon checkmark"></i>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
+    }
+</div>
+
+<div class="ui bottom attached warning message">
+    <div class="flex justify-content-between">
+        <span>@Model.UpdatedBy</span>
+        <span> @Model.UpdatedDate.ToString("MM/dd/yyyy")</span>
     </div>
 </div>

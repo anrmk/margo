@@ -72,7 +72,7 @@
         });
 
         tbody.on('dblclick', 'tr', (e) => {
-            //e.preventDefault();
+            e.preventDefault();
 
             var row = this.datatable.row(e.currentTarget);
             this.options.onDblRowClick(e, row.data());

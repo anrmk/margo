@@ -27,8 +27,8 @@ namespace Core.Services {
             services.AddTransient<IUserProfileManager, UserProfileManager>();
             services.AddTransient<IUserRequestManager, UserRequestManager>();
        
-            services.AddTransient<IUserCompanyGrantsManager, UserCompanyGrantsManager>();
-            services.AddTransient<IUserCategoryGrantsManager, UserCategoryGrantsManager>();
+            services.AddTransient<IAspNetUserDenyAccessCompanyManager, AspNetUserDenyAccessCompanyManager>();
+            services.AddTransient<IAspNetUserDenyAccessCategoryManager, AspNetUserDenyAccessCategoryManager>();
             services.AddTransient<ILogManager, LogManager>();
 
             ///Extension Service

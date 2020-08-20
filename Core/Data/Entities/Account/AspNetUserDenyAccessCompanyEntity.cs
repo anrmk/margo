@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
-    [Table(name: "AspNetUserCompanyGrants")]
-    public class AspNetUserCompanyGrantEntity: EntityBase<Guid> {
+    [Table(name: "AspNetUserDenyAccessCompanies")]
+    public class AspNetUserDenyAccessCompanyEntity: EntityBase<Guid> {
         [ForeignKey("User")]
         [Column("User_Id")]
         [Required]
@@ -14,8 +14,5 @@ namespace Core.Data.Entities {
         [Column("Company_Id")]
         public Guid CompanyId { get; set; }
         public virtual CompanyEntity Company { get; set; }
-
-        [Column("Granted")]
-        public bool IsGranted { get; set; }
     }
 }

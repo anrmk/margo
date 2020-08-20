@@ -15,17 +15,14 @@
 }
 
 @section RightSidebar {
-    <div id="@(tableId)_detail"></div>
+    <div id="@(tableId)_details"></div>
 }
 
 <div class="ui shape">
     <div class="sides">
         <div class="active side main">
-            <div id="toolbar" class="ui secondary menu">
+            <div id="toolbar" class="flex justify-content-between">
                 <a asp-route="AddAspNetUser" class="ui button" data-request="ajax" rel="dialog" data-title="Create user"><i class="fa fa-plus mr-1"></i> Create</a>
-                <div class="right menu">
-                    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-                </div>
             </div>
             <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
         </div>
@@ -63,8 +60,8 @@
                 { 'title': 'Roles', 'data': 'roles', 'render': (data, type, row) => $.fn.renderDatatableCollection(data, type, row) },
                 {
                     'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
-                        return `<a href='@(editProfileUrl)?id=${row.profileId}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Edit profile'>
-                                    <i class="id card icon"></i>
+                        return `<a class='ui icon' data-request='ajax' rel='dialog' href='@(editUrl)?id=${row.id}' data-title='Edit'>
+                                    <i class="pencil icon"></i>
                                 </a>
                                 <a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Company grants'>
                                     <i class="users icon"></i>
@@ -76,14 +73,12 @@
                 }
             ],
             'onRowClick': (e, data) => {
-                $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_detail').html(result);
-                });
-            },
-            'onDblRowClick': (e, data) => {
-                $.get('@editUrl', { 'id': data.id }).done(result => {
-                    $(result).dialog({ 'title': 'Edit user' });
-                });
+                if (e.target.tagName === 'TD') {
+                    e.preventDefault();
+                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                        $('#@(tableId)_details').html(result);
+                    });
+                }
             },
             'onRowChange': (e, data) => {
                 $.get('@lockUrl', { 'id': data.id, 'locked': $(e.currentTarget).is(':checked') }).done(result => {

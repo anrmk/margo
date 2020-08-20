@@ -91,8 +91,7 @@ namespace Core.Services.Business {
                 && (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
                 && (!filter.Kind.HasValue || x.Kind == filter.Kind)
                 && (!filter.CustomerId.HasValue || x.CompanyId == filter.CustomerId || x.PersonId == filter.CustomerId)
-                && (!x.Company.Grants.Any(z => z.UserId == filter.UserId)
-                    || x.Company.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
+                && (!x.Company.Grants.Any(z => z.UserId == filter.UserId));
 
             string[] include = new string[] { "Company", "Person", "Vendor", "Services" };
 

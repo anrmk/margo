@@ -9,30 +9,15 @@
     var deleteUrl = Url.RouteUrl("DeleteAspNetUserRequest");
 }
 
-<div class="ui shape">
-    <div class="sides">
-        <div class="active side main">
-            @if(User.IsInRole("Administrator")) {
-                <div id="toolbar" class="ui secondary menu">
-                    <div class="right menu">
-                        <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-                    </div>
-                </div>
-            }
-            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
-        </div>
-
-        <div class="side display">
-            <div class="ui stackable grid">
-                <div class="row">
-                    <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
-                </div>
-                <div class="row">
-                    <div id="@(tableId)_detail"></div>
-                </div>
+<div>
+    @if(User.IsInRole("Administrator")) {
+        <div id="toolbar" class="ui secondary menu">
+            <div class="right menu">
+                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
             </div>
         </div>
-    </div>
+    }
+    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 
@@ -52,10 +37,7 @@
                     { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                     {
                       'title': 'Action', 'data': 'id', 'className': 'collapsing right aligned', 'render': (data, type, row) => {
-                        return `<a class='ui icon primary mini button' data-request='ajax' href='@(detailsUrl)?id=${data}' rel='onDetailsClick' >
-                                    <i class='eye icon'></i>
-                                </a>
-                                <a class='ui icon primary mini button' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Compare data' >
+                        return `<a class='ui icon primary mini button' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Compare data' >
                                     <i class='clone outline icon'></i>
                                 </a>`;
                       }
@@ -64,22 +46,9 @@
             });
         });
 
-        onDetailsClick = function (e, jqXHR, status) {
-            if (status === 'success') {
-                $('#@(tableId)_detail').html(jqXHR.responseText);
-                $('.shape').shape('set next side', '.side.display').shape('flip over');
-            }
-        }
-
         ajaxSubmitComplete = function (e, jqXHR, status) {
             if (status === 'success') {
                 window.DocumentController.reload(false);
-                window.dialog.modal('hide');
-            }
-        };
-
-        onCompareClick = function (e, jqXHR, status) {
-            if (status === 'success') {
                 window.dialog.modal('hide');
             }
         };

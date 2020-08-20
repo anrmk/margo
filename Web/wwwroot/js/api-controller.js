@@ -64,7 +64,7 @@ $.fn.dialog = function (opt) {
 
     if (!window.dialog) {
         var $mc = $(`<div class="ui large modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
-            `<div class="content">${options.content.html()}</div>` +
+            `<div class="scrolling content">${options.content.html()}</div>` +
             `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green hidden submit">OK</button></div>` +
             `</div>`);
 

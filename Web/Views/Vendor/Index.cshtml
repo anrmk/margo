@@ -11,19 +11,15 @@
 }
 
 @section RightSidebar {
-    <div id="@(tableId)_detail"></div>
+    <div id="@(tableId)_details"></div>
 }
 
-<div>
-    <div id="toolbar" class="ui secondary menu">
-        <a asp-route="AddVendor" class="ui button" data-request="ajax" rel="dialog" data-title="Create vendor"><i class="fa fa-plus mr-1"></i> Create</a>
-        <div class="right menu">
-            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-        </div>
-    </div>
-
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+<div id="toolbar" class="flex justify-content-between">
+    <a asp-route="AddVendor" class="ui button" data-request="ajax" rel="dialog" data-title="Create vendor"><i class="fa fa-plus mr-1"></i> Create</a>
+    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
 </div>
+
+<table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 
 @section Scripts {
     <script type="text/javascript">
@@ -37,18 +33,20 @@
             'columns': [
                 { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                 { 'title': 'Business Name', 'data': 'name' },
-                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+                { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                {
+                  'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                    return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit'>
+                              <i class="pencil icon"></i>
+                            </a>`;
+                    }
+                }
             ],
             'onRowClick': (e, data) => {
                 $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_detail').html(result);
+                    $('#@(tableId)_details').html(result);
                 });
             },
-            'onDblRowClick': (e, data) => {
-                 $.get('@editUrl', { 'id': data.id }).done(result => {
-                     $(result).dialog({'title': 'Edit vendor'});
-                });
-            }
         });
     });
 

@@ -11,9 +11,9 @@ namespace Core.Services {
     public class UccountServiceGrantManager {
 
         private readonly string UserId;
-        private readonly IUserCategoryGrantsManager _userCategoryGrantsManager;
+        private readonly IAspNetUserDenyAccessCategoryManager _userCategoryGrantsManager;
 
-        public UccountServiceGrantManager(IHttpContextAccessor httpContextAccessor, IUserCategoryGrantsManager userCategoryGrantsManager) {
+        public UccountServiceGrantManager(IHttpContextAccessor httpContextAccessor, IAspNetUserDenyAccessCategoryManager userCategoryGrantsManager) {
             UserId = httpContextAccessor.GetUserId();
             _userCategoryGrantsManager = userCategoryGrantsManager;
         }

@@ -38,26 +38,27 @@
 <div class="ui shape full-width">
     <div class="sides">
         <div class="active side main">
-            <div id="toolbar" class="ui secondary menu">
+            <div id="toolbar" class="flex justify-content-between">
                 <div class="ui buttons">
                     <a class="ui button" asp-action="AddUccount" asp-route-kind="0" data-request="ajax" rel="dialog" data-title="Create business account">Bussines</a>
                     <div class="or"></div>
                     <a class="ui button" asp-action="AddUccount" asp-route-kind="1" data-request="ajax" rel="dialog" data-title="Create personal account">Personal</a>
                 </div>
 
-                <div class="right menu">
-                    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-                </div>
+                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
             </div>
             <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
         </div>
         <div class="side details">
-            <div class="ui stackable grid">
+            <div class="ui grid">
                 <div class="row">
-                    <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    <div class="column">
+                        <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="column" id="@(tableId)_details">
+                    <div class="column">
+                        <div id="@(tableId)_details"></div>
                     </div>
                 </div>
             </div>
@@ -121,11 +122,11 @@
                     { 'title': '', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
                     { 'title': 'Vendor', 'className': 'collapsing', 'data': 'vendorName' },
                     { 'title': 'Customer', 'data': 'name', 'render': (data, type, row) => { return `<span>${data}<br/>${row.kind}</span>` } },
-                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updated', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                     { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' },
                     {
                         'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
-                            return `<a class='ui icon mini blue button' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit'>
+                            return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit'>
                                     <i class="pencil icon"></i>
                                 </a>`;
                         }

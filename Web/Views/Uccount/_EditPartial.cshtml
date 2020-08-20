@@ -11,7 +11,6 @@
     var uccountKind = (int)ViewData["Kind"];
 }
 
-
 <form id="@formId" class="ui form" asp-route="UpdateUccount" asp-route-id="@Model.Id" method="put" data-request="ajax">
     <fieldset>
         <input type="hidden" name="Id" value="@Model.Id" />

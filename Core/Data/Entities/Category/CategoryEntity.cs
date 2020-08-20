@@ -16,6 +16,6 @@ namespace Core.Data.Entities {
 
         public virtual ICollection<CategoryFieldEntity> Fields { get; set; }
 
-        public virtual ICollection<AspNetUserCategoryGrantEntity> Grants { get; set; }
+        public virtual ICollection<AspNetUserDenyAccessCategoryEntity> Grants { get; set; }
     }
 }

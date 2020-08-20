@@ -49,8 +49,7 @@ namespace Core.Services.Business {
 
             Expression<Func<CategoryEntity, bool>> where = x =>
                 (string.IsNullOrEmpty(filter.Search) || (x.Name.ToLower().Contains(filter.Search.ToLower())))
-                && (!x.Grants.Any(z => z.UserId == filter.UserId)
-                    || x.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
+                && (!x.Grants.Any(z => z.UserId == filter.UserId));
 
             string[] include = new string[] { "Fields" };
 

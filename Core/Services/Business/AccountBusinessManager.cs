@@ -48,12 +48,12 @@ namespace Core.Services.Business {
         Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
         Task<LogDto> GetLog(long id);
 
-        // GRANTS
-        Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id);
-        Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto);
+        // ACCESS
+        Task<List<AspNetUserDenyAccessCompanyDto>> GetUnavailableCompanies(string id);
+        Task<List<AspNetUserDenyAccessCompanyDto>> UpdateUnavailableCompanies(string id, List<Guid> companyIds);
 
-        Task<AspNetUserCategoryGrantsListDto> GetUserCategoryGrants(string id);
-        Task<AspNetUserCategoryGrantsListDto> UpdateUserCategoryGrants(string id, AspNetUserCategoryGrantsListDto dto);
+        Task<List<AspNetUserDenyAccessCategoryDto>> UpdateUserCategoryGrants(string id, List<Guid> categoryIds);
+        Task<List<AspNetUserDenyAccessCategoryDto>> GetUnavailableCategory(string id);
     }
 
     public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
@@ -66,10 +66,8 @@ namespace Core.Services.Business {
         private readonly IUserRequestManager _userRequestManager;
         private readonly ILogManager _logManager;
 
-        private readonly IUserCompanyGrantsManager _userCompanyGrantsManager;
-        private readonly ICompanyManager _companyManager;
-        private readonly IUserCategoryGrantsManager _userCategoryGrantsManager;
-        private readonly ICategoryManager _categoryManager;
+        private readonly IAspNetUserDenyAccessCompanyManager _userDenyAccessCompanyManager;
+        private readonly IAspNetUserDenyAccessCategoryManager _userDenyAccessCategoryManager;
 
         public AccountBusinessManager(IMapper mapper,
             UserManager<AspNetUserEntity> userManager,
@@ -77,10 +75,9 @@ namespace Core.Services.Business {
             SignInManager<AspNetUserEntity> signInManager,
             IUserProfileManager userProfileManager,
             IUserRequestManager userRequestManager,
-            IUserCompanyGrantsManager userCompanyGrantsManager,
-            ICompanyManager companyManager,
-            IUserCategoryGrantsManager userCategoryGrantsManager,
-            ICategoryManager categoryManager, ILogManager logManager) {
+            IAspNetUserDenyAccessCompanyManager userDenyAccessCompanyManager,
+            IAspNetUserDenyAccessCategoryManager userDenyAccessCategoryManager,
+             ILogManager logManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -88,10 +85,8 @@ namespace Core.Services.Business {
             _userProfileManager = userProfileManager;
             _userRequestManager = userRequestManager;
             _logManager = logManager;
-            _companyManager = companyManager;
-            _userCompanyGrantsManager = userCompanyGrantsManager;
-            _categoryManager = categoryManager;
-            _userCategoryGrantsManager = userCategoryGrantsManager;
+            _userDenyAccessCompanyManager = userDenyAccessCompanyManager;
+            _userDenyAccessCategoryManager = userDenyAccessCategoryManager;
         }
 
         #region ACCOUNT
@@ -363,80 +358,58 @@ namespace Core.Services.Business {
         }
         #endregion
 
-        #region USER GRANTS
-
-        #region COMPANY GRANTS
-        public async Task<AspNetUserCompanyGrantsListDto> GetUserCompanyGrants(string id) {
-            var companyEntities = (await _companyManager.All()).ToList();
-            var companyGrantEntities = (await _userCompanyGrantsManager.FindByUserId(id)).ToList();
-            var companyDeniedIds = companyGrantEntities.Select(x => x.CompanyId);
-
-            companyEntities.ForEach(x => {
-                if(!companyDeniedIds.Contains(x.Id)) {
-                    companyGrantEntities.Add(new AspNetUserCompanyGrantEntity {
-                        CompanyId = x.Id,
-                        Company = x,
-                        IsGranted = true,
-                        UserId = id
-                    });
-                }
-            });
-
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(companyGrantEntities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
+        #region ACCESS
+        public async Task<List<AspNetUserDenyAccessCompanyDto>> GetUnavailableCompanies(string id) {
+            var entities = await _userDenyAccessCompanyManager.FindByUserId(id);
+            return _mapper.Map<List<AspNetUserDenyAccessCompanyDto>>(entities);
         }
 
-        public async Task<AspNetUserCompanyGrantsListDto> UpdateUserCompanyGrants(string id, AspNetUserCompanyGrantsListDto dto) {
-            var newGrantEntities = _mapper.Map<IEnumerable<AspNetUserCompanyGrantEntity>>(dto.Grants.Where(x => !x.IsGranted));
-            var oldGrantEntities = await _userCompanyGrantsManager.FindByUserId(id);
-            var intersectionEntities = CompareExtension.Intersect<AspNetUserCompanyGrantEntity, Guid>(oldGrantEntities, newGrantEntities);
+        public async Task<List<AspNetUserDenyAccessCompanyDto>> UpdateUnavailableCompanies(string id, List<Guid> companyIds) {
+            var entities = await _userDenyAccessCompanyManager.FindByUserId(id);
 
-            await _userCompanyGrantsManager.Delete(
-                CompareExtension.Exclude<AspNetUserCompanyGrantEntity, Guid>(oldGrantEntities, intersectionEntities));
-            await _userCompanyGrantsManager.Create(
-                CompareExtension.Exclude<AspNetUserCompanyGrantEntity, Guid>(newGrantEntities, intersectionEntities));
+            var intersectionEntities = entities.Where(x => companyIds.Contains(x.CompanyId)).ToList();
+            var deleteEntities = entities.Except(intersectionEntities); // to delete
+            var createEntities = companyIds.Where(x => !intersectionEntities.Any(y => y.CompanyId == x)).Select(x => new AspNetUserDenyAccessCompanyEntity() {
+                UserId = id,
+                CompanyId = x
+            }); // to insert
 
-            var grants = _mapper.Map<List<AspNetUserCompanyGrantsDto>>(newGrantEntities);
-            return new AspNetUserCompanyGrantsListDto { UserId = id, Grants = grants };
-        }
-        #endregion
+            if(deleteEntities.Count() > 0)
+                await _userDenyAccessCompanyManager.Delete(deleteEntities);
+            
+            if(createEntities.Count() > 0)
+                await _userDenyAccessCompanyManager.Create(createEntities);
 
-        #region CATEGORY GRANTS
-        public async Task<AspNetUserCategoryGrantsListDto> GetUserCategoryGrants(string id) {
-            var categoryEntities = (await _categoryManager.All()).ToList();
-            var categoryGrantEntities = (await _userCategoryGrantsManager.FindByUserId(id)).ToList();
-            var categoryDeniedIds = categoryGrantEntities.Select(x => x.CategoryId);
+            entities = await _userDenyAccessCompanyManager.FindByUserId(id);
 
-            categoryEntities.ForEach(x => {
-                if(!categoryDeniedIds.Contains(x.Id)) {
-                    categoryGrantEntities.Add(new AspNetUserCategoryGrantEntity {
-                        CategoryId = x.Id,
-                        Category = x,
-                        IsGranted = true,
-                        UserId = id
-                    });
-                }
-            });
-
-            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(categoryGrantEntities);
-            return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
+            return _mapper.Map<List<AspNetUserDenyAccessCompanyDto>>(entities);
         }
 
-        public async Task<AspNetUserCategoryGrantsListDto> UpdateUserCategoryGrants(string id, AspNetUserCategoryGrantsListDto dto) {
-            var newGrantEntities = _mapper.Map<IEnumerable<AspNetUserCategoryGrantEntity>>(dto.Grants.Where(x => !x.IsGranted));
-            var oldGrantEntities = await _userCategoryGrantsManager.FindByUserId(id);
-            var intersectionEntities = CompareExtension.Intersect<AspNetUserCategoryGrantEntity, Guid>(oldGrantEntities, newGrantEntities);
+        public async Task<List<AspNetUserDenyAccessCategoryDto>> UpdateUserCategoryGrants(string id, List<Guid> categoryIds) {
+            var entities = await _userDenyAccessCategoryManager.FindByUserId(id);
 
-            await _userCategoryGrantsManager.Delete(
-                CompareExtension.Exclude<AspNetUserCategoryGrantEntity, Guid>(oldGrantEntities, intersectionEntities));
-            await _userCategoryGrantsManager.Create(
-                CompareExtension.Exclude<AspNetUserCategoryGrantEntity, Guid>(newGrantEntities, intersectionEntities));
+            var intersectionEntities = entities.Where(x => categoryIds.Contains(x.CategoryId)).ToList();
+            var deleteEntities = entities.Except(intersectionEntities); // to delete
+            var createEntities = categoryIds.Where(x => !intersectionEntities.Any(y => y.CategoryId == x)).Select(x => new AspNetUserDenyAccessCategoryEntity() {
+                UserId = id,
+                CategoryId = x
+            }); // to insert
 
-            var grants = _mapper.Map<List<AspNetUserCategoryGrantsDto>>(newGrantEntities);
-            return new AspNetUserCategoryGrantsListDto { UserId = id, Grants = grants };
+            if(deleteEntities.Count() > 0)
+                await _userDenyAccessCategoryManager.Delete(deleteEntities);
+
+            if(createEntities.Count() > 0)
+                await _userDenyAccessCategoryManager.Create(createEntities);
+
+            entities = await _userDenyAccessCategoryManager.FindByUserId(id);
+
+            return _mapper.Map<List<AspNetUserDenyAccessCategoryDto>>(entities);
         }
-        #endregion
 
+        public async Task<List<AspNetUserDenyAccessCategoryDto>> GetUnavailableCategory(string id) {
+            var entities = await _userDenyAccessCategoryManager.FindByUserId(id);
+            return _mapper.Map<List<AspNetUserDenyAccessCategoryDto>>(entities);
+        }
         #endregion
     }
 }

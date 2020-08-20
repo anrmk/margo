@@ -8,6 +8,6 @@ namespace Web.ViewModels {
         public string VendorName { get; set; }
         public int ServiceCount { get; set; }
 
-        public DateTime Updated { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

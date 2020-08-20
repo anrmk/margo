@@ -2,16 +2,22 @@
   background-color: #DADADA;
 }
 
-.flex  {
-  display: flex;
-}
-
 .align-center {
   align-items: center;
 }
 
+/*FLEX*/
+.flex {
+  display: flex;
+}
+
 .justify-center {
   justify-content: center;
+}
+
+.justify-content-between {
+  -ms-flex-pack: justify !important;
+  justify-content: space-between !important;
 }
 
 .text-overflow {

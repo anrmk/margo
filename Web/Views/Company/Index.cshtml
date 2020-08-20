@@ -29,18 +29,14 @@
     </div>
 }
 
-<div>
-    @if(User.IsInRole("Administrator")) {
-        <div id="toolbar" class="ui secondary menu">
-            <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
-            <div class="right menu">
-                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-            </div>
-        </div>
-    }
+@if(User.IsInRole("Administrator")) {
+    <div id="toolbar" class="flex justify-content-between">
+        <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
+        <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+    </div>
+}
 
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
-</div>
+<table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 
 @section Scripts {
     <script type="text/javascript">

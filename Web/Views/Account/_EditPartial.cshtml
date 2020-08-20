@@ -1,31 +1,154 @@
 ﻿@model Web.ViewModels.AspNetUserViewModel
 
 @{
-    var formId = Guid.NewGuid();
+    var companies = (List<CompanyListViewModel>)ViewBag.Companies;
+    var categories = (List<CategoryListViewModel>)ViewBag.Categories;
+
+    var companyGrants = (List<AspNetUserDenyAccessViewModel>)ViewBag.CompanyGrants;
+    var categoryGrants = (List<AspNetUserDenyAccessViewModel>)ViewBag.CategoryGrants;
+
+    var generalFormId = Guid.NewGuid();
+    var profileFormId = Guid.NewGuid();
+    var companyDenyAccessId = Guid.NewGuid();
+    var categoryDenyAccessId = Guid.NewGuid();
 }
 
-<form id="@formId" class="ui form" asp-action="UpdateAspNetUser" asp-route-id="@Model.Id" method="put" autocomplete="off">
-    <fieldset>
-        <input type="hidden" asp-for="Id" />
-        <div class="two fields">
-            <div class="field required">
-                <label asp-for="UserName"></label>
-                <input asp-for="UserName" required autocomplete="off">
-            </div>
-            <div class="field required">
-                <label asp-for="Roles"></label>
-                <select asp-for="Roles" asp-items="ViewBag.Roles" name="Roles[]" class="ui dropdown" required></select>
-            </div>
+<div class="ui grid">
+    <div class="four wide column">
+        <div class="ui vertical fluid tabular menu">
+            <a class="active item" data-tab="tab-general">General</a>
+            <a class="item" data-tab="tab-profile">Profile</a>
+            <a class="item" data-tab="tab-deny-access-company">Company Access</a>
+            <a class="item" data-tab="tab-deny-access-category">Category Access</a>
         </div>
-        <div class="three fields">
-            <div class="field required">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" required />
-            </div>
-            <div class="field">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" data-value-type="string" />
-            </div>
+    </div>
+    <div class="twelve wide stretched column">
+        <div class="ui tab" data-tab="tab-general">
+            <form id="@generalFormId" class="ui form" asp-action="UpdateAspNetUser" asp-route-id="@Model.Id" method="put" autocomplete="off">
+                <fieldset>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="two fields">
+                        <div class="field required">
+                            <label asp-for="UserName"></label>
+                            <input asp-for="UserName" required autocomplete="off">
+                        </div>
+                        <div class="field required">
+                            <label asp-for="Roles"></label>
+                            <select asp-for="Roles" asp-items="ViewBag.Roles" name="Roles[]" class="ui dropdown" required></select>
+                        </div>
+                    </div>
+                    <div class="three fields">
+                        <div class="field required">
+                            <label asp-for="Email"></label>
+                            <input asp-for="Email" required />
+                        </div>
+                        <div class="field">
+                            <label asp-for="PhoneNumber"></label>
+                            <input asp-for="PhoneNumber" data-value-type="string" />
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </div>
-    </fieldset>
-</form>
+        <div class="ui tab" data-tab="tab-profile">
+            <form id="@profileFormId " class="ui form" asp-action="UpdateAspNetUserProfile" asp-route-id="@Model.Profile.Id" method="put" autocomplete="off">
+                <fieldset>
+                    <input type="hidden" asp-for="Profile.Id" name="Id" />
+                    <div class="three fields">
+                        <div class="field required">
+                            <label asp-for="Profile.Name"></label>
+                            <input asp-for="Profile.Name" name="Name" required data-value-type="string">
+                        </div>
+                        <div class="field">
+                            <label asp-for="Profile.SurName"></label>
+                            <input asp-for="Profile.SurName" name="SurName" data-value-type="string">
+                        </div>
+                        <div class="field">
+                            <label asp-for="Profile.MiddleName"></label>
+                            <input asp-for="Profile.MiddleName" name="MiddleName" data-value-type="string">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label asp-for="Profile.Description"></label>
+                        <textarea asp-for="Profile.Description" name="Description" rows="3" data-value-type="string"></textarea>
+                    </div>
+
+                    <div class="three fields">
+                        <div class="field">
+                            <label asp-for="Profile.PhoneNumber"></label>
+                            <input asp-for="Profile.PhoneNumber" name="PhoneNumber" data-value-type="string" />
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="ui tab" data-tab="tab-deny-access-company">
+            <form id="@companyDenyAccessId" class="ui form" asp-action="UpdateAspNetUserCompanyAccess" asp-route-id="@Model.Id" method="put">
+                <fieldset>
+                    <input type="hidden" name="UserId" value="@Model.Id" />
+                    <table class="ui celled unstackable compact orange table">
+                        <thead>
+                            <tr>
+                                <th class="collapsing">Deny</th>
+                                <th>Company</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var company in companies) {
+                                <tr>
+                                    <td>
+                                        <div class='ui slider checkbox'>
+                                            <input type='checkbox' @(companyGrants.Any(x => x.EntityId == company.Id) ? "checked='checked'" : "") name='Ids[]' value='@company.Id' data-value-type="string">
+                                            <label></label>
+                                        </div>
+                                    </td>
+                                    <td>@company.Name</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </fieldset>
+            </form>
+        </div>
+        <div class="ui tab" data-tab="tab-deny-access-category">
+            <form id="@categoryDenyAccessId" class="ui form" asp-action="UpdateAspNetUserCategoryGrants" asp-route-id="@Model.Id" method="put">
+                <fieldset>
+                    <input type="hidden" name="UserId" value="@Model.Id" />
+                    <table class="ui celled unstackable compact orange table">
+                        <thead>
+                            <tr>
+                                <th class="collapsing">Deny</th>
+                                <th>Company</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var category in categories) {
+                                <tr>
+                                    <td>
+                                        <div class='ui slider checkbox'>
+                                            <input type='checkbox' @(categoryGrants.Any(x => x.EntityId == category.Id) ? "checked='checked'" : "") name='Ids[]' value='@category.Id' data-value-type="string">
+                                            <label></label>
+                                        </div>
+                                    </td>
+                                    <td>@category.Name</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready((e) => {
+        $('.tabular.menu .item').tab({
+            'onVisible': function (context) {
+                let $form = $(this).find('form');
+                window.dialog.find('.button.submit').attr('form', $form.attr('id'))
+            }
+        });
+    });
+</script>

@@ -8,8 +8,7 @@ namespace Core.Services {
         }
 
         public override IQueryable<UccountEntity> Filter(IQueryable<UccountEntity> query) {
-            return query.Where(x => !x.Company.Grants.Any(z => z.UserId == UserId)
-                || x.Company.Grants.SingleOrDefault(z => z.UserId == UserId).IsGranted);
+            return query.Where(x => !x.Company.Grants.Any(z => z.UserId == UserId));
         }
     }
 }

@@ -1,30 +1,15 @@
 ﻿@model Web.ViewModels.UccountViewModel
 
-<div class="ui piled segment">
+<div class="ui attached orange segment">
     <h3 class="ui header">
         @Model.Name
         <span class="sub header"> @Model.VendorName</span>
     </h3>
 
-    <table class="ui very basic compact table">
-        @foreach(var field in Model.Fields) {
-            <tr>
-                <td>@field.Name</td>
-                @if(field.Type != FieldEnum.PASSWORD) {
-                    <td>@field.Value</td>
-                } else {
-                    <td>
-                        <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
-                    </td>
-                }
-            </tr>
-        }
-    </table>
-
-    <h4 class="ui dividing header">Services Fields</h4>
-    <table class="ui very basic compact table">
-        @foreach(var Service in Model.Services) {
-            @foreach(var field in Service.Fields) {
+    @if(Model.Fields.Count() > 0) {
+        <a class="ui red ribbon label">Fields</a>
+        <table class="ui very basic compact table">
+            @foreach(var field in Model.Fields) {
                 <tr>
                     <td>@field.Name</td>
                     @if(field.Type != FieldEnum.PASSWORD) {
@@ -36,7 +21,32 @@
                     }
                 </tr>
             }
-        }
-    </table>
+        </table>
+    }
 
+    @if(Model.Services.Count() > 0) {
+        <a class="ui red ribbon label">Services Fields</a>
+        <table class="ui very basic compact table">
+            @foreach(var Service in Model.Services) {
+                @foreach(var field in Service.Fields) {
+                    <tr>
+                        <td>@field.Name</td>
+                        @if(field.Type != FieldEnum.PASSWORD) {
+                            <td>@field.Value</td>
+                        } else {
+                            <td>
+                                <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    }
+</div>
+<div class="ui bottom attached warning message">
+    <div class="flex justify-content-between">
+        <span>@Model.UpdatedBy</span>
+        <span> @Model.UpdatedDate.ToString("MM/dd/yyyy")</span>
+    </div>
 </div>

@@ -164,16 +164,19 @@ namespace Web.Controllers.Api {
 
         private readonly IAccountBusinessManager _accountBusinessService;
         private readonly ICompanyBusinessManager _companyBusinessManager;
+        private readonly ICategoryBusinessManager _categoryBusinessManager;
 
         public AccountController(IMapper mapper,
             IHubContext<NotificationHub> notificationHub,
             IViewRenderService viewRenderService, IAccountBusinessManager accountBusinessService,
-            ICompanyBusinessManager companyBusinessManager) {
+            ICompanyBusinessManager companyBusinessManager,
+            ICategoryBusinessManager categoryBusinessManager) {
             _mapper = mapper;
             _notificationHub = notificationHub;
             _viewRenderService = viewRenderService;
             _accountBusinessService = accountBusinessService;
             _companyBusinessManager = companyBusinessManager;
+            _categoryBusinessManager = categoryBusinessManager;
         }
 
         [HttpGet("GetAppNetUsers", Name = "GetAppNetUsers")]
@@ -221,10 +224,19 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
+            var companies = await _companyBusinessManager.GetCompanies();
+            var categories = await _categoryBusinessManager.GetCategories();
+
             var roles = await _accountBusinessService.GetUserRoles();
+            var companyGrants = await _accountBusinessService.GetUnavailableCompanies(id);
+            var categoryGrants = await _accountBusinessService.GetUnavailableCategory(id);
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
+                { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) },
+                { "Companies", _mapper.Map<List<CompanyListViewModel>>(companies) },
+                { "Categories", _mapper.Map<List<CategoryListViewModel>>(categories) },
+                { "CompanyGrants", _mapper.Map<List<AspNetUserDenyAccessViewModel>>(companyGrants) },
+                { "CategoryGrants", _mapper.Map<List<AspNetUserDenyAccessViewModel>>(categoryGrants) },
             };
 
             var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<AspNetUserViewModel>(item), viewData);
@@ -233,13 +245,18 @@ namespace Web.Controllers.Api {
 
         [HttpPut("UpdateAspNetUser", Name = "UpdateAspNetUser")]
         public async Task<IActionResult> UpdateAspNetUser([FromQuery] string id, [FromBody] AspNetUserViewModel model) {
-            if(ModelState.IsValid) {
+            try {
+                if(!ModelState.IsValid)
+                    throw new Exception("Form is not valid!");
+
                 var item = await _accountBusinessService.UpdateUser(id, _mapper.Map<AspNetUserDto>(model));
                 if(item == null)
-                    return BadRequest();
+                    return NotFound();
+
                 return Ok(_mapper.Map<AspNetUserViewModel>(item));
+            } catch(Exception er) {
+                return BadRequest(er.Message ?? er.StackTrace);
             }
-            return BadRequest();
         }
 
         [HttpGet("LockoutAspNetUser", Name = "LockoutAspNetUser")]
@@ -253,29 +270,52 @@ namespace Web.Controllers.Api {
             return Ok(item);
         }
 
-        [HttpGet("EditAspNetUserProfile", Name = "EditAspNetUserProfile")]
-        public async Task<IActionResult> EditAspNetUserProfile([FromQuery] long id) {
-            var item = await _accountBusinessService.GetUserProfile(id);
-            if(item == null)
-                return NotFound();
-
-            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                //    { "Roles", roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()}) }
-            };
-
-            var html = await _viewRenderService.RenderToStringAsync("_EditProfilePartial", _mapper.Map<AspNetUserProfileViewModel>(item), viewData);
-            return Ok(html);
-        }
-
         [HttpPut("UpdateAspNetUserProfile", Name = "UpdateAspNetUserProfile")]
         public async Task<IActionResult> UpdateAspNetUserProfile([FromQuery] long id, [FromBody] AspNetUserProfileViewModel model) {
-            if(ModelState.IsValid) {
+            try {
+                if(!ModelState.IsValid)
+                    throw new Exception("Form is not valid!");
+
                 var item = await _accountBusinessService.UpdateUserProfile(id, _mapper.Map<AspNetUserProfileDto>(model));
                 if(item == null)
-                    return BadRequest();
+                    return NotFound();
+
                 return Ok(_mapper.Map<AspNetUserProfileViewModel>(item));
+            } catch(Exception er) {
+                return BadRequest(er.Message ?? er.StackTrace);
             }
-            return BadRequest();
+        }
+
+        [HttpPut("UpdateAspNetUserCompanyAccess", Name = "UpdateAspNetUserCompanyAccess")]
+        public async Task<IActionResult> UpdateAspNetUserCompanyAccess([FromQuery] string id, [FromBody] AspNetUserDenyAccessUpdateViewModel model) {
+            try {
+                if(!ModelState.IsValid)
+                    throw new Exception("Form is not valid!");
+
+                var item = await _accountBusinessService.UpdateUnavailableCompanies(id, model.Ids.ToList());
+                if(item == null)
+                    return NotFound();
+
+                return Ok(_mapper.Map<List<AspNetUserDenyAccessViewModel>>(item));
+            } catch(Exception er) {
+                return BadRequest(er.Message ?? er.StackTrace);
+            }
+        }
+
+        [HttpPut("UpdateAspNetUserCategoryGrants", Name = "UpdateAspNetUserCategoryGrants")]
+        public async Task<IActionResult> UpdateAspNetUserCategoryGrants([FromQuery] string id, [FromBody] AspNetUserDenyAccessUpdateViewModel model) {
+            try {
+                if(!ModelState.IsValid)
+                    throw new Exception("Form is not valid!");
+
+                var item = await _accountBusinessService.UpdateUserCategoryGrants(id, model.Ids.ToList());
+                if(item == null)
+                    return NotFound();
+
+                return Ok(_mapper.Map<List<AspNetUserDenyAccessViewModel>>(item));
+            } catch(Exception er) {
+                return BadRequest(er.Message ?? er.StackTrace);
+            }
         }
 
         #region REQUEST
@@ -371,54 +411,6 @@ namespace Web.Controllers.Api {
             //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }
 
-        [HttpGet("EditAspNetUserCompanyGrants", Name = "EditAspNetUserCompanyGrants")]
-        public async Task<IActionResult> EditAspNetUserCompanyGrants([FromQuery] string id) {
-            var item = await _accountBusinessService.GetUserCompanyGrants(id);
-            if(item == null)
-                return NotFound();
 
-            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "Type", GrantEntityEnum.Company }
-            };
-
-            var html = await _viewRenderService.RenderToStringAsync("_EditGrantsPartial", _mapper.Map<AspNetUserGrantsListViewModel>(item), viewData);
-            return Ok(html);
-        }
-
-        [HttpPost("UpdateAspNetUserCompanyGrants", Name = "UpdateAspNetUserCompanyGrants")]
-        public async Task<IActionResult> UpdateAspNetUserCompanyGrants([FromQuery] string id, [FromBody] AspNetUserGrantsListViewModel model) {
-            if(ModelState.IsValid) {
-                var item = await _accountBusinessService.UpdateUserCompanyGrants(id, _mapper.Map<AspNetUserCompanyGrantsListDto>(model));
-                if(item == null)
-                    return BadRequest();
-                return Ok(_mapper.Map<AspNetUserGrantsListViewModel>(item));
-            }
-            return BadRequest();
-        }
-
-        [HttpGet("EditAspNetUserCategoryGrants", Name = "EditAspNetUserCategoryGrants")]
-        public async Task<IActionResult> EditAspNetUserCategoryGrants([FromQuery] string id) {
-            var item = await _accountBusinessService.GetUserCategoryGrants(id);
-            if(item == null)
-                return NotFound();
-
-            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "Type", GrantEntityEnum.Category }
-            };
-
-            var html = await _viewRenderService.RenderToStringAsync("_EditGrantsPartial", _mapper.Map<AspNetUserGrantsListViewModel>(item), viewData);
-            return Ok(html);
-        }
-
-        [HttpPost("UpdateAspNetUserCategoryGrants", Name = "UpdateAspNetUserCategoryGrants")]
-        public async Task<IActionResult> UpdateAspNetUserCategoryGrants([FromQuery] string id, [FromBody] AspNetUserGrantsListViewModel model) {
-            if(ModelState.IsValid) {
-                var item = await _accountBusinessService.UpdateUserCategoryGrants(id, _mapper.Map<AspNetUserCategoryGrantsListDto>(model));
-                if(item == null)
-                    return BadRequest();
-                return Ok(_mapper.Map<AspNetUserGrantsListViewModel>(item));
-            }
-            return BadRequest();
-        }
     }
 }

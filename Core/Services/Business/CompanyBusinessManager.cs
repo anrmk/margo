@@ -62,8 +62,7 @@ namespace Core.Services.Business {
                     || x.CEO.SurName.ToLower().Contains(filter.Search.ToLower())
                     ))
                 && (!filter.CEOId.HasValue || x.CEOId == filter.CEOId)
-                && (!x.Grants.Any(z => z.UserId == filter.UserId)
-                    || x.Grants.SingleOrDefault(z => z.UserId == filter.UserId).IsGranted);
+                && (!x.Grants.Any(z => z.UserId == filter.UserId));
 
             string[] include = new string[] { "CEO" };
 
