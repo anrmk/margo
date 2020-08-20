@@ -224,8 +224,8 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var companies = await _companyBusinessManager.GetCompanies();
-            var categories = await _categoryBusinessManager.GetCategories();
+            var companies = await _companyBusinessManager.GetCompanies(true);
+            var categories = await _categoryBusinessManager.GetCategories(true);
 
             var roles = await _accountBusinessService.GetUserRoles();
             var companyGrants = await _accountBusinessService.GetUnavailableCompanies(id);
@@ -292,7 +292,7 @@ namespace Web.Controllers.Api {
                 if(!ModelState.IsValid)
                     throw new Exception("Form is not valid!");
 
-                var item = await _accountBusinessService.UpdateUnavailableCompanies(id, model.Ids.ToList());
+                var item = await _accountBusinessService.UpdateUnavailableCompanies(id, (model.Ids ?? new List<Guid>()).ToList());
                 if(item == null)
                     return NotFound();
 
@@ -308,7 +308,7 @@ namespace Web.Controllers.Api {
                 if(!ModelState.IsValid)
                     throw new Exception("Form is not valid!");
 
-                var item = await _accountBusinessService.UpdateUserCategoryGrants(id, model.Ids.ToList());
+                var item = await _accountBusinessService.UpdateUserCategoryGrants(id, (model.Ids ?? new List<Guid>()).ToList());
                 if(item == null)
                     return NotFound();
 

@@ -161,7 +161,7 @@ namespace Web.Controllers.Api {
         [HttpPut("UpdateUccount", Name = "UpdateUccount")]
         public async Task<IActionResult> UpdateUccount([FromQuery] Guid id, [FromBody] UccountViewModel model) {
             if(ModelState.IsValid) {
-                var item = await _uccountBusinessManager.UpdateUccount(id, _mapper.Map<UccountDto>(model));
+                var item = await _uccountBusinessManager.UpdateUccount(id, _mapper.Map<UccountDto>(model), User.GetUserId());
                 if(item == null)
                     return BadRequest();
                 return Ok(_mapper.Map<UccountViewModel>(item));

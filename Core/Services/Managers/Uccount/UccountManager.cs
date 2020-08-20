@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
     public interface IUccountManager: IEntityManager<UccountEntity> {
-        Task<UccountEntity> FindInclude(Guid id);
+        Task<UccountEntity> FindInclude(Guid id, bool filter = true);
         Task<List<UccountEntity>> FindAll(Guid[] ids);
         Task<List<UccountEntity>> FindAll();
         Task<List<UccountEntity>> FindByCompany(Guid companyId);
@@ -24,8 +24,12 @@ namespace Core.Services.Managers {
             _grantManager = grantManager;
         }
 
-        public async Task<UccountEntity> FindInclude(Guid id) {
-            return await _grantManager.Filter(DbSet)
+        public async Task<UccountEntity> FindInclude(Guid id, bool filter) {
+            var query = filter
+                ? _grantManager.Filter(DbSet)
+                : DbSet.AsQueryable();
+
+            return await query
                 .Include(x => x.Company)
                 .Include(x => x.Vendor)
                 .Include(x => x.Services)

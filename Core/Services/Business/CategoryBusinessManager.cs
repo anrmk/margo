@@ -13,7 +13,7 @@ using Core.Services.Managers;
 namespace Core.Services.Business {
     public interface ICategoryBusinessManager {
         Task<CategoryDto> GetCategory(Guid id);
-        Task<List<CategoryDto>> GetCategories();
+        Task<List<CategoryDto>> GetCategories(bool ignoreFilters = false);
         Task<PagerDto<CategoryDto>> GetCategoryPage(CategoryFilterDto filter);
         Task<CategoryDto> CreateCategory(CategoryDto dto);
         Task<CategoryDto> UpdateCategory(Guid id, CategoryDto dto);
@@ -39,8 +39,8 @@ namespace Core.Services.Business {
             return _mapper.Map<CategoryDto>(result);
         }
 
-        public async Task<List<CategoryDto>> GetCategories() {
-            var result = await _categoryManager.FindAll();
+        public async Task<List<CategoryDto>> GetCategories(bool ignoreFilters) {
+            var result = await _categoryManager.FindAll(ignoreFilters);
             return _mapper.Map<List<CategoryDto>>(result);
         }
 

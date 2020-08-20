@@ -20,7 +20,7 @@ namespace Core.Services.Business {
         Task<List<UccountDto>> GetUccountsInclude();
         Task<List<UccountDto>> GetUccountsByCompanyId(Guid companyId);
         Task<UccountDto> CreateUccount(UccountDto dto);
-        Task<UccountDto> UpdateUccount(Guid id, UccountDto dto);
+        Task<UccountDto> UpdateUccount(Guid id, UccountDto dto, string userId);
         Task<bool> DeleteUccount(Guid id);
         Task<bool> DeleteUccount(Guid[] ids);
         Task<bool> DeleteService(Guid id);
@@ -40,19 +40,22 @@ namespace Core.Services.Business {
         private readonly IUccountVendorFieldManager _uccountVendorFieldManager;
 
         private readonly UccountServiceGrantManager _uccountServiceGrantsManager;
+        private readonly IAspNetUserDenyAccessCategoryManager _userCategoryGrantsManager;
 
         public UccountBusinessManager(IMapper mapper,
             IUccountManager uccountManager,
             IUccountServiceManager uccountServiceManager,
             IUccountServiceFieldManager uccountServiceFieldManager,
             IUccountVendorFieldManager uccountVendorFieldManager,
-            UccountServiceGrantManager uccountServiceGrantsManager) {
+            UccountServiceGrantManager uccountServiceGrantsManager,
+            IAspNetUserDenyAccessCategoryManager userCategoryGrantsManager) {
             _mapper = mapper;
             _uccountManager = uccountManager;
             _uccountServiceManager = uccountServiceManager;
             _uccountServiceFieldManager = uccountServiceFieldManager;
             _uccountVendorFieldManager = uccountVendorFieldManager;
             _uccountServiceGrantsManager = uccountServiceGrantsManager;
+            _userCategoryGrantsManager = userCategoryGrantsManager;
         }
 
         #region UCCOUNT
@@ -149,12 +152,13 @@ namespace Core.Services.Business {
             return _mapper.Map<UccountDto>(uccountEntity);
         }
 
-        public async Task<UccountDto> UpdateUccount(Guid id, UccountDto dto) {
-            var entity = await _uccountManager.FindInclude(id);
-
+        public async Task<UccountDto> UpdateUccount(Guid id, UccountDto dto, string userId) {
+            var entity = await _uccountManager.FindInclude(id, false);
             if(entity == null) {
                 return null;
             }
+
+            var oldEntityServices = entity.Services.ToList();
 
             //Encrypt vendor password field
             foreach(var field in dto.Fields) {
@@ -172,9 +176,24 @@ namespace Core.Services.Business {
                 }
             }
 
-            var newEntity = _mapper.Map(dto, entity);
-            entity = await _uccountManager.Update(newEntity);
+            _mapper.Map(dto, entity);
 
+            //Filter denied services by user
+            var intersectionServices = CompareExtension.Intersect<UccountServiceEntity, Guid>(oldEntityServices, entity.Services);
+            var oldServices = CompareExtension.Exclude<UccountServiceEntity, Guid>(oldEntityServices, intersectionServices);
+            var newServices = CompareExtension.Exclude<UccountServiceEntity, Guid>(entity.Services, intersectionServices);
+
+            var deniedCategories = (await _userCategoryGrantsManager.FindByUserId(userId)).Select(x => x.CategoryId).ToHashSet();
+
+            foreach(var oldDeniedService in oldServices.Where(x => x.CategoryId.HasValue && deniedCategories.Contains(x.CategoryId.Value))) {
+                entity.Services.Add(oldDeniedService);
+            }
+
+            foreach(var newDeniedService in newServices.Where(x => x.CategoryId.HasValue && deniedCategories.Contains(x.CategoryId.Value))) {
+                entity.Services.Remove(newDeniedService);
+            }
+
+            entity = await _uccountManager.Update(entity);
             return _mapper.Map<UccountDto>(entity);
         }
 

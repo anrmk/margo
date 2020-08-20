@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Managers {
     public interface ICategoryManager: IEntityManager<CategoryEntity> {
         Task<CategoryEntity> FindInclude(Guid id);
-        Task<List<CategoryEntity>> FindAll();
+        Task<List<CategoryEntity>> FindAll(bool ignoreFilters = false);
         Task<List<CategoryEntity>> FindAll(Guid[] ids);
     }
 
@@ -30,8 +30,10 @@ namespace Core.Services.Managers {
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<CategoryEntity>> FindAll() {
-            return await _grantManager.Filter(DbSet)
+        public async Task<List<CategoryEntity>> FindAll(bool ignoreFilters) {
+            return await (ignoreFilters
+                    ? DbSet.AsQueryable()
+                    : _grantManager.Filter(DbSet))
                 .Include(x => x.Fields)
                 .ToListAsync();
         }
