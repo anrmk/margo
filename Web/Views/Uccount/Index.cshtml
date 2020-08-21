@@ -22,13 +22,13 @@
             </div>
             <div class="field">
                 <label asp-for="VendorId"></label>
-                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui search dropdown">
+                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui dropdown">
                     <option value="" selected>Select vendor</option>
                 </select>
             </div>
             <div class="field">
                 <label asp-for="CustomerId"></label>
-                <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui search dropdown">
+                <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui dropdown">
                     <option value="" selected>Select customers</option>
                 </select>
             </div>
@@ -125,13 +125,16 @@
                     { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
                     { 'title': 'Services', 'className': 'collapsing', 'data': 'serviceCount' },
                     {
-                        'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
-                            return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit'>
-                                    <i class="pencil icon"></i>
+                      'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
+                        return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit Account'>
+                                  <i class="pencil icon"></i>
                                 </a>`;
                         }
                     }
                 ],
+                'onRowCreated': function (row, data, index) {
+                    $(row).addClass(data.isActive ? 'grey' : '');
+                },
                 'onRowClick': (e, data) => { },
                 'onDblRowClick': (e, data) => {
                    $.get('@detailsUrl', { 'id': data.id }).done(result => {

@@ -14,5 +14,6 @@ namespace Core.Data.Entities {
 
         [Column("Category_Id")]
         public Guid? CategoryId { get; set; }
+        public virtual CategoryEntity Category { get; set; }
     }
 }

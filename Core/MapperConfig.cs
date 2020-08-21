@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using AutoMapper;
@@ -78,7 +77,9 @@ namespace Core {
                 .ForMember(d => d.UpdatedDate, o => o.MapFrom(s => s.UpdatedDate))
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Person != null ? s.Person.Name : s.Company.Name))
                 .ForMember(d => d.VendorName, o => o.MapFrom(x => x.Vendor.Name));
-            CreateMap<UccountServiceDto, UccountServiceEntity>().ReverseMap();
+            CreateMap<UccountServiceDto, UccountServiceEntity>()
+                .ReverseMap()
+                .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.CategoryId));
             CreateMap<UccountServiceFieldDto, UccountServiceFieldEntity>().ReverseMap();
             CreateMap<UccountVendorFieldDto, UccountVendorFieldEntity>().ReverseMap();
             #endregion

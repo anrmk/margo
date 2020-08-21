@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
-using Core.Data.Enums;
 using Core.Services;
 using Core.Services.Business;
 
@@ -293,6 +292,7 @@ namespace Web.Controllers.Api {
                     throw new Exception("Form is not valid!");
 
                 var item = await _accountBusinessService.UpdateUnavailableCompanies(id, (model.Ids ?? new List<Guid>()).ToList());
+
                 if(item == null)
                     return NotFound();
 
@@ -309,6 +309,7 @@ namespace Web.Controllers.Api {
                     throw new Exception("Form is not valid!");
 
                 var item = await _accountBusinessService.UpdateUserCategoryGrants(id, (model.Ids ?? new List<Guid>()).ToList());
+
                 if(item == null)
                     return NotFound();
 
@@ -410,7 +411,5 @@ namespace Web.Controllers.Api {
             return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
             //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
         }
-
-
     }
 }

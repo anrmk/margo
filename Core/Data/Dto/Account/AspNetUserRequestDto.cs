@@ -1,7 +1,5 @@
 ﻿using System;
 
-using AutoMapper.Configuration.Annotations;
-
 namespace Core.Data.Dto {
     public class AspNetUserRequestDto {
         public Guid Id { get; set; }
@@ -21,7 +19,7 @@ namespace Core.Data.Dto {
                 else
                     return "Undefined";
             }
-        } 
+        }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

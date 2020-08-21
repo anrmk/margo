@@ -7,7 +7,7 @@ namespace Core.Data.Entities {
         public Guid? ModelId { get; set; }
 
         public string Model { get; set; }
-        
+
         public string ModelType { get; set; }
     }
 }

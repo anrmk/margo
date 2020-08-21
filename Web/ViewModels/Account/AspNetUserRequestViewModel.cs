@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.ViewModels {
     public class AspNetUserRequestViewModel {
@@ -11,7 +8,7 @@ namespace Web.ViewModels {
         public Guid ModelId { get; set; }
         public string Model { get; set; }
 
-        [Display(Name ="Created Date")]
+        [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
         [Display(Name = "Created By")]

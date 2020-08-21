@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+
 using Core.Data.Entities;
+
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Services {

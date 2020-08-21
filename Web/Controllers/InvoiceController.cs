@@ -23,38 +23,31 @@ namespace Web.Controllers.Mvc {
     public class InvoiceController: BaseController<InvoiceController> {
         private readonly IPersonBusinessManager _personBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
-        private readonly IVendorBusinessManager _vendorsBusinessManager;
+        private readonly IVendorBusinessManager _vendorBusinessManager;
 
         public InvoiceController(ILogger<InvoiceController> logger, IMapper mapper,
             IPersonBusinessManager personBusinessManager,
             ICompanyBusinessManager companyBusinessManager,
-            IVendorBusinessManager vendorsBusinessManager)
+            IVendorBusinessManager vendorBusinessManager)
             : base(logger, mapper) {
             _personBusinessManager = personBusinessManager;
             _companyBusinessManager = companyBusinessManager;
-            _vendorsBusinessManager = vendorsBusinessManager;
+            _vendorBusinessManager = vendorBusinessManager;
         }
 
         public async Task<IActionResult> Index() {
+            var vendors = await _vendorBusinessManager.GetVendors();
+            ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+
+
             var persons = await _personBusinessManager.GetPersons();
             var companies = await _companyBusinessManager.GetCompanies();
 
-            var personsUnified = persons.Select(x => (
-                x.Id, x.FullName, "person"));
-            var companiesUnified = companies.Select(x => (
-                x.Id, x.Name, "company"));
+            ViewBag.Customers = persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() })
+              .Union(companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }));
 
-            ViewBag.CompaniesAndPersons = persons.Select(x => new SelectListItem() { Text = x.FullName, Value = $"person_{x.Id}" })
-                .Union(companies.Select(x => new SelectListItem { Text = x.Name, Value = $"company_{x.Id}" }));
-     
-
-            var vendors = await _vendorsBusinessManager.GetVendors();
-            ViewBag.Vendors = vendors.Select(x => new SelectListItem {
-                Text = x.Name,
-                Value = x.Id.ToString()
-            });
-
-            return View();
+            var model = new InvoiceFilterViewModel();
+            return View(model);
         }
     }
 }

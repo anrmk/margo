@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Web.ViewModels.InvoiceFilterViewModel
+
+@{
     ViewData["Title"] = "Invoices";
 
     var tableId = Guid.NewGuid();
@@ -9,33 +11,29 @@
 }
 
 @section RightSidebar {
+<div class="ui stacked secondary yellow segment">
     <form id="table-filter" class="ui form">
-        <h1>Filters</h1>
-        <input id="@(tableId)_is_person" type="hidden" name="IsPerson" data-value-type="boolean" />
-        <input id="@(tableId)_customer_id" type="hidden" name="Customer" data-value-type="string" />
-
-        <div class="field">
-            <label>Unpaid</label>
-        </div>
+        <h3>Filters</h3>
         <div class="field">
             <div class="ui slider checkbox">
-                <input id="@(tableId)_unpaid-checkbox" name="Unpaid" type="checkbox" data-value-type="boolean" />
-                <label />
+                <input type="checkbox" name="Unpaid" data-value-type="boolean" value="true" />
+                <label asp-for="Unpaid" ></label>
             </div>
         </div>
         <div class="field">
-            <label>Vendor</label>
-            <select id="@(tableId)_vendors-select" name="Vendor" asp-items="@ViewBag.Vendors" class="ui fluid dropdown">
-                <option value="" selected disabled hidden>Select vendor</option>
+            <label asp-for="VendorId"></label>
+            <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui dropdown">
+                <option value="" selected>Select vendor</option>
             </select>
         </div>
         <div class="field">
-            <label>Customer</label>
-            <select id="@(tableId)_companies-persons-select" asp-items="@ViewBag.CompaniesAndPersons" class="ui fluid dropdown">
-                <option value="" selected disabled hidden>Select customer</option>
+            <label asp-for="CustomerId"></label>
+            <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui dropdown">
+                <option value="" selected>Select customers</option>
             </select>
         </div>
     </form>
+</div>
 }
 
 <div>
@@ -77,7 +75,7 @@
                 }
             });
 
-            $('#@(tableId)_companies-persons-select').on('change', function () {
+            @*$('#@(tableId)_companies-persons-select').on('change', function () {
                 let valueData = $(this).find(':selected').val().split('_');
 
                 $('#@(tableId)_customer_id').val(valueData[1]);
@@ -97,7 +95,7 @@
             });
             $('#@(tableId)_unpaid-checkbox').on('change', function () {
                 window.DocumentController.reload(false);
-            });
+            });*@
         });
 
         ajaxSubmitComplete = function (e, jqXHR, status) {

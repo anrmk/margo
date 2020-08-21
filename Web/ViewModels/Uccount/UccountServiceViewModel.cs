@@ -8,6 +8,7 @@ namespace Web.ViewModels {
         [Display(Name = "Uccount")]
         public Guid? UccountId { get; set; }
         public string Name { get; set; }
+
         public Guid? CategoryId { get; set; }
 
         public IEnumerable<UccountServiceFieldViewModel> Fields { get; set; }

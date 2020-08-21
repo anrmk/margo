@@ -6,7 +6,7 @@ namespace Web.ViewModels {
     public class AspNetUserDenyAccessUpdateViewModel {
         [Display(Name = "User")]
         public string UserId { get; set; }
-        
+
         public IEnumerable<Guid> Ids { get; set; }
     }
 }

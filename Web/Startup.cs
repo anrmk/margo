@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Web.Hubs;
 
 namespace Web {
@@ -60,7 +61,7 @@ namespace Web {
                 options.User.RequireUniqueEmail = true;
             });
 
-            services.Configure<SecurityStampValidatorOptions>(options =>{
+            services.Configure<SecurityStampValidatorOptions>(options => {
                 // enables immediate logout, after updating the user's stat.
                 options.ValidationInterval = TimeSpan.Zero;
             });

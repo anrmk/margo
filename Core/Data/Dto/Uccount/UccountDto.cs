@@ -16,6 +16,8 @@ namespace Core.Data.Dto {
 
         public Guid? PersonId { get; set; }
 
+        public bool IsActive { get; set; }
+
         public UccountTypes Kind { get; set; }
 
         public ICollection<UccountServiceDto> Services { get; set; }

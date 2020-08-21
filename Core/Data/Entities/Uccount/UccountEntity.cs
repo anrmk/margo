@@ -22,6 +22,8 @@ namespace Core.Data.Entities {
         public Guid? PersonId { get; set; }
         public virtual PersonEntity Person { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public UccountTypes Kind { get; set; }
 
         public virtual ICollection<UccountServiceEntity> Services { get; set; }

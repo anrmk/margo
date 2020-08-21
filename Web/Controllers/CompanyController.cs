@@ -20,8 +20,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using Telegram.Bot.Requests.Abstractions;
-
 using Web.Hubs;
 using Web.ViewModels;
 

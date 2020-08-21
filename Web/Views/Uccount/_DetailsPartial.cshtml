@@ -1,46 +1,73 @@
 ﻿@model Web.ViewModels.UccountViewModel
 
+@{
+    var serviceGroupQuery = Model.Services.GroupBy(x => x.CategoryId, x => x, (key, value) => new {
+        Key = key,
+        Name = value.First().Name,
+        Value = value
+    });
+}
+
 <div class="ui attached orange segment">
-    <h3 class="ui header">
-        @Model.Name
-        <span class="sub header"> @Model.VendorName</span>
-    </h3>
+    <h3 class="ui header">@Model.Name</h3>
 
     @if(Model.Fields.Count() > 0) {
-        <a class="ui red ribbon label">Fields</a>
+        <a class="ui red ribbon label">@Model.VendorName</a>
         <table class="ui very basic compact table">
-            @foreach(var field in Model.Fields) {
+            <thead>
                 <tr>
-                    <td>@field.Name</td>
-                    @if(field.Type != FieldEnum.PASSWORD) {
-                        <td>@field.Value</td>
-                    } else {
-                        <td>
-                            <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
+                    @foreach(var field in Model.Fields) {
+                        <th>@field.Name</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @foreach(var field in Model.Fields) {
+                        <td class="collapsing">
+                            @if(field.Type == FieldEnum.PASSWORD) {
+                                <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick">*****</a>
+                            } else if(field.Type == FieldEnum.LINK) {
+                                <a href="@field.Value" target="_blank">@field.Value</a>
+                            } else {
+                                @field.Value
+                            }
                         </td>
                     }
                 </tr>
-            }
+
+            </tbody>
         </table>
     }
 
     @if(Model.Services.Count() > 0) {
-        <a class="ui red ribbon label">Services Fields</a>
+        <a class="ui red ribbon label">Services</a>
         <table class="ui very basic compact table">
-            @foreach(var Service in Model.Services) {
-                @foreach(var field in Service.Fields) {
+            <tbody>
+                @foreach(var query in serviceGroupQuery) {
                     <tr>
-                        <td>@field.Name</td>
-                        @if(field.Type != FieldEnum.PASSWORD) {
-                            <td>@field.Value</td>
-                        } else {
-                            <td>
-                                <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick"><i class="icon eye"></i></a>
-                            </td>
+                        <th rowspan="@(query.Value.Count() + 1)">@query.Name</th>
+                        @foreach(var column in query.Value.First().Fields) {
+                            <th>@column.Name</th>
                         }
                     </tr>
+                    @foreach(var services in query.Value) {
+                        <tr>
+                            @foreach(var field in services.Fields) {
+                                <td>
+                                    @if(field.Type == FieldEnum.PASSWORD) {
+                                        <a asp-action="DisplayPassword" asp-route-id="@field.Id" data-request="ajax" rel="displayPasswordOnClick">*****</a>
+                                    } else if(field.Type == FieldEnum.LINK) {
+                                        <a href="@field.Value" target="_blank">@field.Value</a>
+                                    } else {
+                                        @field.Value
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
                 }
-            }
+            </tbody>
         </table>
     }
 </div>

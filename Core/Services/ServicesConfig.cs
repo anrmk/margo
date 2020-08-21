@@ -26,7 +26,7 @@ namespace Core.Services {
 
             services.AddTransient<IUserProfileManager, UserProfileManager>();
             services.AddTransient<IUserRequestManager, UserRequestManager>();
-       
+
             services.AddTransient<IAspNetUserDenyAccessCompanyManager, AspNetUserDenyAccessCompanyManager>();
             services.AddTransient<IAspNetUserDenyAccessCategoryManager, AspNetUserDenyAccessCategoryManager>();
             services.AddTransient<ILogManager, LogManager>();

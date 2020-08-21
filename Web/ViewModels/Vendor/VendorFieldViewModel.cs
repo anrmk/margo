@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
 using Core.Extension;
+
 using Web.Utils;
 
 namespace Web.ViewModels {

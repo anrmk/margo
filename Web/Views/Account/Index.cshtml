@@ -62,12 +62,6 @@
                     'title': 'Action', 'data': 'id', 'className': 'collapsing', 'render': (data, type, row) => {
                         return `<a class='ui icon' data-request='ajax' rel='dialog' href='@(editUrl)?id=${row.id}' data-title='Edit'>
                                     <i class="pencil icon"></i>
-                                </a>
-                                <a href='@(editCompanyGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Company grants'>
-                                    <i class="users icon"></i>
-                                </a>
-                                <a href='@(editCategoryGrantsUrl)?id=${data}' class='ui icon blue button' data-request='ajax' rel='dialog' data-title='Category grants'>
-                                    <i class="list alternate outline icon"></i>
                                 </a>`;
                     }
                 }

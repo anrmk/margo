@@ -6,6 +6,7 @@
             'controller': { 'list': '', 'delete': '' },
             'columns': [],
             'selected': [],
+            'onRowCreated': (row, data, dataIndex) => { },
             'onRowClick': (e, data) => { },
             'onDblRowClick': (e, data) => { },
             'onRowChange': (e, data) => { }
@@ -35,6 +36,7 @@
                 }
             },
             'columns': this.options.columns,
+            'createdRow': this.options.onRowCreated,
             'rowCallback': (row, data) => {
                 if ($.inArray(data.id, this.options.selected) !== -1) {
                     $(row).find('input[type=checkbox]').attr('checked', true)

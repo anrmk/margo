@@ -16,36 +16,40 @@
         <input type="hidden" name="Id" value="@Model.Id" />
         <input type="hidden" name="Kind" value="@uccountKind" />
 
-        <div class="field">
-            <div class="two fields">
-                @if(Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
-                    <div class="field required">
-                        <label asp-for="CompanyId"></label>
-                        <select id="companies-select" class="ui search dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
-                            <option value="" selected disabled hidden></option>
-                        </select>
-                    </div>
-                } else {
-                    <div class="field required">
-                        <label asp-for="PersonId"></label>
-                        <select id="persons-select" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
-                            <option value="" selected disabled hidden></option>
-                        </select>
-                    </div>
-                }
-
+        <div class="two fields">
+            @if(Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
                 <div class="field required">
-                    <label asp-for="VendorId"></label>
-                    <select id="vendors-select" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
+                    <label asp-for="CompanyId"></label>
+                    <select id="companies-select" class="ui search dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
                         <option value="" selected disabled hidden></option>
                     </select>
                 </div>
+            } else {
+                <div class="field required">
+                    <label asp-for="PersonId"></label>
+                    <select id="persons-select" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
+                        <option value="" selected disabled hidden></option>
+                    </select>
+                </div>
+            }
+
+            <div class="field required">
+                <label asp-for="VendorId"></label>
+                <select id="vendors-select" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
+                    <option value="" selected disabled hidden></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="IsActive" data-value-type="boolean" value="true" @(Model.IsActive ? "checked" : "") />
+                <label asp-for="IsActive"></label>
             </div>
         </div>
 
         <div id="@vendorFieldsGuid" class="fields">
-            @foreach (var Field in Model.Fields)
-            {
+            @foreach(var Field in Model.Fields) {
                 <div class="field">
                     <label>@Field.Name</label>
                     <input type="hidden" name="Fields[][Name]" value="@Field.Name">
@@ -57,9 +61,9 @@
             }
         </div>
 
-        <div class="ui right floated dropdown mini icon button" tabindex="0" >
+        <div class="ui right floated dropdown mini icon button" tabindex="0">
             <i class="plus icon"></i>
-            <div class="menu">
+            <div class="left menu">
                 <div class="header">Services Types</div>
                 @foreach(var category in categories) {
                     <a data-request="ajax" id="@category.Value" class="item" data-target="#@serviceFieldsGuid" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
@@ -70,26 +74,26 @@
 
         <div id="@serviceFieldsGuid">
             @foreach(var Service in Model.Services) {
-            <div id="@Service.Id" class="fields">
-                <input type="hidden" name="Services[][Id]" value="@Service.Id" data-value-type="string">
-                <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
-                <input type="hidden" name="Services[][CategoryId]" value="@Service.CategoryId" data-value-type="string">
-                <div class="field two wide flex align-center">
-                    <label>@Service.Name</label>
-                </div>
-                @foreach(var Field in Service.Fields) {
-                    <div class="field">
-                        <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
-                        <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
-                        <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
-                        <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
-                        <input name="Services[][Fields][][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                <div id="@Service.Id" class="fields">
+                    <input type="hidden" name="Services[][Id]" value="@Service.Id" data-value-type="string">
+                    <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
+                    <input type="hidden" name="Services[][CategoryId]" value="@Service.CategoryId" data-value-type="string">
+                    <div class="field two wide flex align-center">
+                        <label>@Service.Name</label>
                     </div>
-                }
-                <div class="field flex align-center justify-center">
-                    <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
+                    @foreach(var Field in Service.Fields) {
+                        <div class="field">
+                            <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
+                            <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
+                            <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
+                            <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
+                            <input name="Services[][Fields][][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                        </div>
+                    }
+                    <div class="field flex align-center justify-center">
+                        <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
+                    </div>
                 </div>
-            </div>
             }
         </div>
     </fieldset>

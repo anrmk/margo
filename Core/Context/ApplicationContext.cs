@@ -5,7 +5,6 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 
 using Core.Data.Entities;
-using Core.Extension;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

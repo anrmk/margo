@@ -376,7 +376,7 @@ namespace Core.Services.Business {
 
             if(deleteEntities.Count() > 0)
                 await _userDenyAccessCompanyManager.Delete(deleteEntities);
-            
+
             if(createEntities.Count() > 0)
                 await _userDenyAccessCompanyManager.Create(createEntities);
 

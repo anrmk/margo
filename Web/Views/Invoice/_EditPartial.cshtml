@@ -77,7 +77,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $.fn.fillInvoiceServiceNames('#service-dropdown', @Model.AccountId);
+        $.fn.fillInvoiceServiceNames('#service-dropdown', '@Model.AccountId');
 
         $('#service-dropdown').on('click', '.item', function () {
             const value = $(this)[0].textContent;

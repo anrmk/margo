@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using Core.Data.Entities;
 
 namespace Core.Extension {
@@ -11,7 +12,7 @@ namespace Core.Extension {
 
         public static IEnumerable<T> Exclude<T, K>(IEnumerable<T> originalList, IEnumerable<T> comparableList)
                 where T : IEntityBase<K> {
-            return IntersectOperation<T,K>(originalList, comparableList, true);
+            return IntersectOperation<T, K>(originalList, comparableList, true);
         }
 
         private static IEnumerable<T> IntersectOperation<T, K>(IEnumerable<T> originalList, IEnumerable<T> comparableList, bool exclude)

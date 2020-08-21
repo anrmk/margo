@@ -7,6 +7,7 @@ namespace Web.ViewModels {
         public string Name { get; set; }
         public string VendorName { get; set; }
         public int ServiceCount { get; set; }
+        public bool IsActive { get; set; }
 
         public DateTime UpdatedDate { get; set; }
     }
