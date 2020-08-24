@@ -70,7 +70,7 @@
                     const $link = $(e.target);
                     const $target = $($link.data('target'));
                     const generatedFields = $.fn.generateFields(fields, "Sections[][Fields]");
-                    const groupFields = $.fn.generateGroup(id, name, generatedFields, "Sections");
+                    const groupFields = $.fn.generateGroup({ id, name, html: generatedFields, srlzName: "Sections" });
 
                     $target.append(groupFields);
                 }

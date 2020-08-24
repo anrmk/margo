@@ -69,17 +69,41 @@
 @section Scripts {
     <script type="text/javascript">
         function serviceCreateOnClick (e, jqXHR, status) {
-            if(status === 'success') {
+            if (status === 'success') {
                 const data = jqXHR.responseJSON;
                 if (data && data.fields) {
                     const { id, name, fields } = data;
                     const $link = $(e.target);
                     const $target = $($link.data('target'));
                     const generatedFields = $.fn.generateFields(fields, "Services[][Fields]");
-                    const groupFields = $.fn.generateGroup(id, name, generatedFields, "Services");
+                    const generatedSegment = $.fn.generateSegment({ id: $.fn.uuidv4(), groupId: id, name, html: generatedFields, srlzName: "Services" });
+                    const $parentSegment = $(`div[id="${id}_segments"]`);
 
-                    $target.append(groupFields);
+                    if (!$parentSegment.length) {
+                        const generatedParentSegment = $.fn.generateSegments(id, name, generatedSegment);
+                        $target.append(generatedParentSegment);
+                    } else {
+                        $parentSegment.append(generatedSegment);
+                    }
                 }
+            }
+        }
+
+        function onDeleteServiceClick(e, jqXHR, status) {
+            if (status === 'success') {
+                const $link = $(e.target);
+                const data = $link.data();
+                const $segment = $(data.target);
+                const $segments = $(data.parent);
+                const numberOfChildrens = $segments.children().length;
+
+                if (!numberOfChildrens || numberOfChildrens <= 2) {
+                    $segments.remove();
+                } else {
+                    $segment.remove();
+                }
+
+                window.DocumentController.reload(false);
             }
         }
 

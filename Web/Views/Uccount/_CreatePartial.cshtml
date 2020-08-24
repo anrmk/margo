@@ -49,7 +49,16 @@
             <div class="menu">
                 <div class="header">Services Types</div>
                 @foreach(var category in categories) {
-                    <a data-request="ajax" id="@category.Value" class="item" data-target="#@serviceFieldsGuid" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                    <a 
+                        id="@category.Value"
+                        class="item"
+                        asp-route="GetCategory"
+                        asp-route-id="@category.Value"
+                        data-request="ajax"
+                        data-target="#@serviceFieldsGuid"
+                        rel="serviceCreateOnClick">
+                        @category.Text
+                    </a>
                 }
             </div>
         </div>

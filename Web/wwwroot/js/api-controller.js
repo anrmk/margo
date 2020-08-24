@@ -195,27 +195,84 @@ $.fn.generateFields = function (fields, srlzName, label=false) {
     }).join("\n ");
 }
 
-$.fn.generateGroup = function (id, groupName, html, srlzName) {
-    const $group = $(`
-        <div id="${id}" class="fields">
+$.fn.generateGroup = function (options) {
+    const {
+        id,
+        name,
+        html,
+        srlzName,
+        hiddenLabel = false,
+        btnAttr,
+    } = options;
+
+    const $group = $(
+        `<div id="${id}" class="fields">
             <input type="hidden" name="${srlzName}[][CategoryId]" value="${id}" data-value-type="string">
-            <input type="hidden" name="${srlzName}[][Name]" value="${groupName}" data-value-type="string">
-            <div class="field two wide flex align-center">
-                <label>${groupName}</label>
-            </div>
+            <input type="hidden" name="${srlzName}[][Name]" value="${name}" data-value-type="string">
+            ${!hiddenLabel ?
+                `<div class="field two wide flex align-center">
+                    <label>${name}</label>
+                </div>` :
+               ''
+            }
             ${html}
             <div class="field flex align-center justify-center">
-                <a href="#">delete</a>
+                <a ${$.fn.getAttributes(btnAttr)} href="#">delete</a>
             </div>
-        </div>`);
-
-    $group.find("a").on("click", function (e) {
-        e.preventDefault();
-        $group.remove();
-    });
+        </div>`
+    );
+    
+    if (!btnAttr) {
+        $group.find("a").on("click", function (e) {
+            e.preventDefault();
+            $group.remove();
+        });
+    } else {
+        $group.find('a[data-request=ajax]').ajaxClick();
+    }
 
     return $group;
 }
+
+$.fn.generateSegment = function (options) {
+    const { id, groupId } = options;
+    const btnOptions = { "data-request": "ajax", "data-target": `#${id}_segment`, "data-parent": `#${id}_segments`, rel: "onDeleteServiceClick" }
+    const $group = $.fn.generateGroup({ ...options, id: groupId, hiddenLabel: true, btnAttr: btnOptions });
+
+    return $(
+        `<div id="${id}_segment" class="ui segment">
+        </div>`
+    ).wrapInner($group);
+}
+
+$.fn.generateSegments = function (id, groupName, html) {
+    const $segment = $(
+        `<div id="${id}_segments" class="ui segments">
+            <div class="ui segment" data-label="${groupName}">
+                <p>${groupName}</p>
+            </div>
+        </div>`
+    );
+
+    $segment.find(`div[data-label="${groupName}"]`).after(html);
+
+    return $segment;
+}
+
+$.fn.getAttributes = function (attrs) {
+    return attrs ?
+        Object.keys(attrs)
+            .map(attr => `${attr}="${attrs[attr]}"`)
+            .join(" "):
+        "";
+}
+
+$.fn.uuidv4 = function () {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 
 /**
  * @deprecated Only for temp use.

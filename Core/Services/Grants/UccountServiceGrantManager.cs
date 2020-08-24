@@ -32,6 +32,11 @@ namespace Core.Services {
             });
         }
 
+        public async Task<List<UccountServiceEntity>> FilterByUser(List<UccountServiceEntity> serviceCollection) {
+            var deniedCategoryIds = await GetDeniedCategoryIdList();
+            return Filter(serviceCollection, deniedCategoryIds).ToList();
+        }
+
         private ICollection<UccountServiceEntity> Filter(ICollection<UccountServiceEntity> collection, HashSet<Guid> deniedCategoryIdSet) {
             return collection.Where(z => !z.CategoryId.HasValue || !deniedCategoryIdSet.Contains(z.CategoryId.Value)).ToList();
         }

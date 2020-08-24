@@ -179,11 +179,27 @@ namespace Web.Controllers.Api {
             var companies = await _companyBusinessManager.GetCompanies();
             var vendors = await _vendorBusinessManager.GetVendors();
             var categories = await _categoryBusinessManager.GetCategories();
+            var services = await _uccountBusinessManager.GetServices(id);
+            var groupedServices = services
+                .GroupBy(x => x.CategoryId)
+                .Select(x => new UccountGroupedServiceViewModel() {
+                    Id = Guid.NewGuid(),
+                    Name = x.FirstOrDefault().Name,
+                    CategoryId = x.FirstOrDefault().CategoryId,
+                    Groups = x.Select(g => new UccountGroupedServiceFieldsViewModel() {
+                        Id = Guid.NewGuid(),
+                        ServiceId = g.Id,
+                        ServiceName = g.Name,
+                        Fields = _mapper.Map<List<UccountServiceFieldViewModel>>(g.Fields)
+                    }).ToList()
+                }).ToList();
+
             var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                 { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                 { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                 { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Services", groupedServices},
                 { "Kind", item.Kind }
             };
 

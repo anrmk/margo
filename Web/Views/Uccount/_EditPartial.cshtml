@@ -8,6 +8,7 @@
     var companies = (List<SelectListItem>)ViewData["Companies"];
     var vendors = (List<SelectListItem>)ViewData["Vendors"];
     var categories = (List<SelectListItem>)ViewData["Categories"];
+    var services = (List<UccountGroupedServiceViewModel>)ViewData["Services"];
     var uccountKind = (int)ViewData["Kind"];
 }
 
@@ -73,26 +74,51 @@
         <h4 class="ui dividing header">Services</h4>
 
         <div id="@serviceFieldsGuid">
-            @foreach(var Service in Model.Services) {
-                <div id="@Service.Id" class="fields">
-                    <input type="hidden" name="Services[][Id]" value="@Service.Id" data-value-type="string">
-                    <input type="hidden" name="Services[][Name]" value="@Service.Name" data-value-type="string">
-                    <input type="hidden" name="Services[][CategoryId]" value="@Service.CategoryId" data-value-type="string">
-                    <div class="field two wide flex align-center">
-                        <label>@Service.Name</label>
+            @foreach(var Service in services) {
+                <div id="@(Service.CategoryId)_segments" class="ui segments">
+                    <div class="ui segment" data-label="@Service.Name">
+                        <p>@Service.Name</p>
                     </div>
-                    @foreach(var Field in Service.Fields) {
-                        <div class="field">
-                            <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
-                            <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
-                            <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
-                            <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
-                            <input name="Services[][Fields][][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                    @foreach(var Group in Service.Groups) {
+                        var segmentId = Guid.NewGuid();
+
+                        <div id="@(Group.Id)_segment" class="ui segment">
+                            <div id="@Group.Id" class="fields">
+                                <input type="hidden" name="Services[][Id]" value="@Group.ServiceId" data-value-type="string">
+                                <input type="hidden" name="Services[][Name]" value="@Group.ServiceName" data-value-type="string">
+                                <input type="hidden" name="Services[][CategoryId]" value="@Service.CategoryId" data-value-type="string">
+                                @foreach(var Field in Group.Fields) {
+                                    <div class="field">
+                                        <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
+                                        <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
+                                        <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
+                                        <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
+                                        <input 
+                                            name="Services[][Fields][][Value]" 
+                                            autocomplete="new-password" 
+                                            @(Field.IsRequired ? "required" : "") 
+                                            placeholder="@Field.Name" 
+                                            type="@Field.HTMLTypeName" 
+                                            value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" 
+                                            @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") 
+                                            data-value-type="string" />
+                                    </div>
+                                }
+                                <div class="field flex align-center justify-center">
+                                    <a 
+                                        asp-route="DeleteService"
+                                        asp-route-id="@Group.ServiceId"
+                                        data-request="ajax"
+                                        data-target="#@(Group.Id)_segment"
+                                        data-parent="#@(Service.CategoryId)_segments"
+                                        rel="onDeleteServiceClick"
+                                        onclick="return confirm('Are you sure want to delete this?')">
+                                        delete
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     }
-                    <div class="field flex align-center justify-center">
-                        <a asp-route="DeleteService" asp-route-id="@Service.Id" data-request="ajax" data-target="#@Service.Id" rel="serviceDeleteOnClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
-                    </div>
                 </div>
             }
         </div>

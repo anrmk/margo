@@ -227,8 +227,22 @@ namespace Core.Services.Business {
         }
 
         public async Task<List<UccountServiceDto>> GetServices(Guid accountId) {
-            var result = await _uccountServiceManager.FindAll(accountId);
-            return _mapper.Map<List<UccountServiceDto>>(result);
+            var services = await _uccountServiceManager.FindAll(accountId);
+            
+            // Filter services by user
+            var filteredServices = await _uccountServiceGrantsManager.FilterByUser(services);
+
+            foreach (var service in filteredServices)
+            {
+                // Decrypt service password field
+                foreach(var field in service.Fields) {
+                    if(field.Type == Data.Enums.FieldEnum.PASSWORD) {
+                        field.Value = field.Value.Decrypt();
+                    }
+                }
+            }
+
+            return _mapper.Map<List<UccountServiceDto>>(filteredServices);
         }
 
         public async Task<UccountServiceDto> CreateService(UccountServiceDto dto) {
