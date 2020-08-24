@@ -15,7 +15,7 @@ namespace Core.Services.Managers {
         Task<UccountEntity> FindInclude(Guid id, bool filter = true);
         Task<List<UccountEntity>> FindAll(Guid[] ids);
         Task<List<UccountEntity>> FindAll();
-        Task<List<UccountEntity>> FindByCompany(Guid companyId);
+        Task<List<UccountServiceEntity>> FindByCompany(Guid companyId);
     }
 
     public class UccountManager: AsyncEntityManager<UccountEntity>, IUccountManager {
@@ -59,12 +59,20 @@ namespace Core.Services.Managers {
                 .ToListAsync();
         }
 
-        public async Task<List<UccountEntity>> FindByCompany(Guid companyId) {
-            return await _grantManager.Filter(DbSet)
-                .Include(x => x.Person)
-                .Include(x => x.Company)
+        public async Task<List<UccountServiceEntity>> FindByCompany(Guid companyId) {
+            return await DbSet
                 .Where(x => x.CompanyId == companyId)
+                .Include(x => x.Services)
+                    .ThenInclude(x => x.Fields)
+                .SelectMany(x => x.Services)
+                .Select(x => new UccountServiceEntity {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Fields = x.Fields.Where(f => !f.IsHidden).ToList(),
+                    CategoryId = x.CategoryId
+                })
                 .ToListAsync();
+
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Core.Services.Managers {
         Task<CompanyDataEntity> FindInclude(Guid id);
         Task<List<CompanyDataEntity>> FindAllData(Guid id);
         Task<List<CompanyDataEntity>> FindAll(Guid[] ids);
+        Task<List<CompanyDataEntity>> FindAllByFieldId(Guid[] ids);
     }
 
     public class CompanyDataManager: AsyncEntityManager<CompanyDataEntity>, ICompanyDataManager {
@@ -29,12 +30,19 @@ namespace Core.Services.Managers {
             return await DbSet
                 .Where(x => x.CompanyId == id)
                 .Include(x => x.Field)
+                    .ThenInclude(x => x.Service)
                 .ToListAsync();
         }
 
         public async Task<List<CompanyDataEntity>> FindAll(Guid[] ids) {
             return await DbSet
                 .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
+        public async Task<List<CompanyDataEntity>> FindAllByFieldId(Guid[] ids) {
+            return await DbSet
+                .Where(x => ids.Contains(x.FieldId))
                 .ToListAsync();
         }
     }

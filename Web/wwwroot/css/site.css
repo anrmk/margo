@@ -2,6 +2,18 @@
   background-color: #DADADA;
 }
 
+.width-100 {
+  width: 100% !important;
+}
+
+.text-align-center {
+  text-align: center !important;
+}
+
+.flex  {
+  display: flex;
+}
+
 .align-center {
   align-items: center;
 }

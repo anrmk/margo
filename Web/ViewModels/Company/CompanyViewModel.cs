@@ -34,7 +34,7 @@ namespace Web.ViewModels {
         public string Description { get; set; }
 
         public IEnumerable<CompanySectionViewModel> Sections { get; set; }
-        public IEnumerable<UccountServiceFieldViewModel> Data { get; set; }
+        public IEnumerable<CompanyDataViewModel> Data { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

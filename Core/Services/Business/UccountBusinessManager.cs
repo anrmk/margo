@@ -18,7 +18,7 @@ namespace Core.Services.Business {
         Task<PagerDto<UccountDto>> GetUccountPage(UccountFilterDto filter);
         Task<List<UccountDto>> GetUccounts();
         Task<List<UccountDto>> GetUccountsInclude();
-        Task<List<UccountDto>> GetUccountsByCompanyId(Guid companyId);
+        Task<List<UccountServiceDto>> GetServicesByCompanyId(Guid companyId);
         Task<UccountDto> CreateUccount(UccountDto dto);
         Task<UccountDto> UpdateUccount(Guid id, UccountDto dto, string userId);
         Task<bool> DeleteUccount(Guid id);
@@ -125,9 +125,9 @@ namespace Core.Services.Business {
             return _mapper.Map<List<UccountDto>>(result);
         }
 
-        public async Task<List<UccountDto>> GetUccountsByCompanyId(Guid companyId) {
+        public async Task<List<UccountServiceDto>> GetServicesByCompanyId(Guid companyId) {
             var result = await _uccountManager.FindByCompany(companyId);
-            return _mapper.Map<List<UccountDto>>(result);
+            return _mapper.Map<List<UccountServiceDto>>(result);
         }
 
         public async Task<UccountDto> CreateUccount(UccountDto dto) {

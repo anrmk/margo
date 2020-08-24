@@ -25,7 +25,7 @@ namespace Core.Services.Business {
         // COMPANY DATA
         Task<List<CompanyDataDto>> GetCompanyData(Guid id);
         Task<CompanyDto> CreateCompanyData(CompanyDataListDto dto);
-        Task<bool> DeleteCompanyData(Guid id);
+        Task<bool> DeleteCompanyData(Guid[] ids);
     }
 
     public class CompanyBusinessManager: ICompanyBusinessManager {
@@ -139,12 +139,12 @@ namespace Core.Services.Business {
             return _mapper.Map<CompanyDto>(entity);
         }
 
-        public async Task<bool> DeleteCompanyData(Guid id) {
-            var entity = await _companyDataManager.FindInclude(id);
-            if(entity == null)
+        public async Task<bool> DeleteCompanyData(Guid[] ids) {
+            var entities = await _companyDataManager.FindAllByFieldId(ids);
+            if(entities == null)
                 throw new Exception("We did not find data records for this request!");
 
-            int result = await _companyDataManager.Delete(entity);
+            int result = await _companyDataManager.Delete(entities);
             return result != 0;
         }
         #endregion

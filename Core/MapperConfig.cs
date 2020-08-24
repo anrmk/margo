@@ -35,7 +35,9 @@ namespace Core {
             CreateMap<CompanyDataDto, CompanyDataEntity>()
                 .ReverseMap()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.Field.Name))
-                .ForMember(d => d.Value, o => o.MapFrom(s => s.Field.Value));
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.Field.Value))
+                .ForMember(d => d.ServiceId, o => o.MapFrom(s => s.Field.Service.Id))
+                .ForMember(d => d.ServiceName, o => o.MapFrom(s => s.Field.Service.Name));
             CreateMap<CompanySectionDto, CompanySectionEntity>().ReverseMap();
             CreateMap<CompanySectionFieldDto, CompanySectionFieldEntity>().ReverseMap();
 

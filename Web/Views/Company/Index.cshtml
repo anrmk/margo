@@ -29,17 +29,39 @@
     </div>
 }
 
-@if(User.IsInRole("Administrator")) {
-    <div id="toolbar" class="flex justify-content-between">
-        <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
-        <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
-    </div>
-}
+<div class="ui shape width-100">
+    <div class="sides">
+        <div class="active side main">
+            @if(User.IsInRole("Administrator")) {
+                <div id="toolbar" class="flex justify-content-between">
+                    <a asp-route="AddCompany" class="ui button" data-request="ajax" rel="dialog" data-title="Create new company"><i class="fa fa-plus mr-1"></i> Create</a>
+                    <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+                </div>
+            }
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        </div>
 
-<table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        <div class="side display">
+            <div class="ui grid">
+                <div class="row">
+                    <div class="column">
+                        <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <div id="@(tableId)_details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script type="text/javascript">
+        let selectedFields = [];
+
         function onSectionCreateClick (e, jqXHR, status) {
             if(status === 'success') {
                 const data = jqXHR.responseJSON;
@@ -66,15 +88,65 @@
         function onDeleteCompanyDataClick(e, jqXHR, status) {
             if (status === 'success') {
                 const $link = $(e.target);
-                const $rootRow = $(`[data-label=${$link.data("root")}]`);
+                const $rootRow = $(`[id=${$link.data("root")}]`);
                 const $allRows = $rootRow.find("td[data-label=Data] table tbody");
                 const numberOfChildrens = $allRows.children().length;
 
                 if (!numberOfChildrens || numberOfChildrens <= 1) {
                     $rootRow.remove();
                 } else {
-                    $($link.data('target')).remove();
+                    $(`${$link.data('target')}`).remove();
                 }
+            }
+        }
+
+        function onDeleteDataClick(e, jqXHR, status) {
+            if (status === 'success') {
+                const $link = $(e.target);
+                const rootId = $link.data("row-root-id").slice(1);
+                const fieldId = $link.data('field-id').slice(1);
+                const $outerRow = $(`tr[id=${rootId}]`);
+                const $allRows = $outerRow.find("td[data-label=Data] table tbody");
+                const numberOfChildrens = $allRows.children().length;
+
+                const $menuItem = $(`a.item[id="${fieldId}"]`);
+
+                if ($menuItem.hasClass("disabled")) {
+                    $menuItem.removeClass("disabled");
+                    selectedFields = selectedFields.filter(id => id !== fieldId);
+                }
+
+                if (numberOfChildrens && numberOfChildrens > 0) {
+                    $(`tr[id="${fieldId}"]`).remove();
+                }
+            }
+        }
+
+        function onMenuItemClick(e, jqXHR, status) {
+            const $target = $(e.target);
+            const data = $target.data();
+            const text = $target.text();
+            const fieldIds = data.fieldIds.split(",");
+            const fieldId = $target.attr("id");
+
+            if (!selectedFields.includes(fieldId)) {
+                const innerRowOptions = { id: fieldId, value: text, companyId: data.companyId, selectedIds: fieldIds };
+                const $serviceTR = $(`tr[id="${data.serviceId}"]`);
+
+                if (!$serviceTR.length) {
+                    const $outerTR = $(generateOuterTR(data.serviceId, data.serviceName, innerRowOptions));
+                    $outerTR.find("a[data-request=ajax]").ajaxClick();
+                    $(`#${data.tableId}`).find("tbody[name=outer]").append($outerTR);
+                } else {
+                    const $innerTR = $(generateInnerTR(innerRowOptions, data.serviceId));
+                    $innerTR.find("a[data-request=ajax]").ajaxClick();
+                    $serviceTR.find("tbody[name=inner]").append($innerTR);
+                }
+
+                const $menuItem = $(`a.item[id="${fieldId}"]`);
+
+                $menuItem.addClass("disabled");
+                selectedFields.push(fieldId);
             }
         }
 
@@ -99,6 +171,45 @@
             }
         }
 
+        function generateOuterTR(id, name, innerRow) {
+            return (
+                `<tr id="${id}">
+                    <td data-label="Name">${name}</td>
+                    <td data-label="Data">
+                        <table>
+                            <tbody name="inner">
+                                ${generateInnerTR(innerRow, id)}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>`
+            )
+        }
+
+        function generateInnerTR(row, outerRowId) {
+            return (
+                `<tr id="${row.id}">
+                    <td style="border: none; padding: 0px 10px 0px 10px;">
+                        ${row.selectedIds.map(id => (
+                            `<input type="hidden" name="Data[][CompanyId]" value="${row.companyId}" data-value-type="string">
+                             <input type="hidden" name="Data[][FieldId]" value="${id}" data-value-type="string">`
+                        )).join("\ ")}
+                        <span>${row.value}</span>
+                    </td>
+                    <td style="vertical-align: baseline; border: none; padding: 0 10px 0 10px;">
+                        <a 
+                            href="#"
+                            data-request="ajax"
+                            data-row-root-id="#${outerRowId}"
+                            data-field-id="#${row.id}"
+                            rel="onDeleteDataClick">
+                            delete
+                        </a>
+                    </td>
+                </tr>`
+            );
+        }
+
         $(document).ready(function () {
             window.DocumentController = new DocumentController({
                 'table': '#@tableId',
@@ -113,18 +224,19 @@
                     { 'title': 'EIN', 'data': 'ein' },
                     { 'title': 'DB', 'data': 'db' },
                     { 'title': 'Founded', 'className': 'collapsing', 'data': 'founded', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
-                ],
-                'onRowClick': (e, data) => {
-                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'A') {
-                       $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                            $('#displayContainer').html(result).find("a[data-request=ajax]").ajaxClick();
-                        });
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    {
+                      'title': 'Action', 'data': 'id', 'className': 'collapsing right aligned', 'render': (data, type, row) => {
+                        return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit company' >
+                                    <i class='pencil icon'></i>
+                                </a>`;
+                      }
                     }
-                },
+                ],
                 'onDblRowClick': (e, data) => {
-                    $.get('@editUrl', { 'id': data.id }).done(result => {
-                        $(result).dialog({ 'title': 'Edit company' });
+                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                        $('#@(tableId)_details').html(result).find("a[data-request=ajax]").ajaxClick();
+                        $('.shape').shape('set next side', '.side.display').shape('flip over');
                     });
                 }
             });

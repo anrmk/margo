@@ -96,10 +96,12 @@ namespace Web.Controllers.Api {
         }
 
         [HttpGet("DeleteCompanyData", Name = "DeleteCompanyData")]
-        public async Task<ActionResult> DeleteCompanyData([FromQuery] Guid id) {
-            var result = await _companyBusinessManager.DeleteCompanyData(id);
+        public async Task<ActionResult> DeleteCompanyData([FromQuery] string ids) {
+            var guids = ids.Split(";").Select(x => new Guid(x)).ToArray();
+            var result = await _companyBusinessManager.DeleteCompanyData(guids);
+
             if(result)
-                return Ok(id);
+                return Ok(guids);
 
             return BadRequest("No items deleted");
         }
@@ -110,21 +112,35 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            string html;
+            var services = await _uccountBusinessManager.GetServicesByCompanyId(id);
             var data = await _companyBusinessManager.GetCompanyData(id);
-            var mappedData = _mapper.Map<List<CompanyDataViewModel>>(data);
-            var groupedData = from f in mappedData
-                              group f by f.Name;
+            var selectedIds = data.Select(x => x.FieldId).ToArray();
+
+            var serviceWithFields = services
+                .GroupBy(x => x.CategoryId)
+                .Select(x => new CompanyDataMenuListViewModel() {
+                    Id = Guid.NewGuid(),
+                    Name = x.FirstOrDefault().Name,
+                    Fields = x.Select(
+                        b => {
+                            var fieldsIds = b.Fields.Select(f => f.Id);
+
+                            return new CompanyDataMenuItemViewModel() {
+                                Id = Guid.NewGuid(),
+                                Value = string.Join(", ", b.Fields.Select(f => f.Value)),
+                                Ids = fieldsIds.ToArray(),
+                                Selected = fieldsIds.Any(id => selectedIds.Contains(id))
+                            };
+                        }
+                    ).ToList()
+                }).ToList();
+
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
-                { "GroupedData", groupedData },
+                { "Services", serviceWithFields },
             };
 
-            if(full == 1) {
-                html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
-            } else {
-                html = await _viewRenderService.RenderToStringAsync("_FullSizeDetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
-            }
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsPartial", _mapper.Map<CompanyViewModel>(item), viewData);
 
             return Ok(html);
         }
@@ -168,10 +184,34 @@ namespace Web.Controllers.Api {
 
             var persons = await _personBusinessManager.GetPersons();
             var categories = await _categoryBusinessManager.GetCategories();
+            var services = await _uccountBusinessManager.GetServicesByCompanyId(id);
 
+            var data = await _companyBusinessManager.GetCompanyData(id);
+            var selectedIds = data.Select(x => x.FieldId).ToArray();
+
+            var serviceWithFields = services
+                .GroupBy(x => x.CategoryId)
+                .Select(x => new CompanyDataMenuListViewModel() {
+                    Id = Guid.NewGuid(),
+                    Name = x.FirstOrDefault().Name,
+                    Fields = x.Select(
+                        b => {
+                            var fieldsIds = b.Fields.Select(f => f.Id);
+
+                            return new CompanyDataMenuItemViewModel() {
+                                Id = Guid.NewGuid(),
+                                Value = string.Join(", ", b.Fields.Select(f => f.Value)),
+                                Ids = fieldsIds.ToArray(),
+                                Selected = fieldsIds.Any(id => selectedIds.Contains(id))
+                            };
+                        }
+                    ).ToList()
+                }).ToList();
+            
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
                 { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
-                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() }
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Services", serviceWithFields },
             };
 
             var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<CompanyViewModel>(item), viewData);
@@ -207,31 +247,6 @@ namespace Web.Controllers.Api {
             } catch(Exception e) {
                 return BadRequest(e.Message ?? e.StackTrace);
             }
-        }
-
-        [HttpGet("AddCompanyData", Name = "AddCompanyData")]
-        public async Task<IActionResult> AddCompanyData([FromQuery] Guid id) {
-            var item = await _companyBusinessManager.GetCompany(id);
-            if(item == null)
-                return NotFound();
-
-            var accounts = await _uccountBusinessManager.GetUccountsByCompanyId(id);
-            var html = await _viewRenderService.RenderToStringAsync(
-                "_AddCompanyDataPartial",
-                _mapper.Map<CompanyDataListViewModel>(item),
-                new ViewDataDictionary(
-                new EmptyModelMetadataProvider(),
-                new ModelStateDictionary()) {
-                {
-                    "Accounts",
-                    _mapper.Map<List<UccountListViewModel>>(accounts)
-                        .Select(x => new SelectListItem {
-                            Text = x.Name,
-                            Value = x.Id.ToString()
-                        })
-                        .ToArray()
-                }});
-            return Ok(html);
         }
 
         [HttpPost("CreateCompanyData", Name = "CreateCompanyData")]
