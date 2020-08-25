@@ -7,9 +7,15 @@
 <form id="@formId" class="ui form" asp-action="UpdateVendor" asp-route-id="@Model.Id" method="put">
     <fieldset>
         <input type="hidden" asp-for="Id" />
-        <div class="field required">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" required>
+        <div class="two fields">
+            <div class="field required">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" type="text" required>
+            </div>
+            <div class="field">
+                <label asp-for="Categories"></label>
+                <select asp-for="Categories" asp-items="ViewBag.Categories" name="Categories[]" class="ui dropdown"></select>
+            </div>
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>

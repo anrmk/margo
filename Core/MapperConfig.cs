@@ -60,6 +60,10 @@ namespace Core {
             #region VENDOR
             CreateMap<VendorDto, VendorEntity>().ReverseMap();
             CreateMap<VendorFieldDto, VendorFieldEntity>().ReverseMap();
+            CreateMap<VendorCategoryDto, VendorCategoryEntity>()
+                .ReverseMap()
+                .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category.Name))
+                .ForMember(d => d.Fields, o => o.MapFrom(s => s.Category.Fields));
             #endregion
 
             #region CATEGORY

@@ -21,6 +21,8 @@ namespace Core.Services.Managers {
 
         public async Task<VendorEntity> FindInclude(Guid id) {
             return await DbSet
+                .Include(x => x.Categories)
+                    .ThenInclude(x => x.Category)
                 .Include(x => x.Fields)
                 .Where(x => x.Id.Equals(id))
                 .FirstOrDefaultAsync();

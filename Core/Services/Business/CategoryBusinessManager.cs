@@ -26,12 +26,15 @@ namespace Core.Services.Business {
         private readonly IMapper _mapper;
         private readonly ICategoryManager _categoryManager;
         private readonly ICategoryFieldManager _categoryFieldManager;
+        private readonly IVendorManager _vendorManager;
 
         public CategoryBusinessManager(IMapper mapper, ICategoryManager categoryManager,
-           ICategoryFieldManager categoryFieldManager) {
+           ICategoryFieldManager categoryFieldManager,
+           IVendorManager vendorManager) {
             _mapper = mapper;
             _categoryManager = categoryManager;
             _categoryFieldManager = categoryFieldManager;
+            _vendorManager = vendorManager;
         }
 
         public async Task<CategoryDto> GetCategory(Guid id) {

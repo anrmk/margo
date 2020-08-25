@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -11,6 +12,9 @@ using Core.Services.Business;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 
 using Web.ViewModels;
@@ -40,13 +44,16 @@ namespace Web.Controllers.Api {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
         private readonly IVendorBusinessManager _vendorBusinessManager;
+        private readonly ICategoryBusinessManager _categoryBusinessManager;
 
         public VendorController(IMapper mapper, IViewRenderService viewRenderService,
             //ISectionBusinessManager businessManager,
-            IVendorBusinessManager vendorBusinessManager) {
+            IVendorBusinessManager vendorBusinessManager,
+            ICategoryBusinessManager categoryBusinessManager) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _vendorBusinessManager = vendorBusinessManager;
+            _categoryBusinessManager = categoryBusinessManager;
         }
 
         [HttpGet("GetVendors", Name = "GetVendors")]
@@ -68,19 +75,30 @@ namespace Web.Controllers.Api {
 
         [HttpGet("AddVendor", Name = "AddVendor")]
         public async Task<IActionResult> AddVendor() {
-            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new VendorViewModel());
+            var categories = await _categoryBusinessManager.GetCategories();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }) }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_CreatePartial", new VendorViewModel(), viewData);
             return Ok(html);
         }
 
         [HttpPost("CreateVendor", Name = "CreateVendor")]
         public async Task<IActionResult> CreateVendor([FromBody] VendorViewModel model) {
-            if(ModelState.IsValid) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
                 var item = await _vendorBusinessManager.CreateVendor(_mapper.Map<VendorDto>(model));
                 if(item == null)
-                    return BadRequest();
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
                 return Ok(_mapper.Map<VendorViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
             }
-            return BadRequest();
         }
 
         [HttpGet("EditVendor", Name = "EditVendor")]
@@ -89,19 +107,30 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<VendorViewModel>(item));
+            var categories = await _categoryBusinessManager.GetCategories();
+
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }) }
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<VendorViewModel>(item), viewData);
             return Ok(html);
         }
 
         [HttpPut("UpdateVendor", Name = "UpdateVendor")]
         public async Task<IActionResult> UpdateVendor([FromQuery] Guid id, [FromBody] VendorViewModel model) {
-            if(ModelState.IsValid) {
+            try {
+                if(!ModelState.IsValid) {
+                    throw new Exception("Form is not valid!");
+                }
                 var item = await _vendorBusinessManager.UpdateVendor(id, _mapper.Map<VendorDto>(model));
                 if(item == null)
-                    return BadRequest();
+                    throw new Exception("No records have been created! Please, fill the required fields!");
+
                 return Ok(_mapper.Map<VendorViewModel>(item));
+            } catch(Exception e) {
+                return BadRequest(e.Message ?? e.StackTrace);
             }
-            return BadRequest();
         }
 
         [HttpGet("DeleteVendors", Name = "DeleteVendors")]
@@ -128,6 +157,22 @@ namespace Web.Controllers.Api {
             if(result)
                 return Ok(id);
             return BadRequest("No item selected");
+        }
+
+        [HttpGet("GetVendorCategories", Name = "GetVendorCategories")]
+        public async Task<IActionResult> GetVendorCategories([FromQuery] Guid id) {
+            var item = await _vendorBusinessManager.GetVendorCategories(id);
+            if(item == null)
+                return NotFound();
+            return Ok(_mapper.Map<List<VendorCategoryViewModel>>(item));
+        }
+
+        [HttpGet("GetVendorCategory", Name = "GetVendorCategory")]
+        public async Task<IActionResult> GetVendorCategory([FromQuery] Guid id) {
+            var item = await _vendorBusinessManager.GetVendorCategory(id);
+            if(item == null)
+                return NotFound();
+            return Ok(_mapper.Map<VendorCategoryViewModel>(item));
         }
     }
 }

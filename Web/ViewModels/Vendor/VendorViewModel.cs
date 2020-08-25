@@ -18,6 +18,9 @@ namespace Web.ViewModels {
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
+        [Display(Name = "Categories")]
+        public virtual List<Guid> Categories { get; set; }
+        [Display(Name = "Fields")]
         public virtual List<VendorFieldViewModel> Fields { get; set; }
     }
 }

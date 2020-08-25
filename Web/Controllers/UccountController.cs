@@ -181,7 +181,7 @@ namespace Web.Controllers.Api {
             var persons = await _personBusinessManager.GetPersons();
             var companies = await _companyBusinessManager.GetCompanies();
             var vendors = await _vendorBusinessManager.GetVendors();
-            var categories = await _categoryBusinessManager.GetCategories();
+            var vendorCategories = await _vendorBusinessManager.GetVendorCategories(item.VendorId);
             var services = await _uccountBusinessManager.GetServices(id);
             var groupedServices = services
                 .GroupBy(x => x.CategoryId)
@@ -201,7 +201,7 @@ namespace Web.Controllers.Api {
                 { "Persons", persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                 { "Companies", companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
                 { "Vendors", vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
-                { "Categories", categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList() },
+                { "Categories", _mapper.Map<List<VendorCategoryViewModel>>(vendorCategories) },
                 { "Services", groupedServices},
                 { "Kind", item.Kind }
             };

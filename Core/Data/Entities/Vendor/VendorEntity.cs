@@ -13,6 +13,7 @@ namespace Core.Data.Entities {
         [MaxLength(2048)]
         public string Description { get; set; }
 
+        public virtual ICollection<VendorCategoryEntity> Categories { get; set; }
         public virtual ICollection<VendorFieldEntity> Fields { get; set; }
     }
 }

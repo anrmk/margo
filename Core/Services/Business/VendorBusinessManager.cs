@@ -13,6 +13,8 @@ namespace Core.Services.Business {
     public interface IVendorBusinessManager {
         Task<VendorDto> GetVendor(Guid id);
         Task<List<VendorDto>> GetVendors();
+        Task<List<VendorCategoryDto>> GetVendorCategories(Guid vendorId);
+        Task<VendorCategoryDto> GetVendorCategory(Guid id);
         Task<PagerDto<VendorDto>> GetVendorPager(PagerFilterDto filter);
         Task<VendorDto> CreateVendor(VendorDto dto);
         Task<VendorDto> UpdateVendor(Guid id, VendorDto dto);
@@ -25,12 +27,15 @@ namespace Core.Services.Business {
         private readonly IMapper _mapper;
         private readonly IVendorManager _vendorManager;
         private readonly IVendorFieldManager _vendorFieldManager;
+        private readonly IVendorCategoryManager _vendorCategoryManager;
 
         public VendorBusinessManager(IMapper mapper, IVendorManager vendorManager,
-            IVendorFieldManager vendorFieldManager) {
+            IVendorFieldManager vendorFieldManager,
+            IVendorCategoryManager vendorCategoryManager) {
             _mapper = mapper;
             _vendorManager = vendorManager;
             _vendorFieldManager = vendorFieldManager;
+            _vendorCategoryManager = vendorCategoryManager;
         }
 
         public async Task<VendorDto> GetVendor(Guid id) {
@@ -41,6 +46,16 @@ namespace Core.Services.Business {
         public async Task<List<VendorDto>> GetVendors() {
             var result = await _vendorManager.FindAll();
             return _mapper.Map<List<VendorDto>>(result);
+        }
+
+        public async Task<VendorCategoryDto> GetVendorCategory(Guid id) {
+            var result = await _vendorCategoryManager.FindInclude(id);
+            return _mapper.Map<VendorCategoryDto>(result);
+        }
+
+        public async Task<List<VendorCategoryDto>> GetVendorCategories(Guid vendorId) {
+            var result = await _vendorCategoryManager.FindAll(vendorId);
+            return _mapper.Map<List<VendorCategoryDto>>(result);
         }
 
         public async Task<PagerDto<VendorDto>> GetVendorPager(PagerFilterDto filter) {

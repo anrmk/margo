@@ -236,7 +236,7 @@ $.fn.generateGroup = function (options) {
 
 $.fn.generateSegment = function (options) {
     const { id, groupId } = options;
-    const btnOptions = { "data-request": "ajax", "data-target": `#${id}_segment`, "data-parent": `#${id}_segments`, rel: "onDeleteServiceClick" }
+    const btnOptions = { "data-request": "ajax", "data-target": `#${id}_segment`, "data-parent": `#${groupId}_segments`, rel: "onDeleteServiceClick" }
     const $group = $.fn.generateGroup({ ...options, id: groupId, hiddenLabel: true, btnAttr: btnOptions });
 
     return $(
@@ -272,7 +272,6 @@ $.fn.uuidv4 = function () {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }
-
 
 /**
  * @deprecated Only for temp use.

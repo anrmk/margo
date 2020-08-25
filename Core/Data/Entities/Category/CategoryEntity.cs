@@ -14,6 +14,7 @@ namespace Core.Data.Entities {
         public Guid? ParentId { get; set; }
         public virtual CategoryEntity Parent { get; set; }
 
+        public virtual ICollection<VendorCategoryEntity> VendorCategories { get; set; }
         public virtual ICollection<CategoryFieldEntity> Fields { get; set; }
 
         public virtual ICollection<AspNetUserDenyAccessCategoryEntity> Grants { get; set; }

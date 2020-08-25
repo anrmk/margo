@@ -118,10 +118,17 @@ namespace Web {
             CreateMap<CategoryFieldViewModel, CategoryFieldDto>().ReverseMap();
             CreateMap<CategoryFilterViewModel, CategoryFilterDto>().ReverseMap();
 
-            CreateMap<VendorViewModel, VendorDto>().ReverseMap();
+            CreateMap<VendorViewModel, VendorDto>()
+                .ForMember(d => d.Categories, o => o.MapFrom(s => s.Categories.Select(x => new VendorCategoryDto() { CategoryId = x })))
+                .ReverseMap()
+                .ForMember(d => d.Categories, o => o.MapFrom(s => s.Categories.Select(x => x.CategoryId)));
             CreateMap<VendorListViewModel, VendorDto>().ReverseMap();
             CreateMap<VendorFieldViewModel, VendorFieldDto>().ReverseMap();
-
+            CreateMap<VendorCategoryViewModel, VendorCategoryDto>()
+                .ReverseMap()
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.CategoryId))
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.CategoryName));
 
             //#region SERVICES
             //CreateMap<ServiceViewModel, ServiceDto>().ReverseMap();

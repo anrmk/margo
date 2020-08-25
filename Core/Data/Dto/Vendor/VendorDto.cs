@@ -13,6 +13,7 @@ namespace Core.Data.Dto {
         public DateTime UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
 
+        public virtual List<VendorCategoryDto> Categories { get; set; }
         public virtual List<VendorFieldDto> Fields { get; set; }
     }
 }

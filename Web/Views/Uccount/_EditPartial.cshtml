@@ -1,45 +1,61 @@
 ﻿@model Web.ViewModels.UccountViewModel
 @{
-    var formId = Guid.NewGuid();
+    var formGuid = Guid.NewGuid();
     var vendorFieldsGuid = Guid.NewGuid();
-    var serviceFieldsGuid = Guid.NewGuid();
+    var servicesFieldsGuid = Guid.NewGuid();
+    var personsSelectGuid = Guid.NewGuid();
+    var companiesSelectGuid = Guid.NewGuid();
+    var vendorsSelectGuid = Guid.NewGuid();
+    var servicesMenuGuid = Guid.NewGuid();
 
     var persons = (List<SelectListItem>)ViewData["persons"];
     var companies = (List<SelectListItem>)ViewData["Companies"];
     var vendors = (List<SelectListItem>)ViewData["Vendors"];
-    var categories = (List<SelectListItem>)ViewData["Categories"];
+    var categories = (List<VendorCategoryViewModel>)ViewData["Categories"];
     var services = (List<UccountGroupedServiceViewModel>)ViewData["Services"];
     var uccountKind = (int)ViewData["Kind"];
 }
 
-<form id="@formId" class="ui form" asp-route="UpdateUccount" asp-route-id="@Model.Id" method="put" data-request="ajax">
+<form id="@formGuid" class="ui form" asp-route="UpdateUccount" asp-route-id="@Model.Id" method="put" data-request="ajax">
     <fieldset>
         <input type="hidden" name="Id" value="@Model.Id" />
-        <input type="hidden" name="Kind" value="@uccountKind" />
+        <input type="hidden" name="Kind" value="@((int)uccountKind)" />
 
-        <div class="two fields">
-            @if(Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
-                <div class="field required">
-                    <label asp-for="CompanyId"></label>
-                    <select id="companies-select" class="ui search dropdown" required selected="false" asp-for="CompanyId" asp-items="@companies">
+        <div class="field">
+            <div class="two fields">
+                @if(Model.Kind == Core.Data.Enums.UccountTypes.BUSINESS) {
+                    <div class="field required">
+                        <label asp-for="CompanyId"></label>
+                        <select 
+                            id="@companiesSelectGuid" 
+                            class="ui search dropdown" 
+                            required 
+                            selected="false" 
+                            asp-for="CompanyId" 
+                            asp-items="@companies">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                } else {
+                    <div class="field required">
+                        <label asp-for="PersonId"></label>
+                        <select id="@personsSelectGuid" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
+                            <option value="" selected disabled hidden></option>
+                        </select>
+                    </div>
+                }
+
+                <div class="field required @(Model.Services.Count() > 0 ? "disabled" : "")">
+                    <label asp-for="VendorId"></label>
+                    <select 
+                        id="@vendorsSelectGuid" 
+                        class="ui search dropdown" 
+                        required 
+                        asp-for="VendorId" 
+                        asp-items="@vendors">
                         <option value="" selected disabled hidden></option>
                     </select>
                 </div>
-            } else {
-                <div class="field required">
-                    <label asp-for="PersonId"></label>
-                    <select id="persons-select" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
-                        <option value="" selected disabled hidden></option>
-                    </select>
-                </div>
-            }
-
-            <div class="field required">
-                <label asp-for="VendorId"></label>
-                <select id="vendors-select" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
-                    <option value="" selected disabled hidden></option>
-                </select>
-            </div>
         </div>
 
         <div class="field">
@@ -57,23 +73,41 @@
                     <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
                     <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
                     <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
-                    <input name="Fields[][Value]" autocomplete="new-password" @(Field.IsRequired ? "required" : "") placeholder="@Field.Name" type="@Field.HTMLTypeName" value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") data-value-type="string" />
+                    <input 
+                        name="Fields[][Value]" 
+                        autocomplete="new-password" 
+                        @(Field.IsRequired ? "required" : "") 
+                        placeholder="@Field.Name" 
+                        type="@Field.HTMLTypeName" 
+                        value="@((String.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox")) ? "1" : Field.Value)" 
+                        @(Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "") 
+                        data-value-type="string" />
                 </div>
             }
         </div>
 
         <div class="ui right floated dropdown mini icon button" tabindex="0">
             <i class="plus icon"></i>
-            <div class="left menu">
+            <div id="@servicesMenuGuid" class="left menu">
                 <div class="header">Services Types</div>
                 @foreach(var category in categories) {
-                    <a data-request="ajax" id="@category.Value" class="item" data-target="#@serviceFieldsGuid" rel="serviceCreateOnClick" asp-route="GetCategory" asp-route-id="@category.Value">@category.Text</a>
+                    <a 
+                        id="@category.Id" 
+                        class="item" 
+                        asp-route="GetVendorCategory" 
+                        asp-route-id="@category.Id"
+                        data-request="ajax" 
+                        data-target="#@servicesFieldsGuid" 
+                        data-vendor="#@vendorsSelectGuid"
+                        rel="onServiceCreateClick">
+                        @category.Name
+                    </a>
                 }
             </div>
         </div>
         <h4 class="ui dividing header">Services</h4>
 
-        <div id="@serviceFieldsGuid">
+        <div id="@servicesFieldsGuid">
             @foreach(var Service in services) {
                 <div id="@(Service.CategoryId)_segments" class="ui segments">
                     <div class="ui segment" data-label="@Service.Name">
@@ -111,6 +145,7 @@
                                         data-request="ajax"
                                         data-target="#@(Group.Id)_segment"
                                         data-parent="#@(Service.CategoryId)_segments"
+                                        data-vendor="#@vendorsSelectGuid"
                                         rel="onDeleteServiceClick"
                                         onclick="return confirm('Are you sure want to delete this?')">
                                         delete
@@ -127,16 +162,22 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#vendors-select").on("change", function () {
-            const vendorId = $(this).val();
-            $.ajax({
-                url: `/api/Vendor/GetVendor?id=${vendorId}`
-            }).done((data, status, _) => {
-                if (data && data.fields) {
-                    const fields = $($.fn.generateFields(data.fields, "Fields", true));
-                    $("@vendorFieldsGuid").html(fields);
-                }
-            });
+        const $vendorsSelectContainer = $("#@vendorsSelectGuid");
+        const $vendorsSelectParentContainer = $($vendorsSelectContainer.parent().get(0));
+        const $vendorFieldsContainer = $("#@vendorFieldsGuid");
+        const $servicesFieldsContainer = $("#@servicesFieldsGuid");
+        const $servicesMenuContainer = $("#@servicesMenuGuid");
+
+        initPartialLogic({
+            $vendorsSelectContainer,
+            $vendorFieldsContainer,
+            $vendorsSelectParentContainer,
+            $servicesFieldsContainer,
+            $servicesMenuContainer,
+            servicesFieldsGuid: "@servicesFieldsGuid",
+            vendorsSelectGuid: "@vendorsSelectGuid",
+            formGuid: "@formGuid",
+            edit: true
         });
-    })
+    });
 </script>

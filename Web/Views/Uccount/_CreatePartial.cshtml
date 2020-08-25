@@ -1,8 +1,12 @@
 ﻿@model Web.ViewModels.UccountViewModel
 @{
-    var formId = Guid.NewGuid();
+    var formGuid = Guid.NewGuid();
     var vendorFieldsGuid = Guid.NewGuid();
-    var serviceFieldsGuid = Guid.NewGuid();
+    var servicesFieldsGuid = Guid.NewGuid();
+    var personsSelectGuid = Guid.NewGuid();
+    var companiesSelectGuid = Guid.NewGuid();
+    var vendorsSelectGuid = Guid.NewGuid();
+    var servicesMenuGuid = Guid.NewGuid();
 
     var persons = (List<SelectListItem>)ViewData["Persons"];
     var companies = (List<SelectListItem>)ViewData["Companies"];
@@ -11,7 +15,7 @@
     var uccountKind = (Core.Data.Enums.UccountTypes)ViewData["Kind"];
 }
 
-<form id="@formId" class="ui form" asp-route="CreateUccount" method="post" data-request="ajax">
+<form id="@formGuid" class="ui form" asp-route="CreateUccount" method="post" data-request="ajax">
     <fieldset>
         <input type="hidden" name="Kind" value="@((int)uccountKind)" />
 
@@ -20,14 +24,14 @@
                 @if(uccountKind == Core.Data.Enums.UccountTypes.BUSINESS) {
                     <div class="field required">
                         <label asp-for="CompanyId"></label>
-                        <select id="companies-select" class="ui search dropdown" required asp-for="CompanyId" asp-items="@companies">
+                        <select id="@companiesSelectGuid" class="ui search dropdown" required asp-for="CompanyId" asp-items="@companies">
                             <option value="" selected>Select customers</option>
                         </select>
                     </div>
                 } else {
                     <div class="field required">
                         <label asp-for="PersonId"></label>
-                        <select id="persons-select" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
+                        <select id="@personsSelectGuid" class="ui search dropdown" required asp-for="PersonId" asp-items="@persons">
                             <option value="" selected disabled hidden>Select vendor</option>
                         </select>
                     </div>
@@ -35,7 +39,7 @@
 
                 <div class="field required">
                     <label asp-for="VendorId"></label>
-                    <select id="vendors-select" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
+                    <select id="@vendorsSelectGuid" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
                         <option value="" selected disabled hidden></option>
                     </select>
                 </div>
@@ -46,41 +50,34 @@
 
         <div class="ui right floated dropdown mini icon button" tabindex="0" >
             <i class="plus icon"></i>
-            <div class="menu">
+            <div id="@servicesMenuGuid" class="menu">
                 <div class="header">Services Types</div>
-                @foreach(var category in categories) {
-                    <a 
-                        id="@category.Value"
-                        class="item"
-                        asp-route="GetCategory"
-                        asp-route-id="@category.Value"
-                        data-request="ajax"
-                        data-target="#@serviceFieldsGuid"
-                        rel="serviceCreateOnClick">
-                        @category.Text
-                    </a>
-                }
             </div>
         </div>
 
         <h4 class="ui dividing header">Services</h4>
 
-        <div id="@serviceFieldsGuid"></div>
+        <div id="@servicesFieldsGuid"></div>
     </fieldset>
 </form>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#vendors-select").on("change", function () {
-            const vendorId = $(this).val();
-            $.ajax({
-                url: `/api/Vendor/GetVendor?id=${vendorId}`
-            }).done((data, status, _) => {
-                if (data && data.fields) {
-                    const fields = $($.fn.generateFields(data.fields, "Fields", true));
-                    $("#@vendorFieldsGuid").html(fields);
-                }
-            });
+        const $vendorsSelectContainer = $("#@vendorsSelectGuid");
+        const $vendorsSelectParentContainer = $($vendorsSelectContainer.parent().get(0));
+        const $vendorFieldsContainer = $("#@vendorFieldsGuid");
+        const $servicesFieldsContainer = $("#@servicesFieldsGuid");
+        const $servicesMenuContainer = $("#@servicesMenuGuid");
+
+        initPartialLogic({
+            $vendorsSelectContainer,
+            $vendorFieldsContainer,
+            $vendorsSelectParentContainer,
+            $servicesFieldsContainer,
+            $servicesMenuContainer,
+            servicesFieldsGuid: "@servicesFieldsGuid",
+            formGuid: "@formGuid",
+            edit: false
         });
-    })
+    });
 </script>
