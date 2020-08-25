@@ -46,7 +46,7 @@ namespace Core.Services.Business {
 
         //  LOGS
         Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter);
-        Task<LogDto> GetLog(long id);
+        Task<LogDto> GetLog(DateTime startDate, DateTime endDate, Guid id);
 
         // ACCESS
         Task<List<AspNetUserDenyAccessCompanyDto>> GetUnavailableCompanies(string id);
@@ -331,15 +331,17 @@ namespace Core.Services.Business {
 
         #region LOGS
         public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {
-            var sortby = "Logged";
+            Func<LogDto, object> sortBy = x => x.Logged;
 
-            Expression<Func<LogEntity, bool>> where = x =>
-                   (true)
+            Func<LogDto, bool> where = x =>
+                (string.IsNullOrEmpty(x.UserName) || x.UserName.ToLower().Contains(filter.UserName))
                 && (string.IsNullOrEmpty(filter.Search) || x.Message.ToLower().Contains(filter.Search.ToLower()))
-                && (!string.IsNullOrEmpty(x.UserName))
-                    ;
+                && (string.IsNullOrEmpty(filter.Controller) || x.Controller.ToLower().Contains(filter.Controller.ToLower()))
+                && (string.IsNullOrEmpty(filter.Action) || x.Action.ToLower().Contains(filter.Action.ToLower()))
+                && (string.IsNullOrEmpty(filter.Method) || x.Method.ToLower().Contains(filter.Method.ToLower()))
+                && (filter.UserIP == null || x.UserAddress == filter.UserIP.ToString());
 
-            var tuple = await _logManager.Pager<LogEntity>(where, sortby, filter.Start, filter.Length);
+            var tuple = await _logManager.InfoPager(filter.StartDate, filter.EndDate, where, sortBy, true, filter.Start, filter.Length);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
@@ -347,14 +349,11 @@ namespace Core.Services.Business {
                 return new PagerDto<LogDto>(new List<LogDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
-
-            var result = _mapper.Map<List<LogDto>>(list);
-            return new PagerDto<LogDto>(result, count, page, filter.Start);
+            return new PagerDto<LogDto>(list, count, page, filter.Start);
         }
 
-        public async Task<LogDto> GetLog(long id) {
-            var item = await _logManager.Find(id);
-            return _mapper.Map<LogDto>(item);
+        public async Task<LogDto> GetLog(DateTime startDate, DateTime endDate, Guid id) {
+            return await _logManager.FindInfo(startDate, endDate, id);
         }
         #endregion
 

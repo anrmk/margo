@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -20,6 +21,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class InvoiceController: BaseController<InvoiceController> {
         private readonly IPersonBusinessManager _personBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
@@ -55,6 +57,7 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [LogAction]
     public class InvoiceController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;

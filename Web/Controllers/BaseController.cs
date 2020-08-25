@@ -23,48 +23,23 @@ namespace Web.Controllers {
 
         public string CurrentUser => User.FindFirst(ClaimTypes.NameIdentifier).Value;
         /*
-                public async Task ClientNotify(string msg) {
+        public async Task ClientNotify(string msg) {
 
-                    if(_notificationHub != null)
-                        await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
+            if(_notificationHub != null)
+                await _notificationHub.Clients.All.SendAsync("notificationResult", msg);
 
-                }
-         */
-
-        [NonAction]
-        public override void OnActionExecuting(ActionExecutingContext context) {
-            //var user = context.HttpContext.User;
-            //var controller = context.Controller;
-            //var modelState = context.ModelState;
-
-            //var path = Request.Path;
-            //var host = Request.Host.Value;
-            //var userName = user.Identity.Name;
-            //var userIsAuthenticated = user.Identity.IsAuthenticated;
-
-
-            //_logger.LogInformation(new EventId(33, name: "Index33"), "{shopitem} added to basket by {user}", new { Id = 6, Name = "Jacket", Color = "Orange" }, "Kenny");
-
-            //_logger.LogInformation("{user} Activity log", user?.Identity.Name);
-            //  base.OnActionExecuting(context);
         }
+ */
 
         public override void OnActionExecuted(ActionExecutedContext context) {
             var userName = context.HttpContext.User?.Identity.Name;
 
-            if(context.Exception != null)
-                _logger.LogError("User {user} make activity ", userName);
-            else
-                _logger.LogInformation("User {user} make activity ", userName);
-
-            //base.OnActionExecuted(context);
-            // _logger.LogInformation("OnActionExecuted");
+            if(context.Exception != null) {
+                _logger.LogError("User {user} activity exception", userName);
+            }
         }
 
-
-
-        //public BaseController(ILogger<IController> logger, IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) {
-        //    _logger = logger;
+        //public BaseController(IMapper mapper, IHubContext<NotificationHub> notificationHub, ApplicationContext context) {
         //    _mapper = mapper;
         //    _context = context;
         //   // _notificationHub = notificationHub;
@@ -94,11 +69,9 @@ namespace Web.Controllers {
 
     //[ApiController]
     //public class BaseApiController<IController>: ControllerBase {
-    //    protected readonly ILogger<IController> _logger;
     //    protected readonly IMapper _mapper;
 
-    //    public BaseApiController(ILogger<IController> logger, IMapper mapper) {
-    //        _logger = logger;
+    //    public BaseApiController(IMapper mapper) {
     //        _mapper = mapper;
     //    }
     //}

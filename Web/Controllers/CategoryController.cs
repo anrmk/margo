@@ -9,6 +9,7 @@ using AutoMapper;
 using Core.Data.Dto;
 using Core.Data.Enums;
 using Core.Extension;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -21,13 +22,9 @@ using Microsoft.Extensions.Logging;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
+    [LogAction]
     public class CategoryController: BaseController<CategoryController> {
-        private readonly ICategoryBusinessManager _categoryBussinessManager;
-
-        public CategoryController(ILogger<CategoryController> logger, IMapper mapper,
-            ICategoryBusinessManager categoryBussinessManager) : base(logger, mapper) {
-            _categoryBussinessManager = categoryBussinessManager;
-        }
+        public CategoryController(ILogger<CategoryController> logger, IMapper mapper) : base(logger, mapper) { }
 
         public IActionResult Index() {
             return View();
@@ -50,6 +47,7 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [LogAction]
     public class CategoryController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;

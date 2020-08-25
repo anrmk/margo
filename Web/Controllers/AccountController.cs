@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -26,6 +27,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class AccountController: BaseController<AccountController> {
         private readonly IAccountBusinessManager _accountBusinessManager;
 
@@ -46,8 +48,8 @@ namespace Web.Controllers.Mvc {
             return View();
         }
 
-        public async Task<IActionResult> ActivityView(long id) {
-            var item = await _accountBusinessManager.GetLog(id);
+        public async Task<IActionResult> ActivityView(DateTime startDate, DateTime endDate, Guid id) {
+            var item = await _accountBusinessManager.GetLog(startDate, endDate, id);
             if(item == null)
                 return NotFound();
 
@@ -156,6 +158,7 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Administrator")]
+    [LogAction]
     public class AccountController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IHubContext<NotificationHub> _notificationHub;

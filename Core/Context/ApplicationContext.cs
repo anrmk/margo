@@ -32,8 +32,6 @@ namespace Core.Context {
         #region DbSet
         public DbSet<AspNetUserRequestEntity> UserRequests { get; set; }
 
-        //public DbSet<LogEntity> Logs { get; set; }
-
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyDataEntity> CompanyData { get; set; }
         //public DbSet<CompanySectionEntity> CompanySections { get; set; }

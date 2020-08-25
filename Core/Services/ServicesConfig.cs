@@ -29,7 +29,6 @@ namespace Core.Services {
 
             services.AddTransient<IAspNetUserDenyAccessCompanyManager, AspNetUserDenyAccessCompanyManager>();
             services.AddTransient<IAspNetUserDenyAccessCategoryManager, AspNetUserDenyAccessCategoryManager>();
-            services.AddTransient<ILogManager, LogManager>();
 
             ///Extension Service
             services.AddTransient<IViewRenderService, ViewRenderService>();

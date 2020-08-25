@@ -50,4 +50,8 @@
   <ItemGroup>
     <None Include="compilerconfig.json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

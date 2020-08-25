@@ -9,6 +9,7 @@ using AutoMapper;
 
 using Core.Data.Dto;
 using Core.Extension;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -25,6 +26,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class CompanyController: BaseController<CompanyController> {
         private readonly IPersonBusinessManager _personBusinessManager;
 
@@ -47,6 +49,7 @@ namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [LogAction]
     public class CompanyController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IHubContext<NotificationHub> _notificationHub;

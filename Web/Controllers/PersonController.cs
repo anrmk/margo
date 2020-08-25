@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -16,6 +17,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class PersonController: BaseController<PersonController> {
         private readonly IPersonBusinessManager _personBusinessManager;
 
@@ -33,12 +35,14 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [LogAction]
     public class PersonController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
         private readonly IPersonBusinessManager _personBusinessManager;
-
-        public PersonController(IMapper mapper, IViewRenderService viewRenderService,
+        public PersonController(
+            IMapper mapper,
+            IViewRenderService viewRenderService,
             //ISectionBusinessManager businessManager,
             IPersonBusinessManager personBusinessManager) {
             _mapper = mapper;

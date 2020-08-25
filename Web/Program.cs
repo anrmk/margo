@@ -2,25 +2,22 @@ using System;
 using System.IO;
 
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace Web {
     public class Program {
         public static void Main(string[] args) {
-            var host = CreateHostBuilder(args).Build();
-            using(var scope = host.Services.CreateScope()) {
-                var services = scope.ServiceProvider;
-                try {
-                    //ApplicationInitializer.Initialize(services);
-                } catch(Exception ex) {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
-                }
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try {
+                CreateHostBuilder(args).Build().Run();
+            } catch(Exception exception) {
+                logger.Fatal(exception, "Program stopped because of an exception!");
+                throw;
+            } finally {
+                NLog.LogManager.Shutdown();
             }
-
-            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -28,7 +25,10 @@ namespace Web {
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
-                });
-        //.UseNLog();
+                }).ConfigureLogging(logging => {
+                    //logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Information);
+                })
+                .UseNLog();
     }
 }

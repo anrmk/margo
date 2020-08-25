@@ -8,6 +8,7 @@ using AutoMapper;
 using Core.Data.Dto;
 using Core.Data.Enums;
 using Core.Extension;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -22,6 +23,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class UccountController: BaseController<UccountController> {
         private readonly IUccountBusinessManager _uccountBusinessManager;
         private readonly IPersonBusinessManager _personBusinessManager;
@@ -58,6 +60,7 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [LogAction]
     public class UccountController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;

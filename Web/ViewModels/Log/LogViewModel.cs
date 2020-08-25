@@ -2,7 +2,7 @@
 
 namespace Web.ViewModels {
     public class LogViewModel {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string Application { get; set; }
         public DateTime Logged { get; set; }
         public string Level { get; set; }

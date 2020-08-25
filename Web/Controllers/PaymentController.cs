@@ -8,6 +8,7 @@ using AutoMapper;
 using Core.Data.Dto;
 using Core.Data.Enums;
 using Core.Extension;
+using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
 
@@ -22,6 +23,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
+    [LogAction]
     public class PaymentController: BaseController<PaymentController> {
         public PaymentController(ILogger<PaymentController> logger, IMapper mapper)
             : base(logger, mapper) { }
@@ -35,6 +37,7 @@ namespace Web.Controllers.Mvc {
 namespace Web.Controllers.Api {
     [Route("api/[controller]")]
     [ApiController]
+    [LogAction]
     public class PaymentController: ControllerBase {
         private readonly IMapper _mapper;
         private readonly IViewRenderService _viewRenderService;
