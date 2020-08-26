@@ -20,6 +20,7 @@ namespace Core.Services {
             ///Extension Service
             services.AddTransient<IViewRenderService, ViewRenderService>();
             services.AddTransient<ILogManager, LogManager>();
+            services.AddScoped<ScopeService>();
 
             ///Context
             services.AddTransient<IApplicationContext, ApplicationContext>();

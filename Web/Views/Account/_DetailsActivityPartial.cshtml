@@ -1,0 +1,48 @@
+﻿@model LogViewModel
+
+<div class="ui attached orange segment">
+    <h3 class="ui header">@Model.Message</h3>
+
+    <a class="ui @(Model.Level=="Error"?"red":"orange") ribbon label">@Model.Level</a>
+    <table class="ui very basic compact table">
+        <tbody>
+            <tr>
+                <th>Method</th>
+            </tr>
+            <tr>
+                <td class="collapsing">@Model.Method</td>
+            </tr>
+            <tr>
+                <th>Controller</th>
+            </tr>
+            <tr>
+                <td class="collapsing">@Model.Controller</td>
+            </tr>
+            <tr>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td class="collapsing">@Model.Action</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+            </tr>
+            <tr>
+                <td class="collapsing">@Model.Url</td>
+            </tr>
+            <tr>
+                <th>Arguments</th>
+            </tr>
+            <tr>
+                <td class="collapsing">@Model.Arguments</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="ui bottom attached warning message">
+    <div class="flex justify-content-between">
+        <span>@Model.UserName </span>
+        <span>@Model.UserAddress </span>
+        <span> @Model.Logged.ToString("MM/dd/yyyy")</span>
+    </div>
+</div>

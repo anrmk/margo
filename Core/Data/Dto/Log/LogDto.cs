@@ -6,6 +6,7 @@ namespace Core.Data.Dto {
         [JsonIgnore]
         public DateTime Logged { get; set; }
         public Guid Id { get; set; }
+        public Guid ScopeId { get; set; }
         public string UserAddress { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
@@ -15,5 +16,7 @@ namespace Core.Data.Dto {
         public string Action { get; set; }
         public string Url { get; set; }
         public string Arguments { get; set; }
+        [JsonIgnore]
+        public string Level { get; set; }
     }
 }

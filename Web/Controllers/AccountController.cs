@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Core.Data.Dto;
+using Core.Data.Enums;
+using Core.Extension;
 using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
@@ -40,20 +42,18 @@ namespace Web.Controllers.Mvc {
             return View();
         }
 
-        public IActionResult Activity() {
-            return View(new LogFilterViewModel());
+        public async Task<IActionResult> Activity() {
+            var userNameList = await _accountBusinessManager.GetUsers();
+            ViewBag.UserNames = userNameList.Select(x => new SelectListItem() { Text = $"{x.Profile.Name} {x.Profile.MiddleName} {x.Profile.SurName}", Value = x.Id.ToString() });
+
+            var methodList = EnumExtension.GetAll<HttpMethodEnum>();
+            ViewBag.Methods = methodList.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
+
+            return View(new LogFilterViewModel { StartDate = DateTime.UtcNow.Date, EndDate = DateTime.UtcNow.Date });
         }
 
         public IActionResult Request() {
             return View();
-        }
-
-        public async Task<IActionResult> ActivityView(DateTime startDate, DateTime endDate, Guid id) {
-            var item = await _accountBusinessManager.GetLog(startDate, endDate, id);
-            if(item == null)
-                return NotFound();
-
-            return View(_mapper.Map<LogViewModel>(item));
         }
 
         [HttpGet]
@@ -409,10 +409,19 @@ namespace Web.Controllers.Api {
         #endregion
 
         [HttpGet]
-        [Route("activity")]
-        public async Task<PagerDto<LogDto>> GetActivity([FromQuery] LogFilterViewModel model) {
-            return await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
-            //return new Pager<InvoiceListViewModel>(_mapper.Map<List<InvoiceListViewModel>>(result.Items), result.TotalItems, result.CurrentPage, result.PageSize);
+        public async Task<PagerDto<LogViewModel>> GetActivity([FromQuery] LogFilterViewModel model) {
+            var result = await _accountBusinessService.GetLogPager(_mapper.Map<LogFilterDto>(model));
+            return new PagerDto<LogViewModel>(_mapper.Map<List<LogViewModel>>(result.Data), result.RecordsTotal, result.Start, result.PageSize);
+        }
+
+        [HttpGet("DetailsActivity", Name = "DetailsActivity")]
+        public async Task<IActionResult> DetailsActivity([FromQuery] LogFilterViewModel model) {
+            var item = await _accountBusinessService.GetLog(model.StartDate, model.EndDate, model.Id);
+            if(item == null)
+                return NotFound();
+
+            var html = await _viewRenderService.RenderToStringAsync("_DetailsActivityPartial", _mapper.Map<LogViewModel>(item));
+            return Ok(html);
         }
     }
 }

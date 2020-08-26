@@ -7,23 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Core.Data.Dto;
+using Core.Extension;
 using Core.Services.Base;
 
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Core.Services.Managers {
     public interface ILogManager: IManager {
-        Task<Tuple<List<LogDto>, int>> InfoPager(
+        Task<Tuple<List<LogDto>, int>> Pager(
             DateTime startDate,
             DateTime endDate,
             Func<LogDto, bool> where,
             Func<LogDto, object> order,
             bool descSort,
             int start,
-            int length);
-        Task<List<LogDto>> FindAllInfo(DateTime startDate, DateTime endDate);
-        Task<LogDto> FindInfo(DateTime startDate, DateTime endDate, Guid id);
+            int length,
+            bool isException);
+        Task<List<LogDto>> FindAll(DateTime startDate, DateTime endDate, bool isException);
+        Task<LogDto> Find(DateTime startDate, DateTime endDate, Guid id);
         void LogInfo(string message);
         void LogError(string message);
     }
@@ -35,34 +36,47 @@ namespace Core.Services.Managers {
             _logger = logger;
         }
 
-        public async Task<Tuple<List<LogDto>, int>> InfoPager(
+        public async Task<Tuple<List<LogDto>, int>> Pager(
                 DateTime startDate,
                 DateTime endDate,
                 Func<LogDto, bool> where,
                 Func<LogDto, object> order,
                 bool descSort,
                 int start,
-                int length) {
-            var logs = await ReadAllFilesAsync(startDate, endDate);
-
+                int length,
+                bool isException) {
+            var logs = await ReadAllFilesAsync(startDate, endDate, isException);
             var result = logs.Where(where);
+
+            var count = result.Count();
+
             result = descSort
                 ? result.OrderByDescending(order)
                 : result.OrderBy(order);
-            result.Take(length).Skip(start);
+            result = result.Skip(start).Take(length);
 
-            return Tuple.Create(result.ToList(), result.Count());
+            return Tuple.Create(result.ToList(), count);
         }
 
-        public async Task<List<LogDto>> FindAllInfo(DateTime startDate, DateTime endDate) {
-            return await ReadAllFilesAsync(startDate, endDate);
+        public async Task<List<LogDto>> FindAll(DateTime startDate, DateTime endDate, bool isException) {
+            return await ReadAllFilesAsync(startDate, endDate, isException);
         }
 
-        public async Task<LogDto> FindInfo(DateTime startDate, DateTime endDate, Guid id) {
+        public async Task<LogDto> Find(DateTime startDate, DateTime endDate, Guid id) {
             for(var curDay = startDate.Date; curDay <= endDate.Date; curDay = curDay.AddDays(1)) {
-                foreach(var logRecord in IterateLogRecords(await ReadFileAsync(curDay), curDay)) {
-                    if(logRecord.Id == id)
+                var errorLogs = await ReadLogAsync(curDay, true);
+                foreach(var logRecord in IterateLogRecords(errorLogs, curDay, true)) {
+                    if(logRecord.Id == id) {
+                        logRecord.Level = "Error";
                         return logRecord;
+                    }
+                }
+                var infoLogs = await ReadLogAsync(curDay, false);
+                foreach(var logRecord in IterateLogRecords(infoLogs, curDay, false)) {
+                    if(logRecord.Id == id) {
+                        logRecord.Level = "Information";
+                        return logRecord;
+                    }
                 }
             }
             throw new ArgumentException("Log record not found!");
@@ -76,29 +90,38 @@ namespace Core.Services.Managers {
             _logger.LogError(message);
         }
 
-        private async Task<List<LogDto>> ReadAllFilesAsync(DateTime startDate, DateTime endDate) {
+        private async Task<List<LogDto>> ReadAllFilesAsync(DateTime startDate, DateTime endDate, bool isException) {
             var result = new List<LogDto>();
             for(var curDay = startDate.Date; curDay <= endDate.Date; curDay = curDay.AddDays(1)) {
-                foreach(var logRecord in IterateLogRecords(await ReadFileAsync(curDay), curDay)) {
+                foreach(var logRecord in IterateLogRecords(await ReadLogAsync(curDay, isException), curDay, isException)) {
                     result.Add(logRecord);
                 }
             }
             return result;
         }
 
-        private IEnumerable<LogDto> IterateLogRecords(string[] logRecords, DateTime curDate) {
+        private IEnumerable<LogDto> IterateLogRecords(string[] logRecords, DateTime curDate, bool isException) {
             foreach(var logRecord in logRecords) {
                 var logRecordParts = logRecord.Split('|');
-                var data = JsonConvert.DeserializeObject<LogDto>(logRecordParts.LastOrDefault());
+
+                if(!logRecordParts.LastOrDefault().TryParseJson(out LogDto data)) {
+                    data = new LogDto { Message = logRecordParts.LastOrDefault() };
+                }
+
                 data.Logged = DateTime.TryParse(logRecordParts.FirstOrDefault(), out var date)
                     ? date : curDate.Date;
+
+                data.Level = isException
+                    ? "Error"
+                    : "Information";
 
                 yield return data;
             }
         }
 
-        private async Task<string[]> ReadFileAsync(DateTime date) {
-            var fileName = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\Logs\\Activities\\{date:yyyy-MM-dd}.log";
+        private async Task<string[]> ReadLogAsync(DateTime date, bool isException) {
+            var localPath = isException ? "Errors" : "Activities";
+            var fileName = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\\Logs\\{localPath}\\{date:yyyy-MM-dd}.log";
             return !File.Exists(fileName)
                  ? new string[0]
                  : await File.ReadAllLinesAsync(fileName, Encoding.UTF8);

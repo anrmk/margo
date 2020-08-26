@@ -1,164 +1,150 @@
-﻿@model Web.ViewModels.LogFilterViewModel
+﻿@model LogFilterViewModel
+
 @{
-    ViewData["Title"] = "Activity and timeline";
-    ViewData["SubTitle"] = "See the activity saved in your account and the places you've been. You can delete any or all your past activity.";
+    ViewData["Title"] = "Activities";
+
+    var tableId = Guid.NewGuid();
+
+    var listUrl = Url.Action("GetActivity", "Account");
+    var detailsUrl = Url.Action("DetailsActivity", "Account");
 }
 
-<div class="card">
-    <div class="card-header card-header-primary card-header-icon">
-        <div class="card-icon">
-            <i class="material-icons">directions_run</i>
-        </div>
-        <h4 class="card-title">User activity report</h4>
-        <span class="text-muted">User activity report provides information on all the change actions done on a selected user during his life cycle. Changes that a user encountered during his life cycle are reported.</span>
-    </div>
-
-    @*<div class="card-header">
-
-
-            <form id="filterForm">
-                <fieldset>
-                    <div class="form-row mb-3">
-                        <div class="col">
-                            <label asp-for="UserName" class="control-label"></label>
-                            <select asp-for="UserName" asp-items="@ViewBag.Companies" class="form-control">
-                                <option>Select User</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label asp-for="Date" class="control-label"></label>
-                            <input asp-for="Date" class="form-control" />
-                        </div>
+@section RightSidebar {
+    <div class="ui stacked secondary yellow segment">
+        <form id="table-filter" class="ui form">
+            <h3>Filters</h3>
+            <div class="field">
+                <label asp-for="StartDate"></label>
+                <div class="ui calendar" id="rangestart">
+                    <div class="ui input left icon">
+                        <i class="calendar icon"></i>
+                        <input id="startDate" name="StartDate" type="text" placeholder="From" data-value-type="string" value="@(Model.StartDate.ToString("MM/dd/yyyy"))">
                     </div>
-                </fieldset>
-            </form>
-        </div>*@
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="EndDate"></label>
+                <div class="ui calendar" id="rangeend">
+                    <div class="ui input left icon">
+                        <i class="calendar icon"></i>
+                        <input id="endDate" name="EndDate" type="text" placeholder="To" data-value-type="string" value="@(Model.EndDate.ToString("MM/dd/yyyy"))">
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="UserName"></label>
+                <select asp-for="UserName" asp-items="@ViewBag.UserNames" class="ui search dropdown">
+                    <option value="" selected>Select user</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="Search"></label>
+                <input asp-for="Search" data-value-type="string">
+            </div>
+            <div class="field">
+                <label asp-for="Method"></label>
+                <select asp-for="Method" asp-items="@ViewBag.Methods" class="ui search dropdown">
+                    <option value="" selected>Select user</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="Controller"></label>
+                <input asp-for="Controller" data-value-type="string">
+            </div>
+            <div class="field">
+                <label asp-for="Action"></label>
+                <input asp-for="Action" data-value-type="string">
+            </div>
+            <div class="field">
+                <div class="ui slider checkbox">
+                    <input id="isException" type="checkbox" name="IsException" data-value-type="boolean" value="true" />
+                    <label asp-for="IsException"></label>
+                </div>
+            </div>
+        </form>
+    </div>
+}
 
-    <div class="card-body">
-        <div id="tableToolbar">
-
+<div class="ui shape full-width">
+    <div class="sides">
+        <div class="active side main">
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
         </div>
-
-        <table id="datatable" data-toggle="table" data-url="/api/account/activity">
-            <thead>
-                <tr>
-                    <th data-field="level" data-sortable="true" data-formatter="levelFormatter">Level</th>
-                    <th data-field="logged" data-sortable="true" data-formatter="$.fn.bootstrapTable.formatDate">Date</th>
-                    <th data-field="userName" data-sortable="true">User</th>
-                    <th data-field="message" data-sortable="true">Message</th>
-                    <th data-field="action" data-sortable="true">Action</th>
-                    <th data-field="url">Url</th>
-                    <th data-field="method">Method</th>
-                    <th data-field="exception" data-formatter="actionFormatter" class="text-right"></th>
-                </tr>
-            </thead>
-        </table>
+        <div class="side details">
+            <div class="ui grid">
+                <div class="row">
+                    <div class="column">
+                        <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <div id="@(tableId)_details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-
 @section Scripts {
     <script type="text/javascript">
-
-        function queryParams(params) {
-            if (!params.search) {
-                params.search = $('div.search input').val();
-            }
-            var filterForm = $('#filterForm').serializeJSON({ parseNumbers: true });
-
-            return $.extend({}, params, filterForm);
-        }
-
-        function levelFormatter(value, row) {
-            switch (value.toLowerCase()) {
-                case 'error':
-                    return `<i class='material-icons text-danger'>report</i>`;
-                case 'info':
-                    return `<i class='material-icons text-info'>info</i>`;
-                case 'warning':
-                    return `<i class='material-icons text-warning'>warning</i>`;
-                default:
-                    return value;
-            }
-        }
-
-        function actionFormatter(value, row) {
-            return `<a href='/account/activityview/${row.id}'><i class="material-icons">chevron_right</i></a>`;
-        }
-
         $(document).ready(function () {
-            $('#datatable').on('dbl-click-row.bs.table', function (e, row, $element) {
-                location.href = `/account/activityview/${row.id}`;
+            window.DocumentController = new DocumentController({
+                'table': '#@tableId',
+                'controller': {
+                    'list': '@listUrl'
+                },
+                'columns': [
+                    { 'title': 'User name', 'data': 'userName' },
+                    { 'title': 'User address', 'data': 'userAddress' },
+                    { 'title': 'Message', 'data': 'message' },
+                    { 'title': 'Method', 'data': 'method' },
+                    { 'title': 'Controller', 'data': 'controller' },
+                    { 'title': 'Action', 'data': 'action' },
+                    { 'title': 'Date', 'data': 'logged', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                ],
+                'onDblRowClick': (e, data) => {
+                    $.get('@detailsUrl', { 'id': data.id, 'startDate': $('#startDate').val(), 'endDate': $('#endDate').val() }).done(result => {
+                       $('#@(tableId)_details').html(result).find('a[data-request=ajax]').ajaxClick();
+                       $('.shape').shape('set next side', '.side.details').shape('flip over');
+                    });
+                }
+            });
+
+            $('#rangestart').calendar({
+                type: 'date',
+                //endCalendar: $('#rangeend'),
+                formatter: {
+                    date: function (date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return month + '/' + day + '/' + year;
+                    }
+                },
+                onChange: function () {
+                    window.DocumentController.reload(true);
+                }
+            });
+
+            $('#rangeend').calendar({
+                type: 'date',
+                //startCalendar: $('#rangestart'),
+                formatter: {
+                    date: function (date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return month + '/' + day + '/' + year;
+                    }
+                },
+                onChange: function () {
+                    window.DocumentController.reload(true);
+                }
             });
         });
     </script>
 }
-
-
-@*<ul class="timeline timeline-simple">
-        <li class="timeline-inverted">
-            <div class="timeline-badge danger">
-                <i class="material-icons">card_travel</i>
-            </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                    <span class="badge badge-pill badge-danger">Some title</span>
-                </div>
-                <div class="timeline-body">
-                    <p>Wifey made the best Father's Day meal ever. So thankful so happy so blessed. Thank you for making my family We just had fun with the “future” theme !!! It was a fun night all together ... The always rude Kanye Show at 2am Sold Out Famous viewing  Figueroa and 12th in downtown.</p>
-                </div>
-                <h6>
-                    <i class="ti-time"></i> 11 hours ago via Twitter
-                </h6>
-            </div>
-        </li>
-        <li class="timeline-inverted">
-            <div class="timeline-badge success">
-                <i class="material-icons">extension</i>
-            </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                    <span class="badge badge-pill badge-success">Another One</span>
-                </div>
-                <div class="timeline-body">
-                    <p>Thank God for the support of my wife and real friends. I also wanted to point out that it’s the first album to go number 1 off of streaming!!! I love you Ellen and also my number one design rule of anything I do from shoes to music to homes is that Kim has to like it....</p>
-                </div>
-            </div>
-        </li>
-        <li class="timeline-inverted">
-            <div class="timeline-badge info">
-                <i class="material-icons">fingerprint</i>
-            </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                    <span class="badge badge-pill badge-info">Another Title</span>
-                </div>
-                <div class="timeline-body">
-                    <p>Called I Miss the Old Kanye That’s all it was Kanye And I love you like Kanye loves Kanye Famous viewing Figueroa and 12th in downtown LA 11:10PM</p>
-                    <p>What if Kanye made a song about Kanye Royère doesn't make a Polar bear bed but the Polar bear couch is my favorite piece of furniture we own It wasn’t any Kanyes Set on his goals Kanye</p>
-                    <hr>
-                    <div class="dropdown pull-left">
-                        <button type="button" class="btn btn-round btn-info dropdown-toggle" data-toggle="dropdown">
-                            <i class="material-icons">build</i>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li>
-                                <a href="#action">Action</a>
-                            </li>
-                            <li>
-                                <a href="#action">Another action</a>
-                            </li>
-                            <li>
-                                <a href="#here">Something else here</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#link">Separated link</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </li>
-    </ul>*@

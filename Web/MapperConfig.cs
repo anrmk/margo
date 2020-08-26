@@ -5,7 +5,7 @@ using System.Linq;
 using AutoMapper;
 
 using Core.Data.Dto;
-
+using Core.Data.Enums;
 using Core.Extension;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +52,11 @@ namespace Web {
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.EntityId));
 
             CreateMap<LogViewModel, LogDto>().ReverseMap();
-            CreateMap<LogFilterViewModel, LogFilterDto>().ReverseMap();
+            CreateMap<LogFilterViewModel, LogFilterDto>()
+                .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))
+                .ForMember(d => d.EndDate, o => o.MapFrom(s => s.EndDate))
+                .ForMember(d => d.Method, o => o.MapFrom(s => !s.Method.HasValue ? null : ((HttpMethodEnum)s.Method).ToString()))
+                .ReverseMap();
 
             #region COMPANY
             CreateMap<CompanyViewModel, CompanyDto>()

@@ -17,7 +17,7 @@ using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
     [Authorize]
-    [LogAction]
+    [ParameterizedLogAction("Person action invoked")]
     public class PersonController: BaseController<PersonController> {
         private readonly IPersonBusinessManager _personBusinessManager;
 

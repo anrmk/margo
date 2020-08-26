@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services.Business {
     public interface IAccountBusinessManager {
         //  ACCOUNT
+        Task<List<AspNetUserDto>> GetUsers();
         Task<AspNetUserDto> GetUser(string id);
         Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
@@ -90,6 +91,11 @@ namespace Core.Services.Business {
         }
 
         #region ACCOUNT
+        public async Task<List<AspNetUserDto>> GetUsers() {
+            var entities = await _userManager.Users.Include(x => x.Profile).ToListAsync();
+            return _mapper.Map<List<AspNetUserDto>>(entities); ;
+        }
+
         public async Task<AspNetUserDto> GetUser(string id) {
             var entity = await _userManager.Users
                 .Include(x => x.Profile)
@@ -332,16 +338,14 @@ namespace Core.Services.Business {
         #region LOGS
         public async Task<PagerDto<LogDto>> GetLogPager(LogFilterDto filter) {
             Func<LogDto, object> sortBy = x => x.Logged;
-
             Func<LogDto, bool> where = x =>
-                (string.IsNullOrEmpty(x.UserName) || x.UserName.ToLower().Contains(filter.UserName))
-                && (string.IsNullOrEmpty(filter.Search) || x.Message.ToLower().Contains(filter.Search.ToLower()))
-                && (string.IsNullOrEmpty(filter.Controller) || x.Controller.ToLower().Contains(filter.Controller.ToLower()))
-                && (string.IsNullOrEmpty(filter.Action) || x.Action.ToLower().Contains(filter.Action.ToLower()))
-                && (string.IsNullOrEmpty(filter.Method) || x.Method.ToLower().Contains(filter.Method.ToLower()))
-                && (filter.UserIP == null || x.UserAddress == filter.UserIP.ToString());
+                (string.IsNullOrEmpty(filter.UserName) || string.IsNullOrEmpty(x.UserName) || x.UserId.ToLower().Contains(filter.UserName))
+                && (string.IsNullOrEmpty(filter.Search) || string.IsNullOrEmpty(x.Message) || x.Message.ToLower().Contains(filter.Search.ToLower()))
+                && (string.IsNullOrEmpty(filter.Controller) || string.IsNullOrEmpty(x.Controller) || x.Controller.ToLower().Contains(filter.Controller.ToLower()))
+                && (string.IsNullOrEmpty(filter.Action) || string.IsNullOrEmpty(x.Action) || x.Action.ToLower().Contains(filter.Action.ToLower()))
+                && (string.IsNullOrEmpty(filter.Method) || string.IsNullOrEmpty(x.Method) || x.Method.ToLower().Contains(filter.Method.ToLower()));
 
-            var tuple = await _logManager.InfoPager(filter.StartDate, filter.EndDate, where, sortBy, true, filter.Start, filter.Length);
+            var tuple = await _logManager.Pager(filter.StartDate, filter.EndDate, where, sortBy, false, filter.Start, filter.Length, filter.IsException);
             var list = tuple.Item1;
             var count = tuple.Item2;
 
@@ -349,11 +353,11 @@ namespace Core.Services.Business {
                 return new PagerDto<LogDto>(new List<LogDto>(), 0, filter.Start, filter.Length);
 
             var page = (filter.Start + filter.Length) / filter.Length;
-            return new PagerDto<LogDto>(list, count, page, filter.Start);
+            return new PagerDto<LogDto>(list, count, page, filter.Length);
         }
 
         public async Task<LogDto> GetLog(DateTime startDate, DateTime endDate, Guid id) {
-            return await _logManager.FindInfo(startDate, endDate, id);
+            return await _logManager.Find(startDate, endDate, id);
         }
         #endregion
 

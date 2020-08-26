@@ -4,6 +4,7 @@ using System.Security.Claims;
 
 using Core.Data.Dto;
 using Core.Extension;
+using Core.Services;
 using Core.Services.Managers;
 
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -14,16 +15,19 @@ namespace Core.Filters {
     [Obsolete("This attribute is obsolete. Use 'LogAction' or 'ParameterizedLogAction' instead.", false)]
     public class LogFilterAttribute: ActionFilterAttribute {
         private readonly ILogManager _logger;
+        private readonly ScopeService _scopeService;
         private readonly string _par;
 
-        public LogFilterAttribute(ILogManager logger, string par) {
+        public LogFilterAttribute(ILogManager logger, ScopeService scopeService, string par) {
             _logger = logger;
             _par = par;
+            _scopeService = scopeService;
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext) {
             var logObject = new LogDto() {
                 Id = Guid.NewGuid(),
+                ScopeId = _scopeService.ScopeId,
                 UserAddress = filterContext.HttpContext.Connection.RemoteIpAddress.ToString(),
                 UserId = filterContext.HttpContext.User.GetUserId(),
                 UserName = filterContext.HttpContext.User.FindFirstValue(ClaimTypes.Name),
