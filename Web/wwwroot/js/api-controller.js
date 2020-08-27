@@ -76,7 +76,7 @@ $.fn.dialog = function (opt) {
                 var $form = $modal.find('form');
                 if ($form.length) {
                     $form.ajaxSubmit();
-                    $form.find('.ui.dropdown').dropdown();
+                    $form.find('.ui.dropdown').dropdown({ forceSelection: false });
                     $form.find('a[data-request=ajax]').ajaxClick();
                     $modal.find('button.submit').attr('form', $form.attr('id')).removeClass('hidden');
                 }

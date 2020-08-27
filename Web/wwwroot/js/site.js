@@ -14,7 +14,7 @@
         e.preventDefault();
         $('.shape').shape('set next side', $(e.currentTarget).data('target')).shape('flip over');
     });
-    $('.ui.dropdown').dropdown({ 'clearable': true});
+    $('.ui.dropdown').dropdown({ 'clearable': true, forceSelection: false });
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
 
