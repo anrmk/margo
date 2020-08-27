@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Core.Data.Enums;
 
 namespace Web.ViewModels {
     public class InvoiceFilterViewModel: PagerFilterViewModel {
+        [Display(Name = "Type")]
+        public UccountTypes? Kind { get; set; }
+
         [Display(Name = "Customer")]
         public Guid? CustomerId { get; set; }
 

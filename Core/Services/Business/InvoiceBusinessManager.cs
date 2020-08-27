@@ -46,7 +46,8 @@ namespace Core.Services.Business {
             var (list, count) = await _invoiceManager.Pager<InvoiceEntity>(
                 x => (!filter.VendorId.HasValue || x.Account.VendorId == filter.VendorId)
                     && (!filter.CustomerId.HasValue || x.Account.CompanyId == filter.CustomerId || x.Account.PersonId == filter.CustomerId)
-                    && (!filter.Unpaid || (x.Amount > 0 && !x.Payments.Any()) || (x.Amount - x.Payments.Sum(x => x.Amount) > 0)),
+                    && (!filter.Unpaid || (x.Amount > 0 && !x.Payments.Any()) || (x.Amount - x.Payments.Sum(x => x.Amount) > 0))
+                    && (!filter.Kind.HasValue || x.Account.Kind == filter.Kind),
                 sortby, filter.Start, filter.Length, include);
 
             if(count == 0)

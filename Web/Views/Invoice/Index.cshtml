@@ -11,29 +11,35 @@
 }
 
 @section RightSidebar {
-<div class="ui stacked secondary yellow segment">
-    <form id="table-filter" class="ui form">
-        <h3>Filters</h3>
-        <div class="field">
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="Unpaid" data-value-type="boolean" value="true" />
-                <label asp-for="Unpaid" ></label>
+    <div class="ui stacked secondary yellow segment">
+        <form id="table-filter" class="ui form">
+            <h3>Filters</h3>
+            <div class="field">
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="Unpaid" data-value-type="boolean" value="true" />
+                    <label asp-for="Unpaid"></label>
+                </div>
             </div>
-        </div>
-        <div class="field">
-            <label asp-for="VendorId"></label>
-            <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui dropdown">
-                <option value="" selected>Select vendor</option>
-            </select>
-        </div>
-        <div class="field">
-            <label asp-for="CustomerId"></label>
-            <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui dropdown">
-                <option value="" selected>Select customers</option>
-            </select>
-        </div>
-    </form>
-</div>
+            <div class="field">
+                <label asp-for="VendorId"></label>
+                <select asp-for="VendorId" asp-items="@ViewBag.Vendors" class="ui dropdown search">
+                    <option value="" selected>Select vendor</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="Kind"></label>
+                <select asp-for="Kind" asp-items="@Html.GetEnumSelectList<Core.Data.Enums.UccountTypes>()" class="ui dropdown">
+                    <option value="" selected>Select account type</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="CustomerId"></label>
+                <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui dropdown search">
+                    <option value="" selected>Select customers</option>
+                </select>
+            </div>
+        </form>
+    </div>
 }
 
 <div>
