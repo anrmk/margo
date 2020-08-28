@@ -30,7 +30,9 @@
       "wwwroot/lib/jquery-fancytree/dist/jquery.fancytree-all-deps.min.js",
       "wwwroot/lib/moment/moment.min.js",
       "wwwroot/lib/fomantic-ui/semantic.min.js",
-      "wwwroot/lib/aspnet-signalr/signalr.min.js"
+      "wwwroot/lib/aspnet-signalr/signalr.min.js",
+      "wwwroot/lib/sortablejs/Sortable.js",
+      "wwwroot/lib/jquery-sortablejs/jquery-sortable.js"
     ],
     "minify": {
       "enabled": false

@@ -117,7 +117,14 @@ namespace Web {
             //CreateMap<SectionFieldsFilterViewModel, SectionFieldsFilterDto>().ReverseMap();
             //#endregion
 
-            CreateMap<CategoryViewModel, CategoryDto>().ReverseMap();
+            CreateMap<CategoryViewModel, CategoryDto>()
+                .BeforeMap((s, _) => {
+                    s.Fields = s.Fields.Select((field, index) => {
+                        field.Sort = index;
+                        return field;
+                    }).ToList();
+                })
+                .ReverseMap();
             CreateMap<CategoryListViewModel, CategoryDto>().ReverseMap();
             CreateMap<CategoryFieldViewModel, CategoryFieldDto>().ReverseMap();
             CreateMap<CategoryFilterViewModel, CategoryFilterDto>().ReverseMap();

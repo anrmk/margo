@@ -11,7 +11,7 @@
                 <label asp-for="Name"></label>
                 <input asp-for="Name" data-value-type="string" required />
             </div>
-            <div class="field required">
+            <div class="field">
                 <label asp-for="ParentId"></label>
                 <select asp-for="ParentId" asp-items="@ViewBag.Categories" class="ui search dropdown" data-value-type="string:nullable">
                     <option value="" selected>No parent</option>
@@ -24,6 +24,6 @@
         </div>
 
         <h4 class="ui dividing header">Fields</h4>
-        <div id="@(formId)_container" class="ui form"></div>
+        <div id="@(formId)_container" class="ui form sortable"></div>
     </fieldset>
 </form>

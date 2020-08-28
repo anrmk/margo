@@ -39,6 +39,8 @@ namespace Core.Services.Business {
 
         public async Task<CategoryDto> GetCategory(Guid id) {
             var result = await _categoryManager.FindInclude(id);
+            result.Fields = result.Fields.OrderBy(x => x.Sort).ToList();
+
             return _mapper.Map<CategoryDto>(result);
         }
 

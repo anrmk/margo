@@ -10,6 +10,9 @@ namespace Web.ViewModels {
     public class CategoryFieldViewModel {
         public Guid Id { get; set; }
 
+        [Range(0, int.MaxValue)]
+        public int Sort { get; set; }
+
         [Required]
         [MaxLength(24)]
         public string Name { get; set; }
@@ -19,6 +22,7 @@ namespace Web.ViewModels {
         public string HTMLTypeName => Type.GetHTMLType();
 
         public bool IsRequired { get; set; }
+        public bool IsHidden { get; set; }
 
         public Guid CategoryId { get; set; }
     }

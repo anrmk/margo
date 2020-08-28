@@ -10,9 +10,9 @@
         <div class="two fields">
             <div class="field required">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" required />
+                <input asp-for="Name" data-value-type="string" required />
             </div>
-            <div class="field required">
+            <div class="field">
                 <label asp-for="ParentId"></label>
                 <select asp-for="ParentId" asp-items="@ViewBag.Categories" class="ui search dropdown" data-value-type="string:nullable">
                     <option value="" selected>No parent</option>
@@ -25,26 +25,36 @@
         </div>
 
         <h4 class="ui dividing header">Fields</h4>
-        <div id="@(formId)_container" class="ui form">
+        <div id="@(formId)_container" class="ui form sortable">
             @foreach(var field in Model.Fields) {
-                <div id="@(formId +"_"+ field.Id)" class="inline fields">
-                    <input type="hidden" name="Fields[][Id]" value="@field.Id" />
-                    <div class="eight wide field required">
-                        <input name="Fields[][Name]" required placeholder="Name" value="@field.Name" data-value-type="string" />
-                    </div>
-                    <div class="four wide field required">
-                        <select name="Fields[][Type]" asp-for="@field.Type" asp-items="Html.GetEnumSelectList<Core.Data.Enums.FieldEnum>()" data-value-type="number" required></select>
-                    </div>
-                    <div class="three wide field">
-                        <div class="ui toggle checkbox">
-                            <input name="Fields[][IsRequired]" type="checkbox" data-value-type="boolean" @(field.IsRequired ? "checked" : "")>
-                            <label>Is Required</label>
-                        </div>
-                    </div>
-                    <div class="one wide field">
-                        <a asp-action="DeleteCategoryField" asp-route-id="@field.Id" data-request="ajax" data-target="#@(formId +"_"+ field.Id)">delete</a>
+            <div id="@(formId +"_"+ field.Id)" class="inline fields">
+                <input type="hidden" name="Fields[][Id]" value="@field.Id" />
+                <input type="hidden" name="Fields[][Sort]" value="@field.Sort" />
+                <div class="one wide field dragable flex justify-center">
+                    <i class="ellipsis vertical icon"></i>
+                </div>
+                <div class="eight wide field required">
+                    <input name="Fields[][Name]" required placeholder="Name" value="@field.Name" data-value-type="string" />
+                </div>
+                <div class="four wide field required">
+                    <select name="Fields[][Type]" asp-for="@field.Type" asp-items="Html.GetEnumSelectList<Core.Data.Enums.FieldEnum>()" data-value-type="number" required></select>
+                </div>
+                <div class="three wide field">
+                    <div class="ui toggle checkbox">
+                        <input name="Fields[][IsRequired]" type="checkbox" data-value-type="boolean" @(field.IsRequired ? "checked" : "")>
+                        <label>Is Required</label>
                     </div>
                 </div>
+                <div class="three wide field">
+                    <div class="ui toggle checkbox">
+                        <input name="Fields[][IsHidden]" type="checkbox" data-value-type="boolean" @(field.IsHidden ? "checked" : "")>
+                        <label>Is Hidden</label>
+                    </div>
+                </div>
+                <div class="one wide field">
+                    <a asp-action="DeleteCategoryField" asp-route-id="@field.Id" data-request="ajax" data-target="#@(formId +"_"+ field.Id)">delete</a>
+                </div>
+            </div>
             }
         </div>
     </fieldset>

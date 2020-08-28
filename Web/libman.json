@@ -61,6 +61,16 @@
     {
       "library": "fomantic-ui@2.8.6",
       "destination": "wwwroot/lib/fomantic-ui/"
+    },
+    {
+      "library": "sortablejs@latest",
+      "destination": "wwwroot/lib/sortablejs/",
+      "provider": "jsdelivr"
+    },
+    {
+      "library": "jquery-sortablejs@latest",
+      "destination": "wwwroot/lib/jquery-sortablejs/",
+      "provider": "jsdelivr"
     }
   ]
 }

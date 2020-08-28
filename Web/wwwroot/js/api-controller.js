@@ -78,6 +78,7 @@ $.fn.dialog = function (opt) {
                     $form.ajaxSubmit();
                     $form.find('.ui.dropdown').dropdown({ forceSelection: false });
                     $form.find('a[data-request=ajax]').ajaxClick();
+                    $form.find('.sortable').sortable({ 'handle': '.dragable', 'animation': 150 });
                     $modal.find('button.submit').attr('form', $form.attr('id')).removeClass('hidden');
                 }
             },
@@ -121,6 +122,10 @@ $.fn.renderDatatableCollection = function (data, type, row) {
 $.fn.addField = function (target) {
     $.get('/api/category/getfieldtypes', { cache: true }).done(res => {
         var $section = $(`<div class="inline fields">
+            <input type="hidden" name="Fields[][Sort]" value="0" />
+            <div class="one wide field dragable flex justify-center">
+                    <i class="ellipsis vertical icon"></i>
+            </div>
             <div class="eight wide field required">
                 <input name="Fields[][Name]" required placeholder="Name" data-value-type="string" />
             </div>
@@ -133,6 +138,12 @@ $.fn.addField = function (target) {
                 <div class="ui toggle checkbox">
                     <input name="Fields[][IsRequired]" type="checkbox" data-value-type="boolean" tabindex="0" >
                     <label>Is Required</label>
+                </div>
+            </div>
+            <div class="three wide field">
+                <div class="ui toggle checkbox">
+                    <input name="Fields[][IsHidden]" type="checkbox" data-value-type="boolean" tabindex="0" >
+                    <label>Is Hidden</label>
                 </div>
             </div>
             <div class="one wide field">
