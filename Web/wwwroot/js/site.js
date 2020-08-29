@@ -14,9 +14,10 @@
         e.preventDefault();
         $('.shape').shape('set next side', $(e.currentTarget).data('target')).shape('flip over');
     });
-    $('.ui.dropdown').dropdown({ 'clearable': true, forceSelection: false });
+    $('.ui.dropdown').dropdown();
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
+    $('select[data-request=ajax]').ajaxClick({'eventName': 'change'});
 
     window.Hub = new NotificationHub();
 }).ajaxSend((event, xhr, options) => {
@@ -58,5 +59,15 @@ $.extend($.serializeJSON.defaultOptions, {
     'customTypes': {
         'string:nullable': function (str) { return str || null; },
         'number:nullable': function (str) { return Number(str) || null; }
+    }
+});
+
+$.extend($.fn.dropdown.settings, {
+    //'clearable': true,
+    'forceSelection': false, //when you open dropdown do not focus on unselected item
+    'onChange': function (value, text, $choice) {
+        if (typeof window['sDropdownOnChange'] === 'function') {
+            window['sDropdownOnChange']($.Event("change", { target: this, currentTarget: $choice }), value, text, $choice);
+        }
     }
 });

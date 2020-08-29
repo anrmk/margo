@@ -29,20 +29,27 @@ $.fn.ajaxSubmit = function (opt = {}) {
             window[func](e, jqXHR, status);
         }
     });
+    this.on('change', (e) => {
+        if (typeof window['ajaxSubmitOnChange'] === 'function') {
+            window['ajaxSubmitOnChange'](e);
+        }
+    });
+
     return this;
 }
 
 $.fn.ajaxClick = function (opt = {}) {
-    this.on('click', (e) => {
+    let options = $.extend({}, {'eventName': 'click'},  opt);
+
+    this.on(options.eventName, (e) => {
         e.preventDefault();
         let $link = $(e.currentTarget);
-        let options = $.extend({
-            'url': $link.attr('href'),
+        $.ajax({
+            'url': $link.attr('href') || $link.data('url'),
             'complete': (jqXHR, status) => {
                 $link.trigger('ajaxClick', [jqXHR, status]);
             }
-        }, opt);
-        $.ajax(options);
+        });
     }).on('ajaxClick', (e, jqXHR, status) => {
         e.preventDefault();
         let $target = $(e.currentTarget);
@@ -64,7 +71,7 @@ $.fn.dialog = function (opt) {
 
     if (!window.dialog) {
         var $mc = $(`<div class="ui large modal"><i class="close icon"></i><div class="header">${options.title}</div>` +
-            `<div class="scrolling content">${options.content.html()}</div>` +
+            `<div class="content">${options.content.html()}</div>` +
             `<div class="actions"><div class="ui button deny">Cancel</div><button class="ui button green hidden submit">OK</button></div>` +
             `</div>`);
 
@@ -76,7 +83,7 @@ $.fn.dialog = function (opt) {
                 var $form = $modal.find('form');
                 if ($form.length) {
                     $form.ajaxSubmit();
-                    $form.find('.ui.dropdown').dropdown({ forceSelection: false });
+                    $form.find('.ui.dropdown').dropdown();
                     $form.find('a[data-request=ajax]').ajaxClick();
                     $form.find('.sortable').sortable({ 'handle': '.dragable', 'animation': 150 });
                     $modal.find('button.submit').attr('form', $form.attr('id')).removeClass('hidden');
@@ -191,95 +198,50 @@ $.fn.addInvoiceServices = function (target, name) {
     $section.appendTo(target);
 }
 
-$.fn.generateFields = function (fields, srlzName, label=false) {
+$.fn.segmentElement = function (id, groupName, html) {
+    return `<div class='ui orange segment' data-group='${id}'>
+              <h4 class='ui header' data-label='${groupName}'>${groupName}</h4>
+              ${html}
+          </div>`;
+}
+
+$.fn.fieldsGroupElement = function (categoryId, categoryName, fields, fieldsName, showLabel, attr) {
+    return `<div class='equal width fields'>
+             <input type='hidden' name='${fieldsName}[][Name]' value='${categoryName}' data-value-type='string'>
+             <input type='hidden' name='${fieldsName}[][CategoryId]' value='${categoryId}' data-value-type='string'>
+             ${showLabel ? `<div class='two wide field flex align-center'><label>${categoryName}</label></div>` : ''}
+              ${$.fn.fieldsElement(fields, `${fieldsName}[][Fields]`)}
+              <div class='one wide field'>
+                <a ${$.fn.getAttributes(attr)} href='#' data-request='ajax'>delete</a>
+              </div>
+            </div>`;
+}
+
+$.fn.fieldsElement = function (fields, fieldName, label = false) {
     return fields.map(field => {
         return (
             `<div class='field'>
                 ${label ? `<label>${field.name}</label>` : ''}
-                <input type="hidden" name="${srlzName}[][Name]" value="${field.name}">
-                <input type="hidden" name="${srlzName}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
-                <input type="hidden" name="${srlzName}[][Type]" value="${field.type}" data-value-type="number">
-                <input type="hidden" name="${srlzName}[][TypeName]" value="${field.typeName}">
-                <input name="${srlzName}[][Value]" autocomplete="new-password" ${field.isRequired && "required"} placeholder="${field.name}" ${field.htmlTypeName === "checkbox" ? 'value="1"': ""} type="${field.htmlTypeName}" data-value-type="string" />
+                <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
+                <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
+                <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
+                <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
+                <input name='${fieldName}[][Value]' autocomplete='new-password' ${field.isRequired && "required"} placeholder='${field.name}' ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} type='${field.htmlTypeName}' data-value-type='string' />
             </div>`
         )
-    }).join("\n ");
-}
-
-$.fn.generateGroup = function (options) {
-    const {
-        id,
-        name,
-        html,
-        srlzName,
-        hiddenLabel = false,
-        btnAttr,
-    } = options;
-
-    const $group = $(
-        `<div id="${id}" class="fields">
-            <input type="hidden" name="${srlzName}[][CategoryId]" value="${id}" data-value-type="string">
-            <input type="hidden" name="${srlzName}[][Name]" value="${name}" data-value-type="string">
-            ${!hiddenLabel ?
-                `<div class="field two wide flex align-center">
-                    <label>${name}</label>
-                </div>` :
-               ''
-            }
-            ${html}
-            <div class="field flex align-center justify-center">
-                <a ${$.fn.getAttributes(btnAttr)} href="#">delete</a>
-            </div>
-        </div>`
-    );
-    
-    if (!btnAttr) {
-        $group.find("a").on("click", function (e) {
-            e.preventDefault();
-            $group.remove();
-        });
-    } else {
-        $group.find('a[data-request=ajax]').ajaxClick();
-    }
-
-    return $group;
-}
-
-$.fn.generateSegment = function (options) {
-    const { id, groupId } = options;
-    const btnOptions = { "data-request": "ajax", "data-target": `#${id}_segment`, "data-parent": `#${groupId}_segments`, rel: "onDeleteServiceClick" }
-    const $group = $.fn.generateGroup({ ...options, id: groupId, hiddenLabel: true, btnAttr: btnOptions });
-
-    return $(
-        `<div id="${id}_segment" class="ui segment">
-        </div>`
-    ).wrapInner($group);
-}
-
-$.fn.generateSegments = function (id, groupName, html) {
-    const $segment = $(
-        `<div id="${id}_segments" class="ui segments">
-            <div class="ui segment" data-label="${groupName}">
-                <p>${groupName}</p>
-            </div>
-        </div>`
-    );
-
-    $segment.find(`div[data-label="${groupName}"]`).after(html);
-
-    return $segment;
+    }).join('\n ');
 }
 
 $.fn.getAttributes = function (attrs) {
     return attrs ?
         Object.keys(attrs)
             .map(attr => `${attr}="${attrs[attr]}"`)
-            .join(" "):
+            .join(" ") :
         "";
 }
 
 $.fn.uuidv4 = function () {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
 }

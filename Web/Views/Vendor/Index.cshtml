@@ -43,9 +43,11 @@
                 }
             ],
             'onRowClick': (e, data) => {
-                $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                    $('#@(tableId)_details').html(result);
-                });
+                if (e.target.tagName === 'TD') {
+                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                        $('#@(tableId)_details').html(result);
+                    });
+                }
             },
         });
     });

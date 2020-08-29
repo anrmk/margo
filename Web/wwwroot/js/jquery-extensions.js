@@ -1,9 +1,11 @@
 ﻿$.fn.disabled = function () {
-    $(this).attr('disabled', 'disabled');
+    $(this).attr('disabled', 'disabled')
+        .addClass('disabled');
 }
 
 $.fn.enabled = function () {
-    $(this).removeAttr('disabled');
+    $(this).removeAttr('disabled')
+        .removeClass('disabled');
 }
 
 $.fn.isGuid = function (val) {

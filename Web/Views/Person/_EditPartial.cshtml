@@ -15,7 +15,7 @@
             </div>
             <div class="field">
                 <label asp-for="MiddleName">Middle name</label>
-                <input asp-for="MiddleName" type="text">
+                <input asp-for="MiddleName" type="text" data-value-type="string">
             </div>
             <div class="field required">
                 <label asp-for="SurName">Surname</label>
@@ -24,7 +24,7 @@
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
-            <textarea asp-for="Description" rows="3"></textarea>
+            <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
         </div>
     </fieldset>
 </form>

@@ -8,9 +8,10 @@
     var deleteUrl = Url.RouteUrl("DeleteUccounts");
     var editUrl = Url.RouteUrl("EditUccount");
     var detailsUrl = Url.RouteUrl("DetailsUccount");
-    var vendorCategoriesUrl = Url.Action("GetVendorCategories", "Vendor");
-    var vendorCategoryUrl = Url.Action("GetVendorCategory", "Vendor");
-    var vendorUrl = Url.Action("GetVendor", "Vendor");
+
+    var vendorUrl = Url.RouteUrl("GetVendor");
+    var vendorCategoryUrl = Url.RouteUrl("GetVendorCategory");
+    var vendorCategoriesUrl = Url.RouteUrl("GetVendorCategories");
 }
 
 @section RightSidebar {
@@ -71,138 +72,105 @@
 
 @section Scripts {
     <script type="text/javascript">
-        function onServiceCreateClick (e, jqXHR, status) {
-            if (status === 'success') {
-                const data = jqXHR.responseJSON;
-                if (data && data.fields) {
-                    const { categoryId, name, fields } = data;
-                    const $link = $(e.target);
-                    const $target = $($link.data("target"));
-                    const generatedFields = $.fn.generateFields(fields, "Services[][Fields]");
-                    const generatedSegment = $.fn.generateSegment({ id: $.fn.uuidv4(), groupId: categoryId, name, html: generatedFields, srlzName: "Services" });
-                    const $parentSegment = $(`div[id="${categoryId}_segments"]`);
-                    const $form = $link.parents("form");
-
-                    if (!$parentSegment.length) {
-                        const generatedParentSegment = $.fn.generateSegments(categoryId, name, generatedSegment);
-                        $target.append(generatedParentSegment);
-                    } else {
-                        $parentSegment.append(generatedSegment);
-                    }
-
-                    $form.trigger("serviceadd");
-                }
-            }
-        }
-
-        function onDeleteServiceClick(e, jqXHR, status) {
-            if (status === 'success') {
-                const $link = $(e.target);
-                const data = $link.data();
-                const $segment = $(data.target);
-                const $segments = $(data.parent);
-                const $vendorSelect = $(data.vendor);
-                const numberOfChildrens = $segments.children().length;
-                const $form = $link.parents("form");
-
-                if (!numberOfChildrens || numberOfChildrens <= 2) {
-                    $segments.remove();
-                } else {
-                    $segment.remove();
-                }
-
-                $form.trigger("servicedelete");
-                window.DocumentController.reload(false);
-            }
-        }
-
-        function generateMenuItemsFromCategories($target, id, servicesFieldsGuid, vendorsSelectGuid) {
-            $.get("@vendorCategoriesUrl", { "id": id }).done(categories => {
-                const $generatedMenuItems = categories.map(
-                    category => $(
-                        generateMenuItem(category, {
-                            "data-request": "ajax",
-                            "data-target": `#${servicesFieldsGuid}`,
-                            "data-vendor": `#${vendorsSelectGuid}`,
-                            rel: "onServiceCreateClick",
-                            href: `@(vendorCategoryUrl)` + "?id=" + category.id
-                        })
-                    )
-                );
-
-                $target.html($generatedMenuItems);
-                $target.find('a[data-request=ajax]').ajaxClick();
-            });
-        }
-
-        function generateMenuItem (item, attrs) {
-            return `<a id="${item.id}" class="item" ${$.fn.getAttributes(attrs)}>${item.name}</a>`
-        }
-
-        function initPartialLogic(options) {
-            const { 
-                $vendorsSelectContainer,
-                $vendorFieldsContainer,
-                $vendorsSelectParentContainer,
-                $servicesFieldsContainer,
-                $servicesMenuContainer,
-                servicesFieldsGuid,
-                vendorsSelectGuid,
-                formGuid,
-                edit
-            } = options;
-
-            if (edit) {
-                $(`#${formGuid}`).on("serviceadd", function () {
-                    console.log("Added");
-                    if (!$vendorsSelectParentContainer.hasClass("disabled")) {
-                        $vendorsSelectParentContainer.addClass("disabled");
-                    }
-                });
-
-                $(`#${formGuid}`).on("servicedelete", function () {
-                    console.log("Delete");
-                    const childrenCount = $servicesFieldsContainer.children().length;
-
-                    if (childrenCount < 1) {
-                        if ($vendorsSelectParentContainer.hasClass("disabled")) {
-                            $vendorsSelectParentContainer.removeClass("disabled");
-                        }
-                    }
-                });
-            }
-
-            $vendorsSelectContainer.on("change", function () {
-                const vendorId = $(this).val();
-
-                if (!edit) {
-                    $servicesFieldsContainer.html("");
-                }
-
-                $.get("@vendorUrl", { "id": vendorId }).done(vendorData => {
-                    if (vendorData) {
-                        const $fields = $($.fn.generateFields(vendorData.fields, "Fields", true));
-
-                        $vendorFieldsContainer.html($fields);
-
-                        generateMenuItemsFromCategories($servicesMenuContainer, vendorId, servicesFieldsGuid, vendorsSelectGuid);
-                    }
-                })
-            });
-        }
-
-        function displayPasswordOnClick(e, jqXHR, status) {
-            if (status === 'success') {
-                $(e.target).text(jqXHR.responseText);
-            }
-        }
-
+        //when form submit
         ajaxSubmitComplete = function (e, jqXHR, status) {
             if (status === 'success') {
                 window.DocumentController.reload(false);
                 window.dialog.modal('hide');
             }
         };
+
+        //fired when form changed
+        ajaxSubmitOnChange = function (e) {
+            var $form = $(e.currentTarget);
+            var $vendorField = $form.find('select#VendorId').closest('.field');
+            var $groups = $form.find('div[data-group]');
+
+            $groups.each((index, element) => {
+                var $group = $(element);
+                if ($group.find('.fields').length === 0) {
+                    $group.remove();
+                }
+            }).promise().done(() => {
+                $form.find('div[data-group]').length ? $vendorField.disabled() : $vendorField.enabled();
+            });
+        }
+
+        displayPasswordOnClick = function(e, jqXHR, status) {
+            if (status === 'success') {
+                $(e.target).text(jqXHR.responseText);
+            }
+        }
+
+        sDropdownOnChange = function (e, value, text) {
+            if (e.target.tagName === 'SELECT' && e.target.id === 'VendorId') {
+                var $target = $(e.target);
+                var dataTarget = $target.data('target');
+                var dataCategory = $target.data('category');
+
+                if (typeof dataTarget === typeof undefined || typeof dataCategory === typeof undefined)
+                    return;
+
+                var $fieldsContainer = $(dataTarget);
+                var $categoryContainer = $(dataCategory);
+
+                if (value.length > 0) {
+                    $.when(
+                        $.get('@vendorCategoriesUrl', { 'id': value }),
+                        $.get('@vendorUrl', { 'id': value })
+                    ).done((categories, vendor) => {
+                        if (categories[1] === 'success') {
+                            var $generatedMenuItems = categories[0].map(item => `<a id='${item.id}' data-request='ajax' rel='onCreateServiceClick' class='item' href='@(vendorCategoryUrl)?id=${item.id}' data-target='#servicesContainer'>${item.name}</a>`);
+                            $categoryContainer.html($generatedMenuItems).find('a[data-request=ajax]').ajaxClick();
+                        }
+
+                        if (vendor[1] === 'success') {
+                            const $fields = $($.fn.fieldsElement(vendor[0].fields, "Fields", true));
+                            $fieldsContainer.html($fields);
+                        }
+                    });
+                } else {
+                    $categoryContainer.empty();
+                    $fieldsContainer.empty();
+                }
+            }
+        }
+
+        onCreateServiceClick = function(e, jqXHR, status) {
+            if (status === 'success') {
+                const $target = $(e.currentTarget);
+                const data = jqXHR.responseJSON;
+                if (data && data.fields) {
+                    const { categoryId, name, fields } = data;
+                    const $form = $target.parents('form');
+                    const $container = $($target.data('target'));
+
+                    const fieldsGroup = $.fn.fieldsGroupElement(categoryId, name, fields, "Services", false, { 'rel': 'onDeleteServiceClick' });
+
+                    var $segment = $form.find(`div[data-group=${categoryId}]`);
+                    if (!$segment.length) {
+                        $segment = $.fn.segmentElement(categoryId, name, fieldsGroup);
+                        $container.append($segment);
+                    } else {
+                        $segment.append(fieldsGroup);
+                    }
+
+                    $container.find('a[data-request=ajax]').ajaxClick();
+                    $form.trigger($.Event("change", {target: e.target}));
+                }
+            }
+        }
+
+        onDeleteServiceClick = function(e, jqXHR, status) {
+            if (status === 'success') {
+                const $link = $(e.target);
+                const $form = $link.parents("form");
+                $link.parents('.fields').remove();
+
+                $form.trigger($.Event("change", { target: e.target }));
+                window.DocumentController.reload(false);
+            }
+        }
 
         $(document).ready(function () {
             window.DocumentController = new DocumentController({

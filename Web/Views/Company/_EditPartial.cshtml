@@ -42,6 +42,7 @@
                 <input asp-for="Founded" type="date" data-value-type="string" />
             </div>
         </div>
+        
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
             <textarea asp-for="Description" rows="3" data-value-type="string"></textarea>
@@ -148,7 +149,7 @@
                                                         data-row-root-id="#@service.Id"
                                                         data-field-id="#@field.Id"
                                                         rel="onDeleteDataClick"
-                                                        onclick="return confirm('Are you sure want to delete this?')">
+                                                        onclick="return false;">
                                                         delete
                                                     </a>
                                                 </td>

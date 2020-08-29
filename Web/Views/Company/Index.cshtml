@@ -68,19 +68,18 @@
                 if (data && data.fields) {
                     const { id, name, fields } = data;
                     const $link = $(e.target);
-                    const $target = $($link.data('target'));
-                    const generatedFields = $.fn.generateFields(fields, "Sections[][Fields]");
-                    const groupFields = $.fn.generateGroup({ id, name, html: generatedFields, srlzName: "Sections" });
+                    const $container = $($link.data('target'));
 
-                    $target.append(groupFields);
+                    const fieldsGroup = $.fn.fieldsGroupElement(id, name, fields, "Sections", true, { 'rel': 'onSectionDeleteClick'});
+                    $container.append(fieldsGroup).find('a[data-request=ajax]').ajaxClick();
                 }
             }
         }
 
         function onSectionDeleteClick(e, jqXHR, status) {
             if(status === 'success') {
-                var link = $(e.target);
-                var target = $(link.data('target')).remove();
+                var $link = $(e.target);
+                $link.parents('.fields').remove();
                 window.DocumentController.reload(false);
             }
         }
