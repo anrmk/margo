@@ -119,7 +119,7 @@ namespace Web {
 
             CreateMap<CategoryViewModel, CategoryDto>()
                 .BeforeMap((s, _) => {
-                    s.Fields = s.Fields.Select((field, index) => {
+                    s.Fields = s.Fields?.Select((field, index) => {
                         field.Sort = index;
                         return field;
                     }).ToList();
@@ -131,6 +131,12 @@ namespace Web {
 
             CreateMap<VendorViewModel, VendorDto>()
                 .ForMember(d => d.Categories, o => o.MapFrom(s => s.Categories.Select(x => new VendorCategoryDto() { CategoryId = x })))
+                .BeforeMap((s, _) => {
+                    s.Fields = s.Fields?.Select((field, index) => {
+                        field.Sort = index;
+                        return field;
+                    }).ToList();
+                })
                 .ReverseMap()
                 .ForMember(d => d.Categories, o => o.MapFrom(s => s.Categories.Select(x => x.CategoryId)));
             CreateMap<VendorListViewModel, VendorDto>().ReverseMap();

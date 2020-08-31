@@ -12,19 +12,25 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th class="collapsing"></th>
+                    <th class="collapsing"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach(var field in Model.Fields) {
-                    <tr>
-                        <td>@field.Name</td>
-                        <td>@field.TypeName</td>
-                        <td>
-                            @if(field.IsRequired) {
-                                <i class="icon checkmark"></i>
-                            }
-                        </td>
-                    </tr>
+                <tr>
+                    <td>@field.Name</td>
+                    <td>@field.TypeName</td>
+                    <td>
+                        @if(field.IsRequired) {
+                            <i class="icon checkmark"></i>
+                        }
+                    </td>
+                    <td>
+                        @if(field.IsHidden) {
+                            <i class="icon eye slash outline"></i>
+                        }
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

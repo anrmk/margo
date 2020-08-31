@@ -9,7 +9,7 @@
         <div class="two fields">
             <div class="field required">
                 <label asp-for="Name"></label>
-                <input asp-for="Name" type="text" required>
+                <input asp-for="Name" type="text" data-value-type="string" required>
             </div>
             <div class="field">
                 <label asp-for="Categories"></label>
@@ -18,7 +18,7 @@
         </div>
         <div class="field">
             <label asp-for="Description">Description <span class="text-muted">(Optional)</span></label>
-            <textarea asp-for="Description" rows="3"></textarea>
+            <textarea asp-for="Description" type="text" data-value-type="string" rows="3"></textarea>
         </div>
 
         <div class="ui right floated mini icon button" tabindex="0" onclick="javascript: $.fn.addField('#@(formId)_container');">
@@ -26,6 +26,6 @@
         </div>
 
         <h4 class="ui dividing header">Fields</h4>
-        <div id="@(formId)_container" class="ui form"></div>
+        <div id="@(formId)_container" class="ui form sortable"></div>
     </fieldset>
 </form>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -40,6 +41,8 @@ namespace Core.Services.Business {
 
         public async Task<VendorDto> GetVendor(Guid id) {
             var result = await _vendorManager.FindInclude(id);
+            result.Fields = result.Fields.OrderBy(x => x.Sort).ToList();
+
             return _mapper.Map<VendorDto>(result);
         }
 
