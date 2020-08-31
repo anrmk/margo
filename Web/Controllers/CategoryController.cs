@@ -117,7 +117,7 @@ namespace Web.Controllers.Api {
                 return NotFound();
 
             var categories = await _categoryBusinessManager.GetCategories();
-            categories.Remove(item); //TODO: #129 Category: Eliminate the possibility of adding an element as a parent to itself
+            categories = categories.Where(x => x.Id != item.Id).ToList(); //TODO: #129 Category: Eliminate the possibility of adding an element as a parent to itself
             var categoryList = categories.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }).ToList();
 
             var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
