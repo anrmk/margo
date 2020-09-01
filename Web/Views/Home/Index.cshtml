@@ -1,5 +1,74 @@
-﻿@{
+﻿@model IEnumerable<AspNetUserCompanyFavouriteViewModel>
+@{
     ViewData["Title"] = "Welcome";
+    var formId = Guid.NewGuid();
+
+    var companies = ViewBag.Companies as IEnumerable<CompanyViewModel>;
+    var updateUrl = Url.RouteUrl("UpdateAspNetUserFavouriteCompanies");
 }
 
-<div>Home Page</div>
+@section RightSidebar {
+    <form class="ui form">
+        <h3>All companies</h3>
+        <table class="ui unstackable yellow table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Founded</th>
+                </tr>
+            </thead>
+            <tbody class="sortable">
+                @foreach(var company in companies) {
+                    <tr id="@company.Id" class="dragable">
+                        <td>@company.Name</td>
+                        <td>@company.Founded.ToString("MM.dd.yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+}
+
+<form class="ui form">
+    <h3>Favourites &#9733;</h3>
+    <table class="ui celled unstackable orange table">
+        <thead>
+            <tr>
+                <th>Company name</th>
+                <th>Founded Date</th>
+                <th style="hidden" />
+            </tr>
+        </thead>
+        <tbody id="@(formId)_favourites" class="sortable">
+            @foreach(var companyFavourite in Model) {
+                <tr id="@companyFavourite.CompanyId" class="dragable">
+                    <td>@companyFavourite.CompanyName </td>
+                    <td>@(!companyFavourite.CompanyFounded.HasValue ? null : companyFavourite.CompanyFounded.Value.ToString("MM.dd.yyyy"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.sortable').sortable({
+                'handle': '.dragable',
+                'animation': 150,
+                'group': { name: 'shared' },
+                'onEnd': function (evt) {
+                    if (evt.from !== evt.to || ($(evt.to).attr('id') === "@(formId)_favourites" && evt.oldIndex !== evt.newIndex)) {
+                        let ids = $.map($("#@(formId)_favourites tr"), x => ({ 'CompanyId': $(x).attr('id') }));
+                        $.ajax({
+                            url: "@updateUrl",
+                            type: "PUT",
+                            data: JSON.stringify(ids),
+                            contentType: "application/json; charset=utf-8"
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+}

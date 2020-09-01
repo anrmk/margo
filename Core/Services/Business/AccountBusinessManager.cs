@@ -55,6 +55,9 @@ namespace Core.Services.Business {
 
         Task<List<AspNetUserDenyAccessCategoryDto>> UpdateUserCategoryGrants(string id, List<Guid> categoryIds);
         Task<List<AspNetUserDenyAccessCategoryDto>> GetUnavailableCategory(string id);
+
+        Task<List<AspNetUserCompanyFavouriteDto>> GetFavouriteCompanies(string userId);
+        Task<List<AspNetUserCompanyFavouriteDto>> UpdateFavouriteCompanies(string userId, IEnumerable<AspNetUserCompanyFavouriteDto> favourites);
     }
 
     public class AccountBusinessManager: BaseBusinessManager, IAccountBusinessManager {
@@ -70,6 +73,8 @@ namespace Core.Services.Business {
         private readonly IAspNetUserDenyAccessCompanyManager _userDenyAccessCompanyManager;
         private readonly IAspNetUserDenyAccessCategoryManager _userDenyAccessCategoryManager;
 
+        private readonly IUserFavouriteCompanyManager _favouriteCompanyManager;
+
         public AccountBusinessManager(IMapper mapper,
             UserManager<AspNetUserEntity> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -78,7 +83,8 @@ namespace Core.Services.Business {
             IUserRequestManager userRequestManager,
             IAspNetUserDenyAccessCompanyManager userDenyAccessCompanyManager,
             IAspNetUserDenyAccessCategoryManager userDenyAccessCategoryManager,
-             ILogManager logManager) {
+             ILogManager logManager,
+             IUserFavouriteCompanyManager favouriteCompanyManager) {
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -88,6 +94,7 @@ namespace Core.Services.Business {
             _logManager = logManager;
             _userDenyAccessCompanyManager = userDenyAccessCompanyManager;
             _userDenyAccessCategoryManager = userDenyAccessCategoryManager;
+            _favouriteCompanyManager = favouriteCompanyManager;
         }
 
         #region ACCOUNT
@@ -414,5 +421,32 @@ namespace Core.Services.Business {
             return _mapper.Map<List<AspNetUserDenyAccessCategoryDto>>(entities);
         }
         #endregion
+
+        public async Task<List<AspNetUserCompanyFavouriteDto>> GetFavouriteCompanies(string userId) {
+            var result = await _favouriteCompanyManager.FindByUserId(userId);
+            return _mapper.Map<List<AspNetUserCompanyFavouriteDto>>(result);
+        }
+
+        public async Task<List<AspNetUserCompanyFavouriteDto>> UpdateFavouriteCompanies(string userId, IEnumerable<AspNetUserCompanyFavouriteDto> favourites) {
+            var entities = await _favouriteCompanyManager.FindByUserId(userId);
+
+            var intersectionEntities = entities.Where(x => favourites.Any(z => z.CompanyId == x.CompanyId && z.Sort == x.Sort)).ToList();
+            var deleteEntities = entities.Except(intersectionEntities);
+            var createEntities = favourites.Where(x => !intersectionEntities.Any(y => y.CompanyId == x.CompanyId)).Select(x => new AspNetUserCompanyFavouriteEntity() {
+                UserId = userId,
+                CompanyId = x.CompanyId,
+                Sort = x.Sort
+            });
+
+            if(deleteEntities.Count() > 0)
+                await _favouriteCompanyManager.Delete(deleteEntities);
+
+            if(createEntities.Count() > 0)
+                await _favouriteCompanyManager.Create(createEntities);
+
+            entities = await _favouriteCompanyManager.FindByUserId(userId);
+
+            return _mapper.Map<List<AspNetUserCompanyFavouriteDto>>(entities);
+        }
     }
 }

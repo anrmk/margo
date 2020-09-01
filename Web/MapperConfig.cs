@@ -51,6 +51,11 @@ namespace Web {
             CreateMap<AspNetUserDenyAccessViewModel, AspNetUserDenyAccessCategoryDto>()
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.EntityId));
 
+            CreateMap<AspNetUserCompanyFavouriteViewModel, AspNetUserCompanyFavouriteDto>()
+                .ReverseMap()
+                .ForMember(d => d.CompanyFounded, o => o.MapFrom(s => s.Company == null ? null : s.Company.Founded))
+                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company == null ? null : s.Company.Name));
+
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>()
                 .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))

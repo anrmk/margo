@@ -25,6 +25,8 @@ namespace Core {
             CreateMap<AspNetUserDenyAccessCompanyDto, AspNetUserDenyAccessCompanyEntity>().ReverseMap();
             CreateMap<AspNetUserDenyAccessCategoryDto, AspNetUserDenyAccessCategoryEntity>().ReverseMap();
 
+            CreateMap<AspNetUserCompanyFavouriteDto, AspNetUserCompanyFavouriteEntity>().ReverseMap();
+
             #region COMPANY
             CreateMap<CompanyDto, CompanyEntity>()
                 .ReverseMap()
