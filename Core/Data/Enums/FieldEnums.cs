@@ -15,6 +15,8 @@ namespace Core.Data.Enums {
         [Display(Name = "E-mail")]
         EMAIL,
         [Display(Name = "Link")]
-        LINK
+        LINK,
+        [Display(Name = "List")]
+        LIST
     }
 }

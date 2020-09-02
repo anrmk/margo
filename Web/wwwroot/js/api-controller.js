@@ -198,6 +198,54 @@ $.fn.addInvoiceServices = function (target, name) {
     $section.appendTo(target);
 }
 
+// There are two types:
+// 0 - With the delete button
+// 1 - With the add button
+$.fn.addListFields = function (key, value, isRequired, btnOptions) {
+    return (
+        `<div class='two fields'>
+            <div class='six wide field'>
+                <input 
+                    name="key"
+                    autocomplete="new-password" 
+                    ${isRequired ? "required" : ""} 
+                    placeholder="Key" 
+                    value="${key}" 
+                    type="text" 
+                    data-value-type="skip" />
+            </div>
+            <div class='six wide field'>
+                <input 
+                    name="value"
+                    autocomplete="new-password" 
+                    ${isRequired ? "required" : ""} 
+                    placeholder="Value" 
+                    value="${value}" 
+                    type="text" 
+                    data-value-type="skip" />
+            </div>
+            ${btnOptions.type === 0 ? (
+                `<div class="one wide field flex align-center justify-center">
+                    <a ${this.getAttributes(btnOptions.attrs)} href="#" class="ui right floated mini icon button">
+                        <i class="minus icon"></i>
+                    </a>
+                </div>`
+                ) : 
+                ""
+            }
+            ${btnOptions.type === 1 ? (
+                `<div class="one wide field flex align-center justify-center">
+                    <a ${this.getAttributes(btnOptions.attrs)} href="#" class="ui right floated mini icon button">
+                        <i class="plus icon"></i>
+                    </a>
+                </div>`
+                ) : 
+                ""
+            }
+        </div>`
+    );
+}
+
 $.fn.segmentElement = function (id, groupName, html) {
     return `<div class='ui orange segment' data-group='${id}'>
               <h4 class='ui header' data-label='${groupName}'>${groupName}</h4>
@@ -207,28 +255,54 @@ $.fn.segmentElement = function (id, groupName, html) {
 
 $.fn.fieldsGroupElement = function (categoryId, categoryName, fields, fieldsName, showLabel, attr) {
     return `<div class='equal width fields'>
-             <input type='hidden' name='${fieldsName}[][Name]' value='${categoryName}' data-value-type='string'>
-             <input type='hidden' name='${fieldsName}[][CategoryId]' value='${categoryId}' data-value-type='string'>
-             ${showLabel ? `<div class='two wide field flex align-center'><label>${categoryName}</label></div>` : ''}
-              ${$.fn.fieldsElement(fields, `${fieldsName}[][Fields]`)}
-              <div class='one wide field'>
-                <a ${$.fn.getAttributes(attr)} href='#' data-request='ajax'>delete</a>
-              </div>
+                <input type='hidden' name='${fieldsName}[][Name]' value='${categoryName}' data-value-type='string'>
+                <input type='hidden' name='${fieldsName}[][CategoryId]' value='${categoryId}' data-value-type='string'>
+                ${showLabel ? `<div class='two wide field flex align-center'><label>${categoryName}</label></div>` : ''}
+                ${$.fn.fieldsElement(fields, `${fieldsName}[][Fields]`)}
+                <div class='one wide field flex align-center justify-center'>
+                    <a ${$.fn.getAttributes(attr)} href='#' data-request='ajax'>delete</a>
+                </div>
             </div>`;
 }
 
 $.fn.fieldsElement = function (fields, fieldName, label = false) {
     return fields.map(field => {
-        return (
-            `<div class='field'>
-                ${label ? `<label>${field.name}</label>` : ''}
-                <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
-                <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
-                <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
-                <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
-                <input name='${fieldName}[][Value]' autocomplete='new-password' ${field.isRequired && "required"} placeholder='${field.name}' ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} type='${field.htmlTypeName}' data-value-type='string' />
-            </div>`
-        )
+        if (field.htmlTypeName === "list") {
+            return (
+                `<div id="${field.id}" class="field">
+                    <input type="hidden" name="${fieldName}[][Name]" value="${field.name}">
+                    <input type="hidden" name="${fieldName}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
+                    <input type="hidden" name="${fieldName}[][Type]" value="${field.type}" data-value-type="number">
+                    <input type="hidden" name="${fieldName}[][TypeName]" value="${field.typeName}">
+                    <input type="hidden" name="${fieldName}[][Value]" data-value-type="list" />
+                    ${label ? `<label>${field.name}</label>` : ''}
+                    <div data-container="group">
+                        ${field.items.map(item => $.fn.addListFields(
+                            item.key,
+                            item.value,
+                            field.isRequired,
+                            item.btnOptions)).join("\n ")}
+                    </div>
+                </div>`
+            )
+        } else {
+            return (
+                `<div class='field'>
+                    ${label ? `<label>${field.name}</label>` : ''}
+                    <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
+                    <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
+                    <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
+                    <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
+                    <input name='${fieldName}[][Value]' 
+                        autocomplete='new-password' 
+                        ${field.isRequired ? "required" : ""} 
+                        placeholder='${field.name}' 
+                        ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} 
+                        type='${field.htmlTypeName}' 
+                        data-value-type='string' />
+                </div>`
+            )
+        }
     }).join('\n ');
 }
 

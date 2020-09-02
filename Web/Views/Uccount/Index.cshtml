@@ -102,6 +102,50 @@
             }
         }
 
+        onListFieldAdd = function(e, _, status) {
+            if (status === 'success') {
+                const $target = $(e.target);
+                const data = $(e.target).data();
+                const $parent = $target.closest("div[data-container='group']");
+                const btnAttrs = { "data-request": "ajax", rel: "onListFieldDelete" };
+                const $field = $($.fn.addListFields("", "", Boolean(data.required), { type: 0, attrs: btnAttrs }));
+
+                $field.find('a[data-request=ajax]').ajaxClick();
+
+                $parent.append($field);
+            }
+        }
+
+        onListFieldDelete = function(e, _, status) {
+            if (status === 'success') {
+                const $target = $(e.target);
+                const $parent = $target.closest(".two.fields");
+
+                $parent.remove()
+            }
+        }
+
+        extendListFieldsWithOptions = function(arr) {
+            return arr.map((field, i) => {
+                if (field.htmlTypeName === "list") {
+                    field["items"] =  [{
+                        key: "",
+                        value: "",
+                        btnOptions: {
+                            type: i === 0 ? 1 : 0,
+                            attrs: {
+                                "data-request": "ajax",
+                                "data-required": field.isRequired,
+                                rel: "onListFieldAdd" 
+                            }
+                        }
+                    }];
+                }
+
+                return field;
+            });
+        }
+
         sDropdownOnChange = function (e, value, text) {
             if (e.target.tagName === 'SELECT' && e.target.id === 'VendorId') {
                 var $target = $(e.target);
@@ -120,13 +164,30 @@
                         $.get('@vendorUrl', { 'id': value })
                     ).done((categories, vendor) => {
                         if (categories[1] === 'success') {
-                            var $generatedMenuItems = categories[0].map(item => `<a id='${item.id}' data-request='ajax' rel='onCreateServiceClick' class='item' href='@(vendorCategoryUrl)?id=${item.id}' data-target='#servicesContainer'>${item.name}</a>`);
+                            var $generatedMenuItems = categories[0].map(item => (
+                                `<a 
+                                    id='${item.id}' 
+                                    data-request='ajax' 
+                                    rel='onCreateServiceClick' 
+                                    class='item' 
+                                    href='@(vendorCategoryUrl)?id=${item.id}' 
+                                    data-target='#servicesContainer'>
+                                    ${item.name}
+                                </a>`));
                             $categoryContainer.html($generatedMenuItems).find('a[data-request=ajax]').ajaxClick();
                         }
 
                         if (vendor[1] === 'success') {
-                            const $fields = $($.fn.fieldsElement(vendor[0].fields, "Fields", true));
+                            const fieldsListType = vendor[0].fields.filter(field => field.htmlTypeName === "list");
+                            const extendedListType = extendListFieldsWithOptions(fieldsListType);
+                            const fieldsOtherTypes = vendor[0].fields.filter(field => field.htmlTypeName !== "list");
+                            const $fields = $($.fn.fieldsElement(fieldsOtherTypes, "Fields", true));
+                            const $fieldsLists = $($.fn.fieldsElement(extendedListType, "Fields", true));
+                            
+                            $fieldsLists.find('a[data-request=ajax]').ajaxClick();
+
                             $fieldsContainer.html($fields);
+                            $fieldsContainer.siblings("#lists").html($fieldsLists);
                         }
                     });
                 } else {
@@ -142,10 +203,11 @@
                 const data = jqXHR.responseJSON;
                 if (data && data.fields) {
                     const { categoryId, name, fields } = data;
+                    const extendedFields = extendListFieldsWithOptions(fields);
                     const $form = $target.parents('form');
                     const $container = $($target.data('target'));
 
-                    const fieldsGroup = $.fn.fieldsGroupElement(categoryId, name, fields, "Services", false, { 'rel': 'onDeleteServiceClick' });
+                    const fieldsGroup = $.fn.fieldsGroupElement(categoryId, name, extendedFields, "Services", false, { 'rel': 'onDeleteServiceClick' });
 
                     var $segment = $form.find(`div[data-group=${categoryId}]`);
                     if (!$segment.length) {

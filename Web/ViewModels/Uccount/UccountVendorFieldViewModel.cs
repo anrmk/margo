@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
@@ -10,7 +11,7 @@ namespace Web.ViewModels {
     public class UccountVendorFieldViewModel {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Value { get; set; } = "";
+        public string Value { get; set; } = string.Empty;
         public FieldEnum Type { get; set; }
         public string TypeName => Type.GetAttribute<DisplayAttribute>().Name.ToLower();
         public string HTMLTypeName => Type.GetHTMLType();

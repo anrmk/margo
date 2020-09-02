@@ -45,7 +45,8 @@
       "wwwroot/js/document-controller.js",
       "wwwroot/js/treeview-controller.js",
       "wwwroot/js/api-controller.js",
-      "wwwroot/js/site.js"
+      "wwwroot/js/site.js",
+      "wwwroot/js/serializer-extensions.js"
     ]
   },
   {

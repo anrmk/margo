@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-
+using Web.Utils;
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -178,6 +178,7 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
+            var mappedItem = _mapper.Map<UccountViewModel>(item);
             var persons = await _personBusinessManager.GetPersons();
             var companies = await _companyBusinessManager.GetCompanies();
             var vendors = await _vendorBusinessManager.GetVendors();
@@ -206,7 +207,7 @@ namespace Web.Controllers.Api {
                 { "Kind", item.Kind }
             };
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<UccountViewModel>(item), viewDataDictionary);
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", mappedItem, viewDataDictionary);
             return Ok(html);
         }
 

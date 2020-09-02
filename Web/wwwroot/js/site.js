@@ -58,7 +58,25 @@ $.extend($.serializeJSON.defaultOptions, {
     'useIntKeysAsArrayIndex': false,
     'customTypes': {
         'string:nullable': function (str) { return str || null; },
-        'number:nullable': function (str) { return Number(str) || null; }
+        'number:nullable': function (str) { return Number(str) || null; },
+        'list': function (str, _, inputData) { 
+            const $input = $(inputData.self);
+            const $parent = $input.parent("div");
+            const $inputsGroup = $parent.find("div[data-container='group'] :input");
+            const inputsGroupData = $inputsGroup.serializeArray();
+            
+            if (inputsGroupData.length > 0) {
+                const formattedInputsGroupData = inputsGroupData.chunk(2);
+
+                str = formattedInputsGroupData
+                    .map(data => `${data[0].value},${data[1].value}`)
+                    .join(";");
+
+                return str;
+            }
+
+            return str || ""; 
+        },
     }
 });
 

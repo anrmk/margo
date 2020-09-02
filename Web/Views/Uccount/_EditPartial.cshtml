@@ -4,12 +4,15 @@
     var formGuid = Guid.NewGuid();
     var vendorContainerFieldsGuid = Guid.NewGuid();
     var vendorContainerCategoryGuid = Guid.NewGuid();
+    var serviceContainerGuid = Guid.NewGuid();
 
     var persons = (List<SelectListItem>)ViewData["Persons"];
     var companies = (List<SelectListItem>)ViewData["Companies"];
     var vendors = (List<SelectListItem>)ViewData["Vendors"];
     var categories = (List<VendorCategoryViewModel>)ViewData["Categories"];
     var services = (List<UccountGroupedServiceViewModel>)ViewData["Services"];
+    var fieldsListType = (List<UccountVendorFieldViewModel>)ViewData["FieldsListType"];
+    var fieldsOtherType = (List<UccountVendorFieldViewModel>)ViewData["FieldsOtherType"];
     var uccountKind = (int)ViewData["Kind"];
 }
 
@@ -37,7 +40,12 @@
 
             <div class="field required @(Model.Services.Count() > 0 ? "disabled" : "")">
                 <label asp-for="VendorId"></label>
-                <select data-target="#@vendorContainerFieldsGuid" data-category="#@vendorContainerCategoryGuid" class="ui search dropdown" required asp-for="VendorId" asp-items="@vendors">
+                <select class="ui search dropdown"
+                        required 
+                        asp-for="VendorId" 
+                        asp-items="@vendors"
+                        data-target="#@vendorContainerFieldsGuid" 
+                        data-category="#@vendorContainerCategoryGuid">
                     <option value="" selected disabled hidden></option>
                 </select>
             </div>
@@ -50,29 +58,113 @@
             </div>
         </div>
 
-        <div id="@vendorContainerFieldsGuid" class="fields">
-            @foreach(var Field in Model.Fields) {
-                var inputType = Field.HTMLTypeName;
-                var inputIsRequired = Field.IsRequired ? "required" : "";
-                var inputValue = string.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox") ? "1" : Field.Value;
-                var inputChecked = Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "";
+        <div>
+            <div id="@vendorContainerFieldsGuid" class="fields">
+                @foreach (var field in Model.Fields) {
+                    if (field.Type != Core.Data.Enums.FieldEnum.LIST) {
+                        var inputType = field.HTMLTypeName;
+                        var inputIsRequired = field.IsRequired ? "required" : "";
+                        var inputValue = string.IsNullOrEmpty(field.Value) && (field.HTMLTypeName == "checkbox") ? "1" : field.Value;
+                        var inputChecked = field.HTMLTypeName == "checkbox" && field.Value == "1" ? "checked" : "";
 
-            <div class="field">
-                <label>@Field.Name</label>
-                <input type="hidden" name="Fields[][Name]" value="@Field.Name">
-                <input type="hidden" name="Fields[][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
-                <input type="hidden" name="Fields[][Type]" value="@((int)Field.Type)" data-value-type="number">
-                <input type="hidden" name="Fields[][TypeName]" value="@Field.TypeName">
-                <input type="@inputType" name="Fields[][Value]" value="@inputValue" autocomplete="new-password" placeholder="@Field.Name" @inputIsRequired @inputChecked data-value-type="string" />
+                        <div class="field">
+                            <label>@field.Name</label>
+                            <input type="hidden" name="Fields[][Name]" value="@field.Name">
+                            <input type="hidden" name="Fields[][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                            <input type="hidden" name="Fields[][Type]" value="@((int)field.Type)" data-value-type="number">
+                            <input type="hidden" name="Fields[][TypeName]" value="@field.TypeName">
+                            <input type="@inputType" 
+                                name="Fields[][Value]" 
+                                value="@inputValue" 
+                                autocomplete="new-password" 
+                                placeholder="@field.Name" 
+                                @inputIsRequired 
+                                @inputChecked 
+                                data-value-type="string" />
+                        </div>
+                    }
+                }
             </div>
-            }
+            <div id="lists">
+                @foreach(var field in Model.Fields) {
+                    if (field.Type == Core.Data.Enums.FieldEnum.LIST) {
+                        var index = 0;
+                        var inputIsRequired = field.IsRequired ? "required" : "";
+                        var inputGroups = field.Value.Split(";").ToList();
+                        var items = new List<string[]>();
+
+                        for (int i = 0; i < inputGroups.Count; i++) 
+                        { 
+                            var keyValue = inputGroups[i].Split(",");
+                            items.Add(keyValue);
+                        }
+
+                        <div id="@field.Id" class="field">
+                            <input type="hidden" name="Fields[][Name]" value="@field.Name">
+                            <input type="hidden" name="Fields[][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                            <input type="hidden" name="Fields[][Type]" value="@((int)field.Type)" data-value-type="number">
+                            <input type="hidden" name="Fields[][TypeName]" value="@field.TypeName">
+                            <input type="hidden" name="Fields[][Value]" data-value-type="list">
+                            <label>@field.Name</label>
+                            <div data-container="group">
+                                @foreach (var item in items) {
+                                    var id = Guid.NewGuid();
+
+                                    <div id="@(id)_item" class='two fields'>
+                                        <div class='six wide field'>
+                                            <input name="key"
+                                                autocomplete="new-password" 
+                                                @inputIsRequired 
+                                                placeholder="Key" 
+                                                value="@item[0]" 
+                                                type="text" 
+                                                data-value-type="skip" />
+                                        </div>
+                                        <div class='six wide field'>
+                                            <input name="value"
+                                                autocomplete="new-password" 
+                                                @inputIsRequired 
+                                                placeholder="Value" 
+                                                value="@item[1]" 
+                                                type="text" 
+                                                data-value-type="skip" />
+                                        </div>
+                                        <div class="one wide field flex align-center justify-center">
+                                            @{ 
+                                                var itemIsRequired = field.IsRequired ? "true" : "false"; 
+                                                var rel = index == 0 ? "onListFieldAdd" : "onListFieldDelete";
+                                                var btnClass = index == 0 ? "plus" : "minus";
+                                            }
+
+                                            <a class="ui right floated mini icon button"
+                                                data-request="ajax"
+                                                data-required="@itemIsRequired"
+                                                rel="@rel">
+                                                <i class="@btnClass icon"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    index++;
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
         </div>
 
         <div class="ui right floated dropdown mini icon button" tabindex="0">
             <i class="plus icon"></i>
             <div id="@vendorContainerCategoryGuid" class="left menu">
                 @foreach(var category in categories) {
-                    <a id="@category.Id" class="item" asp-route="GetVendorCategory" asp-route-id="@category.Id" data-request="ajax" rel="onCreateServiceClick" data-target="#servicesContainer" >
+                    <a id="@category.Id" 
+                       class="item" 
+                       asp-route="GetVendorCategory" 
+                       asp-route-id="@category.Id" 
+                       data-request="ajax" 
+                       rel="onCreateServiceClick" 
+                       data-target="#servicesContainer">
                         @category.Name
                     </a>
                 }
@@ -89,22 +181,98 @@
                             <input type="hidden" name="Services[][Id]" value="@group.ServiceId" data-value-type="string">
                             <input type="hidden" name="Services[][Name]" value="@group.ServiceName" data-value-type="string">
                             <input type="hidden" name="Services[][CategoryId]" value="@service.CategoryId" data-value-type="string">
-                            @foreach(var Field in group.Fields) {
-                                var inputType = Field.HTMLTypeName;
-                                var inputIsRequired = Field.IsRequired ? "required" : "";
-                                var inputValue = string.IsNullOrEmpty(Field.Value) && (Field.HTMLTypeName == "checkbox") ? "1" : Field.Value;
-                                var inputChecked = Field.HTMLTypeName == "checkbox" && Field.Value == "1" ? "checked" : "";
-                                
-                                <div class="field">
-                                    <input type="hidden" name="Services[][Fields][][Name]" value="@Field.Name">
-                                    <input type="hidden" name="Services[][Fields][][IsRequired]" value="@Field.IsRequired" data-value-type="boolean">
-                                    <input type="hidden" name="Services[][Fields][][Type]" value="@((int)Field.Type)" data-value-type="number">
-                                    <input type="hidden" name="Services[][Fields][][TypeName]" value="@Field.TypeName">
-                                    <input type="@inputType" name="Services[][Fields][][Value]" value="@inputValue" autocomplete="new-password" placeholder="@Field.Name" @inputIsRequired @inputChecked data-value-type="string" />
-                                </div>
+                            @foreach(var field in group.Fields) {
+                                if (field.Type == Core.Data.Enums.FieldEnum.LIST) {
+                                    var index = 0;
+                                    var inputIsRequired = field.IsRequired ? "required" : "";
+                                    var inputGroups = field.Value.Split(";").ToList();
+                                    var items = new List<string[]>();
+
+                                    for (int i = 0; i < inputGroups.Count; i++) 
+                                    {
+                                        var keyValue = inputGroups[i].Split(",");
+                                        items.Add(keyValue);
+                                    }
+
+                                    <div id="@field.Id" class="field">
+                                        <input type="hidden" name="Services[][Fields][][Name]" value="@field.Name">
+                                        <input type="hidden" name="Services[][Fields][][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                                        <input type="hidden" name="Services[][Fields][][Type]" value="@((int)field.Type)" data-value-type="number">
+                                        <input type="hidden" name="Services[][Fields][][TypeName]" value="@field.TypeName">
+                                        <input type="hidden" name="Services[][Fields][][Value]" data-value-type="list">
+                                        <div data-container="group">
+                                            @foreach (var item in items) {
+                                                var id = Guid.NewGuid();
+
+                                                <div id="@(id)_item" class='two fields'>
+                                                    <div class='six wide field'>
+                                                        <input name="key"
+                                                            autocomplete="new-password" 
+                                                            @inputIsRequired 
+                                                            placeholder="Key" 
+                                                            value="@item[0]" 
+                                                            type="text" 
+                                                            data-value-type="skip" />
+                                                    </div>
+                                                    <div class='six wide field'>
+                                                        <input name="value"
+                                                            autocomplete="new-password" 
+                                                            @inputIsRequired 
+                                                            placeholder="Value" 
+                                                            value="@item[1]" 
+                                                            type="text" 
+                                                            data-value-type="skip" />
+                                                    </div>
+                                                    <div class="one wide field flex align-center justify-center">
+                                                        @{ 
+                                                            var itemIsRequired = field.IsRequired ? "true" : "false"; 
+                                                            var rel = index == 0 ? "onListFieldAdd" : "onListFieldDelete";
+                                                            var btnClass = index == 0 ? "plus" : "minus";
+                                                        }
+
+                                                        <a class="ui right floated mini icon button"
+                                                            data-request="ajax"
+                                                            data-required="@itemIsRequired"
+                                                            rel="@rel">
+                                                            <i class="@btnClass icon"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                index++;
+                                            }
+                                        </div>
+                                    </div>
+                                } else {
+                                    var inputType = field.HTMLTypeName;
+                                    var inputIsRequired = field.IsRequired ? "required" : "";
+                                    var inputValue = string.IsNullOrEmpty(field.Value) && (field.HTMLTypeName == "checkbox") ? "1" : field.Value;
+                                    var inputChecked = field.HTMLTypeName == "checkbox" && field.Value == "1" ? "checked" : "";
+                                    
+                                    <div class="field">
+                                        <input type="hidden" name="Services[][Fields][][Name]" value="@field.Name">
+                                        <input type="hidden" name="Services[][Fields][][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                                        <input type="hidden" name="Services[][Fields][][Type]" value="@((int)field.Type)" data-value-type="number">
+                                        <input type="hidden" name="Services[][Fields][][TypeName]" value="@field.TypeName">
+                                        <input type="@inputType" 
+                                            name="Services[][Fields][][Value]" 
+                                            value="@inputValue" 
+                                            autocomplete="new-password" 
+                                            placeholder="@field.Name" 
+                                            @inputIsRequired 
+                                            @inputChecked 
+                                            data-value-type="string" />
+                                    </div>
+                                }
                             }
-                            <div class="one wide field">
-                                <a asp-route="DeleteService" asp-route-id="@group.ServiceId" data-request="ajax" rel="onDeleteServiceClick" onclick="return confirm('Are you sure want to delete this?')">delete</a>
+                            <div class="one wide field flex align-center justify-center">
+                                <a asp-route="DeleteService" 
+                                   asp-route-id="@group.ServiceId" 
+                                   data-request="ajax" 
+                                   rel="onDeleteServiceClick" 
+                                   onclick="return confirm('Are you sure want to delete this?')">
+                                   delete
+                                </a>
                             </div>
                         </div>
                     }

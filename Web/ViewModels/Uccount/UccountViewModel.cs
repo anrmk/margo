@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
+using Web.Utils;
 
 namespace Web.ViewModels {
     public class UccountViewModel {
@@ -26,7 +27,7 @@ namespace Web.ViewModels {
 
         public IEnumerable<UccountServiceViewModel> Services { get; set; }
 
-        public IEnumerable<UccountVendorFieldViewModel> Fields { get; set; }
+        public List<UccountVendorFieldViewModel> Fields { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }

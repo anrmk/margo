@@ -23,6 +23,8 @@ namespace Web.Utils {
                     return "email";
                 case "Link":
                     return "url";
+                case "List":
+                    return "list";
             }
 
             return enumDisplay;
