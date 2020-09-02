@@ -9,6 +9,7 @@ using Core.Data.Dto;
 using Core.Filters;
 using Core.Services;
 using Core.Services.Business;
+using Core.Services.Integration;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -63,16 +64,19 @@ namespace Web.Controllers.Api {
         private readonly IViewRenderService _viewRenderService;
         private readonly IInvoiceBusinessManager _invoiceBusinessManager;
         private readonly IUccountBusinessManager _uccountBusinessManager;
+        private readonly IToyotaFinancialService _toyotaFinancialService;
 
         public InvoiceController(
             IMapper mapper,
             IViewRenderService viewRenderService,
             IInvoiceBusinessManager invoiceBusinessManager,
-            IUccountBusinessManager uccountBusinessManager) {
+            IUccountBusinessManager uccountBusinessManager,
+            IToyotaFinancialService toyotaFinancialService) {
             _mapper = mapper;
             _viewRenderService = viewRenderService;
             _invoiceBusinessManager = invoiceBusinessManager;
             _uccountBusinessManager = uccountBusinessManager;
+            _toyotaFinancialService = toyotaFinancialService;
         }
 
         [HttpGet("GetInvoices", Name = "GetInvoices")]
@@ -119,6 +123,29 @@ namespace Web.Controllers.Api {
                 "_CreatePartial", new InvoiceViewModel(), viewData);
 
             return Ok(html);
+        }
+
+        [HttpGet("SyncInvoice", Name = "SyncInvoice")]
+        public async Task<IActionResult> SyncInvoice() {
+            var accounts = await _uccountBusinessManager.GetUccountsInclude();
+            var financeAccount = accounts.Where(x => x.VendorId == new Guid("40F1266A-B2C6-45AC-5976-08D84DDE544D")).ToList(); //Toyota Finance
+
+            var invoiceList = new List<InvoiceDto>();
+
+            foreach(var account in financeAccount) {
+                var invoices = await _toyotaFinancialService.Execute(account);
+                if(invoices != null) {
+                    var accountInvoices = await _invoiceBusinessManager.GetInvoices(account.Id);
+                    var createInvoiceList = invoices.Where(x => !accountInvoices.Any(y => x.DueDate.Equals(y.DueDate) && x.Amount.Equals(y.Amount))).ToList();
+                    if(createInvoiceList.Count > 0)
+                        invoiceList.AddRange(invoices);
+                }
+            }
+            if(invoiceList.Count > 0) {
+                var result = await _invoiceBusinessManager.CreateInvoice(invoiceList);
+                return Ok(result);
+            } else
+                return Ok();
         }
 
         [HttpPost("CreateInvoice", Name = "CreateInvoice")]

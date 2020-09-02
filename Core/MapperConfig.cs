@@ -85,7 +85,7 @@ namespace Core {
                 .ForMember(d => d.VendorName, o => o.MapFrom(x => x.Vendor.Name));
             CreateMap<UccountServiceDto, UccountServiceEntity>()
                 .ReverseMap()
-                .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.CategoryId));
+                .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : ""));
             CreateMap<UccountServiceFieldDto, UccountServiceFieldEntity>().ReverseMap();
             CreateMap<UccountVendorFieldDto, UccountVendorFieldEntity>().ReverseMap();
             #endregion

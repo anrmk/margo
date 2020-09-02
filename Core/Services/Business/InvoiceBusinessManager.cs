@@ -13,8 +13,10 @@ namespace Core.Services.Business {
     public interface IInvoiceBusinessManager {
         Task<InvoiceDto> GetInvoice(Guid id);
         Task<List<InvoiceDto>> GetInvoices();
+        Task<List<InvoiceDto>> GetInvoices(Guid accountId);
         Task<PagerDto<InvoiceDto>> GetInvoicePager(InvoiceFilterDto filter);
         Task<InvoiceDto> CreateInvoice(InvoiceDto dto);
+        Task<List<InvoiceDto>> CreateInvoice(List<InvoiceDto> dto);
         Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto);
         Task<bool> DeleteInvoices(Guid[] ids);
     }
@@ -35,6 +37,11 @@ namespace Core.Services.Business {
 
         public async Task<List<InvoiceDto>> GetInvoices() {
             var entity = await _invoiceManager.FindAll();
+            return _mapper.Map<List<InvoiceDto>>(entity);
+        }
+
+        public async Task<List<InvoiceDto>> GetInvoices(Guid accountId) {
+            var entity = await _invoiceManager.FindAll(accountId);
             return _mapper.Map<List<InvoiceDto>>(entity);
         }
 
@@ -65,6 +72,12 @@ namespace Core.Services.Business {
             return _mapper.Map<InvoiceDto>(entity);
         }
 
+        public async Task<List<InvoiceDto>> CreateInvoice(List<InvoiceDto> dto) {
+            var newEntity = _mapper.Map<List<InvoiceEntity>>(dto);
+            var entity = await _invoiceManager.Create(newEntity.AsEnumerable());
+            return _mapper.Map<List<InvoiceDto>>(entity.ToList());
+        }
+
         public async Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto) {
             var entity = await _invoiceManager.FindInclude(id);
             if(entity == null) {
@@ -85,5 +98,7 @@ namespace Core.Services.Business {
             int result = await _invoiceManager.Delete(entities);
             return result != 0;
         }
+
+        
     }
 }

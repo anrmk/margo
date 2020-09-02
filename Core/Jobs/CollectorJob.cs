@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
 using System.Threading.Tasks;
 
+using AutoMapper;
+
 using Core.Context;
+using Core.Data.Dto;
 using Core.Data.Entities;
 using Core.Extension;
 using Core.Services;
+using Core.Services.Business;
+using Core.Services.Integration;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,10 +23,12 @@ using Quartz;
 namespace Core.Jobs {
     [DisallowConcurrentExecution]
     public class CollectorJob: IJob {
+        private readonly IMapper _mapper;
         private readonly ILogger<CollectorJob> _logger;
         private readonly IServiceProvider _provider;
 
-        public CollectorJob(ILogger<CollectorJob> logger, IServiceProvider provider) {
+        public CollectorJob(ILogger<CollectorJob> logger, IMapper mapper, IServiceProvider provider) {
+            _mapper = mapper;
             _logger = logger;
             _provider = provider;
         }
@@ -27,35 +36,29 @@ namespace Core.Jobs {
         public async Task Execute(IJobExecutionContext context) {
             using(var scope = _provider.CreateScope()) {
                 var dbContext = scope.ServiceProvider.GetService<ApplicationContext>();
-                var notification = scope.ServiceProvider.GetService<INotifyService>();
+                //var notification = scope.ServiceProvider.GetService<INotifyService>();
 
                 try {
-                    var dbset = dbContext.Set<InvoiceEntity>();
-                    var invoiceList = new List<InvoiceEntity>();
+                    var accounts = await dbContext.Set<UccountEntity>()
+                        .Include(x => x.Fields)
+                        .Where(x => x.VendorId == new Guid("40F1266A-B2C6-45AC-5976-08D84DDE544D")) //Toyota Finance
+                        .OrderBy(x => x.VendorId)
+                        .ToListAsync();
 
-                    var accounts = await dbContext.Set<UccountEntity>().ToListAsync();
+                    var invoiceList = new List<InvoiceDto>();
 
-                    var rnd = new Random();
-                    var count = rnd.Next(5, 15);
+                    foreach(var account in accounts) {
+                        var service = scope.ServiceProvider.GetService<IToyotaFinancialService>();
+                        var result = await service.Execute(account);
 
-                    for(var i = 0; i < count; i++) {
-                        var account = accounts[rnd.Next(0, accounts.Count)];
-                        var date = rnd.NextDate(DateTime.Now.AddYears(-1), DateTime.Now);
-
-                        invoiceList.Add(new InvoiceEntity() {
-                            No = DateTime.Now.ToString($"DDMMYYYY_{rnd.Next(555)}"),
-                            Amount = rnd.NextDecimal(300, 5999),
-                            AccountId = account.Id,
-                            Date = date,
-                            DueDate = date.AddMonths(1),
-                        });
+                        invoiceList.AddRange(result);
                     }
 
                     var message = $"Created invoices {invoiceList.Count} at {DateTime.Now}";
-                    await notification.SendTextMessage(message);
+                    //await notification.SendTextMessage(message);
 
                     if(invoiceList.Count > 0) {
-                        dbContext.Set<InvoiceEntity>().AddRange(invoiceList);
+                        dbContext.Set<InvoiceEntity>().AddRange(_mapper.Map<InvoiceEntity>(invoiceList));
                         await dbContext.SaveChangesAsync();
                     }
                 } catch(Exception e) {

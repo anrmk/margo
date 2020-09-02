@@ -6,6 +6,12 @@
     <Authors>Aziz Nurmukhamedov</Authors>
     <Product>Margo Core</Product>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
     
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
@@ -20,6 +26,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
     <PackageReference Include="Quartz" Version="3.0.7" />
+    <PackageReference Include="Selenium.Support" Version="3.141.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="85.0.4183.8300" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.27.0" />
     <PackageReference Include="Telegram.Bot" Version="15.5.1" />
   </ItemGroup>
 

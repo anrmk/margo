@@ -26,6 +26,6 @@ namespace Core.Data.Dto {
         public Guid AccountId { get; set; }
         public UccountDto Account { get; set; }
 
-        public IEnumerable<InvoiceServiceDto> Services { get; set; }
+        public List<InvoiceServiceDto> Services { get; set; }
     }
 }

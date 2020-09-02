@@ -56,6 +56,11 @@ namespace Core.Services.Managers {
             return await _grantManager.Filter(DbSet)
                 .Include(x => x.Company)
                 .Include(x => x.Person)
+                .Include(x => x.Fields)
+                .Include(x => x.Services)
+                    .ThenInclude(x => x.Category)
+                .Include(x => x.Services)
+                    .ThenInclude(x => x.Fields)
                 .ToListAsync();
         }
 
