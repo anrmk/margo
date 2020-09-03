@@ -225,6 +225,7 @@ namespace Web.Controllers.Api {
             var item = await _accountBusinessService.GetUser(id);
             if(item == null)
                 return NotFound();
+            item.Profile = item.Profile ?? new AspNetUserProfileDto();
 
             var companies = await _companyBusinessManager.GetCompanies(true);
             var categories = await _categoryBusinessManager.GetCategories(true);

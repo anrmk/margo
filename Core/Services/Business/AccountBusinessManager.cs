@@ -265,20 +265,20 @@ namespace Core.Services.Business {
 
         #region USER PROFILE
         public async Task<AspNetUserProfileDto> GetUserProfile(long id) {
-            var entity = await _userProfileManager.Find(id);
+            var entity = await _userProfileManager.FindInclude(id);
             return _mapper.Map<AspNetUserProfileDto>(entity);
         }
 
         public async Task<AspNetUserProfileDto> UpdateUserProfile(long id, AspNetUserProfileDto dto) {
             var entity = await _userProfileManager.Find(id);
             if(entity == null) {
-                return null;
+                entity = await _userProfileManager.Create(_mapper.Map<AspNetUserProfileEntity>(dto));
+            } else {
+                var newEntity = _mapper.Map(dto, entity);
+                entity = await _userProfileManager.Update(newEntity);
             }
 
-            var newEntity = _mapper.Map(dto, entity);
-            var result = await _userProfileManager.Update(newEntity);
-
-            return _mapper.Map<AspNetUserProfileDto>(result);
+            return _mapper.Map<AspNetUserProfileDto>(entity);
         }
         #endregion
 

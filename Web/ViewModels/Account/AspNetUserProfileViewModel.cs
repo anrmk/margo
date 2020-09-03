@@ -23,5 +23,7 @@ namespace Web.ViewModels {
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
+        [Required]
+        public string UserId { get; set; }
     }
 }
