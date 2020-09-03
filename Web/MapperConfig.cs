@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -53,8 +54,12 @@ namespace Web {
 
             CreateMap<AspNetUserCompanyFavouriteViewModel, AspNetUserCompanyFavouriteDto>()
                 .ReverseMap()
+                .ForMember(d => d.CompanyId, o => o.MapFrom(s => s.Company == null ? (Guid?)null : s.Company.Id))
+                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company == null ? null : s.Company.Name))
+                .ForMember(d => d.CompanyDescription, o => o.MapFrom(s => s.Company == null ? null : s.Company.Description))
                 .ForMember(d => d.CompanyFounded, o => o.MapFrom(s => s.Company == null ? null : s.Company.Founded))
-                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Company == null ? null : s.Company.Name));
+                .ForMember(d => d.CompanyEIN, o => o.MapFrom(s => s.Company == null ? null : s.Company.EIN))
+                .ForMember(d => d.CompanyDB, o => o.MapFrom(s => s.Company == null ? null : s.Company.DB));
 
             CreateMap<LogViewModel, LogDto>().ReverseMap();
             CreateMap<LogFilterViewModel, LogFilterDto>()

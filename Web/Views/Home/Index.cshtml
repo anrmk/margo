@@ -10,44 +10,44 @@
 @section RightSidebar {
     <form class="ui form">
         <h3>All companies</h3>
-        <table class="ui unstackable yellow table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Founded</th>
-                </tr>
-            </thead>
-            <tbody class="sortable">
-                @foreach(var company in companies) {
-                    <tr id="@company.Id" class="dragable">
-                        <td>@company.Name</td>
-                        <td>@company.Founded.ToString("MM.dd.yyyy")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="ui middle aligned relaxed sortable list" style="height: 75vh; overflow-y: auto;">
+            @foreach(var company in companies) {
+                <div id="@company.Id" class="item" style="max-height: 60px" data-name="@company.Name" data-description="@company.Description" data-founded="@company.Founded.ToString("MM/dd/yyyy")" data-ein="@company.EIN">
+                    <i class="dragable ellipsis vertical middle aligned icon"></i>
+                    <div class="content">
+                        <div class="header">@company.Name</div>
+                        <div class="description">@company.Founded.ToString("MM/dd/yyyy")</div>
+                    </div>
+                </div>
+            }
+        </div>
     </form>
 }
 
 <form class="ui form">
-    <h3>Favourites &#9733;</h3>
-    <table class="ui celled unstackable orange table">
-        <thead>
-            <tr>
-                <th>Company name</th>
-                <th>Founded Date</th>
-                <th style="hidden" />
-            </tr>
-        </thead>
-        <tbody id="@(formId)_favourites" class="sortable">
-            @foreach(var companyFavourite in Model) {
-                <tr id="@companyFavourite.CompanyId" class="dragable">
-                    <td>@companyFavourite.CompanyName </td>
-                    <td>@(!companyFavourite.CompanyFounded.HasValue ? null : companyFavourite.CompanyFounded.Value.ToString("MM.dd.yyyy"))</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div id="@(formId)" class="ui three horizontal sortable cards" style="min-height: 65vh; align-content: baseline;">
+        @foreach(var companyFavourite in Model) {
+            <div id="@(companyFavourite.CompanyId)" class="ui raised link orange dragable card" style="max-height: 190px" data-name="@companyFavourite.CompanyName" data-description="@companyFavourite.CompanyDescription" data-founded="@(!companyFavourite.CompanyFounded.HasValue ? null : companyFavourite.CompanyFounded.Value.ToString("MM/dd/yyyy"))" data-ein="@companyFavourite.CompanyEIN">
+                <div class="content">
+                    <div class="header flex" style="justify-content: space-between">
+                        <p>@(companyFavourite.CompanyName)</p>
+                        <span>
+                            <i class="yellow star icon"></i>
+                        </span>
+                    </div>
+                    <div class="meta">@(companyFavourite.CompanyEIN)</div>
+                    <div class="description">
+                        @(companyFavourite.CompanyDescription)
+                    </div>
+                </div>
+                <div class="extra content" style="align-self: flex-end">
+                    <div class="right floated author">
+                        @(!companyFavourite.CompanyFounded.HasValue ? null : companyFavourite.CompanyFounded.Value.ToString("MM/dd/yyyy"))
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </form>
 
 @section Scripts {
@@ -55,20 +55,72 @@
         $(document).ready(function () {
             $('.sortable').sortable({
                 'handle': '.dragable',
-                'animation': 150,
+                'animation': 100,
                 'group': { name: 'shared' },
                 'onEnd': function (evt) {
-                    if (evt.from !== evt.to || ($(evt.to).attr('id') === "@(formId)_favourites" && evt.oldIndex !== evt.newIndex)) {
-                        let ids = $.map($("#@(formId)_favourites tr"), x => ({ 'CompanyId': $(x).attr('id') }));
-                        $.ajax({
-                            url: "@updateUrl",
-                            type: "PUT",
-                            data: JSON.stringify(ids),
-                            contentType: "application/json; charset=utf-8"
-                        });
+                    if (evt.from !== evt.to) {
+                        const $item = $(evt.item);
+                        const id = $item.attr('id');
+                        const data = $item.data();
+
+                        const $newElement = $($item.hasClass('item')
+                            ? generateCard(id, data)
+                            : generateItem(id, data));
+
+                        const $wrappedItem = $item.wrap("<div></div>");
+                        $wrappedItem.parent("div").html($newElement);
+
+                        $newElement.unwrap();
+                    }
+
+                    if (evt.from !== evt.to || ($(evt.to).attr('id') === "@(formId)" && evt.oldIndex !== evt.newIndex)) {
+                        UpdateFavouriteCompanies(evt);
                     }
                 }
             });
         });
+
+        function UpdateFavouriteCompanies(dragEvent) {
+            const ids = $.map($("#@(formId) > .card"), x => ({ 'CompanyId': $(x).attr('id') }));
+
+            $.ajax({
+                url: "@updateUrl",
+                type: "PUT",
+                data: JSON.stringify(ids),
+                contentType: "application/json; charset=utf-8"
+            });
+        }
+
+        function generateCard(id, data) {
+            return `<div id="${id}" class="ui raised link orange dragable card" style="max-height: 190px" data-name="${data.name}" data-description="${data.description}" data-founded="${data.founded}" data-ein="${data.ein}">
+                <div class="content">
+                    <div class="header flex" style="justify-content: space-between">
+                        <p>${data.name}</p>
+                        <span>
+                            <i class="yellow star icon"></i>
+                        </span>
+                    </div>
+                    <div class="meta">${data.ein}</div>
+                    <div class="description">
+                       ${data.description}
+                    </div>
+                </div>
+                <div class="extra content" style="align-self: flex-end">
+                    <div class="right floated author">
+                        ${data.founded}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function generateItem(id, data) {
+            return `<div id="${id}" class="item" style="max-height: 60px" data-name="${data.name}" data-description="${data.description}" data-founded="${data.founded}" data-ein="${data.ein}">
+                <i class="dragable ellipsis vertical middle aligned icon"></i>
+                <div class="content">
+                    <div class="header">${data.name}</div>
+                    <div class="description">${data.founded}</div>
+                </div>
+            </div>`;
+        }
     </script>
 }
