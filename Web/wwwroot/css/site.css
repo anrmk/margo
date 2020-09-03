@@ -71,15 +71,12 @@ fieldset {
 }
 
 #mainbody .full.height > .toc {
-  position: fixed;
-  z-index: 1;
   background-color: #1b1c1d;
-  width: 250px;
   -webkit-box-flex: 0;
   -webkit-flex: 0 0 auto;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
-  height: calc(100vh);
+  min-height: 100vh;
 }
 
 #mainbody .full.height > .toc .ui.menu {
@@ -90,7 +87,6 @@ fieldset {
   width: inherit;
   overflow: hidden;
   will-change: transform;
-  max-height: 100vh;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -101,7 +97,6 @@ fieldset {
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
   min-width: 0px;
-  margin-left: 250px;
 }
 
 /*******************************
@@ -244,13 +239,12 @@ fieldset {
 
 /* Table Ad */
 @media only screen and (max-width: 1272px) {
-  #mainbody .masthead > .container:first-child {
-    display: flex;
-    flex-direction: row;
+  .ui.secondary.menu {
+    margin-right: 20em;
   }
 
   #mainbody .masthead > .container {
-    margin-right: 2em !important;
+    margin-right: 28em !important;
     max-width: none !important;
   }
 
@@ -261,15 +255,6 @@ fieldset {
 
 /* Squish Content (Just For Small Computers) */
 @media only screen and (max-width: 1272px) {
-  /* Resize TOC  */
-  #mainbody .full.height > .toc {
-    width: 200px;
-  }
-
-  #mainbody .article {
-    margin-left: 200px;
-  }
-
   #mainbody .masthead > .container,
   #mainbody .main.container,
   #mainbody .fixed.menu > .container {
@@ -313,6 +298,10 @@ fieldset {
 
 /* Remove Fixed Sidebar /  Show Top Bar */
 @media only screen and (max-width: 1144px) {
+  .ui.secondary.menu {
+    margin-right: 20em;
+  }
+
   /* Hide Fixed Sidebar */
   #mainbody .full.height > .toc {
     display: none;
@@ -377,6 +366,10 @@ fieldset {
 
 /* Remove Rail */
 @media only screen and (max-width: 992px) {
+  .ui.secondary.menu {
+    margin-right: initial;
+  }
+
   /* Remove Rail */
   #mainbody .main.container > .right.rail,
   #mainbody .main.container > .tab > .mainbodys > .right.rail,
@@ -409,8 +402,8 @@ fieldset {
 }
 
 @media only screen and (max-width: 768px) {
-  #mainbody .masthead > .container:first-child {
-    flex-direction: column;
+  .ui.secondary.menu {
+    margin-right: initial;
   }
 
   /* Hide Some Fixed Menu Content (Pagination, Search) */
