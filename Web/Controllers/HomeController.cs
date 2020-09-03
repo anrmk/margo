@@ -91,7 +91,7 @@ namespace Web.Controllers.Api {
                 if(model == null)
                     throw new Exception("No data!");
 
-                var item = await _accountBusinessManager.UpdateFavouriteCompanies(User.GetUserId(), model.Select((x, i) => new AspNetUserCompanyFavouriteDto { Sort = i, CompanyId = x.CompanyId }));
+                var item = await _accountBusinessManager.UpdateFavouriteCompanies(User.GetUserId(), model.Select((x, i) => new AspNetUserCompanyFavouriteDto { Sort = i, CompanyId = x.CompanyId.Value }));
 
                 if(item == null)
                     return NotFound();

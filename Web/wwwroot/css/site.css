@@ -24,7 +24,7 @@
 
 /*FLEX*/
 .flex {
-  display: flex;
+  display: flex !important;
 }
 
 .justify-center {
@@ -485,4 +485,10 @@ fieldset {
 /* Small Phone */
 @media only screen and (max-width: 500px) {
 
+}
+
+/* Hide sortable sceleton */
+.sortable-ghost {
+  visibility: hidden;
+  width: 270px;
 }
