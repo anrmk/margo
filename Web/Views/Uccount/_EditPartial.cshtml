@@ -73,14 +73,7 @@
                             <input type="hidden" name="Fields[][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
                             <input type="hidden" name="Fields[][Type]" value="@((int)field.Type)" data-value-type="number">
                             <input type="hidden" name="Fields[][TypeName]" value="@field.TypeName">
-                            <input type="@inputType" 
-                                name="Fields[][Value]" 
-                                value="@inputValue" 
-                                autocomplete="new-password" 
-                                placeholder="@field.Name" 
-                                @inputIsRequired 
-                                @inputChecked 
-                                data-value-type="string" />
+                            <input type="@inputType" name="Fields[][Value]" value="@inputValue" autocomplete="new-password" placeholder="@field.Name"@inputIsRequired @inputChecked data-value-type="string" />
                         </div>
                     }
                 }
@@ -110,8 +103,8 @@
                                 @foreach (var item in items) {
                                     var id = Guid.NewGuid();
 
-                                    <div id="@(id)_item" class='two fields'>
-                                        <div class='six wide field'>
+                                    <div id="@(id)_item" class='equal width fields'>
+                                        <div class="field">
                                             <input name="key"
                                                 autocomplete="new-password" 
                                                 @inputIsRequired 
@@ -120,7 +113,7 @@
                                                 type="text" 
                                                 data-value-type="skip" />
                                         </div>
-                                        <div class='six wide field'>
+                                        <div class="field">
                                             <input name="value"
                                                 autocomplete="new-password" 
                                                 @inputIsRequired 
@@ -130,18 +123,16 @@
                                                 data-value-type="skip" />
                                         </div>
                                         <div class="one wide field flex align-center justify-center">
-                                            @{ 
-                                                var itemIsRequired = field.IsRequired ? "true" : "false"; 
-                                                var rel = index == 0 ? "onListFieldAdd" : "onListFieldDelete";
-                                                var btnClass = index == 0 ? "plus" : "minus";
+                                            @if(index == 0) {
+                                                <a class="ui icon" data-request="ajax" href="#" data-required="@field.IsRequired" rel="onListFieldAdd" >
+                                                    <i class="plus icon"></i>
+                                                </a>
+                                            } else {
+                                                <a class="ui icon" data-request="ajax" href="#" data-required="@field.IsRequired" rel="onListFieldDelete"  data-confirm="Are you sure want to delete this?" >
+                                                    <i class="minus icon"></i>
+                                                </a>
                                             }
 
-                                            <a class="ui right floated mini icon button"
-                                                data-request="ajax"
-                                                data-required="@itemIsRequired"
-                                                rel="@rel">
-                                                <i class="@btnClass icon"></i>
-                                            </a>
                                         </div>
                                     </div>
 
@@ -204,8 +195,8 @@
                                             @foreach (var item in items) {
                                                 var id = Guid.NewGuid();
 
-                                                <div id="@(id)_item" class='two fields'>
-                                                    <div class='six wide field'>
+                                                <div id="@(id)_item" class='equal width fields'>
+                                                    <div class='field'>
                                                         <input name="key"
                                                             autocomplete="new-password" 
                                                             @inputIsRequired 
@@ -214,7 +205,7 @@
                                                             type="text" 
                                                             data-value-type="skip" />
                                                     </div>
-                                                    <div class='six wide field'>
+                                                    <div class='field'>
                                                         <input name="value"
                                                             autocomplete="new-password" 
                                                             @inputIsRequired 
@@ -224,18 +215,15 @@
                                                             data-value-type="skip" />
                                                     </div>
                                                     <div class="one wide field flex align-center justify-center">
-                                                        @{ 
-                                                            var itemIsRequired = field.IsRequired ? "true" : "false"; 
-                                                            var rel = index == 0 ? "onListFieldAdd" : "onListFieldDelete";
-                                                            var btnClass = index == 0 ? "plus" : "minus";
+                                                        @if(index == 0) {
+                                                            <a class="ui icon" data-request="ajax" href="#" data-required="@field.IsRequired" rel="onListFieldAdd">
+                                                                <i class="plus icon"></i>
+                                                            </a>
+                                                        } else {
+                                                            <a class="ui icon" data-request="ajax" href="#" data-required="@field.IsRequired" rel="onListFieldDelete" data-confirm="Are you sure want to delete this?">
+                                                                <i class="minus icon"></i>
+                                                            </a>
                                                         }
-
-                                                        <a class="ui right floated mini icon button"
-                                                            data-request="ajax"
-                                                            data-required="@itemIsRequired"
-                                                            rel="@rel">
-                                                            <i class="@btnClass icon"></i>
-                                                        </a>
                                                     </div>
                                                 </div>
 
@@ -254,23 +242,12 @@
                                         <input type="hidden" name="Services[][Fields][][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
                                         <input type="hidden" name="Services[][Fields][][Type]" value="@((int)field.Type)" data-value-type="number">
                                         <input type="hidden" name="Services[][Fields][][TypeName]" value="@field.TypeName">
-                                        <input type="@inputType" 
-                                            name="Services[][Fields][][Value]" 
-                                            value="@inputValue" 
-                                            autocomplete="new-password" 
-                                            placeholder="@field.Name" 
-                                            @inputIsRequired 
-                                            @inputChecked 
-                                            data-value-type="string" />
+                                        <input type="@inputType" name="Services[][Fields][][Value]" value="@inputValue" autocomplete="new-password" placeholder="@field.Name" @inputIsRequired @inputChecked data-value-type="string" />
                                     </div>
                                 }
                             }
                             <div class="one wide field flex align-center justify-center">
-                                <a asp-route="DeleteService" 
-                                   asp-route-id="@group.ServiceId" 
-                                   data-request="ajax" 
-                                   rel="onDeleteServiceClick" 
-                                   onclick="return confirm('Are you sure want to delete this?')">
+                                <a asp-route="DeleteService" asp-route-id="@group.ServiceId" data-request="ajax" rel="onDeleteServiceClick" data-confirm="Are you sure want to delete this?" >
                                    delete
                                 </a>
                             </div>

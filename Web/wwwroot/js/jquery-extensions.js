@@ -13,6 +13,10 @@ $.fn.isGuid = function (val) {
     return pattern.test(val);
 }
 
+$.fn.hasData = function (key) {
+    return (typeof $(this).data(key) != 'undefined');
+};
+
 var originalSerializeArray = $.fn.serializeArray;
 $.fn.serializeArray = function () {
     const mainValues = originalSerializeArray.apply(this);

@@ -44,6 +44,12 @@ $.fn.ajaxClick = function (opt = {}) {
     this.on(options.eventName, (e) => {
         e.preventDefault();
         let $link = $(e.currentTarget);
+        if ($link.hasData('confirm')) {
+            if (!confirm($link.data('confirm'))) {
+                return;
+            }
+        }
+
         $.ajax({
             'url': $link.attr('href') || $link.data('url'),
             'complete': (jqXHR, status) => {
@@ -198,54 +204,6 @@ $.fn.addInvoiceServices = function (target, name) {
     $section.appendTo(target);
 }
 
-// There are two types:
-// 0 - With the delete button
-// 1 - With the add button
-$.fn.addListFields = function (key, value, isRequired, btnOptions) {
-    return (
-        `<div class='two fields'>
-            <div class='six wide field'>
-                <input 
-                    name="key"
-                    autocomplete="new-password" 
-                    ${isRequired ? "required" : ""} 
-                    placeholder="Key" 
-                    value="${key}" 
-                    type="text" 
-                    data-value-type="skip" />
-            </div>
-            <div class='six wide field'>
-                <input 
-                    name="value"
-                    autocomplete="new-password" 
-                    ${isRequired ? "required" : ""} 
-                    placeholder="Value" 
-                    value="${value}" 
-                    type="text" 
-                    data-value-type="skip" />
-            </div>
-            ${btnOptions.type === 0 ? (
-                `<div class="one wide field flex align-center justify-center">
-                    <a ${this.getAttributes(btnOptions.attrs)} href="#" class="ui right floated mini icon button">
-                        <i class="minus icon"></i>
-                    </a>
-                </div>`
-                ) : 
-                ""
-            }
-            ${btnOptions.type === 1 ? (
-                `<div class="one wide field flex align-center justify-center">
-                    <a ${this.getAttributes(btnOptions.attrs)} href="#" class="ui right floated mini icon button">
-                        <i class="plus icon"></i>
-                    </a>
-                </div>`
-                ) : 
-                ""
-            }
-        </div>`
-    );
-}
-
 $.fn.segmentElement = function (id, groupName, html) {
     return `<div class='ui orange segment' data-group='${id}'>
               <h4 class='ui header' data-label='${groupName}'>${groupName}</h4>
@@ -260,58 +218,55 @@ $.fn.fieldsGroupElement = function (categoryId, categoryName, fields, fieldsName
                 ${showLabel ? `<div class='two wide field flex align-center'><label>${categoryName}</label></div>` : ''}
                 ${$.fn.fieldsElement(fields, `${fieldsName}[][Fields]`)}
                 <div class='one wide field flex align-center justify-center'>
-                    <a ${$.fn.getAttributes(attr)} href='#' data-request='ajax'>delete</a>
+                    <a ${$.fn.getAttributes(attr)} href='#' data-request='ajax' data-confirm='Are you sure want to delete this?'>delete</a>
                 </div>
             </div>`;
 }
 
 $.fn.fieldsElement = function (fields, fieldName, label = false) {
     return fields.map(field => {
-        if (field.htmlTypeName === "list") {
-            return (
-                `<div id="${field.id}" class="field">
-                    <input type="hidden" name="${fieldName}[][Name]" value="${field.name}">
-                    <input type="hidden" name="${fieldName}[][IsRequired]" value="${field.isRequired}" data-value-type="boolean">
-                    <input type="hidden" name="${fieldName}[][Type]" value="${field.type}" data-value-type="number">
-                    <input type="hidden" name="${fieldName}[][TypeName]" value="${field.typeName}">
-                    <input type="hidden" name="${fieldName}[][Value]" data-value-type="list" />
-                    ${label ? `<label>${field.name}</label>` : ''}
-                    <div data-container="group">
-                        ${field.items.map(item => $.fn.addListFields(
-                            item.key,
-                            item.value,
-                            field.isRequired,
-                            item.btnOptions)).join("\n ")}
-                    </div>
-                </div>`
-            )
-        } else {
-            return (
-                `<div class='field'>
+        return (`<div class='field' id="${field.id}">
                     ${label ? `<label>${field.name}</label>` : ''}
                     <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
                     <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
                     <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
                     <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
-                    <input name='${fieldName}[][Value]' 
-                        autocomplete='new-password' 
-                        ${field.isRequired ? "required" : ""} 
-                        placeholder='${field.name}' 
-                        ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} 
-                        type='${field.htmlTypeName}' 
-                        data-value-type='string' />
-                </div>`
-            )
-        }
+
+                    ${field.htmlTypeName === "list" ? 
+                        `<input type="hidden" name="${fieldName}[][Value]" data-value-type="list" />
+                        <div data-container="group">
+                            ${field.items.map(item => $.fn.fieldListElement(item.key, item.value, field.isRequired, item.btnOptions)).join("\n ")}
+                        </div>`
+                        :
+                        `<input name='${fieldName}[][Value]' autocomplete='new-password' ${field.isRequired ? "required" : ""} placeholder='${field.name}' ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} type='${field.htmlTypeName}' data-value-type='string' />`
+                    }
+                </div>`);
     }).join('\n ');
 }
 
+// There are two types:
+// 0 - With the delete button
+// 1 - With the add button
+$.fn.fieldListElement = function (key, value, isRequired, btnOptions) {
+    return (
+        `<div class='equal width fields'>
+            <div class='field'>
+                <input name='key' autocomplete='new-password' ${isRequired ? 'required' : ''} placeholder='Key' value='${key}' type='text' data-value-type='skip' />
+            </div>
+            <div class='field'>
+                <input name='value' autocomplete='new-password' ${isRequired ? 'required' : ''} placeholder='Value' value='${value}' type='text' data-value-type='skip' />
+            </div>
+            <div class='one wide field flex align-center justify-center'>
+                <a ${this.getAttributes(btnOptions.attrs)} href='#' class='ui icon'>
+                    <i class='${btnOptions.type === 0 ? 'minus' : 'plus'} icon' ></i>
+                </a>
+            </div>
+        </div>`
+    );
+}
+
 $.fn.getAttributes = function (attrs) {
-    return attrs ?
-        Object.keys(attrs)
-            .map(attr => `${attr}="${attrs[attr]}"`)
-            .join(" ") :
-        "";
+    return attrs ? Object.keys(attrs).map(attr => `${attr}='${attrs[attr]}'`).join(" ") : '';
 }
 
 $.fn.uuidv4 = function () {

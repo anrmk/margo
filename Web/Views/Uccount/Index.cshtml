@@ -105,10 +105,10 @@
         onListFieldAdd = function(e, _, status) {
             if (status === 'success') {
                 const $target = $(e.target);
-                const data = $(e.target).data();
+                const data = $target.data();
                 const $parent = $target.closest("div[data-container='group']");
-                const btnAttrs = { "data-request": "ajax", rel: "onListFieldDelete" };
-                const $field = $($.fn.addListFields("", "", Boolean(data.required), { type: 0, attrs: btnAttrs }));
+                const btnAttrs = { 'data-request': 'ajax', 'rel': 'onListFieldDelete', 'data-confirm': 'Are you sure want to delete this?' };
+                const $field = $($.fn.fieldListElement('', '', Boolean(data.required), { type: 0, attrs: btnAttrs }));
 
                 $field.find('a[data-request=ajax]').ajaxClick();
 
@@ -119,24 +119,26 @@
         onListFieldDelete = function(e, _, status) {
             if (status === 'success') {
                 const $target = $(e.target);
-                const $parent = $target.closest(".two.fields");
+                const $parent = $target.closest('.fields');
 
                 $parent.remove()
             }
         }
 
-        extendListFieldsWithOptions = function(arr) {
-            return arr.map((field, i) => {
-                if (field.htmlTypeName === "list") {
-                    field["items"] =  [{
-                        key: "",
-                        value: "",
+        extendListFieldsWithOptions = function (fields) {
+            var firstElement = false;
+            return fields.map((field, i) => {
+                if (field.htmlTypeName === 'list') {
+                    firstElement = true;
+                    field['items'] =  [{
+                        key: '',
+                        value: '',
                         btnOptions: {
-                            type: i === 0 ? 1 : 0,
+                            type: firstElement ?? true,
                             attrs: {
-                                "data-request": "ajax",
-                                "data-required": field.isRequired,
-                                rel: "onListFieldAdd" 
+                                'data-request': 'ajax',
+                                'data-required': field.isRequired,
+                                rel: 'onListFieldAdd'
                             }
                         }
                     }];
@@ -178,16 +180,16 @@
                         }
 
                         if (vendor[1] === 'success') {
-                            const fieldsListType = vendor[0].fields.filter(field => field.htmlTypeName === "list");
+                            const fieldsListType = vendor[0].fields.filter(field => field.htmlTypeName === 'list');
                             const extendedListType = extendListFieldsWithOptions(fieldsListType);
-                            const fieldsOtherTypes = vendor[0].fields.filter(field => field.htmlTypeName !== "list");
-                            const $fields = $($.fn.fieldsElement(fieldsOtherTypes, "Fields", true));
-                            const $fieldsLists = $($.fn.fieldsElement(extendedListType, "Fields", true));
+                            const fieldsOtherTypes = vendor[0].fields.filter(field => field.htmlTypeName !== 'list');
+                            const $fields = $($.fn.fieldsElement(fieldsOtherTypes, 'Fields', true));
+                            const $fieldsLists = $($.fn.fieldsElement(extendedListType, 'Fields', true));
                             
                             $fieldsLists.find('a[data-request=ajax]').ajaxClick();
 
                             $fieldsContainer.html($fields);
-                            $fieldsContainer.siblings("#lists").html($fieldsLists);
+                            $fieldsContainer.siblings('#lists').html($fieldsLists);
                         }
                     });
                 } else {
@@ -207,7 +209,7 @@
                     const $form = $target.parents('form');
                     const $container = $($target.data('target'));
 
-                    const fieldsGroup = $.fn.fieldsGroupElement(categoryId, name, extendedFields, "Services", false, { 'rel': 'onDeleteServiceClick' });
+                    const fieldsGroup = $.fn.fieldsGroupElement(categoryId, name, extendedFields, 'Services', false, { 'rel': 'onDeleteServiceClick', 'data-confirm': 'Are you sure want to delete this?' });
 
                     var $segment = $form.find(`div[data-group=${categoryId}]`);
                     if (!$segment.length) {
@@ -218,7 +220,7 @@
                     }
 
                     $container.find('a[data-request=ajax]').ajaxClick();
-                    $form.trigger($.Event("change", {target: e.target}));
+                    $form.trigger($.Event('change', {target: e.target}));
                 }
             }
         }
@@ -226,10 +228,10 @@
         onDeleteServiceClick = function(e, jqXHR, status) {
             if (status === 'success') {
                 const $link = $(e.target);
-                const $form = $link.parents("form");
+                const $form = $link.parents('form');
                 $link.parents('.fields').remove();
 
-                $form.trigger($.Event("change", { target: e.target }));
+                $form.trigger($.Event('change', { target: e.target }));
                 window.DocumentController.reload(false);
             }
         }
