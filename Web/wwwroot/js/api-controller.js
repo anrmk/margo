@@ -291,6 +291,7 @@ $.fn.fieldsElement = function (fields, fieldName, label = false) {
                     ${label ? `<label>${field.name}</label>` : ''}
                     <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
                     <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
+                    <input type='hidden' name='${fieldName}[][IsHidden]' value='${field.isHidden}' data-value-type='boolean'>
                     <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
                     <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
                     <input name='${fieldName}[][Value]' 

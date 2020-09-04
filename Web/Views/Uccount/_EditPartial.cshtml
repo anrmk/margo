@@ -197,6 +197,7 @@
                                     <div id="@field.Id" class="field">
                                         <input type="hidden" name="Services[][Fields][][Name]" value="@field.Name">
                                         <input type="hidden" name="Services[][Fields][][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                                        <input type="hidden" name="Services[][Fields][][IsHidden]" value="@field.IsHidden" data-value-type="boolean">
                                         <input type="hidden" name="Services[][Fields][][Type]" value="@((int)field.Type)" data-value-type="number">
                                         <input type="hidden" name="Services[][Fields][][TypeName]" value="@field.TypeName">
                                         <input type="hidden" name="Services[][Fields][][Value]" data-value-type="list">
@@ -252,6 +253,7 @@
                                     <div class="field">
                                         <input type="hidden" name="Services[][Fields][][Name]" value="@field.Name">
                                         <input type="hidden" name="Services[][Fields][][IsRequired]" value="@field.IsRequired" data-value-type="boolean">
+                                        <input type="hidden" name="Services[][Fields][][IsHidden]" value="@field.IsHidden" data-value-type="boolean">
                                         <input type="hidden" name="Services[][Fields][][Type]" value="@((int)field.Type)" data-value-type="number">
                                         <input type="hidden" name="Services[][Fields][][TypeName]" value="@field.TypeName">
                                         <input type="@inputType" 
