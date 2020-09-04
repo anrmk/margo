@@ -1,28 +1,28 @@
-$.extend($.serializeJSON, {
-    parseValue: function (valStr, inputName, type, opts, $form, inputData) {
-        var f, parsedVal;
-        f = $.serializeJSON;
-        parsedVal = valStr; // if no parsing is needed, the returned value will be the same
+$.extend($.serializeJSON, { 
+    parseValue: function(valStr, inputName, type, opts, $form, inputData) {
+      var f, parsedVal;
+      f = $.serializeJSON;
+      parsedVal = valStr; // if no parsing is needed, the returned value will be the same
 
-        if (opts.typeFunctions && type && opts.typeFunctions[type]) { // use a type if available
-            parsedVal = opts.typeFunctions[type](valStr, $form, inputData);
-        } else if (opts.parseNumbers && f.isNumeric(valStr)) { // auto: number
-            parsedVal = Number(valStr);
-        } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) { // auto: boolean
-            parsedVal = (valStr === "true");
-        } else if (opts.parseNulls && valStr == "null") { // auto: null
-            parsedVal = null;
-        } else if (opts.typeFunctions && opts.typeFunctions["string"]) { // make sure to apply :string type if it was re-defined
-            parsedVal = opts.typeFunctions["string"](valStr);
-        }
+      if (opts.typeFunctions && type && opts.typeFunctions[type]) { // use a type if available
+        parsedVal = opts.typeFunctions[type](valStr, $form, inputData);
+      } else if (opts.parseNumbers && f.isNumeric(valStr)) { // auto: number
+        parsedVal = Number(valStr);
+      } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) { // auto: boolean
+        parsedVal = (valStr === "true");
+      } else if (opts.parseNulls && valStr == "null") { // auto: null
+        parsedVal = null;
+      } else if (opts.typeFunctions && opts.typeFunctions["string"]) { // make sure to apply :string type if it was re-defined
+        parsedVal = opts.typeFunctions["string"](valStr);
+      }
+      
+      // Custom parse function: apply after parsing options, unless there's an explicit type.
+      if ((opts.parseWithFunction && !type)) {
+        parsedVal = opts.parseWithFunction(parsedVal, inputName);
+      }
 
-        // Custom parse function: apply after parsing options, unless there's an explicit type.
-        if ((opts.parseWithFunction && !type)) {
-            parsedVal = opts.parseWithFunction(parsedVal, inputName);
-        }
-
-        return parsedVal;
-    },
+      return parsedVal;
+    }
 });
 
 // Extend/Override the 'jquery.serializeJSON' functional
@@ -43,7 +43,7 @@ $.fn.serializeJSON = function (options) {
         value = obj.value; // input value
         _obj = f.extractTypeAndNameWithNoType(name);
         nameWithNoType = _obj.nameWithNoType; // input name with no type (i.e. "foo:string" => "foo")
-        type = _obj.type || obj ? obj.dataType : obj; // [CUSTOM](added dataType) [DEFAULT](type defined from the input name in :type colon notation)
+        type = _obj.type || obj.dataType; // [CUSTOM](added dataType) [DEFAULT](type defined from the input name in :type colon notation)
         if (!type) type = f.attrFromInputWithName($form, name, 'data-value-type');
         f.validateType(name, type, opts); // make sure that the type is one of the valid types if defined
 
