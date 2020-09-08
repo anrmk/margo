@@ -362,6 +362,15 @@ fieldset {
   #mainbody .fixed.column .sticky {
     padding-top: 2em;
   }
+
+  /* Text overflow */
+  .table td, .details th {
+    max-width: 50px !important;
+  }
+
+  tbody[name="inner"] td {
+    max-width: 200px !important;
+  }
 }
 
 /* Remove Rail */
@@ -484,4 +493,61 @@ fieldset {
 .sortable-ghost {
   visibility: hidden;
   width: 270px;
+}
+
+/* Text overflow */
+.table td, .details th {
+    max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+tbody[name="inner"] td {
+  max-width: 350px;
+}
+
+.search.dropdown > .text {
+  max-width: -webkit-fill-available;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown.selection .menu .item {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.dropdown.selection.multiple .ui.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.ui.card.card > .content p, .meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui.sortable.list > .item .header {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
