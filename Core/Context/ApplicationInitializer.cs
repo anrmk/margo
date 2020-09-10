@@ -41,8 +41,8 @@ namespace Core.Context {
 
             if(!roleManager.RoleExistsAsync("User").Result) {
                 roleManager.CreateAsync(new IdentityRole() {
-                    Name = "User",
-                    NormalizedName = "USER"
+                    Name = "Manager",
+                    NormalizedName = "MANAGER"
                 }).Wait(1000);
             }
         }
@@ -55,11 +55,7 @@ namespace Core.Context {
                     UserName = "test@test.com",
                     NormalizedUserName = "ADMINISTRATOR",
                     Email = "test@test.com",
-                    EmailConfirmed = true,
-                    Profile = new AspNetUserProfileEntity() {
-                        Name = "Team",
-                        SurName = "Fu"
-                    }
+                    EmailConfirmed = true
                 };
 
                 var result = userManager.CreateAsync(user, "123qweAS1!").Result;
@@ -71,18 +67,14 @@ namespace Core.Context {
             if(userManager.FindByEmailAsync("user@user.com").Result == null) {
                 var user = new AspNetUserEntity() {
                     UserName = "user@user.com",
-                    NormalizedUserName = "USER",
+                    NormalizedUserName = "TEST USER",
                     Email = "user@user.com",
-                    EmailConfirmed = true,
-                    Profile = new AspNetUserProfileEntity() {
-                        Name = "Matt",
-                        SurName = "Giampietro"
-                    }
+                    EmailConfirmed = true
                 };
 
                 var result = userManager.CreateAsync(user, "!q2w3e4r").Result;
                 if(result.Succeeded) {
-                    userManager.AddToRoleAsync(user, "User").Wait(1000);
+                    userManager.AddToRoleAsync(user, "Manager").Wait(1000);
                 }
             }
         }
@@ -145,24 +137,6 @@ namespace Core.Context {
                 _context.Categories.AddRange(newSections);
                 _context.SaveChanges();
             }
-
-            //var vendors = _context.Vendors.ToList();
-            //if(vendors.Count == 0) {
-            //    var newVendors = new List<VendorEntity>() {
-            //        new VendorEntity() { No="045554823",  Name = "T Roberts Fabrics INC" },
-            //        new VendorEntity() { No="622824209",  Name = "Water Purification Consultants", Fields = new List<VendorFieldEntity>() {
-            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 1", Type = FieldEnum.TEXT },
-            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 2", Type = FieldEnum.NUMBER },
-            //            new VendorFieldEntity() {IsRequired = true, Name = "Field 3", Type = FieldEnum.DATE },
-            //            new VendorFieldEntity() {IsRequired = false, Name = "Field 1", Type = FieldEnum.TEXT },
-            //            }
-            //        },
-            //        new VendorEntity() { No="Not Specified",  Name = "Springs Enterprises LLC" },
-
-            //    };
-            //    _context.Vendors.AddRange(newVendors);
-            //    _context.SaveChanges();
-            //}
         }
     }
 }

@@ -19,15 +19,22 @@ namespace Core.Services.Business {
         Task<List<InvoiceDto>> CreateInvoice(List<InvoiceDto> dto);
         Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto);
         Task<bool> DeleteInvoices(Guid[] ids);
+
+        Task<List<InvoiceServiceDto>> GetInvoiceServices(Guid id);
+        Task<InvoiceServiceDto> CreateService(InvoiceServiceDto dto);
+        Task<bool> DeleteService(Guid[] ids);
+        Task<bool> DeleteService(Guid id);
     }
 
     public class InvoiceBusinessManager: BaseBusinessManager, IInvoiceBusinessManager {
         private readonly IMapper _mapper;
         private readonly IInvoiceManager _invoiceManager;
+        private readonly IInvoiceServiceManager _invoiceServiceManager;
 
-        public InvoiceBusinessManager(IMapper mapper, IInvoiceManager invoiceManager) {
+        public InvoiceBusinessManager(IMapper mapper, IInvoiceManager invoiceManager, IInvoiceServiceManager invoiceServiceManager) {
             _mapper = mapper;
             _invoiceManager = invoiceManager;
+            _invoiceServiceManager = invoiceServiceManager;
         }
 
         public async Task<InvoiceDto> GetInvoice(Guid id) {
@@ -69,6 +76,16 @@ namespace Core.Services.Business {
         public async Task<InvoiceDto> CreateInvoice(InvoiceDto dto) {
             var newEntity = _mapper.Map<InvoiceEntity>(dto);
             var entity = await _invoiceManager.Create(newEntity);
+
+            var services = _mapper.Map<List<InvoiceServiceEntity>>(dto.Services);
+            if(services.Count > 0) {
+                services.ForEach(x => {
+                    x.InvoiceId = entity.Id;
+                    return;
+                });
+
+                await _invoiceServiceManager.Create(services);
+            }
             return _mapper.Map<InvoiceDto>(entity);
         }
 
@@ -79,13 +96,25 @@ namespace Core.Services.Business {
         }
 
         public async Task<InvoiceDto> UpdateInvoice(Guid id, InvoiceDto dto) {
-            var entity = await _invoiceManager.FindInclude(id);
+            var entity = await _invoiceManager.Find(id);
             if(entity == null) {
                 return null;
             }
 
             var newEntity = _mapper.Map(dto, entity);
             entity = await _invoiceManager.Update(newEntity);
+
+            var sCreateDtos = dto.Services.Where(x => x.Id.Equals(Guid.Empty));
+            var createServices = _mapper.Map<List<InvoiceServiceEntity>>(sCreateDtos);
+            if(createServices.Count > 0) {
+                await _invoiceServiceManager.Create(createServices);
+            }
+
+            var sUpdateDtos = dto.Services.Except(sCreateDtos);
+            var updateServices = _mapper.Map<List<InvoiceServiceEntity>>(sUpdateDtos);
+            if(updateServices.Count > 0) {
+                await _invoiceServiceManager.Update(updateServices);
+            }
 
             return _mapper.Map<InvoiceDto>(entity);
         }
@@ -99,6 +128,32 @@ namespace Core.Services.Business {
             return result != 0;
         }
 
-        
+        #region SERVICES
+        public async Task<List<InvoiceServiceDto>> GetInvoiceServices(Guid id) {
+            var entities = await _invoiceServiceManager.FindBy(id);
+            return _mapper.Map<List<InvoiceServiceDto>>(entities);
+        }
+
+        public async Task<InvoiceServiceDto> CreateService(InvoiceServiceDto dto) {
+            var newEntity = _mapper.Map<InvoiceServiceEntity>(dto);
+            var entity = await _invoiceServiceManager.Create(newEntity);
+            return _mapper.Map<InvoiceServiceDto>(entity);
+        }
+
+        public async Task<bool> DeleteService(Guid[] ids) {
+            var entities = await _invoiceServiceManager.FindAll(ids);
+            if(entities == null)
+                throw new Exception("We did not find field records for this request!");
+
+            int result = await _invoiceServiceManager.Delete(entities);
+            return result != 0;
+        }
+
+        public async Task<bool> DeleteService(Guid id) {
+            return await DeleteService(new Guid[] { id });
+        }
+
+
+        #endregion
     }
 }

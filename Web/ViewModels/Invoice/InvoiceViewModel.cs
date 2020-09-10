@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Web.Utils;
 
 namespace Web.ViewModels {
     public class InvoiceViewModel {
@@ -32,6 +33,7 @@ namespace Web.ViewModels {
 
         public IEnumerable<InvoiceServiceViewModel> Services { get; set; }
 
+        [NotEmpty]
         [Display(Name = "Account")]
         public Guid AccountId { get; set; }
     }

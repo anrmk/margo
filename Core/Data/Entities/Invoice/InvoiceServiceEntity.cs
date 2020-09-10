@@ -10,7 +10,7 @@ namespace Core.Data.Entities {
         public decimal Amount { get; set; }
 
         [Required]
-        [MaxLength(24)]
+        [MaxLength(128)]
         public string Name { get; set; }
 
         public int Count { get; set; }

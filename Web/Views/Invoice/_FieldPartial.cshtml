@@ -1,0 +1,18 @@
+﻿@model InvoiceServiceViewModel
+
+<div class="equal width fields">
+    <input type="hidden" name="Services[][Id]" value="@Model.Id" />
+    <input type="hidden" name="Services[][InvoiceId]" value="@Model.InvoiceId" />
+    <div class="field required">
+        <input name="Services[][Name]" placeholder="Name" maxlength="128" data-value-type="string" value="@Model.Name" required>
+    </div>
+    <div class="four wide field required">
+        <input name="Services[][Amount]" placeholder="Amount" min="0" data-value-type="number" value="@Model.Amount" required>
+    </div>
+    <div class="two wide field required">
+        <input name="Services[][Count]" placeholder="Count" type="number" min="1" step="1" data-value-type="number" value="@Model.Count" required>
+    </div>
+    <div class="one wide field flex align-center justify-center">
+        <a asp-route="DeleteInvoiceService" asp-route-id="@Model.Id" data-request="ajax" rel="onDeleteInvoiceServiceClick" data-confirm="Are you sure want to delete this?">delete</a>
+    </div>
+</div>

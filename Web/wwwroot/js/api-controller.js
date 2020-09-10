@@ -1,8 +1,13 @@
 ﻿//Submit form using jquery ajax
 $.fn.ajaxSubmit = function (opt = {}) {
+    this.off('submit');
     this.on('submit', e => {
         e.preventDefault();
         var $form = $(e.currentTarget);
+        if (!$form.valid('is valid')) {
+            return;
+        }
+
         var $data = $form.serializeJSON();
         var options = $.extend({
             'url': $form.attr('action'),
@@ -39,9 +44,8 @@ $.fn.ajaxSubmit = function (opt = {}) {
 }
 
 $.fn.ajaxClick = function (opt = {}) {
-    let options = $.extend({}, {'eventName': 'click'},  opt);
-
-    this.on(options.eventName, (e) => {
+    this.off('click');
+    this.on('click', (e) => {
         e.preventDefault();
         let $link = $(e.currentTarget);
         if ($link.hasData('confirm')) {
@@ -71,6 +75,37 @@ $.fn.ajaxClick = function (opt = {}) {
     return this;
 }
 
+$.fn.ajaxSelect = function () {
+    this.off('change');
+    this.on('change', (e) => {
+        e.preventDefault();
+
+        var $select = $(e.currentTarget);
+        var link = $select.data('url'),
+            data = {},
+            key = $select.data('key');
+
+        if (key === undefined) {
+            link += `/${$select.val()}`;
+        } else {
+            data[key] = $select.val()
+        }
+
+        $.ajax({
+            'url': link,
+            'data': data,
+            'complete': (jqXHR, status) => {
+                $select.trigger('ajaxChange', [jqXHR, status]);
+            }
+        });
+    }).on('ajaxChange', (e, jqXHR, status) => {
+        var func = $(e.currentTarget).attr('rel') || 'ajaxChange';
+        if (typeof window[func] === 'function') {
+            window[func](e, jqXHR, status);
+        }
+    })
+}
+
 $.fn.dialog = function (opt) {
     var content = $((this == null || this.length == 0) ? '<p>Nothing to display</p>' : $('<div>').append(this));
     var options = $.extend({}, { 'title': 'Modal window', 'content': content }, opt);
@@ -91,6 +126,7 @@ $.fn.dialog = function (opt) {
                     $form.ajaxSubmit();
                     $form.find('.ui.dropdown').dropdown();
                     $form.find('a[data-request=ajax]').ajaxClick();
+                    $form.find('select[data-request=ajax]').ajaxSelect();
                     $form.find('.sortable').sortable({ 'handle': '.dragable', 'animation': 150 });
                     $modal.find('button.submit').attr('form', $form.attr('id')).removeClass('hidden');
                 }
@@ -137,7 +173,7 @@ $.fn.addField = function (target) {
         var $section = $(`<div class="inline fields">
             <input type="hidden" name="Fields[][Sort]" value="0" />
             <div class="one wide field dragable flex justify-center">
-                    <i class="ellipsis vertical icon"></i>
+                <i class="ellipsis vertical icon"></i>
             </div>
             <div class="eight wide field required">
                 <input name="Fields[][Name]" required placeholder="Name" data-value-type="string" />
@@ -177,31 +213,20 @@ $.fn.addField = function (target) {
  * @deprecated Only for temp use.
  */
 $.fn.addInvoiceServices = function (target, name) {
-    console.warn("Calling obsolete function!");
-    var $section = $(`<div class="inline fields">
-        <div class="seven width field required">
-            <label>Name</label>
-            <input name="Services[][Name]" data-value-type="string" value="${name}" readonly required>
+    return `<div class='equal width fields'>
+        <div class='field required'>
+            <input name='Services[][Name]' data-value-type='string' value='${name}' readonly required>
         </div>
-        <div class="four width field required">
-            <label>Amount</label>
-            <input name="Services[][Amount]" data-value-type="number" value="0.00" required>
+        <div class='field required'>
+            <input name='Services[][Amount]' data-value-type='number' value='0.00' required>
         </div>
-        <div class="four width field required">
-            <label>Count</label>
-            <input name="Services[][Count]" data-value-type="number" value="0.00" required>
+        <div class='field required'>
+            <input name='Services[][Count]' data-value-type='number' value='0.00' required>
         </div>
-        <div class="one wide field">
-            <a href="#">delete</a>
+        <div class='one wide field flex align-center justify-center'>
+            <a href='#' data-request='ajax' data-confirm='Are you sure want to delete this?'>delete</a>
         </div>
-    </div>`);
-
-    $section.find('a').on('click', (e) => {
-        e.preventDefault();
-        $section.remove();
-    });
-
-    $section.appendTo(target);
+    </div>`;
 }
 
 $.fn.segmentElement = function (id, groupName, html) {
@@ -233,14 +258,14 @@ $.fn.fieldsElement = function (fields, fieldName, label = false) {
                     <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
                     <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
 
-                    ${field.htmlTypeName === "list" ? 
-                        `<input type="hidden" name="${fieldName}[][Value]" data-value-type="list" />
+                    ${field.htmlTypeName === "list" ?
+                `<input type="hidden" name="${fieldName}[][Value]" data-value-type="list" />
                         <div data-container="group">
                             ${field.items.map(item => $.fn.fieldListElement(item.key, item.value, field.isRequired, item.btnOptions)).join("\n ")}
                         </div>`
-                        :
-                        `<input name='${fieldName}[][Value]' autocomplete='new-password' ${field.isRequired ? "required" : ""} placeholder='${field.name}' ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} type='${field.htmlTypeName}' data-value-type='string' />`
-                    }
+                :
+                `<input name='${fieldName}[][Value]' autocomplete='new-password' ${field.isRequired ? "required" : ""} placeholder='${field.name}' ${field.htmlTypeName === 'checkbox' ? 'value="1"' : ''} type='${field.htmlTypeName}' data-value-type='string' />`
+            }
                 </div>`);
     }).join('\n ');
 }
@@ -298,6 +323,10 @@ $.fn.navSettings = { isOpen: false };
 $.fn.sidenav = function (action, property, value) {
   const $sidenav = $(this);
   const settings = $.fn.navSettings;
+
+    if (localStorage.getItem('sidenavIsOpen') === 'opened') {
+        openNav()
+    }
 
   function openNav() {
     const $main = $(settings.content);

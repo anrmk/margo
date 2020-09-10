@@ -3,6 +3,7 @@
     var formId = Guid.NewGuid();
 
     var accounts = (IEnumerable<SelectListItem>)ViewData["Accounts"];
+    var serviceListUrl = Url.RouteUrl("GetInvoiceServices");
 }
 
 <form id="@formId" class="ui form" asp-action="CreateInvoice" method="post">
@@ -15,7 +16,7 @@
 
             <div class="ten wide field required">
                 <label asp-for="AccountId"></label>
-                <select id="account-select" class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" required>
+                <select class="ui fluid dropdown" asp-for="AccountId" asp-items="@accounts" rel="onAccountSelectChange" data-target="#@(formId)_menuContainer" data-url="@(serviceListUrl)" data-key="Id" data-request="ajax" required >
                     <option value="" selected disabled hidden>Choose here</option>
                 </select>
             </div>
@@ -24,11 +25,11 @@
         <div class="four fields">
             <div class="field required">
                 <label asp-for="Amount"></label>
-                <input asp-for="Amount" data-value-type="number" required>
+                <input asp-for="Amount" min="0" data-value-type="number" required>
             </div>
             <div class="field required">
                 <label asp-for="TaxRate"></label>
-                <input asp-for="TaxRate" data-value-type="number" required>
+                <input asp-for="TaxRate" type="number" data-value-type="number" required>
             </div>
             <div class="field required">
                 <label asp-for="Date"></label>
@@ -42,26 +43,10 @@
 
         <div class="ui right floated vertical dropdown mini icon button" tabindex="0">
             <i class="plus icon"></i>
-            <div class="menu">
-                <div class="header">Services Types</div>
-                <div id="service-dropdown" class="scrolling menu"></div>
-            </div>
+            <div id="@(formId)_menuContainer" class="menu"></div>
         </div>
 
         <h4 class="ui dividing header">Services</h4>
-        <div id="@(formId)_container" class="ui form"></div>
+        <div id="@(formId)_serviceContainer" class="ui form"></div>
     </fieldset>
 </form>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#account-select').on('change', function () {
-            $.fn.fillInvoiceServiceNames('#service-dropdown', $(this).val(), '#@(formId)_container');
-        });
-
-        $('#service-dropdown').on('click', '.item', function () {
-            const value = $(this)[0].textContent;
-            $.fn.addInvoiceServices('#@(formId)_container', value);
-        });
-    });
-</script>

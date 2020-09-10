@@ -104,18 +104,6 @@ namespace Core.Services.Business {
             return _mapper.Map<List<AspNetUserDto>>(entities);
         }
 
-        public async Task<List<AspNetUserDto>> GetUsersWithoutObservers() {
-            var importantUsers = new List<AspNetUserEntity>();
-            var roles = await _roleManager.Roles.ToListAsync();
-            foreach(var role in roles) {
-                if(role.NormalizedName != "OBSERVER") {
-                    importantUsers.AddRange(await _userManager.GetUsersInRoleAsync(role.Name));
-                }
-            }
-
-            return _mapper.Map<List<AspNetUserDto>>(importantUsers);
-        }
-
         public async Task<AspNetUserDto> GetUser(string id) {
             var entity = await _userManager.Users
                 .Include(x => x.Profile)
@@ -130,6 +118,18 @@ namespace Core.Services.Business {
             dto.Roles = _mapper.Map<List<AspNetRoleDto>>(roles);
 
             return dto;
+        }
+
+        public async Task<List<AspNetUserDto>> GetUsersWithoutObservers() {
+            var importantUsers = new List<AspNetUserEntity>();
+            var roles = await _roleManager.Roles.ToListAsync();
+            foreach(var role in roles) {
+                if(role.NormalizedName != "OBSERVER") {
+                    importantUsers.AddRange(await _userManager.GetUsersInRoleAsync(role.Name));
+                }
+            }
+
+            return _mapper.Map<List<AspNetUserDto>>(importantUsers);
         }
 
         public async Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter) {

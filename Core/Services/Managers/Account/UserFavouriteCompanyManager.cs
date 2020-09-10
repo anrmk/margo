@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services.Managers {
@@ -18,7 +19,7 @@ namespace Core.Services.Managers {
         public async Task<List<AspNetUserCompanyFavouriteEntity>> FindByUserId(string userId) {
             return await DbSet
                 .Where(x => x.UserId == userId)
-                .OrderBy(x=>x.Sort)
+                .OrderBy(x => x.Sort)
                 .Include(x => x.Company)
                 .ToListAsync();
         }

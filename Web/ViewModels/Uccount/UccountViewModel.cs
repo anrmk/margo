@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using Core.Data.Enums;
-using Web.Utils;
 
 namespace Web.ViewModels {
     public class UccountViewModel {

@@ -2,7 +2,6 @@ using System;
 
 using Core.Context;
 using Core.Data.Entities;
-using Core.Jobs;
 using Core.Services;
 
 using Microsoft.AspNetCore.Builder;
@@ -90,7 +89,7 @@ namespace Web {
 
             ServicesConfig.Configuration(services);
             SeleniumServiceConfig.Configuration(services);
-            
+
             //Jobs
             //JobSchedulerConfig.Configuration(services);
 

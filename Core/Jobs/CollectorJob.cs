@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,9 +8,6 @@ using AutoMapper;
 using Core.Context;
 using Core.Data.Dto;
 using Core.Data.Entities;
-using Core.Extension;
-using Core.Services;
-using Core.Services.Business;
 using Core.Services.Integration;
 
 using Microsoft.EntityFrameworkCore;

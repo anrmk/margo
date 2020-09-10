@@ -25,6 +25,8 @@ namespace Core.Services.Managers {
                     .ThenInclude(x => x.Person)
                 .Include(x => x.Account)
                     .ThenInclude(x => x.Company)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Vendor)
                 .Include(x => x.Services)
                 .Include(x => x.Payments)
                 .Where(x => x.Id.Equals(id))

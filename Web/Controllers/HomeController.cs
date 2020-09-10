@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using AutoMapper;
+
 using Core.Data.Dto;
 using Core.Extension;
 using Core.Filters;
 using Core.Services.Business;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -24,7 +26,7 @@ namespace Web.Controllers.Mvc {
     public class HomeController: BaseController<HomeController> {
         private readonly IAccountBusinessManager _accountBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
-        
+
         public HomeController(ILogger<HomeController> logger, IMapper mapper,
             IAccountBusinessManager accountBusinessManager,
             ICompanyBusinessManager companyBusinessManager) : base(logger, mapper) {

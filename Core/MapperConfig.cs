@@ -45,6 +45,7 @@ namespace Core {
 
             #region INVOICE
             CreateMap<InvoiceDto, InvoiceEntity>()
+                .ForMember(d => d.Services, o => o.Ignore())
                 .ReverseMap()
                 .ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Account.Company != null
                     ? s.Account.Company.Name

@@ -3,6 +3,7 @@
     var formId = Guid.NewGuid();
 
     var accountName = (string)ViewData["AccountName"];
+    var services = (List<UccountServiceViewModel>)ViewData["Services"];
 }
 
 <form id="@formId" class="ui form" asp-action="UpdateInvoice" asp-route-id="@Model.Id" method="put">
@@ -24,11 +25,11 @@
         <div class="four fields">
             <div class="field required">
                 <label asp-for="Amount"></label>
-                <input asp-for="Amount" data-value-type="number" required>
+                <input asp-for="Amount" min="0" data-value-type="number" required>
             </div>
             <div class="field required">
                 <label asp-for="TaxRate">Tax rate</label>
-                <input asp-for="TaxRate" data-value-type="number" required>
+                <input asp-for="TaxRate" type="number" data-value-type="number" required>
             </div>
             <div class="field required">
                 <label asp-for="Date"></label>
@@ -42,46 +43,20 @@
 
         <div class="ui right floated vertical dropdown mini icon button" tabindex="0">
             <i class="plus icon"></i>
-            <div class="menu">
-                <div class="header">Services Types</div>
-                <div id="service-dropdown" class="scrolling menu"></div>
+            <div id="@(formId)_menuContainer" class="menu" >
+                @foreach(var service in services) {
+                    <a class="item" asp-route="AddInvoiceService" asp-route-id="@Model.Id" asp-route-sguid="@service.Id" data-request="ajax" rel="onCreateInvoiceServiceClick" data-target="#@(formId)_serviceContainer">
+                        @(service.Name + ": " + string.Join("| ", service.Fields.Where(x => x.IsHidden == false && !string.IsNullOrWhiteSpace(x.Name)).Select(x => x.Value)))
+                    </a>
+                }
             </div>
         </div>
 
         <h4 class="ui dividing header">Services</h4>
-
-        <div id="@(formId)_container" class="ui form">
-            @foreach(var service in Model.Services) {
-                <div id="@(formId +"_"+ service.Id)" class="inline fields">
-                    <input type="hidden" name="Services[][Id]" value="@service.Id" />
-                    <div class="seven width field required">
-                        <label asp-for="@service.Name"></label>
-                        <input name="Services[][Name]" data-value-type="string" value="@service.Name" required>
-                    </div>
-                    <div class="four width field required">
-                        <label asp-for="@service.Amount"></label>
-                        <input name="Services[][Amount]" data-value-type="number" value="@service.Amount" required>
-                    </div>
-                    <div class="four width field required">
-                        <label asp-for="@service.Count"></label>
-                        <input name="Services[][Count]" data-value-type="number" value="@service.Count" required>
-                    </div>
-                    <div class="one wide field">
-                        <a href="#" onclick="$('#@(formId +"_"+ service.Id)').remove()">delete</a>
-                    </div>
-                </div>
-            }
+        <div id="@(formId)_serviceContainer" class="ui form">
+        @foreach(var service in Model.Services) {
+            <partial name="_FieldPartial" model="service" />
+        }
         </div>
     </fieldset>
 </form>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $.fn.fillInvoiceServiceNames('#service-dropdown', '@Model.AccountId');
-
-        $('#service-dropdown').on('click', '.item', function () {
-            const value = $(this)[0].textContent;
-            $.fn.addInvoiceServices('#@(formId)_container', value);
-        });
-    });
-</script>

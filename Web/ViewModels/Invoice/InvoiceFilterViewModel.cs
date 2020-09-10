@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+
 using Core.Data.Enums;
 
 namespace Web.ViewModels {

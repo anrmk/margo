@@ -226,12 +226,11 @@ namespace Core.Services.Business {
 
         public async Task<List<UccountServiceDto>> GetServices(Guid accountId) {
             var services = await _uccountServiceManager.FindAll(accountId);
-            
+
             // Filter services by user
             var filteredServices = await _uccountServiceGrantsManager.FilterByUser(services);
 
-            foreach (var service in filteredServices)
-            {
+            foreach(var service in filteredServices) {
                 // Decrypt service password field
                 foreach(var field in service.Fields) {
                     if(field.Type == Data.Enums.FieldEnum.PASSWORD) {

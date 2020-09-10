@@ -8,6 +8,10 @@
     var listUrl = Url.RouteUrl("GetInvoices");
     var deleteUrl = Url.RouteUrl("DeleteInvoices");
     var editUrl = Url.RouteUrl("EditInvoice");
+    var detailsUrl = Url.RouteUrl("DetailsInvoice");
+
+    var serviceListUrl = Url.RouteUrl("GetInvoiceServices");
+    var serviceCreateUrl = Url.RouteUrl("AddInvoiceService");
 }
 
 @section RightSidebar {
@@ -42,16 +46,35 @@
     </div>
 }
 
-<div>
-    <div id="toolbar" class="ui secondary menu">
-        <a asp-route="AddInvoice" class="ui button" data-request="ajax" rel="dialog" data-title="Create invoice"><i class="fa fa-plus mr-1"></i> Create</a>
-        <a asp-route="SyncInvoice" class="ui button" data-request="ajax" data-title="Sync invoice"><i class="fa fa-plus mr-1"></i> Sync</a>
-        <div class="right menu">
-            <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+<div class="ui shape width-100">
+    <div class="sides">
+        <div class="active side main">
+            @if(User.IsInRole("Administrator")) {
+                <div id="toolbar" class="ui secondary menu">
+                    <a asp-route="AddInvoice" class="ui button" data-request="ajax" rel="dialog" data-title="Create invoice"><i class="fa fa-plus mr-1"></i> Create</a>
+                    <a asp-route="SyncInvoice" class="ui button" data-request="ajax" data-title="Sync invoice"><i class="fa fa-plus mr-1"></i> Sync</a>
+                    <div class="right menu">
+                        <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+                    </div>
+                </div>
+            }
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        </div>
+        <div class="side display">
+            <div class="ui grid">
+                <div class="row">
+                    <div class="column">
+                        <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <div id="@(tableId)_details"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
 </div>
 
 @section Scripts {
@@ -73,38 +96,27 @@
                     { 'title': 'Balance', 'className': 'collapsing', 'data': 'balanceAmount' },
                     { 'title': 'Status', 'className': 'collapsing', 'data': 'status' },
                     { 'title': 'Payment date', 'className': 'collapsing', 'data': 'paymentDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
-                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) }
+                    { 'title': 'Modified', 'className': 'collapsing', 'data': 'updatedDate', 'render': (data, type, row) => $.fn.formatDate(data, type, row) },
+                    {
+                      'title': 'Action', 'data': 'id', 'className': 'collapsing right aligned', 'render': (data, type, row) => {
+                        return `<a class='ui icon' data-request='ajax' href='@(editUrl)?id=${data}' rel='dialog' data-title='Edit invoice' >
+                                    <i class='pencil icon'></i>
+                                </a>`;
+                      }
+                    }
                 ],
                 'onDblRowClick': (e, data) => {
-                    $.get('@editUrl', { 'id': data.id }).done(result => {
-                        $(result).dialog({ 'title': 'Edit invoice' });
-                    });
+                    if (e.target.tagName === 'TD') {
+                        $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                            $('#@(tableId)_details').html(result).find("a[data-request=ajax]").ajaxClick();;
+                            $('.shape').shape('set next side', '.side.display').shape('flip over');
+                        });
+                    }
                 }
             });
-
-            @*$('#@(tableId)_companies-persons-select').on('change', function () {
-                let valueData = $(this).find(':selected').val().split('_');
-
-                $('#@(tableId)_customer_id').val(valueData[1]);
-
-                switch (valueData[0]) {
-                    case "person":
-                        $('#@(tableId)_is_person').val(true);
-                        break;
-                    case "company":
-                        $('#@(tableId)_is_person').val(false);
-                        break;
-                }
-                window.DocumentController.reload(false);
-            });
-            $('#@(tableId)_vendors-select').on('change', function () {
-                window.DocumentController.reload(false);
-            });
-            $('#@(tableId)_unpaid-checkbox').on('change', function () {
-                window.DocumentController.reload(false);
-            });*@
         });
 
+        //submit on create or update
         ajaxSubmitComplete = function (e, jqXHR, status) {
             if (status === 'success') {
                 window.DocumentController.reload(false);
@@ -112,11 +124,32 @@
             }
         };
 
-        ajaxClick = function (e, jqXHR, status) {
+        //on Account select change
+        onAccountSelectChange = function (e, jqXHR, status) {
             if (status === 'success') {
-                var target = $(e.target).attr('data-target');
-                $(target).remove();
+                var $form = $(e.currentTarget).closest('form');
+                var data = jqXHR.responseJSON;
+                var items = data.map(x => `<a class='item' href='@(serviceCreateUrl)?sguid=${x.id}' data-request='ajax' rel='onCreateInvoiceServiceClick' data-target='#${$form.attr('id')}_serviceContainer'>${x.name}<a/>`);
+
+                let $container = $(e.currentTarget.getAttribute('data-target'));
+                $container.empty().append(items).find('a[data-request=ajax]').ajaxClick();
             }
-        };
+        }
+
+        //create services
+        onCreateInvoiceServiceClick = function (e, jqXHR, status) {
+            if (status === 'success') {
+                const container = $(e.target).data('target');
+                $(container).append(jqXHR.responseText).find('a[data-request=ajax]').ajaxClick();
+            }
+        }
+
+        //delete services
+        onDeleteInvoiceServiceClick = function (e, jqXHR, status) {
+            if (status === 'success') {
+                const $parent = $(e.target).closest('.fields');
+                $parent.remove()
+            }
+        }
     </script>
 }

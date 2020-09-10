@@ -10,7 +10,7 @@ namespace Core.Data.Dto {
         /// <summary>
         /// Link for grouping by type
         /// </summary>
-        public Guid CategoryId { get; set; }
+        //public Guid CategoryId { get; set; }
 
         public Guid InvoiceId { get; set; }
     }

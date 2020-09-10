@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-using Web.Utils;
+
 using Web.ViewModels;
 
 namespace Web.Controllers.Mvc {
@@ -127,6 +127,7 @@ namespace Web.Controllers.Api {
             return Ok(_mapper.Map<UccountServiceViewModel>(item));
         }
 
+        [HttpGet("AddUccount", Name = "AddUccount")]
         public async Task<IActionResult> AddUccount([FromQuery] UccountTypes kind) {
             string html;
             var model = new UccountViewModel();

@@ -233,10 +233,12 @@
                     }
                 ],
                 'onDblRowClick': (e, data) => {
-                    $.get('@detailsUrl', { 'id': data.id }).done(result => {
-                        $('#@(tableId)_details').html(result).find("a[data-request=ajax]").ajaxClick();
-                        $('.shape').shape('set next side', '.side.display').shape('flip over');
-                    });
+                    if (e.target.tagName === 'TD') {
+                        $.get('@detailsUrl', { 'id': data.id }).done(result => {
+                            $('#@(tableId)_details').html(result).find("a[data-request=ajax]").ajaxClick();
+                            $('.shape').shape('set next side', '.side.display').shape('flip over');
+                        });
+                    }
                 }
             });
         });

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Services.Integration;
+﻿using Core.Services.Integration;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Services {

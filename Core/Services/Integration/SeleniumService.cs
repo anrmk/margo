@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 using Core.Context;
-using Core.Extension;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;

@@ -54,6 +54,7 @@ namespace Core.Services.Managers {
 
         public async Task<List<UccountEntity>> FindAll() {
             return await _grantManager.Filter(DbSet)
+                .Include(x => x.Vendor)
                 .Include(x => x.Company)
                 .Include(x => x.Person)
                 .Include(x => x.Fields)

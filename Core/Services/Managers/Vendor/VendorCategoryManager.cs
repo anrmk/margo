@@ -22,8 +22,8 @@ namespace Core.Services.Managers {
             var entities = DbSet
                 .Include(x => x.Category)
                 .Where(x => x.VendorId.Equals(vendorId));
-                
-            if (onlyWithFields) {
+
+            if(onlyWithFields) {
                 entities = entities.Where(x => x.Category.Fields.Any());
             }
             return await entities.ToListAsync();

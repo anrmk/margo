@@ -29,7 +29,7 @@ namespace Core.Services.Managers {
         void LogError(string message);
     }
 
-    public class LogManager: ILogManager{
+    public class LogManager: ILogManager {
         private readonly ILogger<ILogManager> _logger;
 
         public LogManager(ILogger<ILogManager> logger) {

@@ -1,5 +1,6 @@
 ﻿
 using System;
+
 using Core.Data.Enums;
 
 namespace Core.Data.Dto {

@@ -27,30 +27,18 @@ namespace Core.Context {
     public class ApplicationContext: IdentityDbContext<AspNetUserEntity>, IApplicationContext {
         private readonly IConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region DbSet
         public DbSet<AspNetUserRequestEntity> UserRequests { get; set; }
 
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<CompanyDataEntity> CompanyData { get; set; }
-        //public DbSet<CompanySectionEntity> CompanySections { get; set; }
-        //public DbSet<CompanySectionFieldEntity> CompanySectionFields { get; set; }
-
-        //public DbSet<SectionEntity> Sections { get; set; }
-        //public DbSet<SectionFieldEntity> SectionFields { get; set; }
 
         public DbSet<VendorEntity> Vendors { get; set; }
-        //public DbSet<VendorSectionEntity> VendorSections { get; set; }
         public DbSet<VendorFieldEntity> VendorSectionFields { get; set; }
-        //public DbSet<VendorAddressEntity> VendorAddress { get; set; }
-        //public DbSet<VendorMediaEntity> VendorMedias { get; set; }
 
         public DbSet<UccountEntity> Uccounts { get; set; }
-        //public DbSet<UccountSectionEntity> UccountSections { get; set; }
-        //public DbSet<UccountSectionFieldEntity> UccountSectionFields { get; set; }
-
-        public DbSet<UccountServiceEntity> Services { get; set; }
+        public DbSet<UccountServiceEntity> UccountServices { get; set; }
 
         public DbSet<PersonEntity> Persons { get; set; }
 
@@ -58,16 +46,16 @@ namespace Core.Context {
         public DbSet<CategoryFieldEntity> CategoryFields { get; set; }
 
         public DbSet<InvoiceEntity> Invoices { get; set; }
-        public DbSet<PaymentEntity> Payments { get; set; }
+        public DbSet<InvoiceServiceEntity> InvoiceServices { get; set; }
 
+        public DbSet<PaymentEntity> Payments { get; set; }
         #endregion
 
         public Database ApplicationDatabase { get; private set; }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal, IHttpContextAccessor httpContextAccessor) : base(options) {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration, IPrincipal principal) : base(options) {
             _configuration = configuration;
             _principal = principal as ClaimsPrincipal;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging();

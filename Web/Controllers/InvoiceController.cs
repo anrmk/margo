@@ -42,7 +42,6 @@ namespace Web.Controllers.Mvc {
             var vendors = await _vendorBusinessManager.GetVendors();
             ViewBag.Vendors = vendors.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
 
-
             var persons = await _personBusinessManager.GetPersons();
             var companies = await _companyBusinessManager.GetCompanies();
 
@@ -107,20 +106,20 @@ namespace Web.Controllers.Api {
         [HttpGet("AddInvoice", Name = "AddInvoice")]
         public async Task<IActionResult> AddInvoice() {
             var accounts = await _uccountBusinessManager.GetUccountsInclude();
-            var viewData = new ViewDataDictionary(
-                new EmptyModelMetadataProvider(),
-                new ModelStateDictionary()) {
-                {
-                    "Accounts",
-                    _mapper.Map<List<UccountListViewModel>>(accounts)
-                        .Select(x=>new SelectListItem {
-                            Text =x.Name,
-                            Value =x.Id.ToString()
-                        })
+            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "Accounts", _mapper.Map<List<UccountListViewModel>>(accounts).Select(x=>new SelectListItem {
+                    Text = $"{x.Name} [{x.VendorName}]",
+                    Value =x.Id.ToString()})
                 }};
 
+            var model = new InvoiceViewModel() {
+                No = DateTime.Now.Ticks.ToString("x"),
+                Date = DateTime.Now,
+                DueDate = DateTime.Now.AddMonths(1)
+            };
+
             var html = await _viewRenderService.RenderToStringAsync(
-                "_CreatePartial", new InvoiceViewModel(), viewData);
+                "_CreatePartial", model, viewData);
 
             return Ok(html);
         }
@@ -170,12 +169,16 @@ namespace Web.Controllers.Api {
             if(item == null)
                 return NotFound();
 
-            var viewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {{
-                "AccountName",
-                item.Account.Name
-            }};
+            var services = await _uccountBusinessManager.GetServices(item.AccountId);
 
-            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<InvoiceViewModel>(item), viewData);
+            var viewDataDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary()) {
+                { "AccountName", $"{item.Account.Name}"},
+                //{ "AccountName", $"{item.Account.Name} [{item.Account.VendorName}]"},
+                { "Services", _mapper.Map<List<UccountServiceViewModel>>(services) }
+                //.Select(x => new SelectListItem() { Text = x.Name +": "+ string.Join("| ", x.Fields.Where(y => y.IsHidden == false && !string.IsNullOrEmpty(y.Value)).Select(y => y.Value)), Value = x.Id.ToString() }).ToList()}
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_EditPartial", _mapper.Map<InvoiceViewModel>(item), viewDataDictionary);
             return Ok(html);
         }
 
@@ -202,6 +205,44 @@ namespace Web.Controllers.Api {
                 if(result)
                     return Ok(id);
             }
+            return BadRequest("No items selected");
+        }
+
+        //INVOICE SERVICES
+        [HttpGet("GetInvoiceServices", Name = "GetInvoiceServices")]
+        public async Task<IActionResult> GetInvoiceServices([FromQuery] Guid id) {
+            var services = await _uccountBusinessManager.GetServices(id);
+            if(services == null)
+                return NotFound();
+            return Ok(_mapper.Map<List<UccountServiceViewModel>>(services));
+        }
+
+        [HttpGet("AddInvoiceService", Name = "AddInvoiceService")]
+        public async Task<IActionResult> AddInvoiceService([FromQuery] Guid id, [FromQuery] Guid sguid) {
+            var item = await _invoiceBusinessManager.GetInvoice(id);
+
+            var uccountService = await _uccountBusinessManager.GetService(sguid);
+
+            var service = new InvoiceServiceDto() {
+                Amount = 0,
+                Count = 0,
+                InvoiceId = item?.Id ?? Guid.Empty,
+                Name = uccountService.Name + ": " + string.Join("| ", uccountService.Fields.Where(x => x.IsHidden == false && !string.IsNullOrEmpty(x.Name)).Select(x => x.Value))
+            };
+
+            var html = await _viewRenderService.RenderToStringAsync("_FieldPartial", _mapper.Map<InvoiceServiceViewModel>(service));
+            return Ok(html);
+        }
+
+        [HttpGet("DeleteInvoiceService", Name = "DeleteInvoiceService")]
+        public async Task<IActionResult> DeleteInvoiceService([FromQuery] Guid id) {
+            if(id.Equals(Guid.Empty))
+                return Ok(id);
+
+            var result = await _invoiceBusinessManager.DeleteService(id);
+            if(result)
+                return Ok(id);
+
             return BadRequest("No items selected");
         }
     }

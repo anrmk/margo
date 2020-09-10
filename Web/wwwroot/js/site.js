@@ -32,7 +32,7 @@
     });
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
-    $('select[data-request=ajax]').ajaxClick({'eventName': 'change'});
+    $('select[data-request=ajax]').ajaxSelect();
     $("#sidenav")
         .sidenav("settings", "content", "#main-content")
         .sidenav("settings", "btnOpen", "#sidebar-btn")
@@ -46,13 +46,13 @@
 
     window.Hub = new NotificationHub();
 }).ajaxSend((event, xhr, options) => {
-    xhr.setRequestHeader("ApiKey", "Bearer " + $('input:hidden[name="__RequestVerificationToken"]').val());
+    xhr.setRequestHeader('ApiKey', 'Bearer ' + $('input:hidden[name="__RequestVerificationToken"]').val());
 }).ajaxStart(() => {
     $('form fieldset').attr('disabled', 'disabled');
 }).ajaxStop(() => {
     $('form fieldset').removeAttr('disabled')
 }).ajaxError((e, jqxhr, settings, thrownError) => {
-    window.console.log("Error", jqxhr.responseText);
+    window.console.log('Error', jqxhr.responseText);
     // $.fn.alert('top', 'center', jqxhr.responseText, 'danger');
 });
 
@@ -86,8 +86,8 @@ $.extend($.serializeJSON.defaultOptions, {
         'number:nullable': function (str) { return Number(str) || null; },
         'list': function (str, _, inputData) { 
             const $input = $(inputData.self);
-            const $parent = $input.parent("div");
-            const $inputsGroup = $parent.find("div[data-container='group'] :input");
+            const $parent = $input.parent('div');
+            const $inputsGroup = $parent.find(`div[data-container='group'] :input`);
             const inputsGroupData = $inputsGroup.serializeArray();
             
             if (inputsGroupData.length > 0) {
@@ -95,22 +95,22 @@ $.extend($.serializeJSON.defaultOptions, {
 
                 str = formattedInputsGroupData
                     .map(data => `${data[0].value},${data[1].value}`)
-                    .join(";");
+                    .join(';');
 
                 return str;
             }
 
-            return str || ""; 
+            return str || ''; 
         },
     }
 });
 
 $.extend($.fn.dropdown.settings, {
-    //'clearable': true,
+    'clearable': true,
     'forceSelection': false, //when you open dropdown do not focus on unselected item
     'onChange': function (value, text, $choice) {
         if (typeof window['sDropdownOnChange'] === 'function') {
-            window['sDropdownOnChange']($.Event("change", { target: this, currentTarget: $choice }), value, text, $choice);
+            window['sDropdownOnChange']($.Event('change', { target: this, currentTarget: $choice }), value, text, $choice);
         }
     }
 });

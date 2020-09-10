@@ -1,10 +1,10 @@
-﻿using Core.Context;
+﻿using System.Threading.Tasks;
+
+using Core.Context;
 using Core.Data.Entities;
 using Core.Services.Base;
 
 using Microsoft.EntityFrameworkCore;
-
-using System.Threading.Tasks;
 
 namespace Core.Services.Managers {
     public interface IUserProfileManager: IEntityManager<AspNetUserProfileEntity> {
