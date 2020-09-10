@@ -125,7 +125,7 @@ $.fn.formatDate = function (data, type, row) {
 };
 
 $.fn.renderDatatableAction = function (data, type, row) {
-    return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}'> <label></label></div>`;
+    return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}' class='changable toolbar'> <label></label></div>`;
 }
 
 $.fn.renderDatatableCollection = function (data, type, row) {
@@ -229,6 +229,7 @@ $.fn.fieldsElement = function (fields, fieldName, label = false) {
                     ${label ? `<label>${field.name}</label>` : ''}
                     <input type='hidden' name='${fieldName}[][Name]' value='${field.name}'>
                     <input type='hidden' name='${fieldName}[][IsRequired]' value='${field.isRequired}' data-value-type='boolean'>
+                    <input type='hidden' name='${fieldName}[][IsHidden]' value='${field.isHidden}' data-value-type='boolean'>
                     <input type='hidden' name='${fieldName}[][Type]' value='${field.type}' data-value-type='number'>
                     <input type='hidden' name='${fieldName}[][TypeName]' value='${field.typeName}'>
 
@@ -292,3 +293,70 @@ $.fn.fillInvoiceServiceNames = function (target, id, fieldContainerId) {
         $(target).html($services);
     });
 }
+
+$.fn.navSettings = { isOpen: false };
+$.fn.sidenav = function (action, property, value) {
+  const $sidenav = $(this);
+  const settings = $.fn.navSettings;
+
+  function openNav() {
+    const $main = $(settings.content);
+
+    $sidenav.css("width", "17rem");
+    $main.css("marginLeft", "17rem");
+  }
+
+  function closeNav() {
+    const $main = $(settings.content);
+
+    $sidenav.css("width", "0");
+    $main.css("marginLeft", "0");
+  }
+
+  function toggle() {
+    const $main = $(settings.content);
+
+    if ($.fn.navSettings.isOpen) {
+        $.fn.navSettings.isOpen = false;
+        localStorage.setItem("sidenavIsOpen", "closed");
+        closeNav($sidenav, $main);
+        $sidenav.trigger($.Event("sidenavClose"));
+    } else {
+        $.fn.navSettings.isOpen = true;
+        localStorage.setItem("sidenavIsOpen", "opened");
+        $(".dataTables_scrollHeadInner").css("width", "100% !important");
+        openNav($sidenav, $main);
+        $sidenav.trigger($.Event("sidenavOpen"));
+    }
+  }
+
+  switch (action) {
+    case "settings":
+      $.fn.navSettings = { ...settings, [property]: value };
+      break;
+    case "attachEvent":
+      if ($sidenav && settings.content && settings.btnOpen) {
+        const $btn = $(settings.btnOpen);
+
+        $btn.on("click", toggle);
+      }
+      break;
+    case "toggle":
+      if ($sidenav && settings.content && settings.btnOpen) {
+        toggle();
+      }
+      break;
+    case "onOpen":
+        $sidenav.on("sidenavOpen", property);
+        break;
+    case "onClose":
+        $sidenav.on("sidenavClose", property);
+        break;
+
+    default:
+      break;
+  }
+
+  return $sidenav;
+};
+

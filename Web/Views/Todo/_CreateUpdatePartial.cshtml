@@ -1,0 +1,31 @@
+﻿@model TodoViewModel
+@{
+    var isCreating = (bool)ViewData["IsCreating"];
+
+    var priorityList = Html.GetEnumSelectList<TodoPriorityEnum>().ToList();
+    if(isCreating) {
+        priorityList.ForEach(x => { if(x.Value == ((int)TodoPriorityEnum.Medium).ToString()) { x.Selected = true; } });
+    }
+}
+
+<form id="@(Guid.NewGuid())" class="ui form" method="post" action="@(isCreating ? Url.RouteUrl("CreateTodo") : $"{Url.RouteUrl("UpdateTodo")}?id={Model.Id.ToString()}")">
+    <fieldset>
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <div class="fields">
+            <div class="ten wide field required">
+                <label asp-for="UserId"></label>
+                <select class="ui search dropdown" required asp-for="UserId" asp-items="@((IEnumerable<SelectListItem>)ViewData["Users"])">
+                </select>
+            </div>
+            <div class="six wide field required">
+                <label asp-for="Priority"></label>
+                <select class="ui search dropdown" required asp-for="Priority" asp-items="@priorityList">
+                </select>
+            </div>
+        </div>
+        <div class="field required">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" required rows="5" data-value-type="string"></textarea>
+        </div>
+    </fieldset>
+</form>

@@ -17,24 +17,42 @@ $.fn.hasData = function (key) {
     return (typeof $(this).data(key) != 'undefined');
 };
 
-var originalSerializeArray = $.fn.serializeArray;
-$.fn.serializeArray = function () {
-    const mainValues = originalSerializeArray.apply(this);
-    const extendedValues = $(this).find('input, select').map(function () {
-        return { 
-            name: this.name,
-            value: this.value,
-            self: this, 
-            dataType: $(this).data("value-type")
-        };
-    }).get();
-    const mainKeys = $.map(mainValues, function (element) { return element.name; });
-    const result = $.grep(extendedValues, function (element) {
-        return $.inArray(element.name, mainKeys) !== -1;
-    });
+const rCRLF = /\r?\n/g,
+      rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i, 
+      rsubmittable = /^(?:input|select|textarea|keygen)/i,
+      rcheckableType = /^(?:checkbox|radio)$/i
+$.fn.serializeArray = function() {
+  return this
+    .map(function() {
+      // Can add propHook for "elements" to filter or add form elements
+      var elements = $.prop( this, "elements" );
+      return elements ? $.makeArray( elements ) : this; 
+    })
+    .filter(function() {
+      var type = this.type;
 
-    return result.length > 0 ? result : mainValues;
-};
+      // Use .is( ":disabled" ) so that fieldset[disabled] works
+      return this.name && !$( this ).is( ":disabled" ) &&
+        rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
+        (this.checked || !rcheckableType.test( type ));
+    })
+    .map(function(_i, elem) {
+      var val = $(this).val();
+
+      if (val == null) {
+        return null;
+      }
+
+
+      if (Array.isArray(val)) {
+        return $.map(val, function(val) {
+          return { name: elem.name, value: val.replace( rCRLF, "\r\n" ), self: elem, dataType: $(elem).data("value-type") }; // [CUSTOM] Added properties: self, dataType
+        });
+      }
+
+      return { name: elem.name, value: val.replace(rCRLF, "\r\n"), self: elem, dataType: $(elem).data("value-type") }; // [CUSTOM] Added properties: self, dataType
+    }).get();
+}
 
 Object.defineProperty(Array.prototype, 'chunk', {
   value: function(chunkSize) {

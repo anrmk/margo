@@ -29,15 +29,18 @@ namespace Web.Controllers.Mvc {
         private readonly IPersonBusinessManager _personBusinessManager;
         private readonly ICompanyBusinessManager _companyBusinessManager;
         private readonly IVendorBusinessManager _vendorBusinessManager;
+        private readonly ICategoryBusinessManager _categoryBusinessManager;
         public UccountController(ILogger<UccountController> logger, IMapper mapper,
             IUccountBusinessManager uccountBusinessManager,
             IPersonBusinessManager personBusinessManager,
             ICompanyBusinessManager companyBusinessManager,
-            IVendorBusinessManager vendorBusinessManager) : base(logger, mapper) {
+            IVendorBusinessManager vendorBusinessManager,
+            ICategoryBusinessManager categoryBusinessManager) : base(logger, mapper) {
             _uccountBusinessManager = uccountBusinessManager;
             _personBusinessManager = personBusinessManager;
             _companyBusinessManager = companyBusinessManager;
             _vendorBusinessManager = vendorBusinessManager;
+            _categoryBusinessManager = categoryBusinessManager;
         }
 
         public async Task<IActionResult> Index() {
@@ -50,6 +53,9 @@ namespace Web.Controllers.Mvc {
 
             ViewBag.Customers = persons.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() })
                 .Union(companies.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() }));
+
+            var categories = await _categoryBusinessManager.GetCategories();
+            ViewBag.Categories = categories.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
             var model = new UccountFilterViewModel();
             return View(model);

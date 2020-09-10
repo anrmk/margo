@@ -9,7 +9,7 @@
         <img src="~/images/elliot.jpg">
     </div>
     <div class="content">
-        <div class="header">@Model.Profile.FullName</div>
+        <div class="header">@Model.Profile?.FullName</div>
         @if(Model.LockoutEnd.HasValue) {
             <div class="meta">
                 <span class="date">Locked until @Model.LockoutEnd.Value.ToString("MM.dd.yyyy HH:mm")</span>

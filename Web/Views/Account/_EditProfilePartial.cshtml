@@ -7,6 +7,7 @@
 <form id="@formId" class="ui form" asp-action="UpdateAspNetUserProfile" asp-route-id="@Model.Id" method="put" autocomplete="off">
     <fieldset>
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
         <div class="three fields">
             <div class="field required">
                 <label asp-for="Name"></label>

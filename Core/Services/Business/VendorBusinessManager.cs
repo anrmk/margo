@@ -57,7 +57,7 @@ namespace Core.Services.Business {
         }
 
         public async Task<List<VendorCategoryDto>> GetVendorCategories(Guid vendorId) {
-            var result = await _vendorCategoryManager.FindAll(vendorId);
+            var result = await _vendorCategoryManager.FindAll(vendorId, true);
             return _mapper.Map<List<VendorCategoryDto>>(result);
         }
 

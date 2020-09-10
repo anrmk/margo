@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Data.Entities {
-    [Table(name: "AppNetUserProfiles")]
+    [Table(name: "AspNetUserProfiles")]
     public class AspNetUserProfileEntity: AuditableEntity<long> {
         [MaxLength(64)]
         public string Name { get; set; }
@@ -18,5 +18,11 @@ namespace Core.Data.Entities {
 
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
+
+        [Required]
+        [ForeignKey("User")]
+        [Column("User_Id")]
+        public string UserId { get; set; }
+        public virtual AspNetUserEntity User { get; set; }
     }
 }

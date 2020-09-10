@@ -1,5 +1,5 @@
 ﻿body {
-  background-color: #DADADA;
+  background-color: #ffffff;
 }
 
 .width-100 {
@@ -217,6 +217,134 @@ fieldset {
   width: 319px;
 }
 
+/* Text overflow */
+.table td, .table th, .details th {
+    max-width: 90px !important;
+    /* width: 90px !important; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+tbody[name="inner"] td {
+  max-width: 350px;
+}
+
+.search.dropdown > .text {
+  max-width: -webkit-fill-available;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.dropdown.selection .menu .item {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.dropdown.selection.multiple .ui.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.ui.card.card > .content p, .meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui.sortable.list > .item .header {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Custom Sidenav */
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.sidenav::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidenav::-webkit-scrollbar-track {
+  background: rgb(50 51 52);
+}
+
+.sidenav::-webkit-scrollbar-thumb {
+  background: rgb(81, 81, 82);
+}
+
+.sidenav .menu {
+  width: 17rem !important; 
+}
+
+.main-content {
+  transition: margin-left 0.5s;
+}
+
+.right-side > * {
+  max-width: 300px;
+}
+
+.border-b-1 {
+  border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+.m-0 {
+ margin: 0 !important;
+}
+
+.p-0 {
+ margin: 0 !important;
+}
+
+.p-1 {
+  padding: 3em !important;
+}
+
+.px-1 {
+  padding-left: 3em !important;
+  padding-right: 3em !important;
+}
+
+/* DataTable header and body override */
+/* .dataTables_scrollHeadInner {
+  width: 100% !important;
+}
+
+.dataTables_scrollHeadInner table {
+  width: 100% !important;
+}
+
+.dataTables_scrollBody table {
+  width: 100% !important;
+} */
 
 /* Remove Overview from pages with Examples */
 @media only screen and (max-width: 1500px) {
@@ -239,10 +367,6 @@ fieldset {
 
 /* Table Ad */
 @media only screen and (max-width: 1272px) {
-  .ui.secondary.menu {
-    margin-right: 20em;
-  }
-
   #mainbody .masthead > .container {
     margin-right: 28em !important;
     max-width: none !important;
@@ -298,10 +422,6 @@ fieldset {
 
 /* Remove Fixed Sidebar /  Show Top Bar */
 @media only screen and (max-width: 1144px) {
-  .ui.secondary.menu {
-    margin-right: 20em;
-  }
-
   /* Hide Fixed Sidebar */
   #mainbody .full.height > .toc {
     display: none;
@@ -362,6 +482,16 @@ fieldset {
   #mainbody .fixed.column .sticky {
     padding-top: 2em;
   }
+
+  /* Text overflow */
+  .table th, .details th {
+      /* max-width: 90px !important; */
+      /* width: 90px !important; */
+  }
+
+  tbody[name="inner"] td {
+    max-width: 200px !important;
+  }
 }
 
 /* Remove Rail */
@@ -392,6 +522,14 @@ fieldset {
     margin-right: 0em !important;
     width: 100% !important;
     max-width: none !important;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .ui.stackable.grid > .mobile-wide.wide.column {
+    width: 100% !important;
   }
 }
 
@@ -473,11 +611,44 @@ fieldset {
   #mainbody .pusher > .footer .grid .three.column {
     display: none !important;
   }
+
+  .ui.stackable.divided:not(.vertically).grid>.mobile-wide.column:not(.row) {
+    padding: 2em !important;
+  }
+}
+
+/* Phone */
+@media only screen and (max-width: 500px) {
+  .p-1 {
+    padding: 2em !important;
+  }
+
+  .px-1 {
+    padding-left: 2em !important;
+    padding-right: 2em !important;
+  }
 }
 
 /* Small Phone */
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 374px) {
+  /* .p-1 {
+    padding: 0 !important;
+  }
 
+  .px-1 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  } */
+
+  .main-content .ui.secondary.menu {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .main-content .ui.secondary.menu .right.item,
+  .main-content .ui.secondary.menu .header.item {
+    margin-left: 0 !important;
+  }
 }
 
 /* Hide sortable sceleton */

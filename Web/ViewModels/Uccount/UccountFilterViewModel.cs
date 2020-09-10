@@ -13,5 +13,8 @@ namespace Web.ViewModels {
 
         [Display(Name = "Vendor")]
         public Guid? VendorId { get; set; }
+
+        [Display(Name = "Category")]
+        public Guid? CategoryId { get; set; }
     }
 }

@@ -165,6 +165,12 @@ namespace Web {
             CreateMap<PersonViewModel, PersonDto>().ReverseMap();
             CreateMap<PersonListViewModel, PersonDto>().ReverseMap();
             #endregion
+
+            #region TODO
+            CreateMap<TodoViewModel, TodoDto>().ReverseMap();
+            CreateMap<TodoListViewModel, TodoDto>().ReverseMap();
+            CreateMap<TodoFilterViewModel, TodoFilterDto>().ReverseMap();
+            #endregion
         }
     }
 }

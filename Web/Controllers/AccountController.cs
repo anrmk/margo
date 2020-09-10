@@ -44,7 +44,7 @@ namespace Web.Controllers.Mvc {
 
         public async Task<IActionResult> Activity() {
             var userNameList = await _accountBusinessManager.GetUsers();
-            ViewBag.UserNames = userNameList.Select(x => new SelectListItem() { Text = $"{x.Profile.Name} {x.Profile.MiddleName} {x.Profile.SurName}", Value = x.Id.ToString() });
+            ViewBag.UserNames = userNameList.Where(x => x.Profile != null).Select(x => new SelectListItem() { Text = $"{x.Profile.Name} {x.Profile.MiddleName} {x.Profile.SurName}", Value = x.Id.ToString() });
 
             var methodList = EnumExtension.GetAll<HttpMethodEnum>();
             ViewBag.Methods = methodList.Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString() });
@@ -225,6 +225,7 @@ namespace Web.Controllers.Api {
             var item = await _accountBusinessService.GetUser(id);
             if(item == null)
                 return NotFound();
+            item.Profile ??= new AspNetUserProfileDto();
 
             var companies = await _companyBusinessManager.GetCompanies(true);
             var categories = await _categoryBusinessManager.GetCategories(true);

@@ -41,7 +41,15 @@
                 if ($.inArray(data.id, this.options.selected) !== -1) {
                     $(row).find('input[type=checkbox]').attr('checked', true)
                 }
-            }
+            },
+            'scrollX': true,
+            'scrollCollapse': true,
+            'autoWidth':true,
+            'responsive': true,
+            'columnDefs': [
+                { width: '5%', targets: 0 }
+            ],
+            'fixedColumns': true
         }).on('draw', (e, settings) => {
             $(e.currentTarget).find('a[data-request=ajax]').ajaxClick();
         });
@@ -86,20 +94,22 @@
             var $input = $(e.currentTarget);
             var row = this.datatable.row($($input).parents('tr'));
 
-            var value = $input.val();
-            //var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
-            var index = $.inArray(value, this.options.selected);
+            if ($(e.target).hasClass('toolbar')) {
+                var value = $input.val();
+                //var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
+                var index = $.inArray(value, this.options.selected);
 
-            if (index === -1) {
-                this.options.selected.push(value);
-            } else {
-                this.options.selected.splice(index, 1);
-            }
+                if (index === -1) {
+                    this.options.selected.push(value);
+                } else {
+                    this.options.selected.splice(index, 1);
+                }
 
-            if (this.options.selected.length > 0) {
-                this.toolbar.find('button[data-action=delete]').enabled();
-            } else {
-                this.toolbar.find('button[data-action=delete]').disabled();
+                if (this.options.selected.length > 0) {
+                    this.toolbar.find('button[data-action=delete]').enabled();
+                } else {
+                    this.toolbar.find('button[data-action=delete]').disabled();
+                }
             }
 
             this.options.onRowChange(e, row.data());

@@ -3,7 +3,7 @@
 }
 
 <!-- Sidebar Menu -->
-<div class="ui vertical inverted menu sidebar">
+<div class="ui vertical inverted menu">
     <div class="item">
         <a class="ui logo icon image" href="#">
             <img src="~/images/margo-icon.png">
@@ -15,6 +15,7 @@
         <div class="header">Dashboard</div>
         <div class="menu">
             <a class="item @(url.Contains("/home") || url.Equals("/") ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
+            <a class="item @(url.Contains("/todo") ? "active" : "")" asp-controller="Todo" asp-action="Index">To Do</a>
         </div>
     </div>
 

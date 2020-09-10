@@ -15,14 +15,33 @@
         $('.shape').shape('set next side', $(e.currentTarget).data('target')).shape('flip over');
     });
     $('.ui.dropdown').dropdown();
+    $('.ui.calendar').calendar({
+        type: 'date',
+        formatter: {
+            date: function (date, settings) {
+                if (!date) return '';
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                return month + '/' + day + '/' + year;
+            }
+        },
+        onChange: function () {
+            window.DocumentController.reload(true);
+        }
+    });
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
     $('select[data-request=ajax]').ajaxClick({'eventName': 'change'});
-    $('.ui.vertical.inverted.menu.sidebar').first()
-        .sidebar('setting', 'dimPage', false)
-        .sidebar('setting', 'closable', false)
-        .sidebar('attach events', '#sidebar-btn')
-        .sidebar('toggle');
+    $("#sidenav")
+        .sidenav("settings", "content", "#main-content")
+        .sidenav("settings", "btnOpen", "#sidebar-btn")
+        .sidenav("attachEvent");
+    // $('.ui.vertical.inverted.menu.sidebar').first()
+    //     .sidebar('setting', 'dimPage', false)
+    //     .sidebar('setting', 'closable', false)
+    //     .sidebar('attach events', '#sidebar-btn')
+    //     .sidebar('toggle');
     $('.icon.mysidebar').removeClass('disabled');
 
     window.Hub = new NotificationHub();

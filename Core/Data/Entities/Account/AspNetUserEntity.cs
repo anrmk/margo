@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Identity;
 namespace Core.Data.Entities {
     [Table(name: "AspNetUsers")]
     public class AspNetUserEntity: IdentityUser {
-        [ForeignKey("Profile")]
-        [Column("ProfileId")]
-        public long? Profile_Id { get; set; }
         public virtual AspNetUserProfileEntity Profile { get; set; }
 
         public virtual ICollection<AspNetUserDenyAccessCompanyEntity> CompanyGrants { get; set; }
         public virtual ICollection<AspNetUserDenyAccessCategoryEntity> CategoryGrants { get; set; }
 
         public virtual ICollection<AspNetUserCompanyFavouriteEntity> FavouriteCompanies { get; set; }
+
+        public virtual ICollection<TodoEntity> Todos { get; set; }
     }
 }

@@ -1,0 +1,41 @@
+﻿@model TodoListViewModel
+
+<div class="ui attached segment 
+    @(Model.IsCompleted ? "grey" : Model.Priority switch {
+        TodoPriorityEnum.High => "orange",
+        TodoPriorityEnum.Medium => "yellow",
+        TodoPriorityEnum.Low => "green",
+        _ => "red"
+    })">
+    <div style="text-align: center;">
+        <h3 class="ui header">@Model.UserName</h3>
+        <table class="ui celled table">
+            <tbody>
+                <tr>
+                    <td><label asp-for="Description"></label></td>
+                    <td>@Model.Description</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Priority"></label></td>
+                    <td>
+                        @Model.Priority
+                    </td>
+                </tr>
+                <tr>
+                    <td><label asp-for="CreatedDate"></label></td>
+                    <td>@Model.CreatedDate</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="CreatedBy"></label></td>
+                    <td>@Model.CreatedBy</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="IsCompleted"></label></td>
+                    <td>
+                        @(Model.IsCompleted ? "Completed" : "In progress")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

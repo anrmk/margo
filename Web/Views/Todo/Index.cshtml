@@ -1,0 +1,195 @@
+﻿@model Web.ViewModels.TodoFilterViewModel
+@{
+    ViewData["Title"] = "To do";
+
+    var tableId = Guid.NewGuid();
+
+    var listUrl = Url.RouteUrl("GetTodoList");
+    var deleteUrl = Url.RouteUrl("DeleteTodoList");
+    var editUrl = Url.RouteUrl("EditTodo");
+    var detailsUrl = Url.RouteUrl("DetailsTodo");
+    var updateUrl = Url.RouteUrl("UpdateStatus");
+}
+
+@section RightSidebar {
+    <div class="ui stacked secondary yellow segment">
+        <form id="table-filter" class="ui form">
+            <h3>Filters</h3>
+            <div class="field">
+                <div class="ui slider checkbox">
+                    <input type="checkbox" name="IncludeCompleted" data-value-type="boolean" value="true">
+                    <label asp-for="IncludeCompleted"></label>
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="Type"></label>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList<TodoUserTypeEnum>()" required class="ui dropdown search">
+                    <option value="" selected>Select type</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="Text"></label>
+                <input asp-for="Text" data-value-type="string">
+            </div>
+            <div class="field">
+                <label asp-for="Priority"></label>
+                <select asp-for="Priority" asp-items="Html.GetEnumSelectList<TodoPriorityEnum>()" required class="ui dropdown search">
+                    <option value="" selected>Select priority</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="SortingBy"></label>
+                <select asp-for="SortingBy" asp-items="Html.GetEnumSelectList<TodoSortingEnum>()" required class="ui dropdown search">
+                    <option value="" selected>Select sorting type</option>
+                </select>
+            </div>
+            <div class="field">
+                <label asp-for="DateFrom"></label>
+                <div class="ui calendar">
+                    <div class="ui input left icon">
+                        <i class="calendar icon"></i>
+                        <input name="DateFrom" type="text" placeholder="From" data-value-type="string" value="@(!Model.DateFrom.HasValue ? null : Model.DateFrom.Value.ToString("MM/dd/yyyy"))">
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="DateTo"></label>
+                <div class="ui calendar">
+                    <div class="ui input left icon">
+                        <i class="calendar icon"></i>
+                        <input name="DateTo" type="text" placeholder="To" data-value-type="string" value="@(!Model.DateTo.HasValue ? null : Model.DateTo.Value.ToString("MM/dd/yyyy"))">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="ui sticky">
+        <div id="displayContainer"></div>
+    </div>
+}
+
+<div class="ui shape width-100">
+    <div class="sides">
+        <div class="active side main">
+            <div id="toolbar" class="flex justify-content-between">
+                <a asp-route="AddTodo" class="ui button" data-request="ajax" rel="dialog" data-title="Create new todo"><i class="fa fa-plus mr-1"></i> Create</a>
+                <button class="red ui button" data-action="delete" disabled><i class="trash icon"></i> Delete</button>
+            </div>
+            <table id="@(tableId)" class="ui selectable celled unstackable orange table" data-toolbar="#toolbar"></table>
+        </div>
+
+        <div class="side display">
+            <div class="ui grid">
+                <div class="row">
+                    <div class="column">
+                        <button class="ui button" data-target=".side.main"><i class="retweet icon"></i> Back</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <div id="@(tableId)_details"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function isCompleteChanged(e) {
+            var newValue = e.val() === "true" ? "false" : "true";
+            e.val(newValue);
+
+            $.ajax({
+                url: "@(updateUrl)?id=" + e.data('id'),
+                type: "PUT",
+                data: JSON.stringify(),
+                contentType: "application/json; charset=utf-8",
+                complete: (jqXHR, status) => {
+                    if (status === 'success') {
+                        window.DocumentController.reload(false);
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            window.DocumentController = new DocumentController({
+                "table": "#@tableId",
+                "controller": {
+                    "list": "@listUrl",
+                    "delete": "@deleteUrl"
+                },
+                "columns": [
+                    { "title": "", "data": "id", "className": "collapsing", "render": (data, type, row) => $.fn.renderDatatableAction(data, type, row) },
+                    { "title": "Message", "data": "description" },
+                    { "title": "User", "data": "userName" },
+                    { "title": "Added", "data": "createdDate", "render": (data, type, row) => $.fn.formatDate(data, type, row) },
+                    { "title": "Status", "data": "isCompleted", "render": (data, type, row) => data ? "Completed" : "In progress" },
+                    { "title": "Priority", "data": "priority", "render": (data, type, row) => { switch (data) { case 1: return "High"; case 2: return "Medium"; case 3: return "Low"; }} },
+                    { "title": "Modified", "className": "collapsing", "data": "updatedDate", "render": (data, type, row) => $.fn.formatDate(data, type, row) },
+                    {
+                        "title": "Complete", "data": "isCompleted", "className": "collapsing", "render": (data, type, row) => {
+                            return `<div class="ui slider checkbox">
+                                        <input class="changable" type="checkbox" data-value-type="boolean" data-id="${row.id}" value="${data}" ${data ? 'checked="checked"' : ''} onchange="isCompleteChanged($(this))">
+                                        <label></label>
+                                    </div>`;
+                      }
+                    },
+                    {
+                      "title": "Action", "data": "id", "className": "collapsing right aligned", "render": (data, type, row) => {
+                        return `<a class="ui icon" data-request="ajax" href="@(editUrl)?id=${data}" rel="dialog" data-title="Edit todo" >
+                                    <i class="pencil icon"></i>
+                                </a>`;
+                      }
+                    }
+                ],
+                "onRowCreated": function (row, data, index) {
+                    let color;
+                    switch (data.priority.toString()) {
+                        case "@((int)TodoPriorityEnum.High)":
+                            color = "orange";
+                            break;
+                        case "@((int)TodoPriorityEnum.Medium)":
+                            color = "yellow";
+                            break;
+                        case "@((int)TodoPriorityEnum.Low)":
+                            color = "green";
+                            break;
+                        default:
+                            color = "";
+                            break;
+                    }
+
+                    $(row).addClass(data.isCompleted
+                        ? "grey"
+                        : color);
+                },
+                "onDblRowClick": (e, data) => {
+                    if (!$(e.target).hasClass('changable')) {
+                        $.get("@detailsUrl", { "id": data.id }).done(result => {
+                            $("#@(tableId)_details").html(result).find("a[data-request=ajax]").ajaxClick();
+                            $(".shape").shape("set next side", ".side.display").shape("flip over");
+                        });
+                    }
+                }
+            });
+
+            ajaxSubmitComplete = function (e, jqXHR, status) {
+                if (status === "success") {
+                    window.DocumentController.reload(false);
+                    window.dialog.modal("hide");
+                }
+            };
+
+            ajaxClick = function (e, jqXHR, status) {
+                if (status === "success") {
+                    var target = $(e.target).attr("data-target");
+                    $(target).remove();
+                }
+            };
+        });
+    </script>
+}

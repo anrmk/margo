@@ -25,38 +25,23 @@
 </head>
 
 
-<body id="mainbody" class="menu pushable">
+<body id="mainbody">
 
-    <div class="pusher">
-        <div class="full height">
-            <div class="toc">
-                <partial name="_SidebarPartial" />
+    <div id="sidenav" class="sidenav">
+        <partial name="_SidebarPartial" />
+    </div>
+
+    <div id="main-content" class="main-content">
+        <partial name="_HeaderPartial" model="userName" />
+
+        <div class="ui two stackable column divided grid m-0">
+            <div class="mobile-wide twelve wide column p-1">
+                @RenderBody()
             </div>
-
-            <div class="article">
-                <partial name="_HeaderPartial" model="userName" />
-                
-                <div class="main ui container">
-                    <div class="ui dividing right rail">
-                        @RenderSection("RightSidebar", required: false)
-                    </div>
-                    @RenderBody()
-                </div>
+            <div class="four wide column p-1 right-side mobile-hidden">
+                @RenderSection("RightSidebar", required: false)
             </div>
-
-
-
-            @*<div class="four wide tablet three wide computer only column">
-                    <div style="margin-top: 30px">
-                        <partial name="_RightSidebarPartial" />
-
-                        @RenderSection("RightSidebar", required: false)
-                    </div>
-                </div>*@
         </div>
-        @if(isSignIn) {
-            @*<partial name="_FooterPartial" />*@
-        }
     </div>
 
     <partial name="_ScriptPartial" />

@@ -15,7 +15,7 @@
             <h3>Filters</h3>
             <div class="field">
                 <label asp-for="StartDate"></label>
-                <div class="ui calendar" id="rangestart">
+                <div class="ui calendar">
                     <div class="ui input left icon">
                         <i class="calendar icon"></i>
                         <input id="startDate" name="StartDate" type="text" placeholder="From" data-value-type="string" value="@(Model.StartDate.ToString("MM/dd/yyyy"))">
@@ -24,7 +24,7 @@
             </div>
             <div class="field">
                 <label asp-for="EndDate"></label>
-                <div class="ui calendar" id="rangeend">
+                <div class="ui calendar">
                     <div class="ui input left icon">
                         <i class="calendar icon"></i>
                         <input id="endDate" name="EndDate" type="text" placeholder="To" data-value-type="string" value="@(Model.EndDate.ToString("MM/dd/yyyy"))">
@@ -109,40 +109,6 @@
                        $('#@(tableId)_details').html(result).find('a[data-request=ajax]').ajaxClick();
                        $('.shape').shape('set next side', '.side.details').shape('flip over');
                     });
-                }
-            });
-
-            $('#rangestart').calendar({
-                type: 'date',
-                //endCalendar: $('#rangeend'),
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var day = date.getDate();
-                        var month = date.getMonth() + 1;
-                        var year = date.getFullYear();
-                        return month + '/' + day + '/' + year;
-                    }
-                },
-                onChange: function () {
-                    window.DocumentController.reload(true);
-                }
-            });
-
-            $('#rangeend').calendar({
-                type: 'date',
-                //startCalendar: $('#rangestart'),
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var day = date.getDate();
-                        var month = date.getMonth() + 1;
-                        var year = date.getFullYear();
-                        return month + '/' + day + '/' + year;
-                    }
-                },
-                onChange: function () {
-                    window.DocumentController.reload(true);
                 }
             });
         });
