@@ -15,6 +15,7 @@
         <div class="header">Dashboard</div>
         <div class="menu">
             <a class="item @(url.Contains("/home") || url.Equals("/") ? "active" : "")" asp-controller="Home" asp-action="Index">Home</a>
+            <a class="item @(url.Contains("/todo") ? "active" : "")" asp-controller="Todo" asp-action="Index">To Do</a>
         </div>
     </div>
 

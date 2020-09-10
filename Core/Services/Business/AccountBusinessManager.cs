@@ -18,6 +18,7 @@ namespace Core.Services.Business {
     public interface IAccountBusinessManager {
         //  ACCOUNT
         Task<List<AspNetUserDto>> GetUsers();
+        Task<List<AspNetUserDto>> GetUsersWithoutObservers();
         Task<AspNetUserDto> GetUser(string id);
         Task<PagerDto<AspNetUserDto>> GetUserPage(PagerFilterDto filter);
         Task<AspNetUserDto> CreateUser(AspNetUserDto dto, string password);
@@ -100,7 +101,19 @@ namespace Core.Services.Business {
         #region ACCOUNT
         public async Task<List<AspNetUserDto>> GetUsers() {
             var entities = await _userManager.Users.Include(x => x.Profile).ToListAsync();
-            return _mapper.Map<List<AspNetUserDto>>(entities); ;
+            return _mapper.Map<List<AspNetUserDto>>(entities);
+        }
+
+        public async Task<List<AspNetUserDto>> GetUsersWithoutObservers() {
+            var importantUsers = new List<AspNetUserEntity>();
+            var roles = await _roleManager.Roles.ToListAsync();
+            foreach(var role in roles) {
+                if(role.NormalizedName != "OBSERVER") {
+                    importantUsers.AddRange(await _userManager.GetUsersInRoleAsync(role.Name));
+                }
+            }
+
+            return _mapper.Map<List<AspNetUserDto>>(importantUsers);
         }
 
         public async Task<AspNetUserDto> GetUser(string id) {

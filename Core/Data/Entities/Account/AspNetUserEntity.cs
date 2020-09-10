@@ -12,5 +12,7 @@ namespace Core.Data.Entities {
         public virtual ICollection<AspNetUserDenyAccessCategoryEntity> CategoryGrants { get; set; }
 
         public virtual ICollection<AspNetUserCompanyFavouriteEntity> FavouriteCompanies { get; set; }
+
+        public virtual ICollection<TodoEntity> Todos { get; set; }
     }
 }

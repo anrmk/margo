@@ -15,6 +15,21 @@
         $('.shape').shape('set next side', $(e.currentTarget).data('target')).shape('flip over');
     });
     $('.ui.dropdown').dropdown();
+    $('.ui.calendar').calendar({
+        type: 'date',
+        formatter: {
+            date: function (date, settings) {
+                if (!date) return '';
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                return month + '/' + day + '/' + year;
+            }
+        },
+        onChange: function () {
+            window.DocumentController.reload(true);
+        }
+    });
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
     $('select[data-request=ajax]').ajaxClick({'eventName': 'change'});

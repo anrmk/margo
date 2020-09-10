@@ -119,7 +119,7 @@ $.fn.formatDate = function (data, type, row) {
 };
 
 $.fn.renderDatatableAction = function (data, type, row) {
-    return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}'> <label></label></div>`;
+    return `<div class='ui fitted slider checkbox'><input type='checkbox' name='Id[]' value='${data}' class='changable toolbar'> <label></label></div>`;
 }
 
 $.fn.renderDatatableCollection = function (data, type, row) {

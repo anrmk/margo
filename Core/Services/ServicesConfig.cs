@@ -57,6 +57,8 @@ namespace Core.Services {
             services.AddTransient<IInvoiceManager, InvoiceManager>();
             services.AddTransient<IPaymentManager, PaymentManager>();
 
+            services.AddTransient<ITodoManager, TodoManager>();
+
             /////Business
             services.AddTransient<IAccountBusinessManager, AccountBusinessManager>();
             services.AddTransient<IPersonBusinessManager, PersonBusinessManager>();
@@ -66,6 +68,7 @@ namespace Core.Services {
             services.AddTransient<IVendorBusinessManager, VendorBusinessManager>();
             services.AddTransient<IInvoiceBusinessManager, InvoiceBusinessManager>();
             services.AddTransient<IPaymentBusinessManager, PaymentBusinessManager>();
+            services.AddTransient<ITodoBusinessManager, TodoBusinessManager>();
 
             ///Grants by user
             services.AddTransient<GrantManager<UccountEntity>, UccountGrantManager>();

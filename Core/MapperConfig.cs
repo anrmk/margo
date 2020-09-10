@@ -93,6 +93,12 @@ namespace Core {
             #region PERSONS
             CreateMap<PersonDto, PersonEntity>().ReverseMap();
             #endregion
+
+            #region TODO
+            CreateMap<TodoDto, TodoEntity>()
+                .ReverseMap()
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName));
+            #endregion
         }
     }
 }

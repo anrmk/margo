@@ -94,20 +94,22 @@
             var $input = $(e.currentTarget);
             var row = this.datatable.row($($input).parents('tr'));
 
-            var value = $input.val();
-            //var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
-            var index = $.inArray(value, this.options.selected);
+            if ($(e.target).hasClass('toolbar')) {
+                var value = $input.val();
+                //var value = $.fn.isGuid($input.val()) ? $input.val() : Number($input.val());
+                var index = $.inArray(value, this.options.selected);
 
-            if (index === -1) {
-                this.options.selected.push(value);
-            } else {
-                this.options.selected.splice(index, 1);
-            }
+                if (index === -1) {
+                    this.options.selected.push(value);
+                } else {
+                    this.options.selected.splice(index, 1);
+                }
 
-            if (this.options.selected.length > 0) {
-                this.toolbar.find('button[data-action=delete]').enabled();
-            } else {
-                this.toolbar.find('button[data-action=delete]').disabled();
+                if (this.options.selected.length > 0) {
+                    this.toolbar.find('button[data-action=delete]').enabled();
+                } else {
+                    this.toolbar.find('button[data-action=delete]').disabled();
+                }
             }
 
             this.options.onRowChange(e, row.data());
