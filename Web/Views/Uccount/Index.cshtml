@@ -31,6 +31,12 @@
                 </select>
             </div>
             <div class="field">
+                <label asp-for="CategoryId"></label>
+                <select asp-for="CategoryId" asp-items="@ViewBag.Categories" data-clearable="true" class="ui dropdown">
+                    <option value="" selected>Select category</option>
+                </select>
+            </div>
+            <div class="field">
                 <label asp-for="CustomerId"></label>
                 <select asp-for="CustomerId" asp-items="@ViewBag.Customers" data-clearable="true" class="ui dropdown">
                     <option value="" selected>Select customers</option>

@@ -88,12 +88,10 @@ namespace Core.Services.Business {
             var sortby = "Id";
 
             Expression<Func<UccountEntity, bool>> where = x =>
-                (string.IsNullOrEmpty(filter.Search)
-                    || x.Person.Name.ToLower().Contains(filter.Search.ToLower())
-                    || x.Company.Name.ToLower().Contains(filter.Search.ToLower()))
-                && (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
+                (!filter.VendorId.HasValue || x.VendorId.Equals(filter.VendorId))
                 && (!filter.Kind.HasValue || x.Kind == filter.Kind)
                 && (!filter.CustomerId.HasValue || x.CompanyId == filter.CustomerId || x.PersonId == filter.CustomerId)
+                && (!filter.CategoryId.HasValue || (x.Services != null && x.Services.Any(s => s.CategoryId == filter.CategoryId)))
                 && (!x.Company.Grants.Any(z => z.UserId == filter.UserId));
 
             string[] include = new string[] { "Company", "Person", "Vendor", "Services" };
