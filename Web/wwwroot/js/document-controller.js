@@ -41,7 +41,15 @@
                 if ($.inArray(data.id, this.options.selected) !== -1) {
                     $(row).find('input[type=checkbox]').attr('checked', true)
                 }
-            }
+            },
+            'scrollX': true,
+            'scrollCollapse': true,
+            'autoWidth':true,
+            'responsive': true,
+            'columnDefs': [
+                { width: '5%', targets: 0 }
+            ],
+            'fixedColumns': true
         }).on('draw', (e, settings) => {
             $(e.currentTarget).find('a[data-request=ajax]').ajaxClick();
         });

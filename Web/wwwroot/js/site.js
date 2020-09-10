@@ -18,11 +18,15 @@
     $('form[data-request=ajax]').ajaxSubmit();
     $('a[data-request=ajax]').ajaxClick();
     $('select[data-request=ajax]').ajaxClick({'eventName': 'change'});
-    $('.ui.vertical.inverted.menu.sidebar').first()
-        .sidebar('setting', 'dimPage', false)
-        .sidebar('setting', 'closable', false)
-        .sidebar('attach events', '#sidebar-btn')
-        .sidebar('toggle');
+    $("#sidenav")
+        .sidenav("settings", "content", "#main-content")
+        .sidenav("settings", "btnOpen", "#sidebar-btn")
+        .sidenav("attachEvent");
+    // $('.ui.vertical.inverted.menu.sidebar').first()
+    //     .sidebar('setting', 'dimPage', false)
+    //     .sidebar('setting', 'closable', false)
+    //     .sidebar('attach events', '#sidebar-btn')
+    //     .sidebar('toggle');
     $('.icon.mysidebar').removeClass('disabled');
 
     window.Hub = new NotificationHub();
