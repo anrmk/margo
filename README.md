@@ -1,5 +1,5 @@
-# Margo Assistant
-Simple accounting software for internal use in the company
+# Margo Assistant 
+is a secure vault for storing and managing shared sensitive information such as passwords, documents and digital identities of enterprises. (ASP.NET Core, Semantic-UI, JQuery, MS SQL)
 
 #Installation
 
@@ -19,23 +19,3 @@ Simple accounting software for internal use in the company
 1. [Fancy Tree](https://github.com/mar10/fancytree) - is a JavaScript tree view / tree grid plugin with support for keyboard, inline editing, filtering, checkboxes, drag'n'drop, and lazy loading.
 1. [jQuery SerializeJSON ](https://github.com/marioizquierdo/jquery.serializeJSON) - is a plug-in for the jQuery Javascript library that serializes a form into a JavaScript Object.
 1. [jQuery LoadJSON](https://github.com/kevindb/jquery-load-json) - is a jQuery plugin that enables developers to load JSON data from the server and load JSON object into the DOM.
-
-#Setup
-## SQL Express and remote connections
-TCP/IP is disable when you first install SQL Server Express on any machine. This KB article discusses how to enable TCP/IP the TCP/IP protocol and use an ODBC driver to connect to SQL Server Express.
-
-[Read more](SQL-Server/SQL-Express-and-remote-connections)
-
-##Git 
-
-[Read more](/Git)
-
-## Database
-Connect to developer/test database server:
-
-- **Server Type**: Database engine
-- **Server Name**: xxx.xxx.xxx.xxx,5171
-- **Authentication**: SQL Server Authentication
-- **Login**: admin
-- **Password**: 123qweAS1!
-
